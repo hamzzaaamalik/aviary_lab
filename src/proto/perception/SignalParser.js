@@ -1,65 +1,56 @@
 /**
- * SignalParser class processes incoming signals and extracts percepts.
- * It validates and categorizes signals based on predefined rules.
+ * SignalParser is responsible for interpreting raw signal data and converting it into structured percepts.
+ * It extracts useful information from the signals based on predefined patterns and formats.
  */
 class SignalParser {
+    /**
+     * Constructs a SignalParser instance.
+     */
     constructor() {
-        // Define signal types and their respective handlers
-        this.signalHandlers = {
-            'typeA': this.handleTypeA,
-            'typeB': this.handleTypeB,
-            // Add more types as needed
-        };
+        this.signalPatterns = [];
     }
 
     /**
-     * Parse an incoming signal.
-     * @param {Object} signal - The incoming signal object.
-     * @returns {Object} - Parsed percept or null if invalid.
+     * Adds a new signal pattern to the parser.
+     * @param {RegExp} pattern - The regex pattern for identifying the signal format.
+     * @param {function} handler - The function to handle the parsed result.
      */
-    parse(signal) {
-        if (!this.validateSignal(signal)) {
-            console.error('Invalid signal:', signal);
-            return null;
+    addPattern(pattern, handler) {
+        this.signalPatterns.push({ pattern, handler });
+    }
+
+    /**
+     * Parses a raw signal string and returns structured percepts.
+     * @param {string} rawSignal - The unstructured signal data.
+     * @returns {Array} An array of percepts derived from the raw signal.
+     */
+    parse(rawSignal) {
+        const percepts = [];
+        for (const { pattern, handler } of this.signalPatterns) {
+            const matches = rawSignal.match(pattern);
+            if (matches) {
+                const percept = handler(matches);
+                percepts.push(percept);
+            }
         }
-
-        const handler = this.signalHandlers[signal.type];
-        if (handler) {
-            return handler.call(this, signal);
-        }
-
-        console.warn('No handler for signal type:', signal.type);
-        return null;
-    }
-
-    /**
-     * Validate the structure of the incoming signal.
-     * @param {Object} signal - The signal to validate.
-     * @returns {boolean} - True if valid, otherwise false.
-     */
-    validateSignal(signal) {
-        return signal && typeof signal.type === 'string' && this.signalHandlers.hasOwnProperty(signal.type);
-    }
-
-    /**
-     * Handle typeA signals.
-     * @param {Object} signal - The signal object to handle.
-     * @returns {Object} - Processed percept.
-     */
-    handleTypeA(signal) {
-        // Logic for handling typeA signals
-        return { perceptType: 'PerceptA', data: signal.data };
-    }
-
-    /**
-     * Handle typeB signals.
-     * @param {Object} signal - The signal object to handle.
-     * @returns {Object} - Processed percept.
-     */
-    handleTypeB(signal) {
-        // Logic for handling typeB signals
-        return { perceptType: 'PerceptB', data: signal.data };
+        return percepts;
     }
 }
 
-module.exports = SignalParser;
+// Example usage of SignalParser class
+const parser = new SignalParser();
+
+// Define a pattern for a hypothetical signal
+parser.addPattern(/temp: (\d+)/, (matches) => ({ type: 'temperature', value: parseInt(matches[1], 10) }));
+parser.addPattern(/hum: (\d+)/, (matches) => ({ type: 'humidity', value: parseInt(matches[1], 10) }));
+
+// This function simulates receiving a raw signal and parsing it.
+function simulateSignalReception(signal) {
+    const percepts = parser.parse(signal);
+    console.log('Parsed Percepts:', percepts);
+}
+
+// Simulating a raw signal reception
+simulateSignalReception('temp: 25 hum: 70');
+
+export default SignalParser;
