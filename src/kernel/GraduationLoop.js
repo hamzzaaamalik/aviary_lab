@@ -1,52 +1,64 @@
 /**
- * GraduationLoop orchestrates the perceive → think → act cycle.
- * It leverages the EventBus for inter-module communication and manages
- * the execution of the perception, reasoning, and action modules.
+ * GraduationLoop.js
+ * This module orchestrates the perceive-think-act cycle for PROTO,
+ * integrating perception and reasoning modules to facilitate actions.
+ *
+ * The loop runs continuously, processing inputs, reasoning about them,
+ * and executing actions based on the outcomes of that reasoning.
  */
+
 class GraduationLoop {
-    constructor(eventBus, perception, reasoning, action) {
+    constructor(perceptionProcessor, stateManager, eventBus) {
+        this.perceptionProcessor = perceptionProcessor;
+        this.stateManager = stateManager;
         this.eventBus = eventBus;
-        this.perception = perception;
-        this.reasoning = reasoning;
-        this.action = action;
-        this.isRunning = false;
+        this.loopInterval = 100; // Interval time in milliseconds
     }
 
     /**
-     * Starts the Graduation Loop.
+     * Starts the loop, which runs indefinitely with set intervals.
      */
     start() {
-        if (this.isRunning) return;
-        this.isRunning = true;
         this.run();
     }
 
     /**
-     * Stops the Graduation Loop.
+     * Core loop method that manages the perceive-think-act cycle.
      */
-    stop() {
-        this.isRunning = false;
+    async run() {
+        while (true) {
+            try {
+                const signals = await this.perceptionProcessor.processSignals();
+                const decisions = this.stateManager.processSignals(signals);
+                this.eventBus.publish('decisionsMade', decisions);
+                await this.performActions(decisions);
+            } catch (error) {
+                console.error('Error in GraduationLoop:', error);
+                // Handle error appropriately
+            }
+            await this.sleep(this.loopInterval);
+        }
     }
 
     /**
-     * Main loop function that orchestrates the perceive → think → act cycle.
+     * Performs actions based on decisions made during the cycle.
+     * @param {Array} decisions - The decisions to be acted upon.
      */
-    run() {
-        if (!this.isRunning) return;
+    async performActions(decisions) {
+        for (const decision of decisions) {
+            // Implementation for performing actions based on decisions
+            console.log('Performing action for decision:', decision);
+            // Here we would invoke action methods based on decisions
+        }
+    }
 
-        // Step 1: Perceive
-        const perceptionData = this.perception.process();
-        this.eventBus.emit('perceptionData', perceptionData);
-
-        // Step 2: Think
-        const reasoningOutput = this.reasoning.process(perceptionData);
-        this.eventBus.emit('reasoningOutput', reasoningOutput);
-
-        // Step 3: Act
-        this.action.execute(reasoningOutput);
-
-        // Schedule the next run
-        setImmediate(() => this.run());
+    /**
+     * Sleep function for controlling the loop interval.
+     * @param {number} ms - Milliseconds to sleep.
+     * @returns {Promise} - Resolves after the specified time.
+     */
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 
