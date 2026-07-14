@@ -1,54 +1,59 @@
 /**
- * The PerceiveThinkActLoop class coordinates the loop of perception, reasoning, and action.
- * @class
+ * @module PerceiveThinkActLoop
+ * This module implements the perceive-think-act loop for PROTO.
  */
+
 class PerceiveThinkActLoop {
-    constructor(eventBus, moduleRegistry) {
+    constructor(eventBus, perceptionBridge, reasoningBridge) {
         this.eventBus = eventBus;
-        this.moduleRegistry = moduleRegistry;
-        this.isRunning = false;
+        this.perceptionBridge = perceptionBridge;
+        this.reasoningBridge = reasoningBridge;
     }
 
     /**
-     * Starts the loop.
-     * @returns {void}
+     * Runs the main loop which continuously processes perception and reasoning.
      */
-    start() {
-        if (this.isRunning) return;
-        this.isRunning = true;
-        this.loop();
+    run() {
+        this.perceive();
+        this.think();
+        this.act();
     }
 
     /**
-     * Stops the loop.
-     * @returns {void}
+     * Handles the perception phase, collecting events and signals.
      */
-    stop() {
-        this.isRunning = false;
+    perceive() {
+        const signals = this.perceptionBridge.getSignals();
+        this.eventBus.publish('signalsReceived', signals);
     }
 
     /**
-     * The main loop that handles perception, reasoning, and action.
-     * @returns {void}
+     * Handles the reasoning phase, applying reasoning based on received signals.
      */
-    loop() {
-        if (!this.isRunning) return;
+    think() {
+        const decisions = this.reasoningBridge.makeDecisions();
+        this.eventBus.publish('decisionsMade', decisions);
+    }
 
-        // Perception phase
-        const perceptionModule = this.moduleRegistry.get('perception');
-        const perceptions = perceptionModule.processInput();
+    /**
+     * Handles the action phase, executing decisions made during thinking.
+     */
+    act() {
+        this.eventBus.subscribe('decisionsMade', (decisions) => {
+            decisions.forEach(decision => {
+                this.executeDecision(decision);
+            });
+        });
+    }
 
-        // Reasoning phase
-        const reasoningModule = this.moduleRegistry.get('reasoning');
-        const decisions = reasoningModule.makeDecisions(perceptions);
-
-        // Action phase
-        const actionModule = this.moduleRegistry.get('action');
-        actionModule.performActions(decisions);
-
-        // Schedule the next iteration
-        setImmediate(() => this.loop());
+    /**
+     * Executes a given decision.
+     * @param {Object} decision - The decision to execute.
+     */
+    executeDecision(decision) {
+        // Implement action logic here based on decision
+        console.log(`Executing decision: ${JSON.stringify(decision)}`);
     }
 }
 
-module.exports = PerceiveThinkActLoop;
+export default PerceiveThinkActLoop;
