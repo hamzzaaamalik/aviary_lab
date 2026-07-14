@@ -1,36 +1,31 @@
 class Memory {
     constructor() {
-        this.storage = new Map();
+        this.store = {};
     }
 
     set(key, value) {
-        if (typeof key !== 'string') throw new Error('key must be a string');
-        this.storage.set(key, value);
+        this.store[key] = value;
     }
 
     get(key) {
-        return this.storage.get(key);
+        return this.store[key] || null;
     }
 
     has(key) {
-        return this.storage.has(key);
+        return key in this.store;
     }
 
     delete(key) {
-        return this.storage.delete(key);
+        if (this.has(key)) {
+            delete this.store[key];
+        }
     }
 
     clear() {
-        this.storage.clear();
-    }
-
-    keys() {
-        return Array.from(this.storage.keys());
-    }
-
-    values() {
-        return Array.from(this.storage.values());
+        this.store = {};
     }
 }
 
-export default Memory;
+const memory = new Memory();
+
+export default memory;
