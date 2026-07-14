@@ -1,68 +1,81 @@
 /**
- * Voting module for agent governance.
- * Handles proposals and manages the voting process among agents.
+ * Voting.js
+ * 
+ * This module handles the voting mechanism for agents to make collective decisions.
+ * It enables agents to propose options, vote on them, and tally the results.
+ * 
  * @module Voting
  */
 
 class Voting {
     constructor() {
-        this.votes = new Map();
-        this.threshold = 0.5; // default threshold for consensus
+        this.votes = {};
+        this.proposals = {};
     }
 
     /**
-     * Set the consensus threshold.
-     * @param {number} threshold - A number between 0 and 1 representing the consensus percentage.
+     * Create a new proposal for voting.
+     * 
+     * @param {string} proposalId - Unique identifier for the proposal.
+     * @param {string} description - Description of the proposal.
+     * @returns {boolean} - Returns true if proposal is created successfully.
      */
-    setThreshold(threshold) {
-        if (threshold < 0 || threshold > 1) {
-            throw new Error('Threshold must be between 0 and 1.');
+    createProposal(proposalId, description) {
+        if (this.proposals[proposalId]) {
+            throw new Error('Proposal already exists.');
         }
-        this.threshold = threshold;
+        this.proposals[proposalId] = { description, votes: [] };
+        return true;
     }
 
     /**
-     * Cast a vote for a given proposal.
-     * @param {string} agentId - The ID of the agent voting.
-     * @param {string} proposalId - The ID of the proposal being voted on.
-     * @param {boolean} support - Whether the vote supports the proposal.
+     * Cast a vote on a proposal.
+     * 
+     * @param {string} proposalId - Unique identifier for the proposal.
+     * @param {string} agentId - Unique identifier for the agent casting the vote.
+     * @param {boolean} vote - The vote (true for yes, false for no).
+     * @returns {boolean} - Returns true if the vote is cast successfully.
      */
-    castVote(agentId, proposalId, support) {
-        if (!this.votes.has(proposalId)) {
-            this.votes.set(proposalId, { support: 0, oppose: 0 });
+    castVote(proposalId, agentId, vote) {
+        if (!this.proposals[proposalId]) {
+            throw new Error('Proposal does not exist.');
         }
-        const proposalVotes = this.votes.get(proposalId);
-        if (support) {
-            proposalVotes.support += 1;
-        } else {
-            proposalVotes.oppose += 1;
+        if (this.votes[agentId]) {
+            throw new Error('Agent has already voted.');
         }
+        this.proposals[proposalId].votes.push({ agentId, vote });
+        this.votes[agentId] = { proposalId, vote };
+        return true;
     }
 
     /**
-     * Determine if a proposal has reached consensus.
-     * @param {string} proposalId - The ID of the proposal to check.
-     * @returns {boolean} - True if consensus is reached, false otherwise.
+     * Tally the votes for a proposal.
+     * 
+     * @param {string} proposalId - Unique identifier for the proposal.
+     * @returns {object} - Contains the count of yes and no votes.
      */
-    checkConsensus(proposalId) {
-        if (!this.votes.has(proposalId)) {
-            return false;
+    tallyVotes(proposalId) {
+        if (!this.proposals[proposalId]) {
+            throw new Error('Proposal does not exist.');
         }
-        const { support, oppose } = this.votes.get(proposalId);
-        const totalVotes = support + oppose;
-        if (totalVotes === 0) {
-            return false; // no votes yet
-        }
-        return (support / totalVotes) >= this.threshold;
+        const results = { yes: 0, no: 0 };
+        this.proposals[proposalId].votes.forEach(vote => {
+            if (vote.vote) {
+                results.yes++;
+            } else {
+                results.no++;
+            }
+        });
+        return results;
     }
 
     /**
-     * Get the current vote tally for a proposal.
-     * @param {string} proposalId - The ID of the proposal to retrieve votes for.
-     * @returns {Object} - An object containing support and oppose counts.
+     * Get all proposals.
+     * 
+     * @returns {object} - Returns all current proposals and their details.
      */
-    getTally(proposalId) {
-        return this.votes.get(proposalId) || { support: 0, oppose: 0 };
+    getProposals() {
+        return this.proposals;
     }
 }
 
