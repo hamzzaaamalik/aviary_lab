@@ -1,14 +1,13 @@
 /**
+ * CommissionIntake handles the intake of new commission requests.
+ * It validates inputs and stores valid requests in the queue for processing.
+ *
  * @module CommissionIntake
- * @description Handles the intake of commission requests, validating and queuing them for processing.
  */
 
 const CommissionQueue = require('./CommissionQueue');
 const { validateCommission } = require('../memeValidator');
 
-/**
- * Represents a commission intake processor.
- */
 class CommissionIntake {
     constructor() {
         this.queue = new CommissionQueue();
@@ -16,24 +15,26 @@ class CommissionIntake {
 
     /**
      * Intake a new commission request.
-     * @param {Object} commissionData - The commission request data.
-     * @returns {Promise<string>} - A message indicating the success of the operation.
-     * @throws {Error} - Throws an error if the commission data is invalid or if queuing fails.
+     * @param {Object} commissionData - The commission data.
+     * @param {string} commissionData.title - Title of the commission.
+     * @param {string} commissionData.description - Description of the commission.
+     * @param {string} commissionData.client - Client's name.
+     * @throws {Error} If the commission data is invalid.
      */
-    async intake(commissionData) {
-        // Validate the commission data
-        const validationResult = validateCommission(commissionData);
-        if (!validationResult.isValid) {
-            throw new Error(`Invalid commission data: ${validationResult.errors.join(', ')}`);
+    intake(commissionData) {
+        const validationErrors = validateCommission(commissionData);
+        if (validationErrors.length) {
+            throw new Error(`Validation errors: ${validationErrors.join(', ')}`);
         }
+        this.queue.enqueue(commissionData);
+    }
 
-        // Queue the commission request
-        try {
-            await this.queue.enqueue(commissionData);
-            return 'Commission request has been successfully queued.';
-        } catch (error) {
-            throw new Error('Failed to queue commission: ' + error.message);
-        }
+    /**
+     * Get the current state of the commission queue.
+     * @returns {Array} The current queue of commissions.
+     */
+    getQueueState() {
+        return this.queue.getQueue();
     }
 }
 
