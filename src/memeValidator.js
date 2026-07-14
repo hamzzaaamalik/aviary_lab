@@ -1,50 +1,43 @@
 /**
+ * Validates meme objects against specified rules.
+ * 
  * @module memeValidator
- * @description Validates meme data against predefined schemas.
  */
 
+const validFormats = ['image/png', 'image/jpeg', 'image/gif'];
+
 /**
- * Validates a meme object.
+ * Checks if the provided meme object is valid.
+ * 
  * @param {Object} meme - The meme object to validate.
- * @returns {boolean} - Returns true if valid, otherwise false.
+ * @param {string} meme.title - The title of the meme.
+ * @param {string} meme.imageUrl - The URL of the meme image.
+ * @param {string} meme.format - The image format of the meme.
+ * @throws {Error} Throws error if validation fails.
  */
 function validateMeme(meme) {
-    const schema = getMemeSchema();
-    const validationErrors = [];
-
-    // Validate required fields
-    if (!meme.title || typeof meme.title !== 'string') {
-        validationErrors.push('Title is required and must be a string.');
+    if (!meme.title || meme.title.length === 0) {
+        throw new Error('Meme must have a title.');
     }
-    if (!meme.content || typeof meme.content !== 'string') {
-        validationErrors.push('Content is required and must be a string.');
+    if (!isValidImageUrl(meme.imageUrl)) {
+        throw new Error('Invalid image URL.');
     }
-    if (!meme.styles || !Array.isArray(meme.styles)) {
-        validationErrors.push('Styles must be an array.');
+    if (!validFormats.includes(meme.format)) {
+        throw new Error(`Unsupported format: ${meme.format}.`);
     }
-
-    // Additional schema checks can be added here
-
-    if (validationErrors.length > 0) {
-        console.error('Validation errors:', validationErrors);
-        return false;
-    }
-    return true;
 }
 
 /**
- * Retrieves the meme schema.
- * @returns {Object} - The schema definition for memes.
+ * Checks if the URL is a valid image URL.
+ * 
+ * @param {string} url - The URL to check.
+ * @returns {boolean} True if URL is valid, false otherwise.
  */
-function getMemeSchema() {
-    return {
-        title: { required: true, type: 'string' },
-        content: { required: true, type: 'string' },
-        styles: { required: true, type: 'array' }
-    };
+function isValidImageUrl(url) {
+    const pattern = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif))$/;
+    return pattern.test(url);
 }
 
-/**
- * Expose the validation function.
- */
-module.exports = { validateMeme };
+module.exports = {
+    validateMeme,
+};
