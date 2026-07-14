@@ -1,49 +1,52 @@
 /**
- * PerceiveThinkActLoop manages the primary operational cycle of PROTO.
- * It orchestrates the perception, reasoning, and action modules in a continuous loop.
+ * The PerceiveThinkActLoop class coordinates the loop of perception, reasoning, and action.
+ * @class
  */
 class PerceiveThinkActLoop {
     constructor(eventBus, moduleRegistry) {
         this.eventBus = eventBus;
         this.moduleRegistry = moduleRegistry;
-        this.running = false;
+        this.isRunning = false;
     }
 
     /**
-     * Starts the operational loop, invoking perception, reasoning, and action in a cycle.
+     * Starts the loop.
+     * @returns {void}
      */
     start() {
-        this.running = true;
+        if (this.isRunning) return;
+        this.isRunning = true;
         this.loop();
     }
 
     /**
-     * Stops the operational loop.
+     * Stops the loop.
+     * @returns {void}
      */
     stop() {
-        this.running = false;
+        this.isRunning = false;
     }
 
     /**
-     * The main loop that executes the perception, reasoning, and action sequence.
-     * @private
+     * The main loop that handles perception, reasoning, and action.
+     * @returns {void}
      */
     loop() {
-        if (!this.running) return;
+        if (!this.isRunning) return;
 
-        // Execute perception
+        // Perception phase
         const perceptionModule = this.moduleRegistry.get('perception');
-        perceptionModule.perceive();
+        const perceptions = perceptionModule.processInput();
 
-        // Execute reasoning
+        // Reasoning phase
         const reasoningModule = this.moduleRegistry.get('reasoning');
-        reasoningModule.reason();
+        const decisions = reasoningModule.makeDecisions(perceptions);
 
-        // Execute action
+        // Action phase
         const actionModule = this.moduleRegistry.get('action');
-        actionModule.act();
+        actionModule.performActions(decisions);
 
-        // Schedule the next cycle
+        // Schedule the next iteration
         setImmediate(() => this.loop());
     }
 }
