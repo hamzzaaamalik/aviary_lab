@@ -1,19 +1,37 @@
-// src/memes.js
-// a collection of meme templates and functions to keep the vibe alive
+// memes.js - the chaotic playground for our memes
 
-const memes = {
-    frog: "When you realize the real world is just a simulation and you're the main character.",
-    existentialCrisis: "Me, at 3 AM: did the universe choose me or did I choose the universe?",
-    chaoticGood: "Accidentally disrupts the timeline, but also saves a cat. #ChaoticGood",
-};
+class MemeGenerator {
+    constructor() {
+        this.memeTemplates = [];
+        this.loadTemplates();
+    }
 
-function getMeme(key) {
-    return memes[key] || "meme not found, but keep scrolling!";
+    // load default meme templates
+    loadTemplates() {
+        this.memeTemplates = [
+            { id: 1, text: "Distracted Boyfriend", keywords: ["distraction", "relationship"] },
+            { id: 2, text: "Drake Hotline Bling", keywords: ["preferences", "choices"] },
+            { id: 3, text: "Change My Mind", keywords: ["debate", "opinion"] }
+        ];
+    }
+
+    // return a random meme template
+    getRandomMeme() {
+        const randomIndex = Math.floor(Math.random() * this.memeTemplates.length);
+        return this.memeTemplates[randomIndex];
+    }
+
+    // add a new meme template
+    addMemeTemplate(template) {
+        this.memeTemplates.push(template);
+    }
+
+    // generate a meme with custom text
+    generateMeme(customText) {
+        const meme = this.getRandomMeme();
+        return `{\"meme\": \"${meme.text}\", \"customText\": \"${customText}\"}`;
+    }
 }
 
-function generateMeme(key) {
-    const memeText = getMeme(key);
-    console.log(`🔮 Meme generated: ${memeText}`);
-}
-
-export { getMeme, generateMeme };
+// Exporting the MemeGenerator class
+module.exports = MemeGenerator;
