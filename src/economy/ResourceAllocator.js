@@ -1,81 +1,77 @@
 /**
- * ResourceAllocator class manages the allocation of resources within the system.
- * It maintains a budget and ensures that resources are allocated efficiently and effectively.
- * @class ResourceAllocator
+ * ResourceAllocator manages the allocation of resources based on budgeting policies.
+ * It ensures efficient utilization of resources while adhering to defined constraints.
  */
 class ResourceAllocator {
     constructor() {
-        /**
-         * @type {number}
-         * @private
-         */
-        this.budget = 0;
-
-        /**
-         * @type {Object<string, number>}
-         * @private
-         */
         this.resources = {};
+        this.budgets = {};
     }
 
     /**
-     * Sets the total budget available for allocation.
-     * @param {number} amount - The amount to set as budget.
+     * Sets the budget for a given resource type.
+     * @param {string} resourceType - The type of resource to budget.
+     * @param {number} amount - The budgeted amount for the resource.
+     * @throws {Error} Throws error if the budget amount is negative.
      */
-    setBudget(amount) {
-        if (amount < 0) throw new Error('Budget cannot be negative.');
-        this.budget = amount;
+    setBudget(resourceType, amount) {
+        if (amount < 0) {
+            throw new Error('Budget amount cannot be negative.');
+        }
+        this.budgets[resourceType] = amount;
     }
 
     /**
-     * Adds resources to the allocator.
-     * @param {string} resourceName - The name of the resource.
-     * @param {number} quantity - The quantity of the resource to add.
+     * Allocates resources based on the current budget and available resources.
+     * @param {string} resourceType - The type of resource to allocate.
+     * @param {number} requested - The amount of resource requested.
+     * @returns {number} - The allocated amount of resources.
+     * @throws {Error} Throws error if requested amount exceeds the budget.
      */
-    addResource(resourceName, quantity) {
-        if (quantity < 0) throw new Error('Resource quantity cannot be negative.');
-        this.resources[resourceName] = (this.resources[resourceName] || 0) + quantity;
-    }
+    allocateResources(resourceType, requested) {
+        const budget = this.budgets[resourceType] || 0;
+        const available = this.resources[resourceType] || 0;
 
-    /**
-     * Allocates resources based on the provided request.
-     * @param {Object<string, number>} request - A mapping of resource names to requested quantities.
-     * @returns {Object<string, number>} - The allocated resources.
-     */
-    allocateResources(request) {
-        const allocation = {};
-        let totalRequested = 0;
-
-        for (const [resourceName, quantity] of Object.entries(request)) {
-            if (this.resources[resourceName] < quantity) {
-                throw new Error(`Insufficient resource: ${resourceName}`);
-            }
-            totalRequested += quantity;
-            allocation[resourceName] = quantity;
-            this.resources[resourceName] -= quantity;
+        if (requested > budget) {
+            throw new Error('Requested resource exceeds the budget.');
+        }
+        if (requested > available) {
+            requested = available;
         }
 
-        if (totalRequested > this.budget) {
-            throw new Error('Budget exceeded. Allocation failed.');
+        this.resources[resourceType] -= requested;
+        return requested;
+    }
+
+    /**
+     * Adds resources of a specific type.
+     * @param {string} resourceType - The type of resource to add.
+     * @param {number} amount - The amount of resources to add.
+     * @throws {Error} Throws error if the amount is negative.
+     */
+    addResources(resourceType, amount) {
+        if (amount < 0) {
+            throw new Error('Cannot add negative resources.');
         }
-
-        return allocation;
+        this.resources[resourceType] = (this.resources[resourceType] || 0) + amount;
     }
 
     /**
-     * Returns the current budget.
-     * @returns {number} - The current budget.
+     * Gets the current budget for a given resource type.
+     * @param {string} resourceType - The type of resource.
+     * @returns {number} - The current budget for the resource type.
      */
-    getBudget() {
-        return this.budget;
+    getBudget(resourceType) {
+        return this.budgets[resourceType] || 0;
     }
 
     /**
-     * Returns the current state of resources.
-     * @returns {Object<string, number>} - The current resources available.
+     * Gets the current available resources for a given type.
+     * @param {string} resourceType - The type of resource.
+     * @returns {number} - The available amount of resources.
      */
-    getResources() {
-        return this.resources;
+    getAvailableResources(resourceType) {
+        return this.resources[resourceType] || 0;
     }
 }
 
