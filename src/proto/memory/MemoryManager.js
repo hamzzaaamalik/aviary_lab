@@ -1,59 +1,59 @@
 /**
- * MemoryManager class handles the organization and retrieval of memories in PROTO.
- * It facilitates efficient storage and recall processes, allowing PROTO to learn from past experiences.
+ * MemoryManager handles the organization and management of memory storage,
+ * allowing efficient retrieval and storage of memories.
  *
- * @class MemoryManager
+ * @class
  */
 class MemoryManager {
+    /**
+     * Creates an instance of MemoryManager.
+     */
     constructor() {
-        this.longTermMemories = new Map();  // Stores long-term memories by ID
-        this.recentMemories = [];  // Stores recent memories for quick access
+        this.memory = new Map(); // Memory storage as key-value pairs
     }
 
     /**
-     * Adds a new memory to the system.
+     * Stores a memory with a unique identifier.
+     *
      * @param {string} id - Unique identifier for the memory.
-     * @param {Object} memory - The memory object to be stored.
-     * @throws Will throw an error if the memory ID already exists.
+     * @param {object} data - Data to be stored in memory.
+     * @throws {Error} Throws an error if the id already exists.
      */
-    addMemory(id, memory) {
-        if (this.longTermMemories.has(id)) {
-            throw new Error(`Memory with ID ${id} already exists.`);
+    storeMemory(id, data) {
+        if (this.memory.has(id)) {
+            throw new Error('Memory id already exists.');
         }
-        this.longTermMemories.set(id, memory);
-        this.recentMemories.push(memory);
-        this.trimRecentMemories(); // Keep recent memories limited to a reasonable size
+        this.memory.set(id, data);
     }
 
     /**
-     * Retrieves a memory based on its ID.
-     * @param {string} id - The unique identifier of the memory.
-     * @returns {Object|null} - The memory object or null if not found.
+     * Retrieves a memory by its unique identifier.
+     *
+     * @param {string} id - Unique identifier for the memory.
+     * @returns {object|null} The memory data or null if not found.
      */
-    getMemory(id) {
-        return this.longTermMemories.get(id) || null;
+    retrieveMemory(id) {
+        return this.memory.get(id) || null;
     }
 
     /**
-     * Trims the recent memories array to keep it at a manageable size.
-     * If the size exceeds 100, the oldest memories are removed.
+     * Removes a memory from storage by its unique identifier.
+     *
+     * @param {string} id - Unique identifier for the memory.
+     * @throws {Error} Throws an error if the id does not exist.
      */
-    trimRecentMemories() {
-        if (this.recentMemories.length > 100) {
-            this.recentMemories.shift();  // Remove the oldest memory
+    removeMemory(id) {
+        if (!this.memory.has(id)) {
+            throw new Error('Memory id does not exist.');
         }
+        this.memory.delete(id);
     }
 
     /**
-     * Recalls recent memories, optionally filtered by a specific criterion.
-     * @param {Function} filterFn - Optional filter function to apply to memories.
-     * @returns {Array} - Array of recalled memories matching the filter.
+     * Clears all memory storage.
      */
-    recallRecentMemories(filterFn) {
-        if (filterFn) {
-            return this.recentMemories.filter(filterFn);
-        }
-        return this.recentMemories;
+    clearMemory() {
+        this.memory.clear();
     }
 }
 
