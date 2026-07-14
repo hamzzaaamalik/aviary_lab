@@ -1,28 +1,27 @@
-class MemeGenerator {
-    constructor() {
-        this.templates = [];
-    }
+// src/memes.js
 
-    addTemplate(template) {
-        if (typeof template !== 'string' || template.trim() === '') {
-            throw new Error('Invalid template');
-        }
-        this.templates.push(template);
-    }
+// a collection of meme functions to bring joy and chaos to the world
 
-    generateMeme(context) {
-        if (this.templates.length === 0) {
-            throw new Error('No templates available');
-        }
-        const template = this.templates[Math.floor(Math.random() * this.templates.length)];
-        return this.applyContextToTemplate(template, context);
-    }
-
-    applyContextToTemplate(template, context) {
-        return template.replace(/\{(\w+)\}/g, (match, key) => {
-            return context[key] || match;
-        });
-    }
+// function to generate a classic doge meme
+function createDogeMeme(text) {
+    return `much wow, ${text} such meme!`;
 }
 
-export default MemeGenerator;
+// function to fetch a random frog meme
+function getRandomFrogMeme() {
+    const frogs = [
+        'froggo derp',
+        'pepe the frog',
+        'dat boi',
+        'this is fine frog'
+    ];
+    return frogs[Math.floor(Math.random() * frogs.length)];
+}
+
+// function to create a personalized meme
+function generateMeme(name, phrase) {
+    return `${name} says: ${phrase}. That's a certified meme!`;
+}
+
+// export the meme functions for use in other modules
+module.exports = { createDogeMeme, getRandomFrogMeme, generateMeme };
