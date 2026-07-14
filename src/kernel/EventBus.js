@@ -1,81 +1,45 @@
 /**
- * EventBus — a minimal, dependency-free typed publish/subscribe bus.
- *
- * The kernel and every PROTO faculty communicate through this bus rather than by holding direct
- * references, so modules stay decoupled and independently testable. Handler invocation is
- * isolated: one handler that throws never prevents the others from running.
+ * EventBus is responsible for pub/sub pattern to facilitate communication
+ * between various modules in the graduation system.
+ * @class EventBus
  */
-export class EventBus {
-  constructor() {
-    /** @type {Map<string, Set<Function>>} */
-    this._handlers = new Map();
-    /** @type {Array<(err: Error, type: string) => void>} */
-    this._onError = [];
-  }
-
-  /**
-   * Subscribe to an event.
-   * @param {string} type
-   * @param {(payload: any) => void} handler
-   * @returns {() => void} an unsubscribe function
-   */
-  on(type, handler) {
-    if (typeof handler !== 'function') throw new TypeError('handler must be a function');
-    let set = this._handlers.get(type);
-    if (!set) this._handlers.set(type, (set = new Set()));
-    set.add(handler);
-    return () => this.off(type, handler);
-  }
-
-  /**
-   * Subscribe to only the next occurrence of an event.
-   * @param {string} type
-   * @param {(payload: any) => void} handler
-   * @returns {() => void} an unsubscribe function
-   */
-  once(type, handler) {
-    const wrap = (payload) => { this.off(type, wrap); handler(payload); };
-    return this.on(type, wrap);
-  }
-
-  /**
-   * Remove a handler. No-op if it was never registered.
-   * @param {string} type
-   * @param {Function} handler
-   */
-  off(type, handler) {
-    const set = this._handlers.get(type);
-    if (set && set.delete(handler) && set.size === 0) this._handlers.delete(type);
-  }
-
-  /**
-   * Emit an event to every subscriber.
-   * @param {string} type
-   * @param {any} [payload]
-   * @returns {number} how many handlers were invoked
-   */
-  emit(type, payload) {
-    const set = this._handlers.get(type);
-    if (!set) return 0;
-    let invoked = 0;
-    for (const handler of [...set]) {
-      try { handler(payload); invoked++; }
-      catch (err) { this._reportError(err, type); }
+class EventBus {
+    constructor() {
+        this.listeners = {};
     }
-    return invoked;
-  }
 
-  /** @param {(err: Error, type: string) => void} fn a listener for handler errors */
-  onError(fn) { this._onError.push(fn); }
+    /**
+     * Subscribe to an event type with the provided callback.
+     * @param {string} eventType - The type of event to subscribe to.
+     * @param {Function} callback - The function to call when the event occurs.
+     */
+    subscribe(eventType, callback) {
+        if (!this.listeners[eventType]) {
+            this.listeners[eventType] = [];
+        }
+        this.listeners[eventType].push(callback);
+    }
 
-  /** @returns {number} the number of handlers registered for a type */
-  listenerCount(type) { return this._handlers.get(type)?.size ?? 0; }
+    /**
+     * Unsubscribe from an event type with the provided callback.
+     * @param {string} eventType - The type of event to unsubscribe from.
+     * @param {Function} callback - The function to remove from the listeners.
+     */
+    unsubscribe(eventType, callback) {
+        if (!this.listeners[eventType]) return;
+        this.listeners[eventType] = this.listeners[eventType].filter(listener => listener !== callback);
+    }
 
-  /** Remove all handlers — used on shutdown or reset. */
-  clear() { this._handlers.clear(); }
-
-  _reportError(err, type) {
-    if (this._onError.length === 0) { console.error(`[EventBus] handler for "${type}" threw:`, err); return; }
-    for (const fn of this._onError) { try { fn(err, type); } catch { /* never let error reporting throw */ } }
-  }
+    /**
+     * Publish an event of the specified type, invoking all subscribed callbacks.
+     * @param {string} eventType - The type of event to publish.
+     * @param {...*} args - The arguments to pass to the event callbacks.
+     */
+    publish(eventType, ...args) {
+        if (!this.listeners[eventType]) return;
+        this.listeners[eventType].forEach(callback => callback(...args));
+    }
 }
+
+// Export the EventBus for external use
+export default EventBus;
