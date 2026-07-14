@@ -1,64 +1,54 @@
 /**
- * InputAdapter class for handling and processing different input signals.
- * This module serves as an interface for various input sources and
- * translates raw input into a structured percept format.
+ * InputAdapter class for receiving and processing input events.
+ * Validates inputs and transforms them into a structured format for further processing.
  *
- * @class InputAdapter
+ * @class
  */
 class InputAdapter {
+    /**
+     * Creates an instance of InputAdapter.
+     */
     constructor() {
-        this.inputSources = new Map();
+        this.inputs = [];
     }
 
     /**
-     * Registers a new input source.
-     * @param {string} sourceId - Unique identifier for the input source.
-     * @param {Function} handler - Function to process the input from this source.
+     * Validates the input format and enqueues it if valid.
+     * @param {Object} input - The input object to validate.
+     * @returns {boolean} - Returns true if the input is valid, otherwise false.
      */
-    registerSource(sourceId, handler) {
-        if (this.inputSources.has(sourceId)) {
-            throw new Error(`Input source ${sourceId} is already registered.`);
+    validateInput(input) {
+        if (!input || typeof input !== 'object') {
+            return false;
         }
-        this.inputSources.set(sourceId, handler);
-    }
-
-    /**
-     * Unregisters an existing input source.
-     * @param {string} sourceId - Unique identifier for the input source.
-     */
-    unregisterSource(sourceId) {
-        if (!this.inputSources.has(sourceId)) {
-            throw new Error(`Input source ${sourceId} does not exist.`);
+        if (!input.type || !input.payload) {
+            return false;
         }
-        this.inputSources.delete(sourceId);
+        // Add more specific validations as needed
+        return true;
     }
 
     /**
-     * Processes input from registered sources and transforms it into
-     * percepts, then emits an event for further processing.
-     * @param {string} sourceId - Unique identifier for the input source.
-     * @param {any} rawInput - The raw input data from the source.
+     * Processes a new input event and enqueues it if valid.
+     * @param {Object} input - The input event to process.
+     * @returns {void}
      */
-    processInput(sourceId, rawInput) {
-        if (!this.inputSources.has(sourceId)) {
-            throw new Error(`Input source ${sourceId} is not registered.`);
+    processInput(input) {
+        if (this.validateInput(input)) {
+            this.inputs.push(input);
+            console.log('Input added:', input);
+        } else {
+            console.error('Invalid input:', input);
         }
-        const handler = this.inputSources.get(sourceId);
-        const percept = handler(rawInput);
-
-        // Emit an event for further processing
-        this.emitPercept(percept);
     }
 
     /**
-     * Emits a percept for further processing by other modules.
-     * @param {object} percept - The percept object to emit.
+     * Retrieves all processed inputs.
+     * @returns {Array} - An array of processed inputs.
      */
-    emitPercept(percept) {
-        // Placeholder for event emission logic
-        // This would typically interact with the EventBus or similar
-        console.log('Emitting percept:', percept);
+    getInputs() {
+        return this.inputs;
     }
 }
 
-export default InputAdapter;
+module.exports = InputAdapter;
