@@ -1,69 +1,65 @@
 /**
- * AgentLifecycle manages the state transitions and lifecycle events of agents.
- * It provides hooks for initialization, activation, and termination of agents.
+ * Class representing the lifecycle of an agent.
  */
 class AgentLifecycle {
-    constructor() {
-        this.agents = new Map(); // Stores agents by their ID
+    /**
+     * Create an agent lifecycle.
+     * @param {string} id - Unique identifier for the agent.
+     */
+    constructor(id) {
+        this.id = id;
+        this.state = 'initialized'; // possible states: initialized, active, inactive, terminated
+        this.createdAt = new Date();
     }
 
     /**
-     * Registers a new agent in the lifecycle.
-     * @param {string} agentId - Unique identifier for the agent.
-     * @param {object} agent - The agent instance.
+     * Activate the agent, transitioning to 'active' state.
+     * @throws {Error} Throws an error if the agent is already active.
      */
-    registerAgent(agentId, agent) {
-        if (this.agents.has(agentId)) {
-            throw new Error(`Agent with ID ${agentId} is already registered.`);
+    activate() {
+        if (this.state === 'active') {
+            throw new Error(`Agent ${this.id} is already active.`);
         }
-        this.agents.set(agentId, agent);
-        this.initializeAgent(agentId);
+        this.state = 'active';
     }
 
     /**
-     * Initializes the agent's lifecycle by triggering its start methods.
-     * @param {string} agentId - Unique identifier for the agent.
+     * Deactivate the agent, transitioning to 'inactive' state.
+     * @throws {Error} Throws an error if the agent is already inactive.
      */
-    initializeAgent(agentId) {
-        const agent = this.agents.get(agentId);
-        if (agent && typeof agent.start === 'function') {
-            agent.start();
+    deactivate() {
+        if (this.state === 'inactive') {
+            throw new Error(`Agent ${this.id} is already inactive.`);
         }
+        this.state = 'inactive';
     }
 
     /**
-     * Activates the agent, allowing it to process its tasks.
-     * @param {string} agentId - Unique identifier for the agent.
+     * Terminate the agent, transitioning to 'terminated' state.
+     * @throws {Error} Throws an error if the agent is already terminated.
      */
-    activateAgent(agentId) {
-        const agent = this.agents.get(agentId);
-        if (agent && typeof agent.activate === 'function') {
-            agent.activate();
+    terminate() {
+        if (this.state === 'terminated') {
+            throw new Error(`Agent ${this.id} is already terminated.`);
         }
+        this.state = 'terminated';
     }
 
     /**
-     * Deactivates the agent, halting its operations.
-     * @param {string} agentId - Unique identifier for the agent.
+     * Get the current state of the agent.
+     * @returns {string} The current state of the agent.
      */
-    deactivateAgent(agentId) {
-        const agent = this.agents.get(agentId);
-        if (agent && typeof agent.deactivate === 'function') {
-            agent.deactivate();
-        }
+    getState() {
+        return this.state;
     }
 
     /**
-     * Unregisters the agent from the lifecycle, cleaning up resources.
-     * @param {string} agentId - Unique identifier for the agent.
+     * Get the creation timestamp of the agent.
+     * @returns {Date} The creation date of the agent.
      */
-    unregisterAgent(agentId) {
-        if (!this.agents.has(agentId)) {
-            throw new Error(`Agent with ID ${agentId} is not registered.`);
-        }
-        this.deactivateAgent(agentId);
-        this.agents.delete(agentId);
+    getCreationTime() {
+        return this.createdAt;
     }
 }
 
-export default AgentLifecycle;
+module.exports = AgentLifecycle;
