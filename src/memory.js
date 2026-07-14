@@ -1,30 +1,36 @@
 class Memory {
     constructor() {
-        this.storage = {};
+        this.storage = new Map();
     }
 
     set(key, value) {
-        this.storage[key] = value;
+        if (typeof key !== 'string') throw new Error('key must be a string');
+        this.storage.set(key, value);
     }
 
     get(key) {
-        return this.storage[key] || null;
+        return this.storage.get(key);
     }
 
-    remove(key) {
-        delete this.storage[key];
+    has(key) {
+        return this.storage.has(key);
+    }
+
+    delete(key) {
+        return this.storage.delete(key);
     }
 
     clear() {
-        this.storage = {};
+        this.storage.clear();
     }
 
     keys() {
-        return Object.keys(this.storage);
+        return Array.from(this.storage.keys());
+    }
+
+    values() {
+        return Array.from(this.storage.values());
     }
 }
 
-const memory = new Memory();
-
-// Exporting the memory instance for use in other modules.
-export default memory;
+export default Memory;
