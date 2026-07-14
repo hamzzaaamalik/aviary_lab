@@ -1,63 +1,51 @@
 /**
- * WorldOrchestrator orchestrates the interaction of various modules within the ecosystem.
- * This includes managing agents, resources, and decision-making processes in a cohesive manner.
+ * WorldOrchestrator orchestrates the various components of the world environment,
+ * ensuring seamless interactions between agents, governance protocols, and the economy.
+ * This is the core engine driving "The Aviary" milestone.
  *
  * @module WorldOrchestrator
- * @class
  */
+
 class WorldOrchestrator {
-    constructor() {
-        this.agents = [];
-        this.resources = new Map();
-        this.votingSystem = null;
+    constructor(agentManager, governanceManager, economyManager) {
+        this.agentManager = agentManager;
+        this.governanceManager = governanceManager;
+        this.economyManager = economyManager;
     }
 
     /**
-     * Initializes the orchestrator with necessary components.
-     * @param {Array} agentsList - Array of agents to be managed.
-     * @param {Object} votingSystem - Instance of the voting system.
+     * Initialize the world, setting up necessary components for operation.
+     * @returns {void}
      */
-    initialize(agentsList, votingSystem) {
-        this.agents = agentsList;
-        this.votingSystem = votingSystem;
-        this.setupResources();
+    initialize() {
+        this.agentManager.initializeAgents();
+        this.governanceManager.initializeProposals();
+        this.economyManager.initializeResources();
     }
 
     /**
-     * Sets up initial resources for the world.
-     */
-    setupResources() {
-        this.resources.set('energy', 1000);
-        this.resources.set('food', 500);
-    }
-
-    /**
-     * Main loop that drives the orchestration of the world.
+     * Run the main orchestration loop, coordinating agent actions,
+     * governance decisions, and economic transactions.
+     * @returns {void}
      */
     run() {
-        this.agents.forEach(agent => {
-            agent.performActions(this.resources);
-        });
-        this.votingSystem.processVotes();
-        this.updateResources();
+        setInterval(() => {
+            this.agentManager.executeAgentActions();
+            this.governanceManager.processVotes();
+            this.economyManager.allocateResources();
+            this.checkWorldState();
+        }, 1000); // Execute loop every second
     }
 
     /**
-     * Updates resources based on the actions performed by agents.
+     * Check and log the current state of the world.
+     * @returns {void}
      */
-    updateResources() {
-        this.resources.forEach((value, key) => {
-            // Placeholder for resource management logic
-            this.resources.set(key, value - Math.random() * 10);
-        });
-    }
-
-    /**
-     * Retrieves the current state of resources.
-     * @returns {Object} - Current resource state.
-     */
-    getResources() {
-        return Object.fromEntries(this.resources);
+    checkWorldState() {
+        console.log('Current world state:');
+        // Add logic to gather and print current status of agents, resources, etc.
+        this.agentManager.logAgentStates();
+        this.economyManager.logResourceStatus();
     }
 }
 
