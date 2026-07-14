@@ -1,66 +1,71 @@
 /**
- * OpenFramework class to facilitate the creation and management of extensions.
- * This class provides a structured way for developers to register and interact with plugins,
- * ensuring compatibility and ease of integration.
+ * OpenFramework - A toolkit for integrating with PROTO's core functionalities.
+ * This module provides the necessary interfaces and utility functions for developers
+ * to build upon the existing capabilities of PROTO.
+ *
+ * @module OpenFramework
  */
+
 class OpenFramework {
+    /**
+     * Constructs an instance of OpenFramework.
+     * @constructor
+     */
     constructor() {
-        this.plugins = new Map();
+        this.modules = {};
     }
 
     /**
-     * Registers a new plugin with the given name and implementation.
-     * @param {string} name - The unique name of the plugin.
-     * @param {Object} implementation - The implementation object for the plugin.
-     * @throws {Error} If the plugin name already exists.
+     * Registers a new module into the OpenFramework.
+     * @param {string} name - The name of the module.
+     * @param {Object} module - The module object containing functionalities.
+     * @throws {Error} Throws an error if the module is already registered.
      */
-    registerPlugin(name, implementation) {
-        if (this.plugins.has(name)) {
-            throw new Error(`Plugin ${name} is already registered.`);
+    registerModule(name, module) {
+        if (this.modules[name]) {
+            throw new Error(`Module ${name} is already registered.`);
         }
-        this.plugins.set(name, implementation);
-        console.log(`Plugin ${name} registered successfully.`);
+        this.modules[name] = module;
     }
 
     /**
-     * Unregisters a plugin by its name.
-     * @param {string} name - The name of the plugin to unregister.
-     * @throws {Error} If the plugin does not exist.
+     * Retrieves a registered module by its name.
+     * @param {string} name - The name of the module to retrieve.
+     * @returns {Object} The registered module object.
+     * @throws {Error} Throws an error if the module is not found.
      */
-    unregisterPlugin(name) {
-        if (!this.plugins.has(name)) {
-            throw new Error(`Plugin ${name} does not exist.`);
+    getModule(name) {
+        const module = this.modules[name];
+        if (!module) {
+            throw new Error(`Module ${name} not found.`);
         }
-        this.plugins.delete(name);
-        console.log(`Plugin ${name} unregistered successfully.`);
+        return module;
     }
 
     /**
-     * Executes a method on all registered plugins.
-     * @param {string} methodName - The method to call on each plugin.
-     * @param {...any} args - The arguments to pass to the method.
-     * @returns {Array} - Array of results from each plugin's method call.
+     * Invokes a function from a registered module.
+     * @param {string} moduleName - The name of the module.
+     * @param {string} functionName - The function to invoke.
+     * @param {...*} args - The arguments to pass to the function.
+     * @returns {*} The result of the function invocation.
+     * @throws {Error} Throws an error if the module or function is not found.
      */
-    executeMethodOnPlugins(methodName, ...args) {
-        const results = [];
-        this.plugins.forEach((plugin, name) => {
-            if (typeof plugin[methodName] === 'function') {
-                results.push(plugin[methodName](...args));
-            } else {
-                console.warn(`Plugin ${name} does not have method ${methodName}.`);
-            }
-        });
-        return results;
+    invoke(moduleName, functionName, ...args) {
+        const module = this.getModule(moduleName);
+        if (typeof module[functionName] !== 'function') {
+            throw new Error(`Function ${functionName} not found in module ${moduleName}.`);
+        }
+        return module[functionName](...args);
     }
 
     /**
-     * Retrieves a registered plugin by its name.
-     * @param {string} name - The name of the plugin to retrieve.
-     * @returns {Object|null} - The plugin implementation or null if not found.
+     * Lists all registered modules.
+     * @returns {Array} An array of module names.
      */
-    getPlugin(name) {
-        return this.plugins.get(name) || null;
+    listModules() {
+        return Object.keys(this.modules);
     }
 }
 
-export default OpenFramework;
+// Exporting the OpenFramework class for external use
+module.exports = OpenFramework;
