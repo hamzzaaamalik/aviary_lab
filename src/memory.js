@@ -1,34 +1,31 @@
-// src/memory.js
+class Memory {
+    constructor() {
+        this.storage = new Map();
+    }
 
-const MemoryBank = (() => {
-    const memories = {};
+    set(key, value) {
+        this.storage.set(key, value);
+    }
 
-    const addMemory = (key, value) => {
-        memories[key] = value;
-        console.log(`Memory added: ${key} -> ${value}`);
-    };
+    get(key) {
+        return this.storage.get(key);
+    }
 
-    const retrieveMemory = (key) => {
-        if (memories[key]) {
-            console.log(`Memory retrieved: ${key} -> ${memories[key]}`);
-            return memories[key];
-        } else {
-            console.log(`No memory found for: ${key}`);
-            return null;
-        }
-    };
+    has(key) {
+        return this.storage.has(key);
+    }
 
-    const listMemories = () => {
-        console.log('Current memories:', memories);
-        return memories;
-    };
+    delete(key) {
+        return this.storage.delete(key);
+    }
 
-    return {
-        addMemory,
-        retrieveMemory,
-        listMemories,
-    };
-})();
+    clear() {
+        this.storage.clear();
+    }
 
-// Export MemoryBank for use in other modules
-export default MemoryBank;
+    snapshot() {
+        return Array.from(this.storage.entries());
+    }
+}
+
+export default Memory;
