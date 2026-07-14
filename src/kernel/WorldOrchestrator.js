@@ -1,75 +1,53 @@
 /**
- * WorldOrchestrator - Coordinates the various aspects of the living world.
- *
- * Handles interactions between agents, economy, governance, and proto modules.
- * Provides a central loop for world state updates and event propagation.
- *
- * @module WorldOrchestrator
+ * WorldOrchestrator orchestrates the overall operation of the living world.
+ * It coordinates agent interactions, manages event propagation, and maintains world state.
  */
-
 class WorldOrchestrator {
     constructor() {
-        this.agents = [];
-        this.economy = null;
-        this.governance = null;
+        this.agents = new Map();
+        this.eventBus = new EventBus();
     }
 
     /**
-     * Initializes the orchestrator with necessary components.
-     *
-     * @param {Object} config - Configuration object containing the necessary modules.
-     * @param {Array} agents - An array of agent instances to be managed.
+     * Register a new agent in the world.
+     * @param {Agent} agent - The agent to register.
      */
-    initialize(config, agents) {
-        this.economy = config.economy;
-        this.governance = config.governance;
-        this.agents = agents;
-    }
-
-    /**
-     * Main loop for the world orchestrator, updates all components.
-     *
-     * @param {number} deltaTime - Time elapsed since the last update.
-     */
-    update(deltaTime) {
-        this.updateAgents(deltaTime);
-        this.economy.update(deltaTime);
-        this.governance.update(deltaTime);
-    }
-
-    /**
-     * Updates agent states and actions based on the current world context.
-     *
-     * @param {number} deltaTime - Time elapsed since the last update.
-     */
-    updateAgents(deltaTime) {
-        for (const agent of this.agents) {
-            agent.update(deltaTime);
+    registerAgent(agent) {
+        if (!(agent.id in this.agents)) {
+            this.agents.set(agent.id, agent);
+            this.eventBus.subscribe(agent);
         }
     }
 
     /**
-     * Sends a message to all agents in the world.
-     *
-     * @param {string} message - The message to send.
+     * Unregister an agent from the world.
+     * @param {string} agentId - The ID of the agent to unregister.
      */
-    broadcastMessage(message) {
-        for (const agent of this.agents) {
-            agent.receiveMessage(message);
+    unregisterAgent(agentId) {
+        if (this.agents.has(agentId)) {
+            const agent = this.agents.get(agentId);
+            this.eventBus.unsubscribe(agent);
+            this.agents.delete(agentId);
         }
     }
 
     /**
-     * Returns the current state of the world for inspection.
-     *
-     * @returns {Object} - The current state of the world.
+     * Process a tick in the world, updating agents and broadcasting events.
      */
-    getState() {
-        return {
-            agents: this.agents.map(agent => agent.getState()),
-            economy: this.economy.getState(),
-            governance: this.governance.getState()
-        };
+    tick() {
+        for (const agent of this.agents.values()) {
+            agent.update();
+        }
+        const events = this.eventBus.getPendingEvents();
+        this.eventBus.publish(events);
+    }
+
+    /**
+     * Retrieve the current state of all registered agents.
+     * @returns {Array} - An array of agents' states.
+     */
+    getAgentsState() {
+        return Array.from(this.agents.values()).map(agent => agent.getState());
     }
 }
 
