@@ -1,52 +1,67 @@
-// WorkReceipt.js
-// A module for creating and verifying work receipts for completed tasks.
-
+/**
+ * Class representing a work receipt.
+ */
 class WorkReceipt {
     /**
+     * Create a work receipt.
      * @param {string} id - Unique identifier for the receipt.
-     * @param {string} workerId - Identifier for the worker completing the task.
-     * @param {string} taskId - Identifier for the task.
-     * @param {Date} timestamp - Timestamp of when the task was completed.
-     * @param {Object} details - Additional details about the work completed.
+     * @param {string} workId - Identifier of the related work.
+     * @param {Date} timestamp - Time when the work was completed.
+     * @param {Object} proof - Proof of work completion.
      */
-    constructor(id, workerId, taskId, timestamp, details) {
+    constructor(id, workId, timestamp, proof) {
         this.id = id;
-        this.workerId = workerId;
-        this.taskId = taskId;
+        this.workId = workId;
         this.timestamp = timestamp;
-        this.details = details;
+        this.proof = proof;
+        this.validate();
     }
 
     /**
-     * Generates a unique hash for the receipt based on its properties.
-     * @returns {string} - A hashed value representing the receipt.
+     * Validate receipt properties.
+     * @throws {Error} If validation fails.
      */
-    generateHash() {
-        const data = `${this.id}${this.workerId}${this.taskId}${this.timestamp}${JSON.stringify(this.details)}`;
-        return this._hash(data);
-    }
-
-    /**
-     * Simple hash function for demonstration. In a real application, use a robust hashing algorithm.
-     * @param {string} data - Data to hash.
-     * @returns {string} - Hashed representation of the data.
-     */
-    _hash(data) {
-        let hash = 0;
-        for (let i = 0; i < data.length; i++) {
-            hash = (hash << 5) - hash + data.charCodeAt(i);
-            hash |= 0;  // Convert to 32bit integer
+    validate() {
+        if (!this.id || typeof this.id !== 'string') {
+            throw new Error('Invalid receipt id.');
         }
-        return hash.toString();
+        if (!this.workId || typeof this.workId !== 'string') {
+            throw new Error('Invalid work id.');
+        }
+        if (!(this.timestamp instanceof Date)) {
+            throw new Error('Invalid timestamp.');
+        }
+        if (typeof this.proof !== 'object' || this.proof === null) {
+            throw new Error('Invalid proof object.');
+        }
     }
 
     /**
-     * Validates the receipt to ensure all required fields are present.
-     * @returns {boolean} - True if valid, false otherwise.
+     * Convert the work receipt to a JSON object.
+     * @returns {Object} JSON representation of the receipt.
      */
-    isValid() {
-        return !!(this.id && this.workerId && this.taskId && this.timestamp);
+    toJSON() {
+        return {
+            id: this.id,
+            workId: this.workId,
+            timestamp: this.timestamp.toISOString(),
+            proof: this.proof,
+        };
     }
 }
 
 module.exports = WorkReceipt;
+
+/**
+ * Generates a work receipt and returns it.
+ * @param {string} workId - Identifier of the related work.
+ * @param {Object} proof - Proof of work completion.
+ * @returns {WorkReceipt} The generated work receipt.
+ */
+function generateWorkReceipt(workId, proof) {
+    const receiptId = `receipt-${Date.now()}`;
+    const receiptTimestamp = new Date();
+    return new WorkReceipt(receiptId, workId, receiptTimestamp, proof);
+}
+
+module.exports.generateWorkReceipt = generateWorkReceipt;
