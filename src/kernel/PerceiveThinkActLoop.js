@@ -1,59 +1,57 @@
 /**
- * @module PerceiveThinkActLoop
- * This module implements the perceive-think-act loop for PROTO.
+ * PerceiveThinkActLoop handles the core loop of PROTO, integrating perception, reasoning, and action.
+ * This implementation ensures the modules communicate effectively to achieve coherent behavior.
+ *
+ * @class PerceiveThinkActLoop
  */
-
 class PerceiveThinkActLoop {
-    constructor(eventBus, perceptionBridge, reasoningBridge) {
-        this.eventBus = eventBus;
-        this.perceptionBridge = perceptionBridge;
+    constructor(perceptionProcessor, reasoningBridge, actionManager) {
+        /**
+         * @type {PerceptionProcessor}
+         */
+        this.perceptionProcessor = perceptionProcessor;
+        /**
+         * @type {PerceptionReasoningBridge}
+         */
         this.reasoningBridge = reasoningBridge;
+        /**
+         * @type {GraduationManager}
+         */
+        this.actionManager = actionManager;
+        this.running = false;
     }
 
     /**
-     * Runs the main loop which continuously processes perception and reasoning.
+     * Starts the perception-think-act loop.
      */
-    run() {
-        this.perceive();
-        this.think();
-        this.act();
+    startLoop() {
+        this.running = true;
+        this.loop();
     }
 
     /**
-     * Handles the perception phase, collecting events and signals.
+     * Stops the perception-think-act loop.
      */
-    perceive() {
-        const signals = this.perceptionBridge.getSignals();
-        this.eventBus.publish('signalsReceived', signals);
+    stopLoop() {
+        this.running = false;
     }
 
     /**
-     * Handles the reasoning phase, applying reasoning based on received signals.
+     * Core loop function that executes the perceive, think, and act phases.
      */
-    think() {
-        const decisions = this.reasoningBridge.makeDecisions();
-        this.eventBus.publish('decisionsMade', decisions);
-    }
+    loop() {
+        if (!this.running) return;
 
-    /**
-     * Handles the action phase, executing decisions made during thinking.
-     */
-    act() {
-        this.eventBus.subscribe('decisionsMade', (decisions) => {
-            decisions.forEach(decision => {
-                this.executeDecision(decision);
-            });
-        });
-    }
+        // Perception phase
+        const signals = this.perceptionProcessor.processSignals();
+        // Reasoning phase
+        const decisions = this.reasoningBridge.evaluate(signals);
+        // Action phase
+        this.actionManager.execute(decisions);
 
-    /**
-     * Executes a given decision.
-     * @param {Object} decision - The decision to execute.
-     */
-    executeDecision(decision) {
-        // Implement action logic here based on decision
-        console.log(`Executing decision: ${JSON.stringify(decision)}`);
+        // Continue the loop
+        setImmediate(() => this.loop());
     }
 }
 
-export default PerceiveThinkActLoop;
+module.exports = PerceiveThinkActLoop;
