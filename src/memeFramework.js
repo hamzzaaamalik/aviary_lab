@@ -1,27 +1,25 @@
 // memeFramework.js
 
+// central module for meme operations
+
 class MemeFramework {
     constructor() {
-        this.memeList = [];
+        this.memes = [];
     }
-
+    
     addMeme(meme) {
-        if (!this.isValidMeme(meme)) {
-            throw new Error('Invalid meme.');
+        if (this.validateMeme(meme)) {
+            this.memes.push(meme);
         }
-        this.memeList.push(meme);
     }
-
-    isValidMeme(meme) {
-        return meme && typeof meme === 'object' && meme.text;
+    
+    validateMeme(meme) {
+        // validate meme structure
+        return meme && meme.content && typeof meme.content === 'string';
     }
-
+    
     getMemes() {
-        return this.memeList;
-    }
-
-    clearMemes() {
-        this.memeList = [];
+        return this.memes;
     }
 }
 
