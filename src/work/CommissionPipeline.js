@@ -1,52 +1,72 @@
 /**
- * CommissionPipeline class.
- * Manages the intake and processing of commissions in the system.
- * Provides methods for adding to the job queue and executing jobs.
+ * CommissionPipeline - orchestrates the execution of commission jobs.
+ *
+ * This class manages the lifecycle of commission jobs, including intake,
+ * queuing, and execution. It ensures that jobs are processed in order,
+ * handles errors gracefully, and maintains state throughout the process.
  */
 class CommissionPipeline {
     constructor() {
         this.jobQueue = [];
+        this.isProcessing = false;
     }
 
     /**
-     * Adds a new commission request to the job queue.
-     * @param {Object} commission - The commission object to add.
-     * @param {string} commission.id - Unique identifier for the commission.
-     * @param {string} commission.description - Description of the commission.
-     * @throws {Error} Throws an error if the commission is missing an id or description.
+     * Adds a new commission job to the queue.
+     * @param {Object} commission - The commission details to be processed.
+     * @throws {Error} If the commission object is invalid.
      */
-    addCommission(commission) {
-        if (!commission || !commission.id || !commission.description) {
-            throw new Error('Invalid commission: missing id or description.');
+    addJob(commission) {
+        if (!this.validateCommission(commission)) {
+            throw new Error('Invalid commission object.');
         }
         this.jobQueue.push(commission);
+        this.processQueue();
     }
 
     /**
-     * Processes the next commission in the job queue.
-     * @returns {Promise} - Resolves when the commission has been processed.
+     * Processes the next job in the queue.
+     * If already processing, it will return immediately.
      */
-    async executeNextCommission() {
-        if (this.jobQueue.length === 0) {
-            throw new Error('No commissions in the queue to process.');
+    async processQueue() {
+        if (this.isProcessing || this.jobQueue.length === 0) {
+            return;
         }
-        const commission = this.jobQueue.shift();
-        // Simulate processing time
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                console.log(`Processed commission: ${commission.id} - ${commission.description}`);
-                resolve();
-            }, 1000);
-        });
+        this.isProcessing = true;
+
+        while (this.jobQueue.length > 0) {
+            const commission = this.jobQueue.shift();
+            try {
+                await this.executeCommission(commission);
+            } catch (error) {
+                console.error('Error processing commission:', error);
+            }
+        }
+
+        this.isProcessing = false;
     }
 
     /**
-     * Returns the current job queue.
-     * @returns {Array} - The current job queue.
+     * Executes the given commission job.
+     * @param {Object} commission - The commission to execute.
      */
-    getQueue() {
-        return this.jobQueue;
+    async executeCommission(commission) {
+        // Placeholder for execution logic.
+        // Implement the logic to handle the commission job here.
+        console.log('Executing commission:', commission);
+        // Simulate async execution with a delay.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    /**
+     * Validates the commission object structure.
+     * @param {Object} commission - The commission to validate.
+     * @returns {boolean} True if valid, false otherwise.
+     */
+    validateCommission(commission) {
+        // Basic validation logic (expand as needed).
+        return commission && typeof commission.id === 'string';
     }
 }
 
-module.exports = CommissionPipeline;
+export default CommissionPipeline;
