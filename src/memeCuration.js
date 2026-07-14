@@ -1,39 +1,39 @@
-// memeCuration.js - curating the chaotic internet
-
-// Import the meme database for access to memes
-import { memes } from './memes';
+const memes = require('./memes');
+const memeValidator = require('./memeValidator');
+const memeStyles = require('./memeStyles');
 
 /**
- * Curate a selection of memes based on user engagement and freshness.
+ * Curate a list of memes based on popularity and style.
+ * @param {string} style - The style to filter memes by.
  * @param {number} limit - The maximum number of memes to return.
  * @returns {Array} - An array of curated memes.
  */
-export function curateMemes(limit) {
-    // Filter out memes based on a simple engagement metric
-    const curated = memes.filter(meme => meme.engagement > 50).sort((a, b) => b.date - a.date);
-    // Limit the number of memes returned
+function curateMemes(style, limit) {
+    const validStyle = memeStyles.isValidStyle(style);
+    if (!validStyle) {
+        throw new Error('Invalid meme style');
+    }
+
+    const curated = memes.filter(meme => meme.styles.includes(style));
+    curated.sort((a, b) => b.popularity - a.popularity);
     return curated.slice(0, limit);
 }
 
 /**
- * Get trending memes based on a time window.
- * @param {number} days - Number of days to consider for trending.
- * @returns {Array} - An array of trending memes.
+ * Get a random meme from a specified style.
+ * @param {string} style - The style to filter memes by.
+ * @returns {Object} - A random meme object.
  */
-export function getTrendingMemes(days) {
-    const now = Date.now();
-    const cutoff = now - (days * 24 * 60 * 60 * 1000);  // Convert days to milliseconds
-    // Filter memes that have been created within the time frame
-    return memes.filter(meme => meme.date > cutoff).sort((a, b) => b.engagement - a.engagement);
-}
-
-/**
- * Get a random meme from the curated list.
- * @returns {Object|null} - A random meme object or null if none exist.
- */
-export function getRandomCuratedMeme() {
-    const curatedMemes = curateMemes(10);
-    if (curatedMemes.length === 0) return null;
+function getRandomMemeFromStyle(style) {
+    const curatedMemes = curateMemes(style, Infinity);
+    if (curatedMemes.length === 0) {
+        throw new Error('No memes found for this style');
+    }
     const randomIndex = Math.floor(Math.random() * curatedMemes.length);
     return curatedMemes[randomIndex];
 }
+
+module.exports = {
+    curateMemes,
+    getRandomMemeFromStyle,
+};
