@@ -1,6 +1,9 @@
 /**
- * PerceiveThinkActLoop manages the primary operational cycle of PROTO.
- * It orchestrates the perception, reasoning, and action modules in a continuous loop.
+ * The PerceiveThinkActLoop class coordinates the interaction between perception,
+ * reasoning, and action modules. It runs in a loop to enable continuous processing
+ * of incoming data and decision-making.
+ *
+ * @class PerceiveThinkActLoop
  */
 class PerceiveThinkActLoop {
     constructor(eventBus, moduleRegistry) {
@@ -10,41 +13,92 @@ class PerceiveThinkActLoop {
     }
 
     /**
-     * Starts the operational loop, invoking perception, reasoning, and action in a cycle.
+     * Initializes the loop, setting up necessary event listeners.
+     * @returns {void}
+     */
+    init() {
+        this.eventBus.on('signalReceived', this.handleSignal.bind(this));
+        this.eventBus.on('actionCompleted', this.handleActionCompletion.bind(this));
+    }
+
+    /**
+     * Starts the loop for continuous processing.
+     * @returns {void}
      */
     start() {
+        if (this.running) {
+            throw new Error('Loop is already running.');
+        }
         this.running = true;
         this.loop();
     }
 
     /**
-     * Stops the operational loop.
+     * Stops the loop.
+     * @returns {void}
      */
     stop() {
         this.running = false;
     }
 
     /**
-     * The main loop that executes the perception, reasoning, and action sequence.
-     * @private
+     * The main processing loop that runs at a fixed interval.
+     * @returns {void}
      */
     loop() {
         if (!this.running) return;
+        this.perceive();
+        this.think();
+        this.act();
+        setTimeout(() => this.loop(), 100); // Adjust the interval as needed
+    }
 
-        // Execute perception
+    /**
+     * Handles incoming signals by relaying them to the perception module.
+     * @param {Object} signal - The signal data received from the event bus.
+     * @returns {void}
+     */
+    handleSignal(signal) {
         const perceptionModule = this.moduleRegistry.get('perception');
-        perceptionModule.perceive();
+        perceptionModule.processSignal(signal);
+    }
 
-        // Execute reasoning
+    /**
+     * Handles completion of actions, possibly for logging or triggering new perceptions.
+     * @param {Object} action - The completed action data.
+     * @returns {void}
+     */
+    handleActionCompletion(action) {
+        // Logic for handling completed actions (e.g., logging, notifying modules)
+        console.log('Action completed:', action);
+    }
+
+    /**
+     * Processes perception data to feed into reasoning.
+     * @returns {void}
+     */
+    perceive() {
+        const perceptionModule = this.moduleRegistry.get('perception');
+        const data = perceptionModule.getData();
+        // Process data as needed.
+    }
+
+    /**
+     * Conducts reasoning based on perceived data.
+     * @returns {void}
+     */
+    think() {
         const reasoningModule = this.moduleRegistry.get('reasoning');
-        reasoningModule.reason();
+        reasoningModule.evaluate();
+    }
 
-        // Execute action
+    /**
+     * Executes actions based on reasoning results.
+     * @returns {void}
+     */
+    act() {
         const actionModule = this.moduleRegistry.get('action');
-        actionModule.act();
-
-        // Schedule the next cycle
-        setImmediate(() => this.loop());
+        actionModule.perform();
     }
 }
 
