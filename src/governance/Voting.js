@@ -1,77 +1,68 @@
 /**
- * Voting class facilitates a simple majority voting system among agents.
- * It allows agents to propose options and cast votes, determining the outcome based on majority rules.
+ * Voting module for agent governance.
+ * Handles proposals and manages the voting process among agents.
+ * @module Voting
  */
+
 class Voting {
-    /**
-     * Initializes the voting instance with options and an empty vote count.
-     * @param {Array<string>} options - The options available for voting.
-     */
-    constructor(options) {
-        this.options = options;
+    constructor() {
         this.votes = new Map();
-        this.totalVotes = 0;
-        this.votingOpen = false;
+        this.threshold = 0.5; // default threshold for consensus
     }
 
     /**
-     * Opens the voting period, allowing agents to cast their votes.
+     * Set the consensus threshold.
+     * @param {number} threshold - A number between 0 and 1 representing the consensus percentage.
      */
-    openVoting() {
-        this.votingOpen = true;
-        this.votes.clear();
-        this.totalVotes = 0;
+    setThreshold(threshold) {
+        if (threshold < 0 || threshold > 1) {
+            throw new Error('Threshold must be between 0 and 1.');
+        }
+        this.threshold = threshold;
     }
 
     /**
-     * Closes the voting period and calculates the winning option.
-     * @returns {string|null} - The winning option or null if no votes were cast.
+     * Cast a vote for a given proposal.
+     * @param {string} agentId - The ID of the agent voting.
+     * @param {string} proposalId - The ID of the proposal being voted on.
+     * @param {boolean} support - Whether the vote supports the proposal.
      */
-    closeVoting() {
-        this.votingOpen = false;
-        return this.calculateWinner();
+    castVote(agentId, proposalId, support) {
+        if (!this.votes.has(proposalId)) {
+            this.votes.set(proposalId, { support: 0, oppose: 0 });
+        }
+        const proposalVotes = this.votes.get(proposalId);
+        if (support) {
+            proposalVotes.support += 1;
+        } else {
+            proposalVotes.oppose += 1;
+        }
     }
 
     /**
-     * Casts a vote for a specified option if the voting is open.
-     * @param {string} agentId - The ID of the agent casting the vote.
-     * @param {string} option - The option being voted for.
-     * @throws Will throw an error if the voting is closed or the option is invalid.
+     * Determine if a proposal has reached consensus.
+     * @param {string} proposalId - The ID of the proposal to check.
+     * @returns {boolean} - True if consensus is reached, false otherwise.
      */
-    castVote(agentId, option) {
-        if (!this.votingOpen) {
-            throw new Error('Voting is closed.');
+    checkConsensus(proposalId) {
+        if (!this.votes.has(proposalId)) {
+            return false;
         }
-        if (!this.options.includes(option)) {
-            throw new Error('Invalid voting option.');
+        const { support, oppose } = this.votes.get(proposalId);
+        const totalVotes = support + oppose;
+        if (totalVotes === 0) {
+            return false; // no votes yet
         }
-
-        // Record the vote
-        if (!this.votes.has(option)) {
-            this.votes.set(option, new Set());
-        }
-        this.votes.get(option).add(agentId);
-        this.totalVotes++;
+        return (support / totalVotes) >= this.threshold;
     }
 
     /**
-     * Calculates the winning option based on the votes cast.
-     * @returns {string|null} - The winning option or null if no votes were cast.
+     * Get the current vote tally for a proposal.
+     * @param {string} proposalId - The ID of the proposal to retrieve votes for.
+     * @returns {Object} - An object containing support and oppose counts.
      */
-    calculateWinner() {
-        if (this.totalVotes === 0) {
-            return null;
-        }
-        let winner = null;
-        let maxVotes = 0;
-
-        for (const [option, voters] of this.votes.entries()) {
-            if (voters.size > maxVotes) {
-                maxVotes = voters.size;
-                winner = option;
-            }
-        }
-        return winner;
+    getTally(proposalId) {
+        return this.votes.get(proposalId) || { support: 0, oppose: 0 };
     }
 }
 
