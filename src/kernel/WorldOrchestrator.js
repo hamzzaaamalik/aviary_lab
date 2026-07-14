@@ -1,52 +1,51 @@
 /**
- * WorldOrchestrator orchestrates the various components of the world environment,
- * ensuring seamless interactions between agents, governance protocols, and the economy.
- * This is the core engine driving "The Aviary" milestone.
- *
+ * WorldOrchestrator class to manage the orchestration of the living world.
+ * This module integrates various subsystems to facilitate a cohesive world experience.
  * @module WorldOrchestrator
  */
 
 class WorldOrchestrator {
-    constructor(agentManager, governanceManager, economyManager) {
-        this.agentManager = agentManager;
-        this.governanceManager = governanceManager;
-        this.economyManager = economyManager;
+    constructor() {
+        this.modules = [];
     }
 
     /**
-     * Initialize the world, setting up necessary components for operation.
-     * @returns {void}
+     * Registers a new module in the orchestrator.
+     * @param {Object} module - The module to be registered.
+     * @throws {Error} If module is invalid.
      */
-    initialize() {
-        this.agentManager.initializeAgents();
-        this.governanceManager.initializeProposals();
-        this.economyManager.initializeResources();
+    registerModule(module) {
+        if (!module || typeof module.run !== 'function') {
+            throw new Error('Invalid module. Must have a run method.');
+        }
+        this.modules.push(module);
     }
 
     /**
-     * Run the main orchestration loop, coordinating agent actions,
-     * governance decisions, and economic transactions.
-     * @returns {void}
+     * Executes all registered modules in sequence.
+     * @returns {Promise<void>} Resolves when all modules have run.
      */
-    run() {
-        setInterval(() => {
-            this.agentManager.executeAgentActions();
-            this.governanceManager.processVotes();
-            this.economyManager.allocateResources();
-            this.checkWorldState();
-        }, 1000); // Execute loop every second
+    async run() {
+        for (const module of this.modules) {
+            try {
+                await module.run();
+            } catch (error) {
+                console.error(`Error executing module: ${module.constructor.name}`, error);
+            }
+        }
     }
 
     /**
-     * Check and log the current state of the world.
-     * @returns {void}
+     * Initializes all registered modules.
+     * @returns {Promise<void>} Resolves when all modules have been initialized.
      */
-    checkWorldState() {
-        console.log('Current world state:');
-        // Add logic to gather and print current status of agents, resources, etc.
-        this.agentManager.logAgentStates();
-        this.economyManager.logResourceStatus();
+    async initialize() {
+        for (const module of this.modules) {
+            if (typeof module.initialize === 'function') {
+                await module.initialize();
+            }
+        }
     }
 }
 
-module.exports = WorldOrchestrator;
+export default WorldOrchestrator;
