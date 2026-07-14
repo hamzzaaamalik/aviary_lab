@@ -1,62 +1,58 @@
 /**
- * @module CommissionQueue
- * @description A class to manage the job queue for commissions, ensuring that commissions are processed in order.
+ * CommissionQueue.js
+ * 
+ * This class manages the queue of commission requests. It handles adding new requests, processing them,
+ * and managing the status of each commission in the queue.
+ * 
+ * @class CommissionQueue
  */
 class CommissionQueue {
     constructor() {
         this.queue = [];
-        this.processing = false;
+        this.currentCommissionId = 0;
     }
 
     /**
      * Adds a new commission to the queue.
-     * @param {Object} commission - The commission to add.
-     * @returns {void}
+     * 
+     * @param {Object} commission - The commission request.
+     * @param {string} commission.description - Description of the commission.
+     * @param {string} commission.clientId - The ID of the client requesting the commission.
+     * @returns {number} The ID of the newly added commission.
      */
     addCommission(commission) {
-        this.queue.push(commission);
-        this.processQueue();
+        if (!commission || !commission.description || !commission.clientId) {
+            throw new Error('Invalid commission object.');
+        }
+
+        const commissionId = this.currentCommissionId++;
+        this.queue.push({ id: commissionId, ...commission, status: 'pending' });
+        return commissionId;
     }
 
     /**
      * Processes the next commission in the queue.
-     * If already processing, it will do nothing.
-     * @returns {void}
+     * 
+     * @returns {Object|null} The processed commission or null if the queue is empty.
      */
-    processQueue() {
-        if (this.processing || this.queue.length === 0) {
-            return;
-        }
+    processNext() {
+        if (this.queue.length === 0) return null;
 
-        this.processing = true;
         const commission = this.queue.shift();
-
-        // Mock processing of the commission
-        console.log('Processing commission:', commission);
-
-        // Simulate async processing
-        setTimeout(() => {
-            this.completeCommission(commission);
-        }, 1000); // Simulate time to process
+        commission.status = 'processing';
+        // Simulate processing logic here. Use a real implementation in production.
+        // After processing, update the status accordingly.
+        commission.status = 'completed';
+        return commission;
     }
 
     /**
-     * Called when a commission has been completed.
-     * @param {Object} commission - The completed commission.
-     * @returns {void}
+     * Retrieves the current status of all commissions in the queue.
+     * 
+     * @returns {Array} The list of commissions with their statuses.
      */
-    completeCommission(commission) {
-        console.log('Completed commission:', commission);
-        this.processing = false;
-        this.processQueue(); // Process the next commission
-    }
-
-    /**
-     * Returns the current number of commissions in the queue.
-     * @returns {number} - The length of the queue.
-     */
-    getQueueLength() {
-        return this.queue.length;
+    getCommissionStatuses() {
+        return this.queue.map(commission => ({ id: commission.id, status: commission.status }));
     }
 }
 
