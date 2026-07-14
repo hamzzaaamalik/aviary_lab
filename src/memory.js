@@ -1,31 +1,39 @@
-class Memory {
-    constructor() {
-        this.store = new Map();
-    }
+const Memory = (() => {
+    const shortTerm = new Map();  // stores short-term memories
+    const longTerm = new Map();   // stores long-term memories
 
-    set(key, value) {
-        this.store.set(key, value);
-    }
+    const addShortTerm = (key, value) => {
+        shortTerm.set(key, value);
+    };
 
-    get(key) {
-        return this.store.get(key);
-    }
+    const addLongTerm = (key, value) => {
+        longTerm.set(key, value);
+    };
 
-    has(key) {
-        return this.store.has(key);
-    }
+    const recallShortTerm = (key) => {
+        return shortTerm.get(key) || 'memory not found';
+    };
 
-    delete(key) {
-        return this.store.delete(key);
-    }
+    const recallLongTerm = (key) => {
+        return longTerm.get(key) || 'memory not found';
+    };
 
-    clear() {
-        this.store.clear();
-    }
+    const clearShortTerm = () => {
+        shortTerm.clear();
+    };
 
-    entries() {
-        return this.store.entries();
-    }
-}
+    const clearLongTerm = () => {
+        longTerm.clear();
+    };
+
+    return {
+        addShortTerm,
+        addLongTerm,
+        recallShortTerm,
+        recallLongTerm,
+        clearShortTerm,
+        clearLongTerm
+    };
+})();
 
 export default Memory;
