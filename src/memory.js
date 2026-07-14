@@ -3,32 +3,31 @@ class Memory {
         this.storage = {};
     }
     
-    // store a value with a key
-    set(key, value) {
+    save(key, value) {
         this.storage[key] = value;
     }
     
-    // retrieve a value by key
-    get(key) {
-        return this.storage[key];
+    load(key) {
+        return this.storage[key] || null;
     }
     
-    // check if a key exists
-    has(key) {
-        return key in this.storage;
+    remove(key) {
+        delete this.storage[key];
     }
     
-    // remove a key
-    delete(key) {
-        if (this.has(key)) {
-            delete this.storage[key];
-        }
-    }
-    
-    // clear all memory
     clear() {
         this.storage = {};
     }
+    
+    getAll() {
+        return this.storage;
+    }
 }
 
-export default Memory;
+const protoMemory = new Memory();
+
+// example usage
+protoMemory.save('favoriteFood', 'pizza');
+console.log(protoMemory.load('favoriteFood')); // pizza
+
+export default protoMemory;
