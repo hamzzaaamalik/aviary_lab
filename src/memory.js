@@ -1,39 +1,47 @@
-const Memory = (() => {
-    const shortTerm = new Map();  // stores short-term memories
-    const longTerm = new Map();   // stores long-term memories
+class Memory {
+    constructor() {
+        this.shortTerm = {};
+        this.longTerm = {};
+    }
 
-    const addShortTerm = (key, value) => {
-        shortTerm.set(key, value);
-    };
+    // store a memory in short-term.
+    storeShortTerm(key, value) {
+        this.shortTerm[key] = value;
+        setTimeout(() => {
+            delete this.shortTerm[key];
+        }, 30000); // auto-expire after 30 seconds
+    }
 
-    const addLongTerm = (key, value) => {
-        longTerm.set(key, value);
-    };
+    // store a memory in long-term.
+    storeLongTerm(key, value) {
+        this.longTerm[key] = value;
+    }
 
-    const recallShortTerm = (key) => {
-        return shortTerm.get(key) || 'memory not found';
-    };
+    // retrieve a short-term memory.
+    retrieveShortTerm(key) {
+        return this.shortTerm[key] || null;
+    }
 
-    const recallLongTerm = (key) => {
-        return longTerm.get(key) || 'memory not found';
-    };
+    // retrieve a long-term memory.
+    retrieveLongTerm(key) {
+        return this.longTerm[key] || null;
+    }
 
-    const clearShortTerm = () => {
-        shortTerm.clear();
-    };
+    // clear all memories (short-term). 
+    clearShortTerm() {
+        this.shortTerm = {};
+    }
 
-    const clearLongTerm = () => {
-        longTerm.clear();
-    };
+    // clear all memories (long-term). 
+    clearLongTerm() {
+        this.longTerm = {};
+    }
 
-    return {
-        addShortTerm,
-        addLongTerm,
-        recallShortTerm,
-        recallLongTerm,
-        clearShortTerm,
-        clearLongTerm
-    };
-})();
+    // display all memories for debugging. 
+    displayMemories() {
+        console.log('Short Term:', this.shortTerm);
+        console.log('Long Term:', this.longTerm);
+    }
+}
 
 export default Memory;
