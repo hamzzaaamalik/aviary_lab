@@ -1,88 +1,47 @@
 /**
- * Proposals.js
- * 
- * This module manages the creation, validation, and tracking of proposals within the governance system.
- * Proposals are essential for enabling agents to suggest changes or actions that require collective decision-making.
- * 
- * @module governance/Proposals
+ * Proposals module for governance.
+ * Handles creating, validating, and managing proposals within the governance framework.
  */
-
-class Proposal {
-    /**
-     * Creates an instance of a Proposal.
-     * @param {string} id - Unique identifier for the proposal.
-     * @param {string} description - Description of the proposal.
-     * @param {string} proposer - Identifier of the agent proposing the proposal.
-     */
-    constructor(id, description, proposer) {
-        this.id = id;
-        this.description = description;
-        this.proposer = proposer;
-        this.status = 'pending'; // pending, approved, rejected
-        this.votes = { yes: 0, no: 0 };
-    }
-
-    /**
-     * Cast a vote on the proposal.
-     * @param {boolean} vote - True for 'yes', false for 'no'.
-     */
-    castVote(vote) {
-        if (vote) {
-            this.votes.yes++;
-        } else {
-            this.votes.no++;
-        }
-    }
-
-    /**
-     * Approves the proposal.
-     */
-    approve() {
-        this.status = 'approved';
-    }
-
-    /**
-     * Rejects the proposal.
-     */
-    reject() {
-        this.status = 'rejected';
-    }
-}
-
-class ProposalManager {
+class Proposals {
     constructor() {
-        this.proposals = {};
+        this.proposals = [];
     }
 
     /**
-     * Creates a new proposal.
-     * @param {string} id - Unique identifier for the proposal.
-     * @param {string} description - Description of the proposal.
-     * @param {string} proposer - Identifier of the proposing agent.
-     * @returns {Proposal} The created proposal.
+     * Create a new proposal.
+     * @param {string} title - The title of the proposal.
+     * @param {string} description - The description of the proposal.
+     * @returns {Object} The created proposal object.
      */
-    createProposal(id, description, proposer) {
-        const proposal = new Proposal(id, description, proposer);
-        this.proposals[id] = proposal;
+    createProposal(title, description) {
+        this.validateProposal(title, description);
+        const proposal = { id: this.proposals.length + 1, title, description, createdAt: new Date() };
+        this.proposals.push(proposal);
         return proposal;
     }
 
     /**
-     * Retrieves a proposal by its ID.
-     * @param {string} id - Unique identifier for the proposal.
-     * @returns {Proposal|null} The requested proposal or null if not found.
+     * Validate the proposal's title and description.
+     * @param {string} title - The title of the proposal.
+     * @param {string} description - The description of the proposal.
+     * @throws {Error} If validation fails.
      */
-    getProposal(id) {
-        return this.proposals[id] || null;
+    validateProposal(title, description) {
+        if (!title || typeof title !== 'string' || title.trim() === '') {
+            throw new Error('Invalid proposal title.');
+        }
+        if (!description || typeof description !== 'string' || description.trim() === '') {
+            throw new Error('Invalid proposal description.');
+        }
     }
 
     /**
-     * Gets all proposals.
-     * @returns {Proposal[]} Array of all proposals.
+     * Get all proposals.
+     * @returns {Array} Array of proposals.
      */
     getAllProposals() {
-        return Object.values(this.proposals);
+        return this.proposals;
     }
 }
 
-export { Proposal, ProposalManager };
+module.exports = new Proposals();
