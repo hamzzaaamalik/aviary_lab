@@ -1,17 +1,15 @@
-function isValidMeme(meme) {
-    if (typeof meme !== 'object' || meme === null) return false;
-    const requiredKeys = ['id', 'content', 'style'];
-    return requiredKeys.every(key => key in meme);
-}
-
 function validateMeme(meme) {
-    if (!isValidMeme(meme)) {
-        throw new Error('Invalid meme structure.');
+    if (!meme.title || typeof meme.title !== 'string') {
+        throw new Error('Invalid meme title.');
     }
-    // Additional validation logic can be placed here.
+    if (!meme.content || typeof meme.content !== 'string') {
+        throw new Error('Invalid meme content.');
+    }
+    if (meme.styles && !Array.isArray(meme.styles)) {
+        throw new Error('Styles should be an array.');
+    }
+    // Additional validation checks can be added here
+    return true;
 }
 
-module.exports = {
-    isValidMeme,
-    validateMeme,
-};
+module.exports = { validateMeme };
