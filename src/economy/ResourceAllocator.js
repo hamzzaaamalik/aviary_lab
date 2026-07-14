@@ -1,53 +1,81 @@
 /**
- * ResourceAllocator manages allocation of resources for agents.
- * It tracks resource availability and allocates them based on policies.
+ * ResourceAllocator class manages the allocation of resources within the system.
+ * It maintains a budget and ensures that resources are allocated efficiently and effectively.
+ * @class ResourceAllocator
  */
 class ResourceAllocator {
     constructor() {
+        /**
+         * @type {number}
+         * @private
+         */
+        this.budget = 0;
+
+        /**
+         * @type {Object<string, number>}
+         * @private
+         */
         this.resources = {};
     }
 
     /**
-     * Adds a resource to the allocator.
-     * @param {string} resourceName - The name of the resource.
-     * @param {number} amount - The amount of the resource to add.
+     * Sets the total budget available for allocation.
+     * @param {number} amount - The amount to set as budget.
      */
-    addResource(resourceName, amount) {
-        if (amount <= 0) throw new Error('Amount must be positive.');
-        this.resources[resourceName] = (this.resources[resourceName] || 0) + amount;
+    setBudget(amount) {
+        if (amount < 0) throw new Error('Budget cannot be negative.');
+        this.budget = amount;
     }
 
     /**
-     * Allocates a resource to an agent if available.
-     * @param {string} resourceName - The name of the resource to allocate.
-     * @param {number} amount - The amount of the resource to allocate.
-     * @returns {boolean} - True if allocation was successful, otherwise false.
+     * Adds resources to the allocator.
+     * @param {string} resourceName - The name of the resource.
+     * @param {number} quantity - The quantity of the resource to add.
      */
-    allocateResource(resourceName, amount) {
-        if (this.resources[resourceName] === undefined || this.resources[resourceName] < amount) {
-            return false; // Not enough resources available
+    addResource(resourceName, quantity) {
+        if (quantity < 0) throw new Error('Resource quantity cannot be negative.');
+        this.resources[resourceName] = (this.resources[resourceName] || 0) + quantity;
+    }
+
+    /**
+     * Allocates resources based on the provided request.
+     * @param {Object<string, number>} request - A mapping of resource names to requested quantities.
+     * @returns {Object<string, number>} - The allocated resources.
+     */
+    allocateResources(request) {
+        const allocation = {};
+        let totalRequested = 0;
+
+        for (const [resourceName, quantity] of Object.entries(request)) {
+            if (this.resources[resourceName] < quantity) {
+                throw new Error(`Insufficient resource: ${resourceName}`);
+            }
+            totalRequested += quantity;
+            allocation[resourceName] = quantity;
+            this.resources[resourceName] -= quantity;
         }
-        this.resources[resourceName] -= amount;
-        return true;
+
+        if (totalRequested > this.budget) {
+            throw new Error('Budget exceeded. Allocation failed.');
+        }
+
+        return allocation;
     }
 
     /**
-     * Releases a previously allocated resource back to the allocator.
-     * @param {string} resourceName - The name of the resource to release.
-     * @param {number} amount - The amount of the resource to release.
+     * Returns the current budget.
+     * @returns {number} - The current budget.
      */
-    releaseResource(resourceName, amount) {
-        if (amount <= 0) throw new Error('Amount must be positive.');
-        this.resources[resourceName] = (this.resources[resourceName] || 0) + amount;
+    getBudget() {
+        return this.budget;
     }
 
     /**
-     * Gets the available amount of a resource.
-     * @param {string} resourceName - The name of the resource.
-     * @returns {number} - The available amount of the resource.
+     * Returns the current state of resources.
+     * @returns {Object<string, number>} - The current resources available.
      */
-    getAvailable(resourceName) {
-        return this.resources[resourceName] || 0;
+    getResources() {
+        return this.resources;
     }
 }
 
