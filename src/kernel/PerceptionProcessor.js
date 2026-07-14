@@ -1,52 +1,48 @@
 /**
- * The PerceptionProcessor processes incoming signals and feeds them into the reasoning module.
- * It manages the pipeline from ingestion to meaningful action triggers.
+ * PerceptionProcessor - A module responsible for processing incoming sensory signals
+ * and transforming them into internal representations suitable for reasoning and action.
+ *
  * @module PerceptionProcessor
  */
 
 class PerceptionProcessor {
-    constructor(eventBus, reasoningBridge) {
-        this.eventBus = eventBus;  // Event bus for communication
-        this.reasoningBridge = reasoningBridge; // Bridge to reasoning module
+    constructor(eventBus) {
+        this.eventBus = eventBus;
+        this.signals = [];
+        this.signalParser = new SignalParser();
+        this.eventBus.subscribe('newSignal', this.handleNewSignal.bind(this));
     }
 
     /**
-     * Process a signal from the ingestion pipeline.
-     * @param {Object} signal - The signal object to process.
-     * @throws {Error} - Throws an error if the signal is invalid.
+     * handleNewSignal - Receives new signals and processes them.
+     * @param {Object} signal - The incoming signal to process.
      */
-    processSignal(signal) {
-        this.validateSignal(signal);
-        const processedSignal = this.transformSignal(signal);
-        this.eventBus.publish('signal.processed', processedSignal);
-        this.reasoningBridge.handleProcessedSignal(processedSignal);
+    handleNewSignal(signal) {
+        const parsedSignal = this.signalParser.parse(signal);
+        this.signals.push(parsedSignal);
+        this.processSignals();
     }
 
     /**
-     * Validate the incoming signal.
-     * @param {Object} signal - The signal object to validate.
-     * @throws {Error} - Throws an error if validation fails.
+     * processSignals - Converts signals into actionable perceptions and triggers reasoning.
      */
-    validateSignal(signal) {
-        if (!signal || typeof signal !== 'object') {
-            throw new Error('Invalid signal: must be a non-null object.');
-        }
-        // Add more validation logic as necessary
+    processSignals() {
+        const perceptions = this.createPerceptions(this.signals);
+        this.eventBus.publish('perceptionsReady', perceptions);
     }
 
     /**
-     * Transform the incoming signal into a more usable format.
-     * @param {Object} signal - The signal object to transform.
-     * @return {Object} - Transformed signal.
+     * createPerceptions - Creates internal perceptions from the collected signals.
+     * @param {Array} signals - Array of parsed signals.
+     * @returns {Array} - An array of created perceptions.
      */
-    transformSignal(signal) {
-        // Placeholder transformation logic (expand as needed)
-        return {
-            timestamp: Date.now(),
-            content: signal.content,
-            type: signal.type,
-        };
+    createPerceptions(signals) {
+        return signals.map(signal => {
+            // Transform signal into a perception object, can add more complexity here
+            return { id: signal.id, type: signal.type, timestamp: signal.timestamp, data: signal.data };
+        });
     }
 }
 
+// Exporting the PerceptionProcessor module
 module.exports = PerceptionProcessor;
