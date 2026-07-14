@@ -1,51 +1,77 @@
+// GraduationLoop.js
 /**
- * GraduationLoop - Manages the perceive-think-act cycle for PROTO.
- * This class orchestrates the perception processing, reasoning, and action execution.
- *
- * @module GraduationLoop
+ * GraduationLoop class to manage the lifecycle of PROTO's perceive-think-act loop.
+ * This class coordinates the execution of perception, reasoning, and actions,
+ * allowing PROTO to operate in a continuous loop.
  */
-
-const EventBus = require('./EventBus');
-const PerceiveThinkActLoop = require('./PerceiveThinkActLoop');
-const StateManager = require('./StateManager');
-
 class GraduationLoop {
-    constructor() {
-        this.eventBus = new EventBus();
-        this.stateManager = new StateManager();
-        this.ptaLoop = new PerceiveThinkActLoop(this.eventBus, this.stateManager);
+    constructor(eventBus, stateManager, perceptionProcessor) {
+        this.eventBus = eventBus;
+        this.stateManager = stateManager;
+        this.perceptionProcessor = perceptionProcessor;
+        this.running = false;
     }
 
     /**
-     * Starts the Graduation Loop, initializing the necessary components.
+     * Starts the Graduation loop.
      * @returns {void}
      */
     start() {
-        this.eventBus.subscribe('perceptionComplete', this.ptaLoop.process.bind(this.ptaLoop));
-        this.eventBus.subscribe('actionComplete', this.handleActionComplete.bind(this));
-        this.scheduleNextPerception();
+        if (this.running) return;
+        this.running = true;
+        this.loop();
     }
 
     /**
-     * Schedules the next perception cycle.
+     * Stops the Graduation loop.
      * @returns {void}
      */
-    scheduleNextPerception() {
-        setTimeout(() => {
-            this.eventBus.publish('startPerception');
-            this.scheduleNextPerception();
-        }, 1000); // adjust the timing as needed
+    stop() {
+        this.running = false;
     }
 
     /**
-     * Handles the completion of an action.
-     * @param {Object} actionResult - The result of the action.
+     * The main loop that processes perception, reasoning, and actions.
      * @returns {void}
      */
-    handleActionComplete(actionResult) {
-        console.log('Action completed:', actionResult);
-        this.stateManager.update(actionResult);
+    loop() {
+        if (!this.running) return;
+        this.perceive();
+        this.reason();
+        this.act();
+        requestAnimationFrame(this.loop.bind(this));
+    }
+
+    /**
+     * Handles the perception phase.
+     * @returns {void}
+     */
+    perceive() {
+        const incomingSignals = this.eventBus.getSignals();
+        const processedSignals = this.perceptionProcessor.process(incomingSignals);
+        this.stateManager.updateState(processedSignals);
+    }
+
+    /**
+     * Handles the reasoning phase.
+     * @returns {void}
+     */
+    reason() {
+        const currentState = this.stateManager.getCurrentState();
+        // Here you would integrate reasoning modules like GoalModel, Planner, etc.
+        // For now, we'll just log the current state as a placeholder.
+        console.log('Reasoning based on state:', currentState);
+    }
+
+    /**
+     * Handles the action phase.
+     * @returns {void}
+     */
+    act() {
+        // Here you would implement actions based on the reasoning output.
+        // For now, we'll just log a placeholder action.
+        console.log('Performing actions based on reasoning output.');
     }
 }
 
-module.exports = GraduationLoop;
+export default GraduationLoop;
