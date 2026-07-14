@@ -1,63 +1,42 @@
 /**
- * CommissionIntake class handles the intake of new commissions.
- * It validates and parses incoming commission data.
+ * CommissionIntake handles the intake of commission requests.
+ * Validates input and provides an interface for adding to the queue.
  *
  * @class
  */
 class CommissionIntake {
     /**
      * Creates an instance of CommissionIntake.
-     *
-     * @param {Object} config - Configuration object for CommissionIntake.
+     * @param {CommissionQueue} queue - The queue to which commissions will be added.
      */
-    constructor(config) {
-        this.config = config;
+    constructor(queue) {
+        this.queue = queue;
     }
 
     /**
-     * Validates the incoming commission data.
-     *
-     * @param {Object} commissionData - The commission data to validate.
+     * Validates the input commission request object.
+     * @param {Object} commission - The commission request object.
      * @returns {boolean} - Returns true if valid, false otherwise.
      */
-    validate(commissionData) {
-        // Basic validation logic
-        if (!commissionData.title || typeof commissionData.title !== 'string') {
-            throw new Error('Invalid commission title.');
+    validateCommission(commission) {
+        if (!commission.title || !commission.client || !commission.details) {
+            return false;
         }
-        if (!commissionData.details || typeof commissionData.details !== 'string') {
-            throw new Error('Invalid commission details.');
-        }
-        if (!commissionData.clientId || typeof commissionData.clientId !== 'string') {
-            throw new Error('Invalid client ID.');
-        }
+        // Add any additional validation logic here
         return true;
     }
 
     /**
-     * Parses the incoming commission data.
-     *
-     * @param {Object} commissionData - The commission data to parse.
-     * @returns {Object} - The parsed commission object.
+     * Intake a new commission request.
+     * @param {Object} commission - The commission request object.
+     * @returns {void}
+     * @throws {Error} - Throws an error if the commission is invalid.
      */
-    parse(commissionData) {
-        return {
-            title: commissionData.title.trim(),
-            details: commissionData.details.trim(),
-            clientId: commissionData.clientId.trim(),
-            timestamp: new Date().toISOString()
-        };
-    }
-
-    /**
-     * Processes the commission intake.
-     *
-     * @param {Object} commissionData - The commission data to process.
-     * @returns {Object} - The processed commission object.
-     */
-    process(commissionData) {
-        this.validate(commissionData);
-        return this.parse(commissionData);
+    intakeCommission(commission) {
+        if (!this.validateCommission(commission)) {
+            throw new Error('Invalid commission request');
+        }
+        this.queue.addCommission(commission);
     }
 }
 
