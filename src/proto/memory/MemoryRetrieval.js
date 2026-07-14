@@ -1,53 +1,50 @@
 /**
- * MemoryRetrieval.js
- * 
- * This module provides functionality for retrieving memories from the Long Term Memory
- * storage, allowing PROTO to access past experiences and information for reasoning and
- * decision-making processes.
- * 
- * @module MemoryRetrieval
- */
-
-import LongTermMemory from './LongTermMemory';
-
-/**
- * MemoryRetrieval class
- * 
- * Class to handle the retrieval of memories from Long Term Memory.
+ * MemoryRetrieval class for managing memory queries and retrieval operations.
+ * This class provides methods to retrieve information from memory based on various criteria.
  */
 class MemoryRetrieval {
-    /**
-     * Creates an instance of MemoryRetrieval.
-     * @constructor
-     * @param {LongTermMemory} memory - An instance of LongTermMemory to interact with.
-     */
-    constructor(memory) {
-        this.memory = memory;
+    constructor(memoryManager) {
+        /**
+         * @type {MemoryManager}
+         */
+        this.memoryManager = memoryManager;
     }
 
     /**
-     * Retrieves a memory by its identifier.
-     * @param {string} memoryId - The unique identifier of the memory to retrieve.
-     * @returns {Object|null} The memory object if found, otherwise null.
+     * Retrieve a memory entry by its unique identifier.
+     * @param {string} id - The unique identifier of the memory entry.
+     * @returns {Object|null} - The retrieved memory entry or null if not found.
      */
-    retrieveMemory(memoryId) {
-        const memory = this.memory.getMemoryById(memoryId);
-        if (!memory) {
-            console.warn(`Memory with ID ${memoryId} not found.`);
-            return null;
-        }
-        return memory;
+    getMemoryById(id) {
+        const memoryEntry = this.memoryManager.getEntryById(id);
+        return memoryEntry || null;
     }
 
     /**
-     * Retrieves all memories that match a given query.
-     * @param {Function} queryFunction - A function that defines the query logic.
-     * @returns {Array<Object>} An array of matching memory objects.
+     * Retrieve all memory entries that match the provided criteria.
+     * @param {Function} criteria - A function that determines whether a memory entry matches.
+     * @returns {Array} - An array of matching memory entries.
      */
-    retrieveMemories(queryFunction) {
-        const matches = this.memory.getAllMemories().filter(queryFunction);
-        return matches;
+    getMemoryByCriteria(criteria) {
+        return this.memoryManager.getAllEntries().filter(criteria);
+    }
+
+    /**
+     * Retrieve a summary of all memory entries for a quick overview.
+     * @returns {Array} - An array of summary objects for each memory entry.
+     */
+    getMemorySummary() {
+        return this.memoryManager.getAllEntries().map(entry => ({ id: entry.id, summary: entry.summary }));
+    }
+
+    /**
+     * Clear all memory entries based on a specific condition.
+     * @param {Function} condition - A function that determines which entries to clear.
+     */
+    clearMemoryByCondition(condition) {
+        const entriesToClear = this.memoryManager.getAllEntries().filter(condition);
+        entriesToClear.forEach(entry => this.memoryManager.removeEntry(entry.id));
     }
 }
 
-export default MemoryRetrieval;
+module.exports = MemoryRetrieval;
