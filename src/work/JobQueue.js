@@ -1,52 +1,71 @@
-/**
- * Class representing a job queue for managing commission tasks.
- */
+// JobQueue.js
+// This module manages a queue of jobs, including commission processing.
+
 class JobQueue {
     constructor() {
-        this.queue = [];
-        this.isProcessing = false;
+        this.jobs = [];
     }
 
     /**
-     * Adds a job to the queue.
-     * @param {Function} job - The job function to execute.
-     * @throws {Error} If job is not a function.
+     * Adds a new job to the queue.
+     * @param {Object} job - The job object to be added to the queue.
+     * @returns {void}
      */
     addJob(job) {
-        if (typeof job !== 'function') {
-            throw new Error('Job must be a function.');
+        if (!this.validateJob(job)) {
+            throw new Error('Invalid job object.');
         }
-        this.queue.push(job);
-        this.processQueue();
+        this.jobs.push(job);
     }
 
     /**
-     * Processes the job queue sequentially.
-     * @returns {Promise<void>} A promise that resolves when all jobs are processed.
+     * Validates the job object structure.
+     * @param {Object} job - The job object to validate.
+     * @returns {boolean}
      */
-    async processQueue() {
-        if (this.isProcessing) return;
-        this.isProcessing = true;
-
-        while (this.queue.length > 0) {
-            const job = this.queue.shift();
-            try {
-                await job();
-            } catch (error) {
-                console.error('Job failed:', error);
-            }
-        }
-
-        this.isProcessing = false;
+    validateJob(job) {
+        return job && typeof job.id === 'string' && typeof job.type === 'string';
     }
 
     /**
-     * Returns the number of jobs in the queue.
-     * @returns {number} The number of jobs.
+     * Retrieves the next job in the queue without removing it.
+     * @returns {Object|null} - The next job object or null if the queue is empty.
      */
-    getJobCount() {
-        return this.queue.length;
+    peek() {
+        return this.jobs.length > 0 ? this.jobs[0] : null;
+    }
+
+    /**
+     * Removes and returns the next job from the queue.
+     * @returns {Object|null} - The removed job object or null if the queue is empty.
+     */
+    pop() {
+        return this.jobs.shift() || null;
+    }
+
+    /**
+     * Clears all jobs from the queue.
+     * @returns {void}
+     */
+    clear() {
+        this.jobs = [];
+    }
+
+    /**
+     * Returns the current size of the job queue.
+     * @returns {number} - Total number of jobs in the queue.
+     */
+    size() {
+        return this.jobs.length;
+    }
+
+    /**
+     * Retrieves jobs associated with commissions.
+     * @returns {Array} - Array of commission jobs.
+     */
+    getCommissionJobs() {
+        return this.jobs.filter(job => job.type === 'commission');
     }
 }
 
-module.exports = JobQueue;
+export default JobQueue;
