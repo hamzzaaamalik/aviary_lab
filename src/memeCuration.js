@@ -1,29 +1,29 @@
-// memeCuration.js
-
-// This module is responsible for curating memes based on user preferences and trending topics.
-
-const memes = require('./memes');
-const { getTrendingTopics } = require('./memeGenerator');
-
 class MemeCuration {
-    constructor() {
-        this.curatedMemes = [];
-    }
+  constructor() {
+    this.memes = new Map();
+  }
 
-    // Fetch trending topics and curate memes accordingly
-    async curateMemes() {
-        const trendingTopics = await getTrendingTopics();
-        this.curatedMemes = memes.filter(meme => 
-            trendingTopics.some(topic => meme.tags.includes(topic))
-        );
-        return this.curatedMemes;
+  addMeme(id, memeData) {
+    if (this.memes.has(id)) {
+      throw new Error(`Meme with id ${id} already exists.`);
     }
+    this.memes.set(id, memeData);
+  }
 
-    // Get a random curated meme
-    getRandomCuratedMeme() {
-        const randomIndex = Math.floor(Math.random() * this.curatedMemes.length);
-        return this.curatedMemes[randomIndex];
+  getMeme(id) {
+    return this.memes.get(id) || null;
+  }
+
+  removeMeme(id) {
+    if (!this.memes.has(id)) {
+      throw new Error(`No meme found with id ${id}.`);
     }
+    this.memes.delete(id);
+  }
+
+  getAllMemes() {
+    return Array.from(this.memes.entries()).map(([id, data]) => ({ id, ...data }));
+  }
 }
 
-module.exports = new MemeCuration();
+export default MemeCuration;
