@@ -1,60 +1,57 @@
 /**
- * MemoryManager handles the organization and management of memory storage,
- * allowing efficient retrieval and storage of memories.
+ * MemoryManager handles memory operations, including storage and retrieval of knowledge.
+ * It abstracts the interaction with LongTermMemory and ensures data integrity.
  *
- * @class
+ * @module MemoryManager
  */
+
+import LongTermMemory from './LongTermMemory';
+
 class MemoryManager {
-    /**
-     * Creates an instance of MemoryManager.
-     */
     constructor() {
-        this.memory = new Map(); // Memory storage as key-value pairs
+        this.memory = new LongTermMemory();
     }
 
     /**
-     * Stores a memory with a unique identifier.
-     *
-     * @param {string} id - Unique identifier for the memory.
-     * @param {object} data - Data to be stored in memory.
-     * @throws {Error} Throws an error if the id already exists.
+     * Stores a knowledge item in memory.
+     * @param {string} key - The unique key for the knowledge.
+     * @param {*} value - The knowledge item to store.
+     * @throws {Error} If the key is invalid or the value is undefined.
      */
-    storeMemory(id, data) {
-        if (this.memory.has(id)) {
-            throw new Error('Memory id already exists.');
+    store(key, value) {
+        if (!key || value === undefined) {
+            throw new Error('Invalid key or value.');
         }
-        this.memory.set(id, data);
+        this.memory.store(key, value);
     }
 
     /**
-     * Retrieves a memory by its unique identifier.
-     *
-     * @param {string} id - Unique identifier for the memory.
-     * @returns {object|null} The memory data or null if not found.
+     * Retrieves a knowledge item from memory.
+     * @param {string} key - The unique key for the knowledge.
+     * @returns {*} The knowledge item or null if not found.
      */
-    retrieveMemory(id) {
-        return this.memory.get(id) || null;
+    retrieve(key) {
+        return this.memory.retrieve(key);
     }
 
     /**
-     * Removes a memory from storage by its unique identifier.
-     *
-     * @param {string} id - Unique identifier for the memory.
-     * @throws {Error} Throws an error if the id does not exist.
+     * Deletes a knowledge item from memory.
+     * @param {string} key - The unique key for the knowledge.
+     * @throws {Error} If the key is invalid.
      */
-    removeMemory(id) {
-        if (!this.memory.has(id)) {
-            throw new Error('Memory id does not exist.');
+    delete(key) {
+        if (!key) {
+            throw new Error('Invalid key.');
         }
-        this.memory.delete(id);
+        this.memory.delete(key);
     }
 
     /**
-     * Clears all memory storage.
+     * Clears all knowledge from memory.
      */
-    clearMemory() {
+    clear() {
         this.memory.clear();
     }
 }
 
-module.exports = MemoryManager;
+export default MemoryManager;
