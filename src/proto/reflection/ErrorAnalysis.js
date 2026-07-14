@@ -1,74 +1,52 @@
 /**
- * ErrorAnalysis class handles the analysis of errors encountered during operations.
- * It identifies patterns, categorizes errors, and provides insights for improvement.
+ * ErrorAnalysis class for analyzing mistakes and adjusting behavior.
+ * This class implements hooks to register errors and learn from them.
  */
 class ErrorAnalysis {
     constructor() {
-        this.errorLog = [];
-        this.errorPatterns = new Map();
+        this.errors = [];
+        this.errorHooks = [];
     }
 
     /**
-     * Logs an error and analyzes it for patterns.
-     * 
-     * @param {string} errorMessage - The error message to log.
-     * @param {Object} context - The context in which the error occurred.
+     * Register an error.
+     * @param {string} errorMessage - Description of the error.
+     * @param {Object} context - Contextual information related to the error.
      */
-    logError(errorMessage, context) {
-        const errorEntry = { message: errorMessage, context, timestamp: new Date() };
-        this.errorLog.push(errorEntry);
-        this.analyzeErrorPattern(errorMessage);
+    registerError(errorMessage, context) {
+        const errorEntry = {
+            message: errorMessage,
+            context: context,
+            timestamp: new Date().toISOString()
+        };
+        this.errors.push(errorEntry);
+        this.triggerHooks(errorEntry);
     }
 
     /**
-     * Analyzes the error message to identify and categorize error patterns.
-     * 
-     * @param {string} errorMessage - The error message to analyze.
+     * Add a hook to be called when an error is registered.
+     * @param {Function} hook - Function that takes an error entry as argument.
      */
-    analyzeErrorPattern(errorMessage) {
-        const category = this.categorizeError(errorMessage);
-        if (!this.errorPatterns.has(category)) {
-            this.errorPatterns.set(category, 0);
-        }
-        this.errorPatterns.set(category, this.errorPatterns.get(category) + 1);
-    }
-
-    /**
-     * Categorizes the error based on predefined criteria.
-     * 
-     * @param {string} errorMessage - The error message to categorize.
-     * @returns {string} - The category of the error.
-     */
-    categorizeError(errorMessage) {
-        if (errorMessage.includes('Network')) {
-            return 'Network Error';
-        } else if (errorMessage.includes('Validation')) {
-            return 'Validation Error';
-        } else {
-            return 'General Error';
+    addErrorHook(hook) {
+        if (typeof hook === 'function') {
+            this.errorHooks.push(hook);
         }
     }
 
     /**
-     * Returns the error log.
-     * 
-     * @returns {Array} - The list of logged errors.
+     * Trigger all registered hooks with the provided error entry.
+     * @param {Object} errorEntry - The error entry to pass to hooks.
      */
-    getErrorLog() {
-        return this.errorLog;
+    triggerHooks(errorEntry) {
+        this.errorHooks.forEach(hook => hook(errorEntry));
     }
 
     /**
-     * Returns a summary of error patterns.
-     * 
-     * @returns {Object} - A summary of error categories and counts.
+     * Retrieve all registered errors.
+     * @returns {Array} - Array of error entries.
      */
-    getErrorPatternsSummary() {
-        const summary = {};
-        this.errorPatterns.forEach((count, category) => {
-            summary[category] = count;
-        });
-        return summary;
+    getErrors() {
+        return this.errors;
     }
 }
 
