@@ -1,32 +1,37 @@
 /**
- * KnowledgeQueryInterface.js
- * 
- * This module defines the interface for querying knowledge in the library. 
- * It allows other components to retrieve information based on specific criteria, 
- * enhancing the overall accessibility of knowledge.
- * 
- * @module KnowledgeQueryInterface
+ * KnowledgeQueryInterface serves as the interface for querying the shared knowledge base.
+ * It provides methods to retrieve knowledge entries based on various criteria.
  */
-
 class KnowledgeQueryInterface {
     constructor(knowledgeBase) {
         /**
-         * The knowledge base to query.
-         * @type {Object}
+         * @type {Map<string, any>}
+         * @private
          */
         this.knowledgeBase = knowledgeBase;
     }
 
     /**
-     * Query the knowledge base for entries that match the provided criteria.
-     * 
-     * @param {string} criteria - The criteria to search for in the knowledge base.
-     * @returns {Array} - An array of matching knowledge entries.
+     * Query knowledge entries by a specific key.
+     * @param {string} key - The key to search in the knowledge base.
+     * @returns {any|null} - Returns the knowledge entry if found, otherwise null.
      */
-    query(criteria) {
+    getByKey(key) {
+        if (this.knowledgeBase.has(key)) {
+            return this.knowledgeBase.get(key);
+        }
+        return null;
+    }
+
+    /**
+     * Query knowledge entries by a category.
+     * @param {string} category - The category to filter knowledge entries.
+     * @returns {Array<any>} - Returns an array of knowledge entries belonging to the specified category.
+     */
+    getByCategory(category) {
         const results = [];
-        for (const entry of this.knowledgeBase) {
-            if (this.matchesCriteria(entry, criteria)) {
+        for (const [key, entry] of this.knowledgeBase.entries()) {
+            if (entry.category === category) {
                 results.push(entry);
             }
         }
@@ -34,29 +39,18 @@ class KnowledgeQueryInterface {
     }
 
     /**
-     * Check if a knowledge entry matches the given criteria.
-     * This is a basic matching function that can be extended or modified.
-     * 
-     * @param {Object} entry - The knowledge entry to evaluate.
-     * @param {string} criteria - The criteria to evaluate against.
-     * @returns {boolean} - True if the entry matches, false otherwise.
+     * Search knowledge entries by a keyword in their content.
+     * @param {string} keyword - The keyword to search within knowledge entries.
+     * @returns {Array<any>} - Returns an array of matching knowledge entries.
      */
-    matchesCriteria(entry, criteria) {
-        // Basic matching logic (could be extended with complex rules)
-        return entry.title.includes(criteria) || entry.content.includes(criteria);
-    }
-
-    /**
-     * Add a new knowledge entry to the knowledge base.
-     * 
-     * @param {Object} entry - The knowledge entry to add, should have title and content.
-     * @throws {Error} - Throws an error if entry is invalid.
-     */
-    addEntry(entry) {
-        if (!entry.title || !entry.content) {
-            throw new Error('Invalid entry. Must have title and content.');
+    searchByKeyword(keyword) {
+        const results = [];
+        for (const [key, entry] of this.knowledgeBase.entries()) {
+            if (entry.content.includes(keyword)) {
+                results.push(entry);
+            }
         }
-        this.knowledgeBase.push(entry);
+        return results;
     }
 }
 
