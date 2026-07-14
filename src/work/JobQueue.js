@@ -1,5 +1,5 @@
 /**
- * Class representing a Job Queue for handling commissions.
+ * Class representing a job queue for managing commission tasks.
  */
 class JobQueue {
     constructor() {
@@ -8,46 +8,45 @@ class JobQueue {
     }
 
     /**
-     * Add a job to the queue.
-     * @param {Function} job - The job function to add.
+     * Adds a job to the queue.
+     * @param {Function} job - The job function to execute.
      * @throws {Error} If job is not a function.
      */
     addJob(job) {
         if (typeof job !== 'function') {
-            throw new Error('Job must be a function');
+            throw new Error('Job must be a function.');
         }
         this.queue.push(job);
         this.processQueue();
     }
 
     /**
-     * Process the next job in the queue.
-     * @returns {Promise<void>} Resolves when the job is complete.
+     * Processes the job queue sequentially.
+     * @returns {Promise<void>} A promise that resolves when all jobs are processed.
      */
     async processQueue() {
-        if (this.isProcessing || this.queue.length === 0) {
-            return;
+        if (this.isProcessing) return;
+        this.isProcessing = true;
+
+        while (this.queue.length > 0) {
+            const job = this.queue.shift();
+            try {
+                await job();
+            } catch (error) {
+                console.error('Job failed:', error);
+            }
         }
 
-        this.isProcessing = true;
-        const job = this.queue.shift();
-        try {
-            await job(); // Execute the job
-        } catch (error) {
-            console.error('Job failed:', error);
-        } finally {
-            this.isProcessing = false;
-            this.processQueue(); // Process next job
-        }
+        this.isProcessing = false;
     }
 
     /**
-     * Get the current length of the job queue.
-     * @returns {number} The number of jobs in the queue.
+     * Returns the number of jobs in the queue.
+     * @returns {number} The number of jobs.
      */
-    length() {
+    getJobCount() {
         return this.queue.length;
     }
 }
 
-export default JobQueue;
+module.exports = JobQueue;
