@@ -1,59 +1,51 @@
-/**\
- * AgentInteractionTracker.js\
- *\
- * This module tracks interactions between agents within the world,\
- * enabling dynamic response and evolution based on agent behaviors.\
- *\
- * @module AgentInteractionTracker\
- */\
-\
-class AgentInteractionTracker {\
-    constructor() {\
-        this.interactions = [];\
-    }\
-\
-    /**\
-     * Records a new interaction between two agents.\
-     *\
-     * @param {string} agentId1 - The ID of the first agent.\
-     * @param {string} agentId2 - The ID of the second agent.\
-     * @param {string} interactionType - The type of interaction (e.g., "communication", "conflict").\
-     * @param {Date} timestamp - The time the interaction occurred.\
-     */\
-    recordInteraction(agentId1, agentId2, interactionType, timestamp = new Date()) {\
-        this.interactions.push({\
-            agentId1,\
-            agentId2,\
-            interactionType,\
-            timestamp\
-        });\
-    }\
-\
-    /**\
-     * Retrieves all interactions for a specific agent.\
-     *\
-     * @param {string} agentId - The ID of the agent to retrieve interactions for.\
-     * @returns {Array} An array of interaction records for the specified agent.\
-     */\
-    getInteractionsForAgent(agentId) {\
-        return this.interactions.filter(interaction => interaction.agentId1 === agentId || interaction.agentId2 === agentId);\
-    }\
-\
-    /**\
-     * Gets the total count of interactions recorded.\
-     *\
-     * @returns {number} The total number of interactions.\
-     */\
-    getTotalInteractions() {\
-        return this.interactions.length;\
-    }\
-\
-    /**\
-     * Clears all recorded interactions. This may be useful for resetting the tracker.\
-     */\
-    clearInteractions() {\
-        this.interactions = [];\
-    }\
-}\
-\
+/**
+ * AgentInteractionTracker is responsible for monitoring and recording interactions
+ * between agents in the system to facilitate better decision-making and resource
+ * allocation.
+ */
+class AgentInteractionTracker {
+    constructor() {
+        this.interactions = new Map(); // Maps agent IDs to their interaction logs
+    }
+
+    /**
+     * Records an interaction between two agents.
+     * @param {string} agentAId - The ID of the first agent.
+     * @param {string} agentBId - The ID of the second agent.
+     * @param {Date} timestamp - The time when the interaction took place.
+     */
+    recordInteraction(agentAId, agentBId, timestamp = new Date()) {
+        if (!this.interactions.has(agentAId)) {
+            this.interactions.set(agentAId, []);
+        }
+        this.interactions.get(agentAId).push({ agentBId, timestamp });
+    }
+
+    /**
+     * Retrieves interaction logs for a specific agent.
+     * @param {string} agentId - The ID of the agent whose interactions are being queried.
+     * @returns {Array} - An array of interaction logs for the specified agent.
+     */
+    getInteractionsForAgent(agentId) {
+        return this.interactions.get(agentId) || [];
+    }
+
+    /**
+     * Clears all interaction logs for a specific agent.
+     * @param {string} agentId - The ID of the agent whose logs are to be cleared.
+     */
+    clearInteractions(agentId) {
+        if (this.interactions.has(agentId)) {
+            this.interactions.delete(agentId);
+        }
+    }
+
+    /**
+     * Clears all interaction logs in the tracker.
+     */
+    clearAllInteractions() {
+        this.interactions.clear();
+    }
+}
+
 module.exports = AgentInteractionTracker;
