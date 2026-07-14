@@ -1,1 +1,90 @@
-/**\n * AgentSDK class provides an interface for creating and managing agents in the system.\n * It facilitates interactions with the AgentFactory and offers utility methods for agent lifecycle management.\n *\n * @class\n */\nclass AgentSDK {\n    /**\n     * Create a new agent using the AgentFactory.\n     *\n     * @param {Object} agentConfig - Configuration object for the new agent.\n     * @returns {AgentIdentity} The identity of the newly created agent.\n     * @throws {Error} If agent creation fails.\n     */\n    static createAgent(agentConfig) {\n        const AgentFactory = require('../agents/AgentFactory');\n        const agentIdentity = AgentFactory.create(agentConfig);\n        return agentIdentity;\n    }\n\n    /**\n     * Retrieve an agent's identity by its ID.\n     *\n     * @param {string} agentId - The unique identifier of the agent.\n     * @returns {AgentIdentity|null} The agent identity or null if not found.\n     */\n    static getAgent(agentId) {\n        const AgentRegistry = require('../agents/AgentRegistry');\n        return AgentRegistry.get(agentId);\n    }\n\n    /**\n     * Remove an agent using its identity.\n     *\n     * @param {AgentIdentity} agentIdentity - The identity of the agent to remove.\n     * @throws {Error} If agent removal fails.\n     */\n    static removeAgent(agentIdentity) {\n        const AgentLifecycle = require('../agents/AgentLifecycle');\n        AgentLifecycle.terminate(agentIdentity);\n    }\n\n    /**\n     * List all agents currently active in the system.\n     *\n     * @returns {Array<AgentIdentity>} An array of active agent identities.\n     */\n    static listActiveAgents() {\n        const AgentRegistry = require('../agents/AgentRegistry');\n        return AgentRegistry.listActive();\n    }\n}\n\nmodule.exports = AgentSDK;
+/**
+ * AgentSDK.js
+ * A Software Development Kit for building and managing agents in the Proto framework.
+ * 
+ * This SDK provides utilities to create agents, manage their lifecycle, and facilitate interaction with 
+ * the core functionalities of the Proto system. This module is designed to be extended by third-party developers.
+ * 
+ * @module AgentSDK
+ */
+
+import AgentFactory from '../agents/AgentFactory.js';
+import AgentLifecycle from '../agents/AgentLifecycle.js';
+
+/**
+ * AgentSDK class.
+ * 
+ * This class serves as the primary interface for creating and managing agents. It encapsulates the 
+ * functionalities needed to interact with the agent subsystem within Proto.
+ */
+class AgentSDK {
+    constructor() {
+        this.agents = new Map();
+    }
+
+    /**
+     * Creates a new agent instance.
+     * 
+     * @param {string} agentId - Unique identifier for the agent.
+     * @param {Object} agentConfig - Configuration settings for the agent.
+     * @returns {Object} The created agent instance.
+     * @throws {Error} If the agent ID is already in use.
+     */
+    createAgent(agentId, agentConfig) {
+        if (this.agents.has(agentId)) {
+            throw new Error(`Agent with ID ${agentId} already exists.`);
+        }
+        const agent = AgentFactory.create(agentId, agentConfig);
+        this.agents.set(agentId, agent);
+        return agent;
+    }
+
+    /**
+     * Activates the specified agent.
+     * 
+     * @param {string} agentId - Unique identifier for the agent.
+     * @throws {Error} If the agent does not exist or is already active.
+     */
+    activateAgent(agentId) {
+        const agent = this.agents.get(agentId);
+        if (!agent) {
+            throw new Error(`Agent with ID ${agentId} does not exist.`);
+        }
+        AgentLifecycle.activate(agent);
+    }
+
+    /**
+     * Deactivates the specified agent.
+     * 
+     * @param {string} agentId - Unique identifier for the agent.
+     * @throws {Error} If the agent does not exist or is already inactive.
+     */
+    deactivateAgent(agentId) {
+        const agent = this.agents.get(agentId);
+        if (!agent) {
+            throw new Error(`Agent with ID ${agentId} does not exist.`);
+        }
+        AgentLifecycle.deactivate(agent);
+    }
+
+    /**
+     * Retrieves an agent instance by ID.
+     * 
+     * @param {string} agentId - Unique identifier for the agent.
+     * @returns {Object|null} The agent instance, or null if not found.
+     */
+    getAgent(agentId) {
+        return this.agents.get(agentId) || null;
+    }
+
+    /**
+     * Lists all active agents.
+     * 
+     * @returns {Array} Array of active agent IDs.
+     */
+    listActiveAgents() {
+        return [...this.agents.keys()];
+    }
+}
+
+export default new AgentSDK();
