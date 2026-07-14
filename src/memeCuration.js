@@ -1,56 +1,55 @@
 /**
- * MemeCuration - A module for curating and managing memes.
- * Provides functionality to add, remove, and retrieve curated memes.
- *
- * @module MemeCuration
+ * MemeCuration class for managing and curating memes based on various criteria.
+ * @class
  */
-
 class MemeCuration {
     constructor() {
-        this.curatedMemes = [];
+        this.memes = [];
     }
 
     /**
-     * Adds a new meme to the curated list.
+     * Adds a new meme to the curation list.
      * @param {Object} meme - The meme object to be added.
-     * @throws {Error} If meme is already curated.
+     * @throws {Error} If the meme object is invalid.
      */
     addMeme(meme) {
-        if (this.curatedMemes.some(existingMeme => existingMeme.id === meme.id)) {
-            throw new Error('Meme already curated.');
+        if (!this.isValidMeme(meme)) {
+            throw new Error('Invalid meme object.');
         }
-        this.curatedMemes.push(meme);
+        this.memes.push(meme);
     }
 
     /**
-     * Removes a meme from the curated list.
-     * @param {string} memeId - The ID of the meme to be removed.
-     * @throws {Error} If meme is not found.
+     * Validates if a meme object is valid.
+     * @param {Object} meme - The meme object to validate.
+     * @returns {boolean} True if valid, otherwise false.
      */
-    removeMeme(memeId) {
-        const memeIndex = this.curatedMemes.findIndex(meme => meme.id === memeId);
-        if (memeIndex === -1) {
-            throw new Error('Meme not found.');
-        }
-        this.curatedMemes.splice(memeIndex, 1);
+    isValidMeme(meme) {
+        return meme && typeof meme.title === 'string' && typeof meme.imageUrl === 'string';
     }
 
     /**
-     * Retrieves all curated memes.
+     * Gets a curated list of memes that meet specific criteria.
+     * @param {Function} criteria - A function that defines the filtering criteria.
      * @returns {Array} Array of curated memes.
      */
-    getCuratedMemes() {
-        return this.curatedMemes;
+    getCuratedMemes(criteria) {
+        return this.memes.filter(criteria);
     }
 
     /**
-     * Searches for curated memes based on a keyword.
-     * @param {string} keyword - The keyword to search for.
-     * @returns {Array} Array of memes containing the keyword.
+     * Removes a meme from the curation list.
+     * @param {string} title - The title of the meme to be removed.
+     * @returns {boolean} True if the meme was removed, otherwise false.
      */
-    searchMemes(keyword) {
-        return this.curatedMemes.filter(meme => meme.title.includes(keyword) || meme.description.includes(keyword));
+    removeMeme(title) {
+        const index = this.memes.findIndex(meme => meme.title === title);
+        if (index !== -1) {
+            this.memes.splice(index, 1);
+            return true;
+        }
+        return false;
     }
 }
 
-module.exports = new MemeCuration();
+module.exports = MemeCuration;
