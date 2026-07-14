@@ -1,37 +1,34 @@
 class Memory {
     constructor() {
-        this.store = new Map();
+        this.entries = new Map();
     }
 
-    set(key, value) {
-        this.store.set(key, value);
+    add(key, value) {
+        this.entries.set(key, value);
     }
 
     get(key) {
-        return this.store.get(key);
-    }
-
-    has(key) {
-        return this.store.has(key);
+        return this.entries.get(key);
     }
 
     delete(key) {
-        return this.store.delete(key);
+        this.entries.delete(key);
+    }
+
+    has(key) {
+        return this.entries.has(key);
     }
 
     clear() {
-        this.store.clear();
+        this.entries.clear();
     }
 
-    keys() {
-        return Array.from(this.store.keys());
-    }
-
-    values() {
-        return Array.from(this.store.values());
-    }
-
-    entries() {
-        return Array.from(this.store.entries());
+    logMemory() {
+        console.log('Current Memory Entries:', this.entries);
     }
 }
+
+// Use the Memory class
+const globalMemory = new Memory();
+
+export { globalMemory, Memory };
