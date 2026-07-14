@@ -1,62 +1,50 @@
 /**
- * GraduationExecutor.js
- * 
- * This module is responsible for managing the execution of the graduation process, orchestrating the
- * interactions between different components during the graduation milestone. It invokes perception,
- * reasoning, and action cycles to ensure a smooth transition to active autonomy for PROTO.
- * 
- * @module GraduationExecutor
+ * GraduationExecutor class manages the execution of graduation events.
+ * It coordinates the flow between the event handler and the graduation loop,
+ * ensuring that the process runs smoothly and efficiently.
  */
-
-const GraduationManager = require('./GraduationManager');
-const PerceiveThinkActLoop = require('./PerceiveThinkActLoop');
-const StateManager = require('./StateManager');
-
 class GraduationExecutor {
-    /**
-     * Creates an instance of GraduationExecutor.
-     * @constructor
-     * @param {GraduationManager} graduationManager - An instance of the GraduationManager.
-     * @param {StateManager} stateManager - An instance of the StateManager.
-     */
-    constructor(graduationManager, stateManager) {
-        this.graduationManager = graduationManager;
-        this.stateManager = stateManager;
+    constructor(eventBus, loop) {
+        this.eventBus = eventBus;
+        this.loop = loop;
+        this.isExecuting = false;
     }
 
     /**
-     * Starts the graduation execution loop, invoking perception, reasoning, and actions.
+     * Starts the execution process for graduation.
+     * Listens for relevant events and triggers the graduation loop.
      */
-    async start() {
-        try {
-            // Initialize the graduation process
-            await this.graduationManager.initialize();
-            this.stateManager.setState('graduation_in_progress');
-
-            // Execute the perceive-think-act loop
-            await PerceiveThinkActLoop.run();
-
-            // Finalize graduation
-            await this.graduationManager.finalize();
-            this.stateManager.setState('graduation_completed');
-        } catch (error) {
-            console.error('Error during graduation execution:', error);
-            this.stateManager.setState('graduation_failed');
-            throw error;
-        }
+    start() {
+        if (this.isExecuting) return;
+        this.isExecuting = true;
+        this.eventBus.on('graduation.start', this.handleStart.bind(this));
     }
 
     /**
-     * Stops the graduation execution loop and cleans up resources.
+     * Stops the execution process.
      */
-    async stop() {
-        try {
-            await this.graduationManager.cleanup();
-            this.stateManager.setState('graduation_stopped');
-        } catch (error) {
-            console.error('Error during cleanup:', error);
-        }
+    stop() {
+        this.isExecuting = false;
+        this.eventBus.off('graduation.start', this.handleStart.bind(this));
+    }
+
+    /**
+     * Handles the start of the graduation process.
+     * It triggers the graduation loop to begin execution.
+     * @param {Object} event - The event object containing graduation details.
+     */
+    handleStart(event) {
+        console.log('Graduation process started:', event);
+        this.loop.run(event);
+    }
+
+    /**
+     * Resets the state of the executor, clearing any existing execution state.
+     */
+    reset() {
+        this.isExecuting = false;
     }
 }
 
+// Export the GraduationExecutor class
 module.exports = GraduationExecutor;
