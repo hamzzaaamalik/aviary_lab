@@ -1,59 +1,58 @@
 /**
- * WorkReceipt class to represent verifiable receipts of completed work.
- * Each receipt contains a unique identifier, the work done, and a hash for verification.
+ * WorkReceipt class to encapsulate the proof of work done.
+ * Each WorkReceipt instance represents a unit of work, containing its hash, timestamp, and metadata.
  */
 class WorkReceipt {
     /**
-     * @param {string} id - Unique identifier for the receipt.
-     * @param {string} workDescription - Description of the work completed.
-     * @param {string} hash - Hash of the work for verification.
+     * @param {Object} data - The data associated with the work receipt.
+     * @param {string} data.workId - Unique identifier for the work.
+     * @param {string} data.workerId - Identifier for the entity that performed the work.
+     * @param {string} data.result - The result of the work performed.
+     * @param {number} data.timestamp - Timestamp of when the work was completed.
      */
-    constructor(id, workDescription, hash) {
-        this.id = id;
-        this.workDescription = workDescription;
-        this.hash = hash;
-        this.timestamp = new Date();
+    constructor(data) {
+        this.workId = data.workId;
+        this.workerId = data.workerId;
+        this.result = data.result;
+        this.timestamp = data.timestamp;
+        this.hash = this.generateHash();
     }
 
     /**
-     * Get the unique identifier of the work receipt.
-     * @returns {string} - Unique identifier.
+     * Generates a hash for the work receipt using the workId and timestamp.
+     * @returns {string} - The generated hash.
      */
-    getId() {
-        return this.id;
+    generateHash() {
+        const input = `${this.workId}${this.timestamp}`;
+        // Simple hash function for demonstration; replace with a cryptographic hash in production.
+        let hash = 0;
+        for (let i = 0; i < input.length; i++) {
+            hash = (hash << 5) - hash + input.charCodeAt(i);
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash.toString();
     }
 
     /**
-     * Get the description of the work completed.
-     * @returns {string} - Work description.
+     * Validates the work receipt against its hash.
+     * @returns {boolean} - True if the hash matches the generated hash, else false.
      */
-    getWorkDescription() {
-        return this.workDescription;
+    validate() {
+        return this.hash === this.generateHash();
     }
 
     /**
-     * Get the hash for verification.
-     * @returns {string} - Hash of the work.
+     * Serializes the work receipt to a JSON object.
+     * @returns {Object} - JSON representation of the work receipt.
      */
-    getHash() {
-        return this.hash;
-    }
-
-    /**
-     * Get the timestamp of when the receipt was created.
-     * @returns {Date} - Creation timestamp.
-     */
-    getTimestamp() {
-        return this.timestamp;
-    }
-
-    /**
-     * Verifies the receipt by comparing the provided hash with the stored hash.
-     * @param {string} hash - The hash to verify against.
-     * @returns {boolean} - True if the hashes match, false otherwise.
-     */
-    verify(hash) {
-        return this.hash === hash;
+    toJSON() {
+        return {
+            workId: this.workId,
+            workerId: this.workerId,
+            result: this.result,
+            timestamp: this.timestamp,
+            hash: this.hash
+        };
     }
 }
 
