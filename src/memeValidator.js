@@ -1,12 +1,17 @@
+function isValidMeme(meme) {
+    if (typeof meme !== 'object' || meme === null) return false;
+    const requiredKeys = ['id', 'content', 'style'];
+    return requiredKeys.every(key => key in meme);
+}
+
 function validateMeme(meme) {
-    if (!meme) return false;
-    if (typeof meme.title !== 'string' || meme.title.trim() === '') return false;
-    if (typeof meme.image !== 'string' || !isValidImageUrl(meme.image)) return false;
-    return true;
+    if (!isValidMeme(meme)) {
+        throw new Error('Invalid meme structure.');
+    }
+    // Additional validation logic can be placed here.
 }
 
-function isValidImageUrl(url) {
-    return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/i.test(url);
-}
-
-module.exports = { validateMeme };
+module.exports = {
+    isValidMeme,
+    validateMeme,
+};
