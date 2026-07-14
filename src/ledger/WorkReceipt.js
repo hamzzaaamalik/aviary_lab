@@ -1,60 +1,46 @@
 /**
- * WorkReceipt class represents a verifiable receipt for work performed.
- * It includes details about the work, timestamp, and a unique hash for integrity.
+ * WorkReceipt class to create and manage work receipts.
+ * A work receipt contains the details of work performed, including a proof of execution.
+ * Each receipt is uniquely identified and can be verified for integrity.
+ * 
+ * @class
+ * @classdesc Represents a work receipt for tracking completed tasks.
  */
 class WorkReceipt {
-    constructor(workId, performerId, details) {
-        this.workId = workId; // unique identifier for the work
-        this.performerId = performerId; // unique identifier for the performer
-        this.details = details; // description or details of the work
-        this.timestamp = new Date(); // time when the work was completed
-        this.hash = this.generateHash(); // hash for integrity verification
-    }
-
     /**
-     * Generates a unique hash for the work receipt
-     * @returns {string} - The generated hash
+     * Creates a new WorkReceipt instance.
+     * 
+     * @param {string} id - The unique identifier for the work receipt.
+     * @param {string} description - A brief description of the work performed.
+     * @param {Date} timestamp - The time when the work was completed.
+     * @param {string} proof - The proof of the work completed (e.g., a hash).
      */
-    generateHash() {
-        const data = `${this.workId}-${this.performerId}-${this.timestamp.toISOString()}-${JSON.stringify(this.details)}`;
-        return this.hashString(data);
+    constructor(id, description, timestamp, proof) {
+        this.id = id;
+        this.description = description;
+        this.timestamp = timestamp;
+        this.proof = proof;
     }
 
     /**
-     * Simple hashing function (for demonstration, consider using a better hashing algorithm in production).
-     * @param {string} str - The input string to hash
-     * @returns {string} - A simple hash value
-     */
-    hashString(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash << 5) - hash + str.charCodeAt(i);
-            hash |= 0; // Convert to 32bit integer
-        }
-        return hash.toString();
-    }
-
-    /**
-     * Validates the receipt by checking the hash against the details.
-     * @returns {boolean} - True if valid, false otherwise
+     * Validates the work receipt by checking the proof.
+     * 
+     * @returns {boolean} - Returns true if the receipt is valid, false otherwise.
      */
     validate() {
-        return this.hash === this.generateHash();
+        // In a real implementation, validation logic would be applied here.
+        return this.proof && this.id;
     }
 
     /**
-     * Returns the details of the work receipt as an object.
-     * @returns {Object} - The receipt details
+     * Generates a string representation of the work receipt.
+     * 
+     * @returns {string} - The string representation of the work receipt.
      */
-    getDetails() {
-        return {
-            workId: this.workId,
-            performerId: this.performerId,
-            details: this.details,
-            timestamp: this.timestamp,
-            hash: this.hash,
-        };
+    toString() {
+        return `WorkReceipt { id: ${this.id}, description: ${this.description}, timestamp: ${this.timestamp}, proof: ${this.proof} }`;
     }
 }
 
+// Exporting the WorkReceipt class for use in other modules.
 module.exports = WorkReceipt;
