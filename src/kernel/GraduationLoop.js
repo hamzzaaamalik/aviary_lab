@@ -1,1 +1,53 @@
-/**\n * GraduationLoop class to manage the perceive→think→act cycle of PROTO.\n * This class integrates perception, reasoning, and action modules into a cohesive loop.\n *\n * @class GraduationLoop\n */\nclass GraduationLoop {\n    constructor(perceptionManager, reasoningModule, actionModule) {\n        this.perceptionManager = perceptionManager;\n        this.reasoningModule = reasoningModule;\n        this.actionModule = actionModule;\n        this.isRunning = false;\n    }\n\n    /**\n     * Initializes the loop and starts the execution cycle.\n     * @returns {void}  \n     */\n    start() {\n        this.isRunning = true;\n        this.run();\n    }\n\n    /**\n     * Stops the loop execution.\n     * @returns {void}  \n     */\n    stop() {\n        this.isRunning = false;\n    }\n\n    /**\n     * The main loop that will run while isRunning is true.\n     * It takes inputs from perception, processes them through reasoning, and executes actions.\n     * @returns {void}  \n     */\n    run() {\n        if (!this.isRunning) return;\n        this.perceptionManager.processInputs();\n\n        const thoughts = this.reasoningModule.generateThoughts(this.perceptionManager.getCurrentInputs());\n        this.actionModule.executeActions(thoughts);\n\n        // Schedule the next iteration\n        setImmediate(() => this.run());\n    }\n}\n\nmodule.exports = GraduationLoop;
+/**
+ * GraduationLoop orchestrates the primary loop of PROTO, integrating perception, reasoning, and action.
+ * This class handles the lifecycle of the system, ensuring each module communicates effectively.
+ */
+class GraduationLoop {
+    constructor(perceptionManager, eventManager, decisionMaker) {
+        this.perceptionManager = perceptionManager;
+        this.eventManager = eventManager;
+        this.decisionMaker = decisionMaker;
+        this.isRunning = false;
+    }
+
+    /**
+     * Start the loop.
+     * @returns {void}
+     */
+    start() {
+        if (!this.isRunning) {
+            this.isRunning = true;
+            this.loop();
+        }
+    }
+
+    /**
+     * Stop the loop.
+     * @returns {void}
+     */
+    stop() {
+        this.isRunning = false;
+    }
+
+    /**
+     * Main loop function. Continuously processes perception, reasoning and actions.
+     * @private
+     * @returns {void}
+     */
+    loop() {
+        if (!this.isRunning) return;
+
+        try {
+            const inputs = this.perceptionManager.getInputs();
+            const decisions = this.decisionMaker.makeDecisions(inputs);
+            this.eventManager.dispatchEvents(decisions);
+        } catch (error) {
+            console.error('Error during loop execution:', error);
+        }
+
+        // Schedule the next cycle of the loop
+        requestAnimationFrame(this.loop.bind(this));
+    }
+}
+
+export default GraduationLoop;
