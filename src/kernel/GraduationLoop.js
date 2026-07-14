@@ -1,10 +1,7 @@
 /**
- * GraduationLoop manages the core loop for PROTO's self-awareness and decision-making.
- * It orchestrates perception, reasoning, and action, ensuring a continuous flow of information.
- * 
- * @module GraduationLoop
+ * GraduationLoop: orchestrates the core loop of PROTO
+ * by managing the sequence of perception, reasoning, and action.
  */
-
 class GraduationLoop {
     constructor(eventBus, moduleRegistry) {
         this.eventBus = eventBus;
@@ -13,69 +10,42 @@ class GraduationLoop {
     }
 
     /**
-     * Starts the graduation loop.
-     * This will continuously run until stopped, processing perception, reasoning, and action phases.
+     * Start the main loop of PROTO.
      */
     start() {
-        if (this.running) {
-            console.warn('GraduationLoop is already running.');
-            return;
-        }
         this.running = true;
-        this.loop();
+        this.run();
     }
 
     /**
-     * Stops the graduation loop.
+     * Stop the main loop of PROTO.
      */
     stop() {
         this.running = false;
     }
 
     /**
-     * Main loop that executes perception, reasoning, and action.
+     * Main execution loop that coordinates perception, reasoning, and action.
+     * @private
      */
-    loop() {
+    run() {
         if (!this.running) return;
 
-        try {
-            this.perceive();
-            this.reason();
-            this.act();
-        } catch (error) {
-            console.error('Error in graduation loop:', error);
-        }
+        // Step 1: Perception
+        const perceptionModule = this.moduleRegistry.getModule('perception');
+        const signals = perceptionModule.processSignals();
 
-        // Schedule next iteration
-        setImmediate(() => this.loop());
-    }
+        // Step 2: Reasoning
+        const reasoningModule = this.moduleRegistry.getModule('reasoning');
+        const decisions = reasoningModule.makeDecisions(signals);
 
-    /**
-     * Handles perception by gathering inputs from various sources.
-     */
-    perceive() {
-        // Assuming EventIngestionPipeline handles signal ingestion.
-        const inputs = this.moduleRegistry.getModule('EventIngestionPipeline').process();
-        this.eventBus.emit('perception:inputs', inputs);
-    }
+        // Step 3: Action
+        const actionModule = this.moduleRegistry.getModule('action');
+        actionModule.executeActions(decisions);
 
-    /**
-     * Handles reasoning by processing the gathered inputs and making decisions.
-     */
-    reason() {
-        const inputs = this.eventBus.getData('perception:inputs');
-        const decisionPolicy = this.moduleRegistry.getModule('DecisionPolicy');
-        decisionPolicy.evaluate(inputs);
-    }
-
-    /**
-     * Handles actions based on the reasoning phase decisions.
-     */
-    act() {
-        const actions = this.eventBus.getData('reasoning:decisions');
-        const actionExecutor = this.moduleRegistry.getModule('ActionExecutor');
-        actionExecutor.execute(actions);
+        // Schedule next loop iteration
+        setImmediate(() => this.run());
     }
 }
 
-module.exports = GraduationLoop;
+export default GraduationLoop;
