@@ -1,68 +1,64 @@
 /**
- * AgentLifecycle class manages the life cycle of agents, including creation, state management, and destruction.
- * 
- * @class
+ * AgentLifecycle manages the lifecycle of agents, including creation, activation, and termination.
+ * This class ensures that agents are correctly initialized and can transition through their life stages.
  */
 class AgentLifecycle {
-    /**
-     * Initializes an instance of the AgentLifecycle.
-     * @constructor
-     */
     constructor() {
-        this.agents = {};
+        this.agents = new Map();
     }
 
     /**
-     * Creates a new agent and adds it to the lifecycle management.
+     * Create and initialize a new agent.
      * @param {string} agentId - Unique identifier for the agent.
-     * @param {object} agentData - Initial data for the new agent.
-     * @throws {Error} Will throw an error if the agentId already exists.
+     * @param {Object} agentData - Initial data for the agent.
+     * @returns {boolean} - Returns true if the agent is successfully created.
      */
     createAgent(agentId, agentData) {
-        if (this.agents[agentId]) {
+        if (this.agents.has(agentId)) {
             throw new Error(`Agent with ID ${agentId} already exists.`);
         }
-        this.agents[agentId] = { ...agentData, state: 'active' };
+        const agent = new NewAgent(agentId, agentData);
+        this.agents.set(agentId, agent);
+        return true;
     }
 
     /**
-     * Retrieves an agent by its ID.
+     * Activate an existing agent.
      * @param {string} agentId - Unique identifier for the agent.
-     * @returns {object} The agent data.
-     * @throws {Error} Will throw an error if the agent does not exist.
+     * @returns {boolean} - Returns true if the agent is successfully activated.
      */
-    getAgent(agentId) {
-        const agent = this.agents[agentId];
+    activateAgent(agentId) {
+        const agent = this.agents.get(agentId);
         if (!agent) {
             throw new Error(`Agent with ID ${agentId} does not exist.`);
         }
-        return agent;
+        agent.activate();
+        return true;
     }
 
     /**
-     * Updates the state of an agent.
+     * Terminate an existing agent.
      * @param {string} agentId - Unique identifier for the agent.
-     * @param {string} newState - The new state for the agent.
-     * @throws {Error} Will throw an error if the agent does not exist.
+     * @returns {boolean} - Returns true if the agent is successfully terminated.
      */
-    updateAgentState(agentId, newState) {
-        if (!this.agents[agentId]) {
+    terminateAgent(agentId) {
+        const agent = this.agents.get(agentId);
+        if (!agent) {
             throw new Error(`Agent with ID ${agentId} does not exist.`);
         }
-        this.agents[agentId].state = newState;
+        agent.terminate();
+        this.agents.delete(agentId);
+        return true;
     }
 
     /**
-     * Destroys an agent and removes it from lifecycle management.
+     * Retrieve an agent by its ID.
      * @param {string} agentId - Unique identifier for the agent.
-     * @throws {Error} Will throw an error if the agent does not exist.
+     * @returns {NewAgent|null} - Returns the agent if found, otherwise null.
      */
-    destroyAgent(agentId) {
-        if (!this.agents[agentId]) {
-            throw new Error(`Agent with ID ${agentId} does not exist.`);
-        }
-        delete this.agents[agentId];
+    getAgent(agentId) {
+        return this.agents.get(agentId) || null;
     }
 }
 
-module.exports = AgentLifecycle;
+export default AgentLifecycle;
