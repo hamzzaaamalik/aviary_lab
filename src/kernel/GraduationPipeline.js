@@ -1,49 +1,57 @@
 /**
- * GraduationPipeline orchestrates the flow from perception through reasoning to action.
- * It integrates the PerceiveThinkAct loop with the Graduation components.
- *
+ * GraduationPipeline orchestrates the flow of events through the graduation process.
+ * It connects various components to ensure a smooth transition from perception to action.
+ * 
  * @module GraduationPipeline
  */
 
-const PerceptionProcessor = require('./PerceptionProcessor');
-const GraduationCoordinator = require('./GraduationCoordinator');
-const GraduationManager = require('./GraduationManager');
-const GraduationEventHandler = require('./GraduationEventHandler');
-
 class GraduationPipeline {
-    constructor() {
-        this.perceptionProcessor = new PerceptionProcessor();
-        this.graduationCoordinator = new GraduationCoordinator();
-        this.graduationManager = new GraduationManager();
-        this.eventHandler = new GraduationEventHandler();
+    /**
+     * Creates an instance of GraduationPipeline.
+     * @param {GraduationManager} manager - The graduation manager instance.
+     */
+    constructor(manager) {
+        this.manager = manager;
+        this.eventBus = manager.eventBus;
+        this.executor = manager.executor;
     }
 
     /**
-     * Initiates the graduation process by processing incoming signals.
-     * @param {Object} signal - The incoming signal to be processed.
+     * Initializes the pipeline, setting up event listeners and routing.
      */
-    initiateGraduation(signal) {
-        this.perceptionProcessor.processSignal(signal);
-        const processedData = this.perceptionProcessor.getProcessedData();
-        this.handleReasoning(processedData);
+    init() {
+        this.eventBus.on('graduationEvent', this.handleGraduationEvent.bind(this));
     }
 
     /**
-     * Handles reasoning based on the processed data.
-     * @param {Object} data - The data processed from the perception module.
+     * Handles incoming graduation events by processing and executing actions.
+     * @param {Object} event - The event object containing the necessary data.
      */
-    handleReasoning(data) {
-        const graduationPlan = this.graduationCoordinator.coordinate(data);
-        this.executeGraduation(graduationPlan);
+    handleGraduationEvent(event) {
+        try {
+            const processedData = this.processEvent(event);
+            this.executor.execute(processedData);
+        } catch (error) {
+            console.error('Error handling graduation event:', error);
+        }
     }
 
     /**
-     * Executes the graduation plan through the Graduation Manager.
-     * @param {Object} plan - The graduation plan to execute.
+     * Processes the incoming event to prepare it for execution.
+     * @param {Object} event - The event object to process.
+     * @returns {Object} - The processed data ready for execution.
      */
-    executeGraduation(plan) {
-        this.graduationManager.execute(plan);
-        this.eventHandler.handleEvent(plan);
+    processEvent(event) {
+        // Placeholder for real processing logic
+        // This should be extended to include validation and transformation of event data
+        return event;
+    }
+
+    /**
+     * Cleans up event listeners and resources before the pipeline is destroyed.
+     */
+    destroy() {
+        this.eventBus.off('graduationEvent', this.handleGraduationEvent.bind(this));
     }
 }
 
