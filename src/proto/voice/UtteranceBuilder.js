@@ -1,58 +1,68 @@
 /**
- * UtteranceBuilder.js
- * Responsible for constructing utterances based on input parameters.
- * This module allows for dynamic generation of voice outputs that align with PROTO's personality.
+ * UtteranceBuilder class for constructing coherent and context-aware utterances.
+ *
+ * It integrates tone, personality, and intent to create natural language outputs.
  */
-
 class UtteranceBuilder {
     constructor() {
-        this.defaultTone = 'neutral';
+        this.utterance = '';
+        this.personality = null;
+        this.tone = null;
     }
 
     /**
-     * Sets the default tone for the utterances.
-     * @param {string} tone - The tone to set as default.
+     * Set the personality for the utterance.
+     * @param {Personality} personality - The personality model to use.
      */
-    setDefaultTone(tone) {
-        if (typeof tone !== 'string') {
-            throw new Error('Tone must be a string.');
+    setPersonality(personality) {
+        if (!(personality instanceof Personality)) {
+            throw new Error('Invalid personality model.');
         }
-        this.defaultTone = tone;
+        this.personality = personality;
     }
 
     /**
-     * Builds an utterance from the given text and tone.
-     * @param {string} text - The text to be converted into an utterance.
-     * @param {string} [tone] - Optional tone for the utterance. Falls back to default if not provided.
-     * @returns {Object} - An object representing the constructed utterance.
+     * Set the tone for the utterance.
+     * @param {ToneSynthesis} tone - The tone model to use.
      */
-    buildUtterance(text, tone) {
-        if (typeof text !== 'string' || text.trim() === '') {
-            throw new Error('Text must be a non-empty string.');
+    setTone(tone) {
+        if (!(tone instanceof ToneSynthesis)) {
+            throw new Error('Invalid tone model.');
         }
-
-        const selectedTone = tone || this.defaultTone;
-
-        return {
-            content: text,
-            tone: selectedTone,
-            createdAt: new Date().toISOString()
-        };
+        this.tone = tone;
     }
 
     /**
-     * Validates the utterance before it can be processed or spoken.
-     * @param {Object} utterance - The utterance object to validate.
-     * @throws {Error} - Throws an error if validation fails.
+     * Build an utterance based on the provided input and context.
+     * @param {string} input - Raw input or prompt for the utterance.
+     * @param {Object} context - Additional context for tailoring the utterance.
+     * @returns {string} - The constructed utterance.
      */
-    validateUtterance(utterance) {
-        if (!utterance.content || typeof utterance.content !== 'string') {
-            throw new Error('Invalid utterance content.');
+    buildUtterance(input, context) {
+        if (!input || typeof input !== 'string') {
+            throw new Error('Invalid input for utterance.');
         }
-        if (!utterance.tone || typeof utterance.tone !== 'string') {
-            throw new Error('Invalid tone for utterance.');
+        this.utterance = this.constructBaseUtterance(input, context);
+        if (this.tone) {
+            this.utterance = this.tone.applyTone(this.utterance);
         }
+        if (this.personality) {
+            this.utterance = this.personality.applyPersonality(this.utterance);
+        }
+        return this.utterance;
+    }
+
+    /**
+     * Constructs the base utterance from the input and context.
+     * @private
+     * @param {string} input - The raw input string.
+     * @param {Object} context - Contextual information.
+     * @returns {string} - The base utterance string.
+     */
+    constructBaseUtterance(input, context) {
+        // Placeholder for constructing the utterance. Implement logic based on context.
+        return `${context.prefix || ''}${input}${context.suffix || ''}`;
     }
 }
 
-module.exports = UtteranceBuilder;
+export default UtteranceBuilder;
