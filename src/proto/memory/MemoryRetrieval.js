@@ -1,49 +1,55 @@
 /**
- * MemoryRetrieval class for managing memory queries and retrieval operations.
- * This class provides methods to retrieve information from memory based on various criteria.
+ * MemoryRetrieval class for structured access to long-term memory.
+ * Provides methods for retrieving memories based on queries and filtering criteria.
  */
 class MemoryRetrieval {
     constructor(memoryManager) {
-        /**
-         * @type {MemoryManager}
-         */
         this.memoryManager = memoryManager;
     }
 
     /**
-     * Retrieve a memory entry by its unique identifier.
-     * @param {string} id - The unique identifier of the memory entry.
-     * @returns {Object|null} - The retrieved memory entry or null if not found.
+     * Retrieve memories based on a specific query.
+     * @param {string} query - The query string to filter memories.
+     * @param {Object} [options] - Additional options for retrieval.
+     * @param {boolean} [options.deduplicate=false] - Flag to remove duplicate memories.
+     * @returns {Array} - Array of matching memories.
      */
-    getMemoryById(id) {
-        const memoryEntry = this.memoryManager.getEntryById(id);
-        return memoryEntry || null;
+    retrieveMemories(query, options = {}) {
+        const memories = this.memoryManager.getAllMemories();
+        const filteredMemories = memories.filter(memory => this.matchesQuery(memory, query));
+
+        if (options.deduplicate) {
+            return this.deduplicateMemories(filteredMemories);
+        }
+        return filteredMemories;
     }
 
     /**
-     * Retrieve all memory entries that match the provided criteria.
-     * @param {Function} criteria - A function that determines whether a memory entry matches.
-     * @returns {Array} - An array of matching memory entries.
+     * Check if a memory matches a specific query.
+     * @param {Object} memory - The memory object to check.
+     * @param {string} query - The query string.
+     * @returns {boolean} - True if the memory matches the query, false otherwise.
      */
-    getMemoryByCriteria(criteria) {
-        return this.memoryManager.getAllEntries().filter(criteria);
+    matchesQuery(memory, query) {
+        // Implement your matching logic here, possibly using regex or string includes
+        return memory.content.includes(query);
     }
 
     /**
-     * Retrieve a summary of all memory entries for a quick overview.
-     * @returns {Array} - An array of summary objects for each memory entry.
+     * Deduplicate memories based on their unique identifiers.
+     * @param {Array} memories - Array of memories.
+     * @returns {Array} - Array of unique memories.
      */
-    getMemorySummary() {
-        return this.memoryManager.getAllEntries().map(entry => ({ id: entry.id, summary: entry.summary }));
-    }
-
-    /**
-     * Clear all memory entries based on a specific condition.
-     * @param {Function} condition - A function that determines which entries to clear.
-     */
-    clearMemoryByCondition(condition) {
-        const entriesToClear = this.memoryManager.getAllEntries().filter(condition);
-        entriesToClear.forEach(entry => this.memoryManager.removeEntry(entry.id));
+    deduplicateMemories(memories) {
+        const seen = new Set();
+        return memories.filter(memory => {
+            const id = memory.id;
+            if (seen.has(id)) {
+                return false;
+            }
+            seen.add(id);
+            return true;
+        });
     }
 }
 
