@@ -1,83 +1,63 @@
 /**
- * @module proto/memory
- * @description Manages short-term memory for PROTO, including storage, retrieval, and updating of memory entries.
+ * @module memory
+ * @description Module for handling memory management and retrieval within the PROTO architecture.
  */
 
-class MemoryEntry {
-    /**
-     * @param {string} key - Identifier for the memory entry.
-     * @param {any} value - The value associated with the key.
-     * @param {Date} timestamp - When the entry was created/updated.
-     */
-    constructor(key, value) {
-        this.key = key;
-        this.value = value;
-        this.timestamp = new Date();
-    }
-
-    /**
-     * Updates the value of the memory entry while refreshing the timestamp.
-     * @param {any} newValue - The new value for the memory entry.
-     */
-    update(newValue) {
-        this.value = newValue;
-        this.timestamp = new Date();
-    }
-}
-
-class Memory {
-    /**
-     * @constructor
-     */
+class MemoryManager {
     constructor() {
-        this.entries = new Map();
+        this.memoryStore = {};
     }
 
     /**
-     * Stores a value in memory with a unique key.
-     * @param {string} key - Unique key for the memory entry.
-     * @param {any} value - Value to store.
+     * Adds an item to the memory store.
+     * @param {string} key - The key under which the value will be stored.
+     * @param {*} value - The value to be stored in memory.
      */
-    store(key, value) {
-        if (!key || this.entries.has(key)) {
-            throw new Error('Invalid key or entry already exists.');
+    addMemory(key, value) {
+        if (typeof key !== 'string') {
+            throw new Error('Key must be a string.');
         }
-        this.entries.set(key, new MemoryEntry(key, value));
+        this.memoryStore[key] = value;
     }
 
     /**
-     * Retrieves a value from memory by key.
-     * @param {string} key - Unique key for the memory entry.
-     * @returns {any} - The value associated with the key, or null if not found.
+     * Retrieves an item from the memory store.
+     * @param {string} key - The key of the value to retrieve.
+     * @returns {*} The value associated with the key, or undefined if the key does not exist.
      */
-    retrieve(key) {
-        const entry = this.entries.get(key);
-        return entry ? entry.value : null;
-    }
-
-    /**
-     * Updates an existing memory entry.
-     * @param {string} key - Unique key for the memory entry.
-     * @param {any} newValue - The new value to store.
-     */
-    update(key, newValue) {
-        const entry = this.entries.get(key);
-        if (!entry) {
-            throw new Error('Entry not found.');
+    getMemory(key) {
+        if (typeof key !== 'string') {
+            throw new Error('Key must be a string.');
         }
-        entry.update(newValue);
+        return this.memoryStore[key];
     }
 
     /**
-     * Deletes a memory entry by key.
-     * @param {string} key - Unique key for the memory entry.
+     * Deletes an item from the memory store.
+     * @param {string} key - The key of the value to delete.
      */
-    delete(key) {
-        if (!this.entries.has(key)) {
-            throw new Error('Entry not found.');
+    deleteMemory(key) {
+        if (typeof key !== 'string') {
+            throw new Error('Key must be a string.');
         }
-        this.entries.delete(key);
+        delete this.memoryStore[key];
+    }
+
+    /**
+     * Clears all items from the memory store.
+     */
+    clearMemory() {
+        this.memoryStore = {};
+    }
+
+    /**
+     * Retrieves all keys in the memory store.
+     * @returns {string[]} An array of keys in the memory store.
+     */
+    getAllKeys() {
+        return Object.keys(this.memoryStore);
     }
 }
 
-module.exports = Memory;
+// Exporting the MemoryManager class for use in other modules.
+module.exports = MemoryManager;
