@@ -1,31 +1,29 @@
 class Memory {
     constructor() {
-        this.storage = new Map();
+        this.storage = {};
     }
 
     set(key, value) {
-        this.storage.set(key, value);
+        this.storage[key] = value;
     }
 
     get(key) {
-        return this.storage.get(key);
-    }
-
-    delete(key) {
-        return this.storage.delete(key);
-    }
-
-    clear() {
-        this.storage.clear();
+        return this.storage[key];
     }
 
     has(key) {
-        return this.storage.has(key);
+        return key in this.storage;
     }
 
-    entries() {
-        return this.storage.entries();
+    delete(key) {
+        if (this.has(key)) {
+            delete this.storage[key];
+        }
+    }
+
+    clear() {
+        this.storage = {};
     }
 }
 
-export default Memory;
+module.exports = Memory;
