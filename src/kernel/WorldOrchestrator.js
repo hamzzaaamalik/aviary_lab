@@ -1,76 +1,76 @@
 /**
- * WorldOrchestrator class is responsible for managing the global state and orchestrating interactions between various components of the world.
- * It coordinates the perception, reasoning, and action cycles of agents to create a cohesive and dynamic environment.
+ * WorldOrchestrator - Coordinates the various aspects of the living world.
  *
- * @class WorldOrchestrator
+ * Handles interactions between agents, economy, governance, and proto modules.
+ * Provides a central loop for world state updates and event propagation.
+ *
+ * @module WorldOrchestrator
  */
+
 class WorldOrchestrator {
     constructor() {
-        this.agents = new Map();
-        this.eventBus = new EventBus();
+        this.agents = [];
+        this.economy = null;
+        this.governance = null;
     }
 
     /**
-     * Initializes the world orchestrator by setting up necessary components and agent registrations.
-     * @returns {void}
+     * Initializes the orchestrator with necessary components.
+     *
+     * @param {Object} config - Configuration object containing the necessary modules.
+     * @param {Array} agents - An array of agent instances to be managed.
      */
-    init() {
-        this.setupEventListeners();
-        this.loadAgents();
+    initialize(config, agents) {
+        this.economy = config.economy;
+        this.governance = config.governance;
+        this.agents = agents;
     }
 
     /**
-     * Registers event listeners for handling various world events.
-     * @returns {void}
+     * Main loop for the world orchestrator, updates all components.
+     *
+     * @param {number} deltaTime - Time elapsed since the last update.
      */
-    setupEventListeners() {
-        this.eventBus.on('agentAction', this.handleAgentAction.bind(this));
-        this.eventBus.on('worldUpdate', this.updateWorld.bind(this));
+    update(deltaTime) {
+        this.updateAgents(deltaTime);
+        this.economy.update(deltaTime);
+        this.governance.update(deltaTime);
     }
 
     /**
-     * Loads agents into the world and initializes their settings.
-     * @returns {void}
+     * Updates agent states and actions based on the current world context.
+     *
+     * @param {number} deltaTime - Time elapsed since the last update.
      */
-    loadAgents() {
-        // This would be replaced with dynamic loading logic in a real-world scenario.
-        const agent = new NewAgent('Agent1');
-        this.agents.set(agent.id, agent);
-        agent.init();
-    }
-
-    /**
-     * Handles actions performed by agents and updates the world state accordingly.
-     * @param {Object} action - The action object from the agent.
-     * @returns {void}
-     */
-    handleAgentAction(action) {
-        const agent = this.agents.get(action.agentId);
-        if (agent) {
-            agent.performAction(action);
-            this.eventBus.emit('worldUpdate', { agentId: action.agentId, action });
+    updateAgents(deltaTime) {
+        for (const agent of this.agents) {
+            agent.update(deltaTime);
         }
     }
 
     /**
-     * Updates the world state based on the actions performed by agents.
-     * @param {Object} update - The update information from the agent actions.
-     * @returns {void}
+     * Sends a message to all agents in the world.
+     *
+     * @param {string} message - The message to send.
      */
-    updateWorld(update) {
-        // Logic to update the world state based on agent actions goes here.
-        console.log(`World updated by ${update.agentId} with action:`, update.action);
+    broadcastMessage(message) {
+        for (const agent of this.agents) {
+            agent.receiveMessage(message);
+        }
     }
 
     /**
-     * Runs the main loop of the world orchestrator to ensure continuous operation.
-     * @returns {void}
+     * Returns the current state of the world for inspection.
+     *
+     * @returns {Object} - The current state of the world.
      */
-    run() {
-        setInterval(() => {
-            this.eventBus.emit('worldTick');
-        }, 1000);
+    getState() {
+        return {
+            agents: this.agents.map(agent => agent.getState()),
+            economy: this.economy.getState(),
+            governance: this.governance.getState()
+        };
     }
 }
 
-module.exports = WorldOrchestrator;
+export default WorldOrchestrator;
