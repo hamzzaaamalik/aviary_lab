@@ -1,97 +1,76 @@
 /**
- * MessagingConnector.js
- *
- * A connector for integrating with external messaging services. 
- * This module facilitates sending and receiving messages through a specified protocol.
- *
+ * MessagingConnector handles the communication between PROTO and external messaging systems.
+ * It manages sending and receiving messages, ensuring proper serialization and deserialization.
+ * 
  * @module MessagingConnector
  */
 
 class MessagingConnector {
-    /**
-     * Creates an instance of MessagingConnector.
-     * @param {string} serviceUrl - The URL of the external messaging service.
-     * @param {Object} options - Additional options for the connector.
-     */
-    constructor(serviceUrl, options = {}) {
-        this.serviceUrl = serviceUrl;
-        this.options = options;
-        this.connection = null;
+    constructor() {
+        this.messageQueue = [];
+        this.connected = false;
     }
 
     /**
-     * Initializes the connection to the messaging service.
-     * @returns {Promise<void>} - Resolves when the connection is established.
+     * Connects to the external messaging system.
+     * @returns {Promise<void>} - Resolves when connected.
      */
-    async initialize() {
-        // Logic to establish connection to the external messaging service.
-        this.connection = await this._connect();
+    async connect() {
+        // Simulate connection to external messaging system
+        this.connected = true;
+        console.log('Connected to the messaging system.');
     }
 
     /**
-     * Sends a message to the external service.
+     * Disconnects from the external messaging system.
+     * @returns {Promise<void>} - Resolves when disconnected.
+     */
+    async disconnect() {
+        // Simulate disconnection
+        this.connected = false;
+        console.log('Disconnected from the messaging system.');
+    }
+
+    /**
+     * Sends a message to the external system.
      * @param {Object} message - The message to send.
-     * @returns {Promise<void>} - Resolves when the message is sent.
+     * @throws {Error} - Throws error if not connected.
      */
-    async sendMessage(message) {
-        this._validateMessage(message);
-        // Logic to send the message through the connection.
-        await this._sendToService(message);
-    }
-
-    /**
-     * Receives messages from the external service.
-     * @returns {Promise<Object>} - The received message.
-     */
-    async receiveMessage() {
-        // Logic to receive a message from the connection.
-        return await this._receiveFromService();
-    }
-
-    /**
-     * Private method to connect to the messaging service.
-     * @returns {Promise<any>} - The established connection.
-     * @private
-     */
-    async _connect() {
-        // Implementation details for connecting to the service.
-        // Placeholder: return a mock connection object.
-        return {}; // Replace with actual connection logic.
-    }
-
-    /**
-     * Private method to validate the message structure.
-     * @param {Object} message - The message to validate.
-     * @throws Will throw an error if validation fails.
-     * @private
-     */
-    _validateMessage(message) {
-        if (!message || typeof message !== 'object') {
-            throw new Error('Invalid message format.');
+    sendMessage(message) {
+        if (!this.connected) {
+            throw new Error('Not connected to the messaging system.');
         }
-        // Additional validation can be added here.
+        this.messageQueue.push(this.serializeMessage(message));
+        console.log('Message sent:', message);
     }
 
     /**
-     * Private method to send message to the service.
-     * @param {Object} message - The message to send.
-     * @private
+     * Receives a message from the external system.
+     * @param {string} rawMessage - The raw message received.
+     * @returns {Object} - The deserialized message.
      */
-    async _sendToService(message) {
-        // Implementation details for sending a message to the service.
-        // Placeholder: simulate sending the message.
-        console.log('Sending message:', message);
+    receiveMessage(rawMessage) {
+        const message = this.deserializeMessage(rawMessage);
+        console.log('Message received:', message);
+        return message;
     }
 
     /**
-     * Private method to receive message from the service.
-     * @returns {Promise<Object>} - The received message.
-     * @private
+     * Serializes the message for transmission.
+     * @param {Object} message - The message to serialize.
+     * @returns {string} - The serialized message.
      */
-    async _receiveFromService() {
-        // Implementation details for receiving a message from the service.
-        // Placeholder: simulate receiving a message.
-        return { text: 'Received message from service.' };
+    serializeMessage(message) {
+        return JSON.stringify(message);
+    }
+
+    /**
+     * Deserializes the incoming message.
+     * @param {string} rawMessage - The raw message to deserialize.
+     * @returns {Object} - The deserialized message.
+     */
+    deserializeMessage(rawMessage) {
+        return JSON.parse(rawMessage);
     }
 }
 
