@@ -1,47 +1,38 @@
 class Memory {
     constructor() {
-        this.shortTerm = {};
-        this.longTerm = {};
+        this.storage = {};
     }
 
-    // store a memory in short-term.
-    storeShortTerm(key, value) {
-        this.shortTerm[key] = value;
-        setTimeout(() => {
-            delete this.shortTerm[key];
-        }, 30000); // auto-expire after 30 seconds
+    // store an item with a unique key
+    store(key, value) {
+        if (!key || !value) {
+            throw new Error('Key and value must be provided.');
+        }
+        this.storage[key] = value;
     }
 
-    // store a memory in long-term.
-    storeLongTerm(key, value) {
-        this.longTerm[key] = value;
+    // retrieve an item by its key
+    retrieve(key) {
+        if (!this.storage[key]) {
+            return null; // or handle not found case
+        }
+        return this.storage[key];
     }
 
-    // retrieve a short-term memory.
-    retrieveShortTerm(key) {
-        return this.shortTerm[key] || null;
+    // delete an item by its key
+    delete(key) {
+        if (this.storage[key]) {
+            delete this.storage[key];
+        }
     }
 
-    // retrieve a long-term memory.
-    retrieveLongTerm(key) {
-        return this.longTerm[key] || null;
+    // clear all stored items
+    clear() {
+        this.storage = {};
     }
 
-    // clear all memories (short-term). 
-    clearShortTerm() {
-        this.shortTerm = {};
-    }
-
-    // clear all memories (long-term). 
-    clearLongTerm() {
-        this.longTerm = {};
-    }
-
-    // display all memories for debugging. 
-    displayMemories() {
-        console.log('Short Term:', this.shortTerm);
-        console.log('Long Term:', this.longTerm);
+    // get all stored keys
+    getAllKeys() {
+        return Object.keys(this.storage);
     }
 }
-
-export default Memory;
