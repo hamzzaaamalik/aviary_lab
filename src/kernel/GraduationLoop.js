@@ -1,58 +1,58 @@
+// GraduationLoop.js
+// The core loop for graduation processing, orchestrating the flow between modules.
+
+const EventBus = require('./EventBus');
+const GraduationProcessor = require('./GraduationProcessor');
+const GraduationManager = require('./GraduationManager');
+const GraduationCoordinator = require('./GraduationCoordinator');
+
 /**
- * GraduationLoop handles the main execution cycle of the PROTO system.
- * It coordinates the perception, reasoning, and action processes.
- * The loop runs continuously until explicitly stopped.
+ * Class representing the Graduation Loop.
  */
 class GraduationLoop {
-    constructor(graduationManager) {
-        this.graduationManager = graduationManager;
-        this.running = false;
+    constructor() {
+        this.eventBus = new EventBus();
+        this.processor = new GraduationProcessor(this.eventBus);
+        this.manager = new GraduationManager(this.eventBus);
+        this.coordinator = new GraduationCoordinator(this.eventBus);
+        this.isRunning = false;
     }
 
     /**
-     * Start the execution loop.
+     * Starts the graduation loop, initializing all components and starting the event processing.
      */
     start() {
-        this.running = true;
-        this.loop();
+        if (this.isRunning) {
+            throw new Error('GraduationLoop is already running.');
+        }
+        this.isRunning = true;
+        this.eventBus.subscribe('graduation.start', this.processGraduation.bind(this));
+        this.eventBus.publish('graduation.start');
     }
 
     /**
-     * Stop the execution loop.
+     * Stops the graduation loop, cleaning up resources.
      */
     stop() {
-        this.running = false;
-    }
-
-    /**
-     * Main loop execution method.
-     * It manages the perceive → think → act sequence.
-     */
-    async loop() {
-        while (this.running) {
-            try {
-                // Step 1: Perceive
-                const perceptionData = await this.graduationManager.perceive();
-                // Step 2: Think
-                const decisions = await this.graduationManager.think(perceptionData);
-                // Step 3: Act
-                await this.graduationManager.act(decisions);
-                // Short delay for pacing
-                await this.delay(100);
-            } catch (error) {
-                console.error('Error in GraduationLoop:', error);
-                this.stop(); // Stop on critical errors
-            }
+        if (!this.isRunning) {
+            throw new Error('GraduationLoop is not running.');
         }
+        this.isRunning = false;
+        this.eventBus.unsubscribe('graduation.start', this.processGraduation.bind(this));
     }
 
     /**
-     * Delay execution for a specified duration.
-     * @param {number} ms - Duration to delay in milliseconds.
-     * @returns {Promise<void>} - A promise that resolves after the delay.
+     * Processes the graduation logic by invoking the processor and manager.
+     * @param {Object} event - The event data.
      */
-    delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    processGraduation(event) {
+        try {
+            const graduationData = this.processor.process(event);
+            this.manager.manage(graduationData);
+            this.coordinator.coordinate(graduationData);
+        } catch (error) {
+            console.error('Error processing graduation:', error);
+        }
     }
 }
 
