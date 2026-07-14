@@ -1,49 +1,47 @@
 /**
- * DecisionPolicy - Responsible for evaluating and scoring potential decisions.
- *
- * This class implements a mechanism to score decisions based on predefined criteria.
+ * DecisionPolicy class for implementing decision-making strategies.
+ * Provides an interface for scoring and selecting decisions based on defined criteria.
  */
 class DecisionPolicy {
+    /**
+     * Constructs a DecisionPolicy instance.
+     * @param {Array} criteria - An array of criteria for decision scoring.
+     */
     constructor(criteria) {
         this.criteria = criteria;
     }
 
     /**
-     * Evaluate a set of decisions and score them based on the criteria.
-     *
-     * @param {Array<Object>} decisions - The list of decisions to evaluate.
-     * @returns {Array<Object>} - The decisions with their corresponding scores.
+     * Scores a decision based on the provided input values.
+     * @param {Object} inputs - The inputs required for scoring.
+     * @returns {number} - The score for the decision.
      */
-    evaluate(decisions) {
-        return decisions.map(decision => {
-            const score = this.scoreDecision(decision);
-            return { decision, score };
-        });
-    }
-
-    /**
-     * Score a single decision based on the defined criteria.
-     *
-     * @param {Object} decision - The decision to score.
-     * @returns {number} - The score of the decision.
-     */
-    scoreDecision(decision) {
+    score(inputs) {
         let score = 0;
-        for (const criterion of this.criteria) {
-            score += this.evaluateCriterion(decision, criterion);
-        }
+        this.criteria.forEach(criterion => {
+            score += criterion.evaluate(inputs);
+        });
         return score;
     }
 
     /**
-     * Evaluate a single criterion against a decision.
-     *
-     * @param {Object} decision - The decision being evaluated.
-     * @param {Function} criterion - The criterion function used for scoring.
-     * @returns {number} - The score contribution from the criterion.
+     * Selects the best decision from an array of options based on scores.
+     * @param {Array} decisions - An array of decision objects to evaluate.
+     * @returns {Object|null} - The selected decision or null if none.
      */
-    evaluateCriterion(decision, criterion) {
-        return criterion(decision);
+    selectBest(decisions) {
+        let bestDecision = null;
+        let highestScore = -Infinity;
+
+        decisions.forEach(decision => {
+            const score = this.score(decision.inputs);
+            if (score > highestScore) {
+                highestScore = score;
+                bestDecision = decision;
+            }
+        });
+
+        return bestDecision;
     }
 }
 
