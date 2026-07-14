@@ -1,31 +1,35 @@
 class MemoryStore {
     constructor() {
-        this.shortTerm = new Map();
-        this.longTerm = new Map();
+        this.store = {};
     }
 
-    addShortTerm(key, value) {
-        this.shortTerm.set(key, value);
+    set(key, value) {
+        if (key in this.store) {
+            throw new Error(`Key \\${key} already exists.`);
+        }
+        this.store[key] = value;
     }
 
-    getShortTerm(key) {
-        return this.shortTerm.get(key);
+    get(key) {
+        if (!(key in this.store)) {
+            throw new Error(`Key \\${key} does not exist.`);
+        }
+        return this.store[key];
     }
 
-    addLongTerm(key, value) {
-        this.longTerm.set(key, value);
+    remove(key) {
+        if (!(key in this.store)) {
+            throw new Error(`Cannot remove non-existing key: \\${key}.`);
+        }
+        delete this.store[key];
     }
 
-    getLongTerm(key) {
-        return this.longTerm.get(key);
+    clear() {
+        this.store = {};
     }
 
-    clearShortTerm() {
-        this.shortTerm.clear();
-    }
-
-    clearLongTerm() {
-        this.longTerm.clear();
+    has(key) {
+        return key in this.store;
     }
 }
 
