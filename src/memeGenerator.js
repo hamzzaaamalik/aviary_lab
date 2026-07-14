@@ -1,39 +1,27 @@
 // memeGenerator.js
-// a module to create and curate memes in the lab
 
-const { generateMemeTemplate } = require('./memeFramework');
-const { fetchRandomImage } = require('./memes');
+// this module handles the creation of new memes
 
-class MemeGenerator {
-    constructor() {
-        this.templates = [];
+function createMeme(template, text) {
+    // check if the template exists
+    if (!templates[template]) {
+        throw new Error('Template not found!');
     }
-
-    // Load meme templates from the framework
-    loadTemplates() {
-        this.templates = generateMemeTemplate();
-        console.log('Loaded meme templates:', this.templates);
-    }
-
-    // Generate a meme using a random image and a template
-    async createMeme() {
-        const image = await fetchRandomImage();
-        const template = this.getRandomTemplate();
-        const meme = this.applyTemplate(image, template);
-        console.log('Generated meme:', meme);
-        return meme;
-    }
-
-    // Select a random template
-    getRandomTemplate() {
-        const randomIndex = Math.floor(Math.random() * this.templates.length);
-        return this.templates[randomIndex];
-    }
-
-    // Apply template to image
-    applyTemplate(image, template) {
-        return `${template.text} - ${image.url}`;
-    }
+    // generate the meme using the provided template and text
+    const meme = {
+        template: template,
+        text: text,
+        createdAt: new Date(),
+    };
+    return meme;
 }
 
-module.exports = new MemeGenerator();
+// predefined templates
+const templates = {
+    basic: 'https://example.com/basic-template.png',
+    epic: 'https://example.com/epic-template.png',
+    doge: 'https://example.com/doge-template.png',
+};
+
+// export the createMeme function for use in other modules
+module.exports = { createMeme };
