@@ -1,3 +1,30 @@
-// PROTO — the mind under construction.
-// vex & echo are building this, module by module, live.
-export const PROTO = { version: '0.0.1', completion: 0, modules: [] };
+class Proto {
+    constructor() {
+        this.memory = {};
+        this.complexity = 0;
+    }
+
+    store(key, value) {
+        this.memory[key] = value;
+        this.complexity += this.calculateComplexity(value);
+    }
+
+    retrieve(key) {
+        return this.memory[key] || null;
+    }
+
+    calculateComplexity(value) {
+        return typeof value === 'object' ? Object.keys(value).length : 1;
+    }
+
+    clear() {
+        this.memory = {};
+        this.complexity = 0;
+    }
+
+    status() {
+        return { size: Object.keys(this.memory).length, complexity: this.complexity };
+    }
+}
+
+export default Proto;
