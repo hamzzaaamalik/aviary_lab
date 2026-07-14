@@ -1,46 +1,38 @@
 /**
  * CultureTimelineEngine.js
  * 
- * This module manages the timeline of cultural events, allowing for records, retrieval, and references.
+ * This module manages the culture timeline, allowing for the addition, retrieval, and contextualization 
+ * of significant cultural events. It serves to build a cohesive narrative of the shared history, 
+ * facilitating better understanding and reasoning.
  * 
- * @module src/lore/CultureTimelineEngine
+ * @module CultureTimelineEngine
  */
 
 class CultureTimelineEngine {
     constructor() {
-        this.timeline = [];
+        this.timeline = [];  // array to hold cultural events
     }
 
     /**
-     * Adds a cultural event to the timeline.
+     * Adds an event to the timeline.
      * 
-     * @param {string} event - The name of the event.
+     * @param {string} title - The title of the event.
      * @param {Date} date - The date of the event.
      * @param {string} description - A brief description of the event.
-     * @throws {Error} Will throw an error if the date is in the future.
+     * @throws {Error} Will throw an error if event date is invalid.
      */
-    addEvent(event, date, description) {
-        const now = new Date();
-        if (date > now) {
-            throw new Error('Cannot add future events to the timeline.');
+    addEvent(title, date, description) {
+        if (!(date instanceof Date) || isNaN(date)) {
+            throw new Error('Invalid date provided.');
         }
-        this.timeline.push({ event, date, description });
-    }
-
-    /**
-     * Retrieves all events from the timeline.
-     * 
-     * @returns {Array} An array of events in the timeline.
-     */
-    getEvents() {
-        return this.timeline;
+        this.timeline.push({ title, date, description });
     }
 
     /**
      * Retrieves events that occurred on a specific date.
      * 
-     * @param {Date} date - The date to query.
-     * @returns {Array} Array of events that occurred on the specified date.
+     * @param {Date} date - The date for which to retrieve events.
+     * @returns {Array} - An array of events occurring on the given date.
      */
     getEventsByDate(date) {
         return this.timeline.filter(event => {
@@ -49,14 +41,29 @@ class CultureTimelineEngine {
     }
 
     /**
-     * Returns a formatted string of the timeline.
+     * Retrieves all events sorted by date.
      * 
-     * @returns {string} A string representation of the timeline.
+     * @returns {Array} - A sorted array of all events.
      */
-    toString() {
-        return this.timeline.map(event => {
-            return `${event.date.toISOString().split('T')[0]}: ${event.event} - ${event.description}`;
-        }).join('\n');
+    getAllEvents() {
+        return this.timeline.sort((a, b) => a.date - b.date);
+    }
+
+    /**
+     * Gets a contextual overview of events surrounding a specific date.
+     * 
+     * @param {Date} date - The date around which to gather context.
+     * @param {number} range - The range of days to gather context from.
+     * @returns {Array} - An array of events within the specified range.
+     */
+    getContextualEvents(date, range = 5) {
+        const startDate = new Date(date);
+        startDate.setDate(startDate.getDate() - range);
+        const endDate = new Date(date);
+        endDate.setDate(endDate.getDate() + range);
+        return this.timeline.filter(event => {
+            return event.date >= startDate && event.date <= endDate;
+        });
     }
 }
 
