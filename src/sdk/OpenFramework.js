@@ -1,71 +1,70 @@
 /**
- * OpenFramework - A toolkit for integrating with PROTO's core functionalities.
- * This module provides the necessary interfaces and utility functions for developers
- * to build upon the existing capabilities of PROTO.
- *
+ * OpenFramework - A foundation for building interoperable components.
+ * 
+ * This module provides interfaces and utilities for creating plugins and SDKs that can
+ * be integrated with the core system.
+ * 
  * @module OpenFramework
  */
 
 class OpenFramework {
-    /**
-     * Constructs an instance of OpenFramework.
-     * @constructor
-     */
     constructor() {
-        this.modules = {};
+        this.plugins = new Map();
     }
 
     /**
-     * Registers a new module into the OpenFramework.
-     * @param {string} name - The name of the module.
-     * @param {Object} module - The module object containing functionalities.
-     * @throws {Error} Throws an error if the module is already registered.
+     * Registers a new plugin in the OpenFramework.
+     * 
+     * @param {string} name - The name of the plugin.
+     * @param {Object} plugin - The plugin instance to register.
+     * @throws {Error} Will throw an error if the plugin name is already registered.
      */
-    registerModule(name, module) {
-        if (this.modules[name]) {
-            throw new Error(`Module ${name} is already registered.`);
+    registerPlugin(name, plugin) {
+        if (this.plugins.has(name)) {
+            throw new Error(`Plugin ${name} is already registered.`);
         }
-        this.modules[name] = module;
+        this.plugins.set(name, plugin);
     }
 
     /**
-     * Retrieves a registered module by its name.
-     * @param {string} name - The name of the module to retrieve.
-     * @returns {Object} The registered module object.
-     * @throws {Error} Throws an error if the module is not found.
+     * Unregisters an existing plugin.
+     * 
+     * @param {string} name - The name of the plugin to unregister.
+     * @throws {Error} Will throw an error if the plugin is not found.
      */
-    getModule(name) {
-        const module = this.modules[name];
-        if (!module) {
-            throw new Error(`Module ${name} not found.`);
+    unregisterPlugin(name) {
+        if (!this.plugins.has(name)) {
+            throw new Error(`Plugin ${name} not found.`);
         }
-        return module;
+        this.plugins.delete(name);
     }
 
     /**
-     * Invokes a function from a registered module.
-     * @param {string} moduleName - The name of the module.
-     * @param {string} functionName - The function to invoke.
-     * @param {...*} args - The arguments to pass to the function.
-     * @returns {*} The result of the function invocation.
-     * @throws {Error} Throws an error if the module or function is not found.
+     * Gets a plugin by its name.
+     * 
+     * @param {string} name - The name of the plugin to retrieve.
+     * @returns {Object|null} The plugin instance or null if not found.
      */
-    invoke(moduleName, functionName, ...args) {
-        const module = this.getModule(moduleName);
-        if (typeof module[functionName] !== 'function') {
-            throw new Error(`Function ${functionName} not found in module ${moduleName}.`);
-        }
-        return module[functionName](...args);
+    getPlugin(name) {
+        return this.plugins.get(name) || null;
     }
 
     /**
-     * Lists all registered modules.
-     * @returns {Array} An array of module names.
+     * Executes a method on all registered plugins.
+     * 
+     * @param {string} methodName - The name of the method to call on each plugin.
+     * @param {...any} args - The arguments to pass to the plugin method.
+     * @returns {Array} An array of results from each plugin.
      */
-    listModules() {
-        return Object.keys(this.modules);
+    executeOnPlugins(methodName, ...args) {
+        const results = [];
+        this.plugins.forEach((plugin, name) => {
+            if (typeof plugin[methodName] === 'function') {
+                results.push(plugin[methodName](...args));
+            }
+        });
+        return results;
     }
 }
 
-// Exporting the OpenFramework class for external use
-module.exports = OpenFramework;
+module.exports = new OpenFramework();
