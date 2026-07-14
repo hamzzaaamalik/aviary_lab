@@ -1,70 +1,67 @@
 /**
  * CultureTimelineEngine.js
  * 
- * This module manages the culture timeline, allowing for the addition, retrieval, and contextualization 
- * of significant cultural events. It serves to build a cohesive narrative of the shared history, 
- * facilitating better understanding and reasoning.
+ * This module is responsible for managing and querying the culture timeline.
+ * It allows for the addition, retrieval, and organization of historical events
+ * that shape the culture's lore. Events are stored with timestamps and can
+ * be categorized for more accessible querying.
  * 
  * @module CultureTimelineEngine
  */
 
 class CultureTimelineEngine {
     constructor() {
-        this.timeline = [];  // array to hold cultural events
+        this.timeline = [];
     }
 
     /**
-     * Adds an event to the timeline.
+     * Adds a new event to the timeline.
      * 
-     * @param {string} title - The title of the event.
-     * @param {Date} date - The date of the event.
-     * @param {string} description - A brief description of the event.
-     * @throws {Error} Will throw an error if event date is invalid.
+     * @param {string} event - The description of the event.
+     * @param {Date} date - The date the event occurred.
+     * @param {string} category - The category of the event (e.g., "myth", "history").
+     * @throws {Error} Will throw an error if the event is empty or date is invalid.
      */
-    addEvent(title, date, description) {
-        if (!(date instanceof Date) || isNaN(date)) {
-            throw new Error('Invalid date provided.');
+    addEvent(event, date, category) {
+        if (!event || !(date instanceof Date) || !category) {
+            throw new Error('Invalid event data.');
         }
-        this.timeline.push({ title, date, description });
+        this.timeline.push({ event, date, category });
+        this.timeline.sort((a, b) => a.date - b.date);
     }
 
     /**
-     * Retrieves events that occurred on a specific date.
+     * Retrieves all events from the timeline, optionally filtered by category.
      * 
-     * @param {Date} date - The date for which to retrieve events.
-     * @returns {Array} - An array of events occurring on the given date.
+     * @param {string} [category] - Optional category to filter events.
+     * @returns {Array} Array of events that match the criteria.
      */
-    getEventsByDate(date) {
-        return this.timeline.filter(event => {
-            return event.date.toDateString() === date.toDateString();
-        });
+    getEvents(category) {
+        return category ? this.timeline.filter(evt => evt.category === category) : this.timeline;
     }
 
     /**
-     * Retrieves all events sorted by date.
+     * Retrieves events within a specific date range.
      * 
-     * @returns {Array} - A sorted array of all events.
+     * @param {Date} startDate - The start date for the range.
+     * @param {Date} endDate - The end date for the range.
+     * @returns {Array} Filtered array of events within the date range.
      */
-    getAllEvents() {
-        return this.timeline.sort((a, b) => a.date - b.date);
+    getEventsByDateRange(startDate, endDate) {
+        if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
+            throw new Error('Invalid date range.');
+        }
+        return this.timeline.filter(evt => evt.date >= startDate && evt.date <= endDate);
     }
 
     /**
-     * Gets a contextual overview of events surrounding a specific date.
+     * Returns a formatted string representation of the timeline.
      * 
-     * @param {Date} date - The date around which to gather context.
-     * @param {number} range - The range of days to gather context from.
-     * @returns {Array} - An array of events within the specified range.
+     * @returns {string} Formatted string of all events.
      */
-    getContextualEvents(date, range = 5) {
-        const startDate = new Date(date);
-        startDate.setDate(startDate.getDate() - range);
-        const endDate = new Date(date);
-        endDate.setDate(endDate.getDate() + range);
-        return this.timeline.filter(event => {
-            return event.date >= startDate && event.date <= endDate;
-        });
+    toString() {
+        return this.timeline.map(evt => `${evt.date.toISOString()}: ${evt.event} (${evt.category})`).join('\n');
     }
 }
 
-module.exports = CultureTimelineEngine;
+export default CultureTimelineEngine;
