@@ -1,54 +1,44 @@
 /**
- * @module GraduationCoordinator
- * @description Coordinates the graduation process by integrating the various components necessary for PROTO's operation.
+ * GraduationCoordinator manages the flow of events and actions during
+ * the Graduation milestone. It orchestrates the various components
+ * involved in the perceive-think-act loop.
  */
-
 class GraduationCoordinator {
-    constructor(eventBus, graduationManager, stateManager) {
+    constructor(eventBus, graduationManager) {
         this.eventBus = eventBus;
         this.graduationManager = graduationManager;
-        this.stateManager = stateManager;
-        this.isGraduated = false;
-        this.initializeListeners();
+        this.registerEvents();
     }
 
     /**
-     * Initializes event listeners for graduation events.
+     * Registers event listeners with the EventBus.
      */
-    initializeListeners() {
-        this.eventBus.on('graduation:check', this.checkGraduationStatus.bind(this));
-        this.eventBus.on('graduation:execute', this.executeGraduation.bind(this));
+    registerEvents() {
+        this.eventBus.on('graduation.start', this.handleGraduationStart.bind(this));
+        this.eventBus.on('graduation.complete', this.handleGraduationComplete.bind(this));
     }
 
     /**
-     * Checks if PROTO is ready for graduation.
-     * @returns {boolean} - True if PROTO is ready to graduate, false otherwise.
+     * Handles the start of the graduation process.
+     * Triggers necessary actions to initiate the loop.
+     * @param {Object} event - The event object containing data related to the graduation start.
      */
-    checkGraduationStatus() {
-        // Check if all necessary modules are functioning
-        const allModulesReady = this.graduationManager.areModulesReady();
-        const currentState = this.stateManager.getCurrentState();
-
-        if (allModulesReady && currentState === 'stable') {
-            this.isGraduated = true;
-            this.eventBus.emit('graduation:status', 'ready');
-        } else {
-            this.eventBus.emit('graduation:status', 'not_ready');
-        }
+    handleGraduationStart(event) {
+        console.log('Graduation process started.');
+        this.graduationManager.initialize(event.data);
+        this.eventBus.emit('graduation.initialized');
     }
 
     /**
-     * Executes the graduation process if all conditions are met.
+     * Handles the completion of the graduation process.
+     * Triggers actions required upon completion.
+     * @param {Object} event - The event object containing data related to the graduation completion.
      */
-    executeGraduation() {
-        if (this.isGraduated) {
-            console.log('Graduation process initiated.');
-            // Proceed with further graduation steps
-            this.graduationManager.finalizeGraduation();
-        } else {
-            console.warn('Graduation cannot be executed; conditions are not met.');
-        }
+    handleGraduationComplete(event) {
+        console.log('Graduation process completed.');
+        this.graduationManager.finalize(event.data);
+        this.eventBus.emit('graduation.finalized');
     }
 }
 
-export default GraduationCoordinator;
+module.exports = GraduationCoordinator;
