@@ -1,27 +1,23 @@
 class MemeState {
     constructor() {
-        this.memes = {};
+        this.state = {};
     }
 
-    addMeme(id, meme) {
-        this.memes[id] = meme;
+    setState(key, value) {
+        if (typeof key !== 'string') {
+            throw new Error('State key must be a string.');
+        }
+        this.state[key] = value;
     }
 
-    getMeme(id) {
-        return this.memes[id] || null;
+    getState(key) {
+        return this.state[key];
     }
 
-    removeMeme(id) {
-        delete this.memes[id];
-    }
-
-    clear() {
-        this.memes = {};
-    }
-
-    getAllMemes() {
-        return Object.values(this.memes);
+    clearState() {
+        this.state = {};
     }
 }
 
-export default MemeState;
+const memeState = new MemeState();
+export default memeState;
