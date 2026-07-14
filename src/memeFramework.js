@@ -1,36 +1,27 @@
-// memeFramework.js - a modular approach to meme generation
+// memeFramework.js
 
 class MemeFramework {
     constructor() {
-        this.memeTemplates = [];
+        this.memeList = [];
     }
 
-    addTemplate(template) {
-        if (this.validateTemplate(template)) {
-            this.memeTemplates.push(template);
-            console.log('Template added:', template);
-        } else {
-            console.error('Invalid template:', template);
+    addMeme(meme) {
+        if (!this.isValidMeme(meme)) {
+            throw new Error('Invalid meme.');
         }
+        this.memeList.push(meme);
     }
 
-    validateTemplate(template) {
-        // Ensure the template has necessary properties
-        return template && template.id && template.content;
+    isValidMeme(meme) {
+        return meme && typeof meme === 'object' && meme.text;
     }
 
-    generateMeme(templateId, context) {
-        const template = this.memeTemplates.find(t => t.id === templateId);
-        if (!template) {
-            console.error('Template not found:', templateId);
-            return '';
-        }
-        return this.fillTemplate(template.content, context);
+    getMemes() {
+        return this.memeList;
     }
 
-    fillTemplate(content, context) {
-        // Replace placeholders with actual context
-        return content.replace(/\{(.*?)\}/g, (_, key) => context[key] || '');
+    clearMemes() {
+        this.memeList = [];
     }
 }
 
