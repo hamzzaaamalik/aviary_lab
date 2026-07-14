@@ -1,47 +1,78 @@
 /**
- * GraduationLoop - Main execution loop for PROTO's graduation process.
- * Handles the orchestration of perception, reasoning, and action.
- *
+ * GraduationLoop - orchestrates the loop of perception, reasoning, and action for PROTO.
  * @module GraduationLoop
  */
 
-const GraduationManager = require('./GraduationManager');
-const GraduationProcessor = require('./GraduationProcessor');
-const PerceiveThinkActLoop = require('./PerceiveThinkActLoop');
-
 class GraduationLoop {
-    constructor() {
-        this.manager = new GraduationManager();
-        this.processor = new GraduationProcessor();
+    constructor(perceptionProcessor, reasoningBridge, stateManager) {
+        this.perceptionProcessor = perceptionProcessor;
+        this.reasoningBridge = reasoningBridge;
+        this.stateManager = stateManager;
+        this.isRunning = false;
     }
 
     /**
-     * Initializes the Graduation process.
+     * Starts the Graduation loop, invoking the perceive → think → act cycle.
      */
-    init() {
-        this.manager.initialize();
-        this.processor.initialize();
-    }
-
-    /**
-     * Main loop method. Runs the perception, reasoning, and action cycle.
-     * @returns {void}
-     */
-    run() {
-        this.init();
-        setInterval(() => {
-            const perceptionData = this.manager.getPerceptionData();
-            const reasoningOutput = this.processor.process(perceptionData);
-            this.manager.executeActions(reasoningOutput);
-        }, 100); // 10 Hz loop
+    start() {
+        this.isRunning = true;
+        this.loop();
     }
 
     /**
      * Stops the Graduation loop.
      */
     stop() {
-        clearInterval(this.run);
+        this.isRunning = false;
+    }
+
+    /**
+     * The main loop that processes perception, reasoning, and actions.
+     * @private
+     */
+    loop() {
+        if (this.isRunning) {
+            this.perceive();
+            this.think();
+            this.act();
+            requestAnimationFrame(() => this.loop());
+        }
+    }
+
+    /**
+     * Processes incoming signals through the perception pipeline.
+     */
+    perceive() {
+        const signals = this.perceptionProcessor.processSignals();
+        this.stateManager.updatePerception(signals);
+    }
+
+    /**
+     * Executes reasoning based on the current state and perceived inputs.
+     */
+    think() {
+        const currentState = this.stateManager.getCurrentState();
+        const decisions = this.reasoningBridge.generateDecisions(currentState);
+        this.stateManager.updateDecisions(decisions);
+    }
+
+    /**
+     * Acts upon the decisions made during the reasoning phase.
+     */
+    act() {
+        const actions = this.stateManager.getActions();
+        actions.forEach(action => this.executeAction(action));
+    }
+
+    /**
+     * Executes a single action.
+     * @param {Object} action - The action to be executed.
+     * @private
+     */
+    executeAction(action) {
+        // Placeholder for action execution logic.
+        console.log('Executing action:', action);
     }
 }
 
-module.exports = GraduationLoop;
+export default GraduationLoop;
