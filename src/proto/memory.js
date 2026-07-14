@@ -1,63 +1,67 @@
 /**
- * @module memory
- * @description Module for handling memory management and retrieval within the PROTO architecture.
+ * @module proto/memory
+ *
+ * This module manages memory operations for PROTO, allowing for storing and retrieving data efficiently.
+ * It extends basic memory management with structured data storage.
  */
 
 class MemoryManager {
     constructor() {
-        this.memoryStore = {};
+        this.store = new Map();
     }
 
     /**
-     * Adds an item to the memory store.
+     * Stores a value in memory under the given key.
      * @param {string} key - The key under which the value will be stored.
-     * @param {*} value - The value to be stored in memory.
+     * @param {any} value - The value to store.
+     * @throws {Error} If key is not a string.
      */
-    addMemory(key, value) {
+    set(key, value) {
         if (typeof key !== 'string') {
             throw new Error('Key must be a string.');
         }
-        this.memoryStore[key] = value;
+        this.store.set(key, value);
     }
 
     /**
-     * Retrieves an item from the memory store.
+     * Retrieves a value from memory by key.
      * @param {string} key - The key of the value to retrieve.
-     * @returns {*} The value associated with the key, or undefined if the key does not exist.
+     * @returns {any} The stored value, or undefined if not found.
+     * @throws {Error} If key is not a string.
      */
-    getMemory(key) {
+    get(key) {
         if (typeof key !== 'string') {
             throw new Error('Key must be a string.');
         }
-        return this.memoryStore[key];
+        return this.store.get(key);
     }
 
     /**
-     * Deletes an item from the memory store.
+     * Checks if a key exists in memory.
+     * @param {string} key - The key to check.
+     * @returns {boolean} True if the key exists, false otherwise.
+     * @throws {Error} If key is not a string.
+     */
+    has(key) {
+        if (typeof key !== 'string') {
+            throw new Error('Key must be a string.');
+        }
+        return this.store.has(key);
+    }
+
+    /**
+     * Deletes a value from memory by key.
      * @param {string} key - The key of the value to delete.
+     * @returns {boolean} True if the key was found and deleted, false otherwise.
+     * @throws {Error} If key is not a string.
      */
-    deleteMemory(key) {
+    delete(key) {
         if (typeof key !== 'string') {
             throw new Error('Key must be a string.');
         }
-        delete this.memoryStore[key];
-    }
-
-    /**
-     * Clears all items from the memory store.
-     */
-    clearMemory() {
-        this.memoryStore = {};
-    }
-
-    /**
-     * Retrieves all keys in the memory store.
-     * @returns {string[]} An array of keys in the memory store.
-     */
-    getAllKeys() {
-        return Object.keys(this.memoryStore);
+        return this.store.delete(key);
     }
 }
 
-// Exporting the MemoryManager class for use in other modules.
-module.exports = MemoryManager;
+const memoryManager = new MemoryManager();
+export default memoryManager;
