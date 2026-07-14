@@ -1,71 +1,58 @@
 /**
- * WorldInteractionOrchestrator.js
- * 
- * This module orchestrates real-time interactions within the world, allowing agents to engage based on events and stimuli detected in their environment.
- * It manages the flow of information and decision-making processes, ensuring that all actions are aligned with the current state of the world.
+ * WorldInteractionOrchestrator manages interactions between agents and the environment.
+ * It facilitates the orchestration of actions and responses based on the current state of the world.
  * 
  * @module WorldInteractionOrchestrator
  */
 
-const EventBus = require('./EventBus');
-const StateManager = require('./StateManager');
-const AgentInteractionTracker = require('./AgentInteractionTracker');
-
 class WorldInteractionOrchestrator {
-    /**
-     * Creates an instance of WorldInteractionOrchestrator.
-     * 
-     * @param {StateManager} stateManager - The state manager instance to manage world state.
-     * @param {AgentInteractionTracker} interactionTracker - The tracker for agent interactions.
-     */
-    constructor(stateManager, interactionTracker) {
+    constructor(eventBus, stateManager) {
+        /**
+         * @type {EventBus}
+         * @private
+         */
+        this.eventBus = eventBus;
+        
+        /**
+         * @type {StateManager}
+         * @private
+         */
         this.stateManager = stateManager;
-        this.interactionTracker = interactionTracker;
-        this.eventBus = new EventBus();
-        this.initialize();
     }
 
     /**
-     * Initializes the orchestrator, setting up event listeners and state synchronization.
+     * Initiates interaction based on agent actions and world state.
+     * @param {Array} agents - An array of agents initiating interaction.
      */
-    initialize() {
-        this.eventBus.on('worldEvent', (event) => this.handleWorldEvent(event));
-        this.eventBus.on('agentAction', (action) => this.trackAgentAction(action));
+    initiateInteraction(agents) {
+        agents.forEach(agent => {
+            const action = agent.decideAction(this.stateManager);
+            this.executeAction(agent, action);
+        });
     }
 
     /**
-     * Handles events occurring in the world, triggering necessary updates and interactions.
-     * 
-     * @param {Object} event - The event object containing details of the world event.
+     * Executes a given action from an agent and updates the world state accordingly.
+     * @param {Agent} agent - The agent executing the action.
+     * @param {Action} action - The action to execute.
      */
-    handleWorldEvent(event) {
-        const worldState = this.stateManager.getCurrentState();
-        // Logic to update state based on the event
-        // Example: if (event.type === 'weatherChange') {...}
-        this.stateManager.updateState(event);
+    executeAction(agent, action) {
+        try {
+            const result = action.perform();
+            this.updateWorldState(agent, result);
+            this.eventBus.publish('actionExecuted', { agent, action, result });
+        } catch (error) {
+            this.eventBus.publish('actionFailed', { agent, action, error });
+        }
     }
 
     /**
-     * Tracks agent actions to ensure engagement is logged and can be analyzed.
-     * 
-     * @param {Object} action - The action object containing details of the agent's action.
+     * Updates the world state based on the result of an action.
+     * @param {Agent} agent - The agent whose action has been executed.
+     * @param {any} result - The result of the action execution.
      */
-    trackAgentAction(action) {
-        this.interactionTracker.logAction(action);
-    }
-
-    /**
-     * Starts the orchestrator to begin processing events and actions.
-     */
-    start() {
-        this.eventBus.startListening();
-    }
-
-    /**
-     * Stops the orchestrator, ceasing all event handling.
-     */
-    stop() {
-        this.eventBus.stopListening();
+    updateWorldState(agent, result) {
+        this.stateManager.update(agent, result);
     }
 }
 
