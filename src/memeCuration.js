@@ -1,29 +1,27 @@
 class MemeCuration {
-  constructor() {
-    this.memes = new Map();
-  }
-
-  addMeme(id, memeData) {
-    if (this.memes.has(id)) {
-      throw new Error(`Meme with id ${id} already exists.`);
+    constructor() {
+        this.memes = [];
     }
-    this.memes.set(id, memeData);
-  }
 
-  getMeme(id) {
-    return this.memes.get(id) || null;
-  }
-
-  removeMeme(id) {
-    if (!this.memes.has(id)) {
-      throw new Error(`No meme found with id ${id}.`);
+    addMeme(meme) {
+        if (this.validateMeme(meme)) {
+            this.memes.push(meme);
+        } else {
+            throw new Error('Invalid meme format.');
+        }
     }
-    this.memes.delete(id);
-  }
 
-  getAllMemes() {
-    return Array.from(this.memes.entries()).map(([id, data]) => ({ id, ...data }));
-  }
+    validateMeme(meme) {
+        return meme.hasOwnProperty('id') && meme.hasOwnProperty('content');
+    }
+
+    getMemes() {
+        return this.memes;
+    }
+
+    findMemeById(id) {
+        return this.memes.find(meme => meme.id === id);
+    }
 }
 
 export default MemeCuration;
