@@ -1,69 +1,63 @@
 /**
- * ConnectorManager.js
- * 
- * This module manages the lifecycle and operations of various connectors that interface with external systems.
- * It is responsible for initializing connectors, handling data communication, and ensuring proper error handling.
- * 
- * @module interop/ConnectorManager
+ * ConnectorManager is responsible for managing connections to external systems.
+ * It handles the registration and communication with various protocol adapters.
  */
-
 class ConnectorManager {
     constructor() {
-        this.connectors = {};
+        this.connectors = new Map();
     }
-    
+
     /**
-     * Registers a new connector.
-     * 
-     * @param {string} name - The unique name of the connector.
-     * @param {Connector} connector - An instance of the connector to register.
-     * @throws {Error} If the connector is already registered.
+     * Registers a new connector with the specified protocol.
+     * @param {string} protocol - The protocol identifier.
+     * @param {object} connector - The connector implementation.
+     * @throws {Error} If the protocol is already registered.
      */
-    registerConnector(name, connector) {
-        if (this.connectors[name]) {
-            throw new Error(`Connector ${name} is already registered.`);
+    registerConnector(protocol, connector) {
+        if (this.connectors.has(protocol)) {
+            throw new Error(`Connector for protocol ${protocol} is already registered.`);
         }
-        this.connectors[name] = connector;
+        this.connectors.set(protocol, connector);
     }
-    
+
     /**
-     * Initializes all registered connectors.
-     * 
-     * @returns {Promise<void>} A promise that resolves when all connectors are initialized.
+     * Unregisters a connector for the specified protocol.
+     * @param {string} protocol - The protocol identifier.
+     * @throws {Error} If the protocol is not registered.
      */
-    async initializeConnectors() {
-        const initPromises = Object.values(this.connectors).map(connector => connector.initialize());
-        await Promise.all(initPromises);
+    unregisterConnector(protocol) {
+        if (!this.connectors.delete(protocol)) {
+            throw new Error(`No connector registered for protocol ${protocol}.`);
+        }
     }
-    
+
     /**
-     * Sends data to a specified connector.
-     * 
-     * @param {string} name - The name of the connector to send data to.
-     * @param {*} data - The data to send through the connector.
-     * @throws {Error} If the connector is not found.
+     * Sends data to an external system using the specified protocol.
+     * @param {string} protocol - The protocol identifier.
+     * @param {object} data - The data to be sent.
+     * @returns {Promise} A promise resolving with the response data.
+     * @throws {Error} If no connector is registered for the protocol.
      */
-    sendData(name, data) {
-        const connector = this.connectors[name];
+    async send(protocol, data) {
+        const connector = this.connectors.get(protocol);
         if (!connector) {
-            throw new Error(`Connector ${name} not found.`);
+            throw new Error(`No connector registered for protocol ${protocol}.`);
         }
-        connector.send(data);
+        return await connector.send(data);
     }
-    
+
     /**
-     * Retrieves data from a specified connector.
-     * 
-     * @param {string} name - The name of the connector to retrieve data from.
-     * @returns {*} The data retrieved from the connector.
-     * @throws {Error} If the connector is not found.
+     * Receives data from an external system using the specified protocol.
+     * @param {string} protocol - The protocol identifier.
+     * @returns {Promise} A promise resolving with the received data.
+     * @throws {Error} If no connector is registered for the protocol.
      */
-    retrieveData(name) {
-        const connector = this.connectors[name];
+    async receive(protocol) {
+        const connector = this.connectors.get(protocol);
         if (!connector) {
-            throw new Error(`Connector ${name} not found.`);
+            throw new Error(`No connector registered for protocol ${protocol}.`);
         }
-        return connector.retrieve();
+        return await connector.receive();
     }
 }
 
