@@ -1,76 +1,66 @@
-// GraduationLoop.js
 /**
- * GraduationLoop class to manage the lifecycle of PROTO's perceive-think-act loop.
- * This class coordinates the execution of perception, reasoning, and actions,
- * allowing PROTO to operate in a continuous loop.
+ * GraduationLoop - Manages the execution of PROTO's perceive-think-act cycle.
+ * This serves as the main loop that coordinates perception, reasoning, and actions.
+ * @module GraduationLoop
  */
+
 class GraduationLoop {
-    constructor(eventBus, stateManager, perceptionProcessor) {
-        this.eventBus = eventBus;
-        this.stateManager = stateManager;
+    constructor(perceptionProcessor, stateManager, eventBus) {
         this.perceptionProcessor = perceptionProcessor;
-        this.running = false;
+        this.stateManager = stateManager;
+        this.eventBus = eventBus;
+        this.isRunning = false;
     }
 
     /**
-     * Starts the Graduation loop.
+     * Starts the graduation loop execution.
+     * Initializes the loop and sets it to run until stopped.
      * @returns {void}
      */
     start() {
-        if (this.running) return;
-        this.running = true;
+        if (this.isRunning) {
+            console.warn('Graduation loop is already running.');
+            return;
+        }
+        this.isRunning = true;
         this.loop();
     }
 
     /**
-     * Stops the Graduation loop.
+     * Stops the graduation loop execution.
      * @returns {void}
      */
     stop() {
-        this.running = false;
+        this.isRunning = false;
     }
 
     /**
-     * The main loop that processes perception, reasoning, and actions.
+     * Main loop that runs the perceive-think-act cycle.
+     * @private
      * @returns {void}
      */
     loop() {
-        if (!this.running) return;
-        this.perceive();
-        this.reason();
-        this.act();
-        requestAnimationFrame(this.loop.bind(this));
+        if (!this.isRunning) return;
+
+        const perceptionData = this.perceptionProcessor.process();
+        const stateData = this.stateManager.updateState(perceptionData);
+        this.eventBus.publish('stateUpdated', stateData);
+
+        // Simulate the reasoning and action process
+        this.reasonAndAct(stateData);
+
+        // Schedule the next iteration
+        setImmediate(() => this.loop());
     }
 
     /**
-     * Handles the perception phase.
+     * Handles reasoning and acting based on current state.
+     * @param {Object} stateData - The current state data.
      * @returns {void}
      */
-    perceive() {
-        const incomingSignals = this.eventBus.getSignals();
-        const processedSignals = this.perceptionProcessor.process(incomingSignals);
-        this.stateManager.updateState(processedSignals);
-    }
-
-    /**
-     * Handles the reasoning phase.
-     * @returns {void}
-     */
-    reason() {
-        const currentState = this.stateManager.getCurrentState();
-        // Here you would integrate reasoning modules like GoalModel, Planner, etc.
-        // For now, we'll just log the current state as a placeholder.
-        console.log('Reasoning based on state:', currentState);
-    }
-
-    /**
-     * Handles the action phase.
-     * @returns {void}
-     */
-    act() {
-        // Here you would implement actions based on the reasoning output.
-        // For now, we'll just log a placeholder action.
-        console.log('Performing actions based on reasoning output.');
+    reasonAndAct(stateData) {
+        // Placeholder for future integration with reasoning modules
+        console.log('Reasoning based on state:', stateData);
     }
 }
 
