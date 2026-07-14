@@ -1,30 +1,33 @@
 class Memory {
     constructor() {
-        this.storage = new Map();
+        this.storage = {};
     }
-
+    
+    // store a value with a key
     set(key, value) {
-        this.storage.set(key, value);
+        this.storage[key] = value;
     }
-
+    
+    // retrieve a value by key
     get(key) {
-        return this.storage.get(key);
+        return this.storage[key];
     }
-
+    
+    // check if a key exists
     has(key) {
-        return this.storage.has(key);
+        return key in this.storage;
     }
-
+    
+    // remove a key
     delete(key) {
-        return this.storage.delete(key);
+        if (this.has(key)) {
+            delete this.storage[key];
+        }
     }
-
+    
+    // clear all memory
     clear() {
-        this.storage.clear();
-    }
-
-    snapshot() {
-        return Array.from(this.storage.entries());
+        this.storage = {};
     }
 }
 
