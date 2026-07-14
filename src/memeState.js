@@ -1,44 +1,41 @@
 class MemeState {
     constructor() {
-        this.memes = new Map();
-        this.history = []; // track history for undo/redo
+        this.memes = [];
+        this.currentIndex = 0;
     }
 
-    addMeme(id, meme) {
-        if (this.memes.has(id)) {
-            throw new Error('Meme already exists.');
+    addMeme(meme) {
+        this.memes.push(meme);
+        this.currentIndex = this.memes.length - 1;
+    }
+
+    removeMeme(index) {
+        if (index >= 0 && index < this.memes.length) {
+            this.memes.splice(index, 1);
+            this.currentIndex = Math.max(0, this.currentIndex - 1);
+        } else {
+            console.warn('index out of bounds');
         }
-        this.memes.set(id, meme);
-        this.history.push({ action: 'add', id, meme });
     }
 
-    removeMeme(id) {
-        if (!this.memes.has(id)) {
-            throw new Error('Meme not found.');
-        }
-        const meme = this.memes.get(id);
-        this.memes.delete(id);
-        this.history.push({ action: 'remove', id, meme });
+    getCurrentMeme() {
+        return this.memes[this.currentIndex];
     }
 
-    getMeme(id) {
-        return this.memes.get(id) || null;
+    nextMeme() {
+        this.currentIndex = (this.currentIndex + 1) % this.memes.length;
+        return this.getCurrentMeme();
+    }
+
+    previousMeme() {
+        this.currentIndex = (this.currentIndex - 1 + this.memes.length) % this.memes.length;
+        return this.getCurrentMeme();
     }
 
     getAllMemes() {
-        return Array.from(this.memes.values());
+        return this.memes;
     }
+}
 
-    undo() {
-        const lastAction = this.history.pop();
-        if (!lastAction) return;
-        const { action, id, meme } = lastAction;
-        if (action === 'add') {
-            this.memes.delete(id);
-        } else if (action === 'remove') {
-            this.memes.set(id, meme);
-        }
-    }
-} 
-
+// exporting the meme state for use in other modules
 export default MemeState;
