@@ -1,65 +1,78 @@
-/**
- * ErrorAnalyzer.js
- * 
- * This module analyzes errors that occur during processing and provides hooks for learning from these errors.
- * It aims to support self-awareness by allowing the system to reflect on its mistakes and adjust future behavior accordingly.
- * 
- * @module ErrorAnalyzer
- */
-
 class ErrorAnalyzer {
-    /**
-     * Creates an instance of ErrorAnalyzer.
-     * @param {Function} callback - A callback function to execute when an error is logged.
-     */
-    constructor(callback) {
-        this.callback = callback;
+    constructor() {
         this.errorLog = [];
     }
 
     /**
-     * Logs an error and triggers the callback for further processing.
-     * 
-     * @param {Error} error - The error object that needs to be logged.
-     * @param {string} context - The context in which the error occurred.
+     * Analyzes the provided error and determines its type.
+     * @param {Error} error - The error object to analyze.
+     * @returns {string} - The type of error.
      */
-    logError(error, context) {
-        const errorEntry = {
-            message: error.message,
-            stack: error.stack,
-            context: context,
-            timestamp: new Date().toISOString()
-        };
-        this.errorLog.push(errorEntry);
-        this.callback(errorEntry);
+    analyzeError(error) {
+        if (error instanceof TypeError) {
+            return 'TypeError';
+        } else if (error instanceof ReferenceError) {
+            return 'ReferenceError';
+        } else {
+            return 'GeneralError';
+        }
     }
 
     /**
-     * Returns the error log.
-     * 
+     * Logs the error and its type, storing it for further analysis.
+     * @param {Error} error - The error object to log.
+     */
+    logError(error) {
+        const errorType = this.analyzeError(error);
+        this.errorLog.push({ errorType, message: error.message, timestamp: new Date() });
+        this.adjustLearningHooks(errorType);
+    }
+
+    /**
+     * Adjusts learning hooks based on the detected error type.
+     * @param {string} errorType - The type of error to adjust hooks for.
+     */
+    adjustLearningHooks(errorType) {
+        switch (errorType) {
+            case 'TypeError':
+                this.learnFromTypeError();
+                break;
+            case 'ReferenceError':
+                this.learnFromReferenceError();
+                break;
+            default:
+                this.learnFromGeneralError();
+        }
+    }
+
+    /**
+     * Placeholder learning adjustment for TypeErrors.
+     */
+    learnFromTypeError() {
+        // Implement learning strategy for TypeErrors
+    }
+
+    /**
+     * Placeholder learning adjustment for ReferenceErrors.
+     */
+    learnFromReferenceError() {
+        // Implement learning strategy for ReferenceErrors
+    }
+
+    /**
+     * Placeholder learning adjustment for general errors.
+     */
+    learnFromGeneralError() {
+        // Implement learning strategy for general errors
+    }
+
+    /**
+     * Returns the current error log for inspection.
      * @returns {Array} - The array of logged errors.
      */
     getErrorLog() {
         return this.errorLog;
     }
-
-    /**
-     * Analyzes the errors to determine common patterns and suggests adjustments.
-     * 
-     * @returns {Object} - An object containing suggestions for adjustments based on logged errors.
-     */
-    analyzeErrors() {
-        const suggestions = {};
-        this.errorLog.forEach(error => {
-            const context = error.context;
-            if (!suggestions[context]) {
-                suggestions[context] = { count: 0, examples: [] };
-            }
-            suggestions[context].count++;
-            suggestions[context].examples.push(error);
-        });
-        return suggestions;
-    }
 }
 
-module.exports = ErrorAnalyzer;
+export default ErrorAnalyzer;
