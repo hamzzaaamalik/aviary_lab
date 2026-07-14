@@ -1,67 +1,58 @@
 /**
- * CultureTimelineEngine.js
- * 
- * This module is responsible for managing and querying the culture timeline.
- * It allows for the addition, retrieval, and organization of historical events
- * that shape the culture's lore. Events are stored with timestamps and can
- * be categorized for more accessible querying.
- * 
  * @module CultureTimelineEngine
+ * @description A module to manage the culture timeline, recording significant events and milestones in the development of shared cultural history.
  */
 
 class CultureTimelineEngine {
     constructor() {
-        this.timeline = [];
+        this.timelineEvents = [];
     }
 
     /**
      * Adds a new event to the timeline.
-     * 
      * @param {string} event - The description of the event.
-     * @param {Date} date - The date the event occurred.
-     * @param {string} category - The category of the event (e.g., "myth", "history").
-     * @throws {Error} Will throw an error if the event is empty or date is invalid.
+     * @param {Date} date - The date of the event.
+     * @param {string} [category='General'] - The category of the event (e.g., Ritual, Myth, Historical).
+     * @throws {Error} If the event description is empty or the date is invalid.
      */
-    addEvent(event, date, category) {
-        if (!event || !(date instanceof Date) || !category) {
-            throw new Error('Invalid event data.');
+    addEvent(event, date, category = 'General') {
+        if (!event || typeof event !== 'string') {
+            throw new Error('Event description must be a non-empty string.');
         }
-        this.timeline.push({ event, date, category });
-        this.timeline.sort((a, b) => a.date - b.date);
-    }
-
-    /**
-     * Retrieves all events from the timeline, optionally filtered by category.
-     * 
-     * @param {string} [category] - Optional category to filter events.
-     * @returns {Array} Array of events that match the criteria.
-     */
-    getEvents(category) {
-        return category ? this.timeline.filter(evt => evt.category === category) : this.timeline;
-    }
-
-    /**
-     * Retrieves events within a specific date range.
-     * 
-     * @param {Date} startDate - The start date for the range.
-     * @param {Date} endDate - The end date for the range.
-     * @returns {Array} Filtered array of events within the date range.
-     */
-    getEventsByDateRange(startDate, endDate) {
-        if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
-            throw new Error('Invalid date range.');
+        if (!(date instanceof Date) || isNaN(date)) {
+            throw new Error('Invalid date provided.');
         }
-        return this.timeline.filter(evt => evt.date >= startDate && evt.date <= endDate);
+        this.timelineEvents.push({ event, date, category });
     }
 
     /**
-     * Returns a formatted string representation of the timeline.
-     * 
-     * @returns {string} Formatted string of all events.
+     * Gets the entire timeline sorted by date.
+     * @returns {Array} Sorted array of timeline events.
      */
-    toString() {
-        return this.timeline.map(evt => `${evt.date.toISOString()}: ${evt.event} (${evt.category})`).join('\n');
+    getTimeline() {
+        return this.timelineEvents.sort((a, b) => a.date - b.date);
+    }
+
+    /**
+     * Fetches events of a specific category.
+     * @param {string} category - The category of events to fetch.
+     * @returns {Array} Filtered array of events that match the category.
+     */
+    getEventsByCategory(category) {
+        return this.timelineEvents.filter(event => event.category === category);
+    }
+
+    /**
+     * Displays the timeline in a human-readable format.
+     * @returns {string} Formatted timeline of events.
+     */
+    displayTimeline() {
+        return this.timelineEvents.map(event => `${event.date.toISOString().split('T')[0]}: ${event.event} [${event.category}]`).join('\n');
     }
 }
 
-export default CultureTimelineEngine;
+// Example usage
+const cultureTimeline = new CultureTimelineEngine();
+
+// Exporting the module to be used in other parts of the application.
+module.exports = CultureTimelineEngine;
