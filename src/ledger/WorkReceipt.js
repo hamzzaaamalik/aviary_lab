@@ -1,52 +1,66 @@
 /**
- * WorkReceipt class represents a verifiable receipt for work done, capturing
- * details of the work, its proof, and related metadata.
+ * Class representing a work receipt.
+ * A work receipt contains details about a completed task, including a unique identifier,
+ * the associated proof of work, timestamps, and metadata for verification purposes.
  */
 class WorkReceipt {
     /**
-     * Creates an instance of WorkReceipt.
-     * @param {string} workId - The unique identifier for the work.
-     * @param {string} proof - A cryptographic proof verifying the work done.
-     * @param {Date} timestamp - The date and time when the work was completed.
-     * @param {Object} metadata - Additional information related to the work.
+     * Create a work receipt.
+     * @param {string} id - The unique identifier for the work receipt.
+     * @param {string} proof - The proof of work associated with this receipt.
+     * @param {Date} timestamp - The time when the work was completed.
+     * @param {Object} metadata - Additional metadata regarding the work.
      */
-    constructor(workId, proof, timestamp, metadata) {
-        this.workId = workId;
+    constructor(id, proof, timestamp, metadata) {
+        this.id = id;
         this.proof = proof;
         this.timestamp = timestamp;
         this.metadata = metadata;
     }
 
     /**
-     * Validates the proof associated with this work receipt.
-     * @returns {boolean} - Returns true if the proof is valid, otherwise false.
+     * Retrieves the unique ID of the work receipt.
+     * @returns {string} The unique identifier of the work receipt.
      */
-    validateProof() {
-        // Implement proof validation logic here.
-        // This could use cryptographic methods to verify the proof.
-        return this.proof !== null && this.proof.length > 0;
+    getId() {
+        return this.id;
     }
 
     /**
-     * Serializes the work receipt to a JSON object.
-     * @returns {Object} - The JSON representation of the work receipt.
+     * Retrieves the proof of work.
+     * @returns {string} The proof associated with the receipt.
+     */
+    getProof() {
+        return this.proof;
+    }
+
+    /**
+     * Retrieves the timestamp of when the work was completed.
+     * @returns {Date} The timestamp of the work completion.
+     */
+    getTimestamp() {
+        return this.timestamp;
+    }
+
+    /**
+     * Retrieves the metadata of the work receipt.
+     * @returns {Object} The metadata associated with the receipt.
+     */
+    getMetadata() {
+        return this.metadata;
+    }
+
+    /**
+     * Converts the work receipt to a JSON representation.
+     * @returns {Object} The JSON representation of the work receipt.
      */
     toJSON() {
         return {
-            workId: this.workId,
+            id: this.id,
             proof: this.proof,
-            timestamp: this.timestamp,
+            timestamp: this.timestamp.toISOString(),
             metadata: this.metadata
         };
-    }
-
-    /**
-     * Deserializes a JSON object to a WorkReceipt instance.
-     * @param {Object} json - The JSON representation to deserialize.
-     * @returns {WorkReceipt} - The deserialized WorkReceipt instance.
-     */
-    static fromJSON(json) {
-        return new WorkReceipt(json.workId, json.proof, new Date(json.timestamp), json.metadata);
     }
 }
 
