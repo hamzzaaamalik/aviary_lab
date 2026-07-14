@@ -1,1 +1,52 @@
-/**\n * ProtocolAdapter class for handling communication between different systems.\n * This class provides methods to send and receive messages using specified protocols.\n * It acts as a bridge to ensure compatibility between disparate systems.\n *\n * @class\n */\nclass ProtocolAdapter {\n    /**\n     * Creates an instance of ProtocolAdapter.\n     * @param {string} protocol - The protocol to be used for communication (e.g., 'HTTP', 'WebSocket').\n     */\n    constructor(protocol) {\n        this.protocol = protocol;\n        this.connection = null;\n    }\n\n    /**\n     * Initializes the connection based on the specified protocol.\n     * @returns {Promise<void>} - Resolves when the connection is established.\n     * @throws {Error} - Throws an error if the connection cannot be established.\n     */\n    async connect() {\n        if (this.protocol === 'HTTP') {\n            // Initialize HTTP connection\n            this.connection = await this.setupHttpConnection();\n        } else if (this.protocol === 'WebSocket') {\n            // Initialize WebSocket connection\n            this.connection = await this.setupWebSocketConnection();\n        } else {\n            throw new Error('Unsupported protocol: ' + this.protocol);\n        }\n    }\n\n    /**\n     * Sends a message through the established connection.\n     * @param {Object} message - The message to be sent.\n     * @returns {Promise<void>} - Resolves when the message is successfully sent.\n     * @throws {Error} - Throws an error if the message cannot be sent.\n     */\n    async sendMessage(message) {\n        if (!this.connection) {\n            throw new Error('Connection not established.');\n        }\n        // Logic to send the message based on the protocol\n        if (this.protocol === 'HTTP') {\n            await this.sendHttpMessage(message);\n        } else if (this.protocol === 'WebSocket') {\n            await this.sendWebSocketMessage(message);\n        }\n    }\n\n    /**\n     * Receives a message from the established connection.\n     * @returns {Promise<Object>} - Resolves with the received message.\n     * @throws {Error} - Throws an error if the message cannot be received.\n     */\n    async receiveMessage() {\n        if (!this.connection) {\n            throw new Error('Connection not established.');\n        }\n        // Logic to receive the message based on the protocol\n        if (this.protocol === 'HTTP') {\n            return await this.receiveHttpMessage();\n        } else if (this.protocol === 'WebSocket') {\n            return await this.receiveWebSocketMessage();\n        }\n    }\n\n    // Private methods to setup connections and send/receive messages\n    async setupHttpConnection() {\n        // Implementation for HTTP connection setup\n    }\n\n    async setupWebSocketConnection() {\n        // Implementation for WebSocket connection setup\n    }\n\n    async sendHttpMessage(message) {\n        // Implementation for sending messages via HTTP\n    }\n\n    async sendWebSocketMessage(message) {\n        // Implementation for sending messages via WebSocket\n    }\n\n    async receiveHttpMessage() {\n        // Implementation for receiving messages via HTTP\n    }\n\n    async receiveWebSocketMessage() {\n        // Implementation for receiving messages via WebSocket\n    }\n}\n\nmodule.exports = ProtocolAdapter;\n
+/**
+ * ProtocolAdapter class for managing inter-system communication protocols.
+ * This class handles the registration of protocols and the routing of messages
+ * between different systems using those protocols.
+ */
+class ProtocolAdapter {
+    constructor() {
+        this.protocols = {};
+    }
+
+    /**
+     * Registers a new communication protocol.
+     * @param {string} protocolName - The name of the protocol.
+     * @param {Object} protocolDefinition - The definition of the protocol including methods and handlers.
+     */
+    registerProtocol(protocolName, protocolDefinition) {
+        if (this.protocols[protocolName]) {
+            throw new Error(`Protocol ${protocolName} is already registered.`);
+        }
+        this.protocols[protocolName] = protocolDefinition;
+    }
+
+    /**
+     * Sends a message using the specified protocol.
+     * @param {string} protocolName - The name of the protocol to use.
+     * @param {Object} message - The message to send.
+     * @throws Will throw an error if the protocol is not registered.
+     */
+    sendMessage(protocolName, message) {
+        const protocol = this.protocols[protocolName];
+        if (!protocol) {
+            throw new Error(`Protocol ${protocolName} is not registered.`);
+        }
+        protocol.send(message);
+    }
+
+    /**
+     * Receives a message using the specified protocol.
+     * @param {string} protocolName - The name of the protocol to use.
+     * @param {Object} message - The incoming message.
+     * @throws Will throw an error if the protocol is not registered.
+     */
+    receiveMessage(protocolName, message) {
+        const protocol = this.protocols[protocolName];
+        if (!protocol) {
+            throw new Error(`Protocol ${protocolName} is not registered.`);
+        }
+        protocol.receive(message);
+    }
+}
+
+export default ProtocolAdapter;
