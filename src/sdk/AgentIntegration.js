@@ -1,79 +1,60 @@
 /**
- * AgentIntegration.js
- * 
- * This module establishes interfaces and utilities for integrating various agent components
- * into a cohesive architecture, enabling modular development and interaction.
- * 
- * @module sdk/AgentIntegration
+ * @module AgentIntegration
+ * @description This module provides an interface for integrating various agents into the Open Framework, allowing seamless communication and collaboration among different components.
  */
 
-import AgentFactory from '../agents/AgentFactory';
-import AgentIdentity from '../agents/AgentIdentity';
-import AgentLifecycle from '../agents/AgentLifecycle';
-
-/**
- * Represents an integration layer for managing agents.
- */
 class AgentIntegration {
-    /**
-     * Creates an instance of AgentIntegration.
-     * @param {string} id - The unique identifier for the integration.
-     */
-    constructor(id) {
-        this.id = id;
+    constructor() {
         this.agents = new Map();
     }
 
     /**
-     * Registers a new agent with the integration.
-     * @param {Object} agentConfig - The configuration for the agent.
-     * @returns {AgentIdentity} - The identity of the registered agent.
-     * @throws {Error} - Throws an error if the agent cannot be registered.
+     * Registers a new agent into the integration system.
+     * @param {string} agentId - The unique identifier for the agent.
+     * @param {Object} agentInstance - The instance of the agent to register.
+     * @throws {Error} If an agent with the same ID already exists.
      */
-    registerAgent(agentConfig) {
-        const agent = AgentFactory.createAgent(agentConfig);
-        if (!agent) throw new Error('Agent registration failed.');
-
-        const identity = new AgentIdentity(agentConfig.id);
-        this.agents.set(identity.id, agent);
-        return identity;
+    registerAgent(agentId, agentInstance) {
+        if (this.agents.has(agentId)) {
+            throw new Error('Agent with this ID already exists.');
+        }
+        this.agents.set(agentId, agentInstance);
     }
 
     /**
-     * Starts the lifecycle of the registered agents.
-     * @returns {void}
+     * Deregisters an agent from the integration system.
+     * @param {string} agentId - The unique identifier for the agent.
+     * @throws {Error} If the agent does not exist.
      */
-    startAgents() {
-        this.agents.forEach((agent) => {
-            AgentLifecycle.start(agent);
-        });
+    deregisterAgent(agentId) {
+        if (!this.agents.has(agentId)) {
+            throw new Error('Agent not found.');
+        }
+        this.agents.delete(agentId);
     }
 
     /**
-     * Stops the lifecycle of the registered agents.
-     * @returns {void}
+     * Sends a message to a specific agent.
+     * @param {string} agentId - The unique identifier for the target agent.
+     * @param {Object} message - The message payload to send.
+     * @throws {Error} If the agent does not exist.
      */
-    stopAgents() {
-        this.agents.forEach((agent) => {
-            AgentLifecycle.stop(agent);
-        });
+    sendMessageToAgent(agentId, message) {
+        const agent = this.agents.get(agentId);
+        if (!agent) {
+            throw new Error('Agent not found.');
+        }
+        agent.receiveMessage(message);
     }
 
     /**
-     * Retrieves an agent by its identity.
-     * @param {string} identityId - The unique identifier of the agent.
-     * @returns {Object|null} - Returns the agent if found, otherwise null.
+     * Broadcasts a message to all registered agents.
+     * @param {Object} message - The message payload to send to all agents.
      */
-    getAgent(identityId) {
-        return this.agents.get(identityId) || null;
-    }
-
-    /**
-     * Retrieves all registered agents.
-     * @returns {Array} - An array of all registered agents.
-     */
-    getAllAgents() {
-        return Array.from(this.agents.values());
+    broadcastMessage(message) {
+        for (const agent of this.agents.values()) {
+            agent.receiveMessage(message);
+        }
     }
 }
 
