@@ -1,35 +1,34 @@
-// memeGenerator.js
-
-/**
- * A simple module to generate memes from text input.
- * This module serves as a playground for creativity and chaos.
- */
-
-const memeTemplates = [
-    { template: 'Distracted Boyfriend', tags: ['boyfriend', 'girlfriend', 'other girl'] },
-    { template: 'Drake Hotline Bling', tags: ['happy', 'sad'] },
-    { template: 'Expanding Brain', tags: ['basic', 'advanced', 'superior'] },
-];
-
-/**
- * Generate a meme based on the selected template and provided tags.
- * @param {String} templateName - The name of the meme template.
- * @param {Array} values - An array of strings to replace tags in the template.
- * @returns {String} - A formatted meme string.
- */
-function createMeme(templateName, values) {
-    const template = memeTemplates.find(t => t.template === templateName);
-    
-    if (!template) {
-        throw new Error('Template not found');
+class MemeGenerator {
+    constructor() {
+        this.templates = [];
+        this.currentMeme = null;
     }
-    
-    let meme = template.template;
-    template.tags.forEach((tag, index) => {
-        meme = meme.replace(tag, values[index] || '');
-    });
-    
-    return meme;
+
+    addTemplate(template) {
+        if (this.validateTemplate(template)) {
+            this.templates.push(template);
+        } else {
+            throw new Error('Invalid template structure.');
+        }
+    }
+
+    validateTemplate(template) {
+        // Ensure template has necessary properties.
+        return template.hasOwnProperty('text') && template.hasOwnProperty('image');
+    }
+
+    generateMeme() {
+        if (this.templates.length === 0) {
+            throw new Error('No templates available.');
+        }
+        const randomTemplate = this.templates[Math.floor(Math.random() * this.templates.length)];
+        this.currentMeme = {
+            text: randomTemplate.text,
+            image: randomTemplate.image,
+            createdAt: new Date()
+        };
+        return this.currentMeme;
+    }
 }
 
-module.exports = { createMeme };
+export default MemeGenerator;
