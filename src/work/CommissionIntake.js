@@ -1,40 +1,63 @@
 /**
- * CommissionIntake handles the intake of new commission requests.
- * It validates inputs and stores valid requests in the queue for processing.
+ * CommissionIntake class handles the intake of new commissions.
+ * It validates and parses incoming commission data.
  *
- * @module CommissionIntake
+ * @class
  */
-
-const CommissionQueue = require('./CommissionQueue');
-const { validateCommission } = require('../memeValidator');
-
 class CommissionIntake {
-    constructor() {
-        this.queue = new CommissionQueue();
+    /**
+     * Creates an instance of CommissionIntake.
+     *
+     * @param {Object} config - Configuration object for CommissionIntake.
+     */
+    constructor(config) {
+        this.config = config;
     }
 
     /**
-     * Intake a new commission request.
-     * @param {Object} commissionData - The commission data.
-     * @param {string} commissionData.title - Title of the commission.
-     * @param {string} commissionData.description - Description of the commission.
-     * @param {string} commissionData.client - Client's name.
-     * @throws {Error} If the commission data is invalid.
+     * Validates the incoming commission data.
+     *
+     * @param {Object} commissionData - The commission data to validate.
+     * @returns {boolean} - Returns true if valid, false otherwise.
      */
-    intake(commissionData) {
-        const validationErrors = validateCommission(commissionData);
-        if (validationErrors.length) {
-            throw new Error(`Validation errors: ${validationErrors.join(', ')}`);
+    validate(commissionData) {
+        // Basic validation logic
+        if (!commissionData.title || typeof commissionData.title !== 'string') {
+            throw new Error('Invalid commission title.');
         }
-        this.queue.enqueue(commissionData);
+        if (!commissionData.details || typeof commissionData.details !== 'string') {
+            throw new Error('Invalid commission details.');
+        }
+        if (!commissionData.clientId || typeof commissionData.clientId !== 'string') {
+            throw new Error('Invalid client ID.');
+        }
+        return true;
     }
 
     /**
-     * Get the current state of the commission queue.
-     * @returns {Array} The current queue of commissions.
+     * Parses the incoming commission data.
+     *
+     * @param {Object} commissionData - The commission data to parse.
+     * @returns {Object} - The parsed commission object.
      */
-    getQueueState() {
-        return this.queue.getQueue();
+    parse(commissionData) {
+        return {
+            title: commissionData.title.trim(),
+            details: commissionData.details.trim(),
+            clientId: commissionData.clientId.trim(),
+            timestamp: new Date().toISOString()
+        };
+    }
+
+    /**
+     * Processes the commission intake.
+     *
+     * @param {Object} commissionData - The commission data to process.
+     * @returns {Object} - The processed commission object.
+     */
+    process(commissionData) {
+        this.validate(commissionData);
+        return this.parse(commissionData);
     }
 }
 
