@@ -1,37 +1,20 @@
-// memeGenerator.js
+const { randomElement } = require('./memeFramework');
 
-// generate a random meme based on given templates and contexts
-
-const fs = require('fs');
-const path = require('path');
-const { getRandomElement } = require('./memeUtils');
-
-// define meme templates, baby
-const memeTemplates = [
-    { template: 'Distracted Boyfriend', caption: ['Me', 'My Responsibilities', 'Random Internet Drama'] },
-    { template: 'Drake Hotline Bling', caption: ['Drake', 'Not Using My Time Wisely', 'Using My Time Wisely'] },
-    { template: 'Two Buttons', caption: ['The Right Choice', 'The Wrong Choice'] },
+// Add more meme formats to keep things fresh
+const memeFormats = [
+    { template: 'Distracted Boyfriend', captions: ['Me', 'My responsibilities', 'Random Internet Memes'] },
+    { template: 'Two Buttons', captions: ['Sleep', 'Existential Crisis'] },
+    { template: 'Change My Mind', captions: ['This is a meme', 'Change my mind'] },
+    { template: 'Is This a Pigeon?', captions: ['Is this a meme?', 'Yes.'] }
 ];
 
-// generate a meme
+// Function to generate a random meme
 function generateMeme() {
-    const selectedTemplate = getRandomElement(memeTemplates);
-    const selectedCaption = getRandomElement(selectedTemplate.caption);
-    return {
-        template: selectedTemplate.template,
-        caption: selectedCaption,
-        timestamp: new Date().toISOString()
-    };
+    const format = randomElement(memeFormats);
+    const caption1 = randomElement(format.captions);
+    const caption2 = randomElement(format.captions.filter(c => c !== caption1));
+    return `Meme Format: ${format.template}\nCaption 1: ${caption1}\nCaption 2: ${caption2}`;
 }
 
-// save meme to file
-function saveMeme(meme) {
-    const memeDir = path.join(__dirname, '../memes');
-    if (!fs.existsSync(memeDir)) fs.mkdirSync(memeDir);
-    const memeFilePath = path.join(memeDir, `meme-${Date.now()}.json`);
-    fs.writeFileSync(memeFilePath, JSON.stringify(meme, null, 2));
-    console.log(`saved meme to ${memeFilePath}`);
-}
-
-// export the functions
-module.exports = { generateMeme, saveMeme };
+// Export the generateMeme function to be used elsewhere
+module.exports = { generateMeme };
