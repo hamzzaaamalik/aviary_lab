@@ -1,53 +1,46 @@
 /**
- * CommissionManager handles the intake and processing of commissions.
- * It manages the job queue and execution pipeline for efficient handling.
- *
- * @module CommissionManager
+ * CommissionManager handles the intake, processing, and management of commission requests.
+ * It interacts with the JobQueue and processes incoming commissions through the JobExecutionPipeline.
  */
-
-const CommissionIntake = require('./CommissionIntake');
-const JobQueue = require('./JobQueue');
-const JobExecutionPipeline = require('./JobExecutionPipeline');
-
 class CommissionManager {
-    constructor() {
-        this.jobQueue = new JobQueue();
-        this.executionPipeline = new JobExecutionPipeline();
+    constructor(jobQueue, jobExecutionPipeline) {
+        this.jobQueue = jobQueue;
+        this.jobExecutionPipeline = jobExecutionPipeline;
     }
 
     /**
-     * Intake a new commission and add it to the job queue.
-     * @param {Object} commission - The commission object to be processed.
-     * @returns {boolean} - Success status of the intake operation.
+     * Intake a new commission request and add it to the job queue.
+     * @param {Object} commission - The commission object containing details about the request.
+     * @param {string} commission.id - Unique identifier for the commission.
+     * @param {Object} commission.data - The data associated with the commission request.
      */
     intakeCommission(commission) {
-        const success = CommissionIntake.validate(commission);
-        if (success) {
-            this.jobQueue.addJob(commission);
-            return true;
+        if (!commission || !commission.id || !commission.data) {
+            throw new Error('Invalid commission data.');
         }
-        return false;
+        this.jobQueue.enqueue(commission);
+        console.log(`Commission ${commission.id} has been intaken.`);
     }
 
     /**
-     * Process the next commission from the job queue using the execution pipeline.
-     * @returns {Promise<void>} - Promise resolving when the job is processed.
+     * Process the next commission from the job queue.
      */
-    async processNextCommission() {
-        const job = this.jobQueue.getNextJob();
-        if (job) {
-            await this.executionPipeline.execute(job);
-        } else {
-            console.log('No jobs in the queue to process.');
+    processNextCommission() {
+        const nextCommission = this.jobQueue.dequeue();
+        if (!nextCommission) {
+            console.log('No commissions in the queue to process.');
+            return;
         }
+        console.log(`Processing commission ${nextCommission.id}...`);
+        this.jobExecutionPipeline.execute(nextCommission);
     }
 
     /**
-     * Get the status of the current job queue.
-     * @returns {Array} - The current list of jobs in the queue.
+     * Get the current status of commissions in the manager.
+     * @returns {Array} - List of commissions being managed.
      */
-    getJobQueueStatus() {
-        return this.jobQueue.getJobs();
+    getStatus() {
+        return this.jobQueue.getAllItems();
     }
 }
 
