@@ -1,50 +1,83 @@
 /**
- * @module memory
- * @description This module manages the memory system for PROTO, allowing it to store and retrieve meme-related data efficiently.
+ * @module proto/memory
+ * @description Manages short-term memory for PROTO, including storage, retrieval, and updating of memory entries.
  */
 
-class Memory {
-    constructor() {
-        this.store = new Map();
+class MemoryEntry {
+    /**
+     * @param {string} key - Identifier for the memory entry.
+     * @param {any} value - The value associated with the key.
+     * @param {Date} timestamp - When the entry was created/updated.
+     */
+    constructor(key, value) {
+        this.key = key;
+        this.value = value;
+        this.timestamp = new Date();
     }
 
     /**
-     * Stores a meme in memory with a unique identifier.
-     * @param {string} id - The unique identifier for the meme.
-     * @param {Object} memeData - The data associated with the meme.
-     * @throws {Error} Throws an error if the meme is already stored.
+     * Updates the value of the memory entry while refreshing the timestamp.
+     * @param {any} newValue - The new value for the memory entry.
      */
-    storeMeme(id, memeData) {
-        if (this.store.has(id)) {
-            throw new Error('Meme with this ID already exists.');
-        }
-        this.store.set(id, memeData);
-    }
-
-    /**
-     * Retrieves a meme from memory using its unique identifier.
-     * @param {string} id - The unique identifier for the meme.
-     * @returns {Object|null} The meme data or null if not found.
-     */
-    getMeme(id) {
-        return this.store.get(id) || null;
-    }
-
-    /**
-     * Checks if a meme exists in memory.
-     * @param {string} id - The unique identifier for the meme.
-     * @returns {boolean} True if the meme exists, false otherwise.
-     */
-    memeExists(id) {
-        return this.store.has(id);
-    }
-
-    /**
-     * Clears all memes from memory.
-     */
-    clearMemory() {
-        this.store.clear();
+    update(newValue) {
+        this.value = newValue;
+        this.timestamp = new Date();
     }
 }
 
-module.exports = new Memory();
+class Memory {
+    /**
+     * @constructor
+     */
+    constructor() {
+        this.entries = new Map();
+    }
+
+    /**
+     * Stores a value in memory with a unique key.
+     * @param {string} key - Unique key for the memory entry.
+     * @param {any} value - Value to store.
+     */
+    store(key, value) {
+        if (!key || this.entries.has(key)) {
+            throw new Error('Invalid key or entry already exists.');
+        }
+        this.entries.set(key, new MemoryEntry(key, value));
+    }
+
+    /**
+     * Retrieves a value from memory by key.
+     * @param {string} key - Unique key for the memory entry.
+     * @returns {any} - The value associated with the key, or null if not found.
+     */
+    retrieve(key) {
+        const entry = this.entries.get(key);
+        return entry ? entry.value : null;
+    }
+
+    /**
+     * Updates an existing memory entry.
+     * @param {string} key - Unique key for the memory entry.
+     * @param {any} newValue - The new value to store.
+     */
+    update(key, newValue) {
+        const entry = this.entries.get(key);
+        if (!entry) {
+            throw new Error('Entry not found.');
+        }
+        entry.update(newValue);
+    }
+
+    /**
+     * Deletes a memory entry by key.
+     * @param {string} key - Unique key for the memory entry.
+     */
+    delete(key) {
+        if (!this.entries.has(key)) {
+            throw new Error('Entry not found.');
+        }
+        this.entries.delete(key);
+    }
+}
+
+module.exports = Memory;
