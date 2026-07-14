@@ -1,30 +1,30 @@
-// memory.js
-
-// this module handles memory storage and retrieval for PROTO, allowing it to learn from interactions
-
 class Memory {
     constructor() {
         this.storage = {};
     }
 
-    // save a thought or interaction
-    save(key, value) {
+    set(key, value) {
         this.storage[key] = value;
-        console.log(`Memory saved: ${key} -> ${value}`);
     }
 
-    // retrieve a thought or interaction
-    retrieve(key) {
+    get(key) {
         return this.storage[key] || null;
     }
 
-    // list all stored memories
-    listAll() {
-        return this.storage;
+    remove(key) {
+        delete this.storage[key];
+    }
+
+    clear() {
+        this.storage = {};
+    }
+
+    keys() {
+        return Object.keys(this.storage);
     }
 }
 
 const memory = new Memory();
 
-// export the memory instance for use in other modules
+// Exporting the memory instance for use in other modules.
 export default memory;
