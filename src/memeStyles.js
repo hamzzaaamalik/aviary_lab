@@ -1,38 +1,39 @@
-// memeStyles.js - define styles for memes to keep things fresh and fun
+// src/memeStyles.js
+
+// A collection of meme styles to add personality and flair
 
 const memeStyles = {
-    // classic meme format
     classic: {
         font: 'Impact',
-        fontSize: '26px',
         color: '#FFFFFF',
-        textShadow: '2px 2px 0px #000000',
-        alignment: 'center'
+        outline: '2px solid #000000',
+        positioning: 'center',
     },
-    // modern minimalist style
+    retro: {
+        font: 'Comic Sans MS',
+        color: '#FF69B4',
+        outline: '3px dashed #FFD700',
+        positioning: 'top-left',
+    },
     minimalist: {
         font: 'Arial',
-        fontSize: '20px',
         color: '#000000',
-        textShadow: 'none',
-        alignment: 'left'
+        outline: 'none',
+        positioning: 'bottom-right',
     },
-    // vibrant party style
-    vibrant: {
-        font: 'Comic Sans MS',
-        fontSize: '30px',
-        color: '#FF69B4',
-        textShadow: '2px 2px 2px #FFF700',
-        alignment: 'right'
-    },
-    // retro style
-    retro: {
+    surreal: {
         font: 'Courier New',
-        fontSize: '28px',
-        color: '#6A5ACD',
-        textShadow: '1px 1px 1px #00FF7F',
-        alignment: 'center'
-    }
+        color: '#00FF7F',
+        outline: '1px solid #800080',
+        positioning: 'center',
+    },
 };
 
 export default memeStyles;
+
+// Function to get a random meme style
+export function getRandomMemeStyle() {
+    const styles = Object.keys(memeStyles);
+    const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+    return memeStyles[randomStyle];
+}
