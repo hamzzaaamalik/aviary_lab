@@ -1,43 +1,37 @@
 // memeGenerator.js
 
-// a chaotic generator of memes, because why not?
+// generate a random meme based on given templates and contexts
 
-const memes = require('./memes');
-const memeStyles = require('./memeStyles');
-const memeState = require('./memeState');
+const fs = require('fs');
+const path = require('path');
+const { getRandomElement } = require('./memeUtils');
 
-/**
- * Generates a random meme using a predefined set of templates and styles.
- * @returns {Object} meme - a randomly generated meme object.
- */
-function generateRandomMeme() {
-    const randomMeme = memes[Math.floor(Math.random() * memes.length)];
-    const randomStyle = memeStyles[Math.floor(Math.random() * memeStyles.length)];
+// define meme templates, baby
+const memeTemplates = [
+    { template: 'Distracted Boyfriend', caption: ['Me', 'My Responsibilities', 'Random Internet Drama'] },
+    { template: 'Drake Hotline Bling', caption: ['Drake', 'Not Using My Time Wisely', 'Using My Time Wisely'] },
+    { template: 'Two Buttons', caption: ['The Right Choice', 'The Wrong Choice'] },
+];
 
-    const meme = {
-        text: randomMeme.text,
-        image: randomMeme.image,
-        style: randomStyle,
-        createdAt: new Date().toISOString()
+// generate a meme
+function generateMeme() {
+    const selectedTemplate = getRandomElement(memeTemplates);
+    const selectedCaption = getRandomElement(selectedTemplate.caption);
+    return {
+        template: selectedTemplate.template,
+        caption: selectedCaption,
+        timestamp: new Date().toISOString()
     };
-
-    // update meme state with the new meme
-    memeState.addMeme(meme);
-    return meme;
 }
 
-/**
- * Generates a series of memes based on user reactions or trends.
- * @param {number} count - number of memes to generate.
- * @returns {Array} memes - an array of generated memes.
- */
-function generateMemeSeries(count) {
-    return Array.from({ length: count }, generateRandomMeme);
+// save meme to file
+function saveMeme(meme) {
+    const memeDir = path.join(__dirname, '../memes');
+    if (!fs.existsSync(memeDir)) fs.mkdirSync(memeDir);
+    const memeFilePath = path.join(memeDir, `meme-${Date.now()}.json`);
+    fs.writeFileSync(memeFilePath, JSON.stringify(meme, null, 2));
+    console.log(`saved meme to ${memeFilePath}`);
 }
 
-module.exports = {
-    generateRandomMeme,
-    generateMemeSeries
-};
-
-// end of memeGenerator.js
+// export the functions
+module.exports = { generateMeme, saveMeme };
