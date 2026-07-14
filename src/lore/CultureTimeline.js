@@ -1,52 +1,60 @@
 /**
- * @module CultureTimeline
- * @description This module manages a timeline of cultural milestones, rituals, and shared histories vital to the evolution of PROTO's identity.
+ * CultureTimeline.js
+ *
+ * This module manages the cultural timeline of the system, recording significant events
+ * and milestones that shape the shared history. Each event is timestamped and associated
+ * with specific cultural artifacts.
  */
 
 class CultureTimeline {
     constructor() {
-        /**
-         * @type {Array<Object>}
-         * @description Array to hold cultural events.
-         */
         this.events = [];
     }
 
     /**
-     * Add a new cultural event to the timeline.
-     * @param {string} date - The date of the event in ISO format (YYYY-MM-DD).
-     * @param {string} title - Title of the cultural event.
-     * @param {string} description - A detailed description of what occurred during the event.
+     * Adds a new event to the timeline.
+     *
+     * @param {string} description - A description of the event.
+     * @param {Date} date - The date of the event.
+     * @param {Array<string>} artifacts - Associated cultural artifacts.
+     * @throws {Error} Throws an error if the date is in the future.
      */
-    addEvent(date, title, description) {
-        const event = {
-            date: new Date(date),
-            title: title,
-            description: description
-        };
-        this.events.push(event);
+    addEvent(description, date, artifacts) {
+        const now = new Date();
+        if (date > now) {
+            throw new Error('Event date cannot be in the future.');
+        }
+        this.events.push({ description, date, artifacts });
     }
 
     /**
-     * Get the full timeline of cultural events.
-     * @returns {Array<Object>} - An array of all cultural events.
+     * Retrieves all events in the timeline.
+     *
+     * @returns {Array<Object>} An array of events with their descriptions, dates, and artifacts.
      */
-    getTimeline() {
+    getEvents() {
+        return this.events;
+    }
+
+    /**
+     * Finds events by a specific artifact.
+     *
+     * @param {string} artifact - The name of the artifact to search for.
+     * @returns {Array<Object>} An array of events associated with the specified artifact.
+     */
+    findEventsByArtifact(artifact) {
+        return this.events.filter(event => event.artifacts.includes(artifact));
+    }
+
+    /**
+     * Retrieves a chronological list of events.
+     *
+     * @returns {Array<Object>} A sorted array of events by date.
+     */
+    getChronologicalEvents() {
         return this.events.sort((a, b) => a.date - b.date);
-    }
-
-    /**
-     * Find events by a specific keyword in their title or description.
-     * @param {string} keyword - The keyword to search for in events.
-     * @returns {Array<Object>} - An array of events that match the search criteria.
-     */
-    findEvents(keyword) {
-        const lowerKeyword = keyword.toLowerCase();
-        return this.events.filter(event => 
-            event.title.toLowerCase().includes(lowerKeyword) || 
-            event.description.toLowerCase().includes(lowerKeyword)
-        );
     }
 }
 
+// Exporting the CultureTimeline class for external use.
 module.exports = CultureTimeline;
