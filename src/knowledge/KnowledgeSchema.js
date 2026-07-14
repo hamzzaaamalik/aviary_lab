@@ -1,1 +1,52 @@
-/**\n * KnowledgeSchema class to manage the structure and relationships of knowledge entities.\n * This serves as the backbone for shared knowledge across the minds.\n *\n * @class KnowledgeSchema\n */\nclass KnowledgeSchema {\n    constructor() {\n        this.entities = {}; // stores knowledge entities by ID\n        this.relationships = {}; // stores relationships between entities\n    }\n\n    /**\n     * Adds a new entity to the knowledge schema.\n     *\n     * @param {string} id - Unique identifier for the entity.\n     * @param {Object} data - The data associated with the entity.\n     * @throws {Error} Throws an error if the entity ID already exists.\n     */\n    addEntity(id, data) {\n        if (this.entities[id]) {\n            throw new Error('Entity with this ID already exists.');\n        }\n        this.entities[id] = data;\n    }\n\n    /**\n     * Retrieves an entity by its ID.\n     *\n     * @param {string} id - Unique identifier for the entity.\n     * @returns {Object} The data associated with the entity.\n     * @throws {Error} Throws an error if the entity is not found.\n     */\n    getEntity(id) {\n        if (!this.entities[id]) {\n            throw new Error('Entity not found.');\n        }\n        return this.entities[id];\n    }\n\n    /**\n     * Adds a relationship between two entities.\n     *\n     * @param {string} entityId1 - The ID of the first entity.\n     * @param {string} entityId2 - The ID of the second entity.\n     * @param {string} relation - The type of relationship.\n     */\n    addRelationship(entityId1, entityId2, relation) {\n        if (!this.relationships[entityId1]) {\n            this.relationships[entityId1] = {};\n        }\n        this.relationships[entityId1][entityId2] = relation;\n    }\n\n    /**\n     * Retrieves relationships for a given entity.\n     *\n     * @param {string} entityId - The ID of the entity.\n     * @returns {Object} An object containing related entities and their relationships.\n     */\n    getRelationships(entityId) {\n        return this.relationships[entityId] || {};\n    }\n}\n\n// Export the KnowledgeSchema class for use in other modules\nmodule.exports = KnowledgeSchema;
+/**
+ * KnowledgeSchema class to define and manage a structured schema for knowledge representation.
+ * This schema facilitates the ingestion, storage, and retrieval of knowledge components.
+ */
+class KnowledgeSchema {
+    constructor() {
+        this.schema = {};
+    }
+
+    /**
+     * Defines a new knowledge type in the schema.
+     * @param {string} key - The unique identifier for the knowledge type.
+     * @param {Object} structure - The structure of the knowledge type.
+     */
+    defineType(key, structure) {
+        if (this.schema[key]) {
+            throw new Error(`Type ${key} is already defined.`);
+        }
+        this.schema[key] = structure;
+    }
+
+    /**
+     * Validates a knowledge entry against its defined schema type.
+     * @param {string} key - The type of knowledge to validate.
+     * @param {Object} entry - The knowledge entry to validate.
+     * @returns {boolean} - Returns true if the entry is valid, else false.
+     */
+    validateEntry(key, entry) {
+        const structure = this.schema[key];
+        if (!structure) {
+            throw new Error(`Type ${key} is not defined in schema.`);
+        }
+        // Perform validation based on structure (example: checking required fields)
+        for (const field of structure.required) {
+            if (!(field in entry)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Retrieves the schema structure for a specific type.
+     * @param {string} key - The type of knowledge to retrieve.
+     * @returns {Object} - The structure of the defined knowledge type.
+     */
+    getStructure(key) {
+        return this.schema[key] || null;
+    }
+}
+
+export default KnowledgeSchema;
