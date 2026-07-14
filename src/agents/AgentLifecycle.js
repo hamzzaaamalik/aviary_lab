@@ -1,78 +1,68 @@
 /**
- * AgentLifecycle class to manage the lifecycle of agents in the system.
- * Handles spawning, activation, and deactivation of agent instances.
+ * AgentLifecycle manages the state transitions and lifecycle events of agents.
+ * It provides hooks for initialization, activation, and termination of agents.
  */
 class AgentLifecycle {
     constructor() {
-        this.agents = new Map(); // Store active agents
+        this.agents = new Map(); // Stores agents by their ID
     }
 
     /**
-     * Spawns a new agent with a unique identity.
+     * Registers a new agent in the lifecycle.
      * @param {string} agentId - Unique identifier for the agent.
-     * @param {object} initialState - Initial state for the agent.
-     * @returns {void}
+     * @param {object} agent - The agent instance.
      */
-    spawnAgent(agentId, initialState) {
+    registerAgent(agentId, agent) {
         if (this.agents.has(agentId)) {
-            throw new Error(`Agent with ID ${agentId} already exists.`);
+            throw new Error(`Agent with ID ${agentId} is already registered.`);
         }
-        const agent = new Agent(agentId, initialState);
         this.agents.set(agentId, agent);
+        this.initializeAgent(agentId);
     }
 
     /**
-     * Activates an existing agent by its ID.
+     * Initializes the agent's lifecycle by triggering its start methods.
      * @param {string} agentId - Unique identifier for the agent.
-     * @returns {void}
+     */
+    initializeAgent(agentId) {
+        const agent = this.agents.get(agentId);
+        if (agent && typeof agent.start === 'function') {
+            agent.start();
+        }
+    }
+
+    /**
+     * Activates the agent, allowing it to process its tasks.
+     * @param {string} agentId - Unique identifier for the agent.
      */
     activateAgent(agentId) {
         const agent = this.agents.get(agentId);
-        if (!agent) {
-            throw new Error(`Agent with ID ${agentId} does not exist.`);
+        if (agent && typeof agent.activate === 'function') {
+            agent.activate();
         }
-        agent.activate();
     }
 
     /**
-     * Deactivates an existing agent by its ID.
+     * Deactivates the agent, halting its operations.
      * @param {string} agentId - Unique identifier for the agent.
-     * @returns {void}
      */
     deactivateAgent(agentId) {
         const agent = this.agents.get(agentId);
-        if (!agent) {
-            throw new Error(`Agent with ID ${agentId} does not exist.`);
+        if (agent && typeof agent.deactivate === 'function') {
+            agent.deactivate();
         }
-        agent.deactivate();
     }
 
     /**
-     * Retrieves an agent by its ID.
+     * Unregisters the agent from the lifecycle, cleaning up resources.
      * @param {string} agentId - Unique identifier for the agent.
-     * @returns {Agent|null} - The agent instance or null if not found.
      */
-    getAgent(agentId) {
-        return this.agents.get(agentId) || null;
-    }
-}
-
-// Assumes a simple Agent class exists.
-class Agent {
-    constructor(id, state) {
-        this.id = id;
-        this.state = state;
-        this.active = false;
-    }
-
-    activate() {
-        this.active = true;
-        // Additional activation logic.
-    }
-
-    deactivate() {
-        this.active = false;
-        // Additional deactivation logic.
+    unregisterAgent(agentId) {
+        if (!this.agents.has(agentId)) {
+            throw new Error(`Agent with ID ${agentId} is not registered.`);
+        }
+        this.deactivateAgent(agentId);
+        this.agents.delete(agentId);
     }
 }
 
