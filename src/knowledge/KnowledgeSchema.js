@@ -1,62 +1,65 @@
 /**
- * KnowledgeSchema.js
- * This module defines the schema for knowledge representation within the Library.
- * It structures how knowledge units are organized, stored, and accessed by other modules.
+ * KnowledgeSchema class to manage the structure of shared knowledge within the minds.
+ * It defines how knowledge is categorized and how connections between knowledge pieces are represented.
  */
-
-class KnowledgeUnit {
-    constructor(id, title, content, tags = []) {
-        this.id = id;  // unique identifier for the knowledge unit
-        this.title = title;  // title of the knowledge unit
-        this.content = content;  // main content of the knowledge unit
-        this.tags = tags;  // array of tags for categorization
-    }
-}
-
 class KnowledgeSchema {
     constructor() {
-        this.knowledgeUnits = new Map();  // store knowledge units by id
+        this.knowledgeBase = {};
     }
 
     /**
-     * Adds a knowledge unit to the schema.
-     * @param {KnowledgeUnit} unit - The knowledge unit to add.
-     * @throws Will throw an error if the unit already exists.
+     * Adds a new concept to the knowledge base.
+     * @param {string} concept - The name of the concept to add.
+     * @param {Object} data - The data associated with the concept (e.g., definitions, examples).
+     * @throws {Error} If the concept already exists.
      */
-    addKnowledgeUnit(unit) {
-        if (this.knowledgeUnits.has(unit.id)) {
-            throw new Error('Knowledge unit with this ID already exists.');
+    addConcept(concept, data) {
+        if (this.knowledgeBase[concept]) {
+            throw new Error(`Concept '${concept}' already exists in the knowledge base.`);
         }
-        this.knowledgeUnits.set(unit.id, unit);
+        this.knowledgeBase[concept] = data;
     }
 
     /**
-     * Retrieves a knowledge unit by its ID.
-     * @param {string} id - The ID of the knowledge unit to retrieve.
-     * @returns {KnowledgeUnit|null} The knowledge unit or null if not found.
+     * Retrieves the data for a specific concept.
+     * @param {string} concept - The name of the concept to retrieve.
+     * @returns {Object|null} The data associated with the concept, or null if not found.
      */
-    getKnowledgeUnit(id) {
-        return this.knowledgeUnits.get(id) || null;
+    getConcept(concept) {
+        return this.knowledgeBase[concept] || null;
     }
 
     /**
-     * Retrieves all knowledge units that match the given tags.
-     * @param {Array<string>} tags - An array of tags to filter knowledge units.
-     * @returns {Array<KnowledgeUnit>} An array of matching knowledge units.
+     * Lists all concepts in the knowledge base.
+     * @returns {Array<string>} An array of all concept names.
      */
-    getKnowledgeUnitsByTags(tags) {
-        return Array.from(this.knowledgeUnits.values()).filter(unit =>
-            unit.tags.some(tag => tags.includes(tag))
-        );
+    listConcepts() {
+        return Object.keys(this.knowledgeBase);
     }
 
     /**
-     * Lists all knowledge units in the schema.
-     * @returns {Array<KnowledgeUnit>} All knowledge units as an array.
+     * Establishes a relationship between two concepts.
+     * @param {string} conceptA - The first concept.
+     * @param {string} conceptB - The second concept.
+     * @param {string} relation - The type of relationship (e.g., 'is-a', 'related-to').
+     * @throws {Error} If either concept does not exist.
      */
-    listAllKnowledgeUnits() {
-        return Array.from(this.knowledgeUnits.values());
+    relateConcepts(conceptA, conceptB, relation) {
+        if (!this.knowledgeBase[conceptA] || !this.knowledgeBase[conceptB]) {
+            throw new Error(`One or both concepts '${conceptA}', '${conceptB}' do not exist.`);
+        }
+        this.knowledgeBase[conceptA].relations = this.knowledgeBase[conceptA].relations || {};
+        this.knowledgeBase[conceptA].relations[conceptB] = relation;
+    }
+
+    /**
+     * Retrieves relationships for a specific concept.
+     * @param {string} concept - The name of the concept to retrieve relationships for.
+     * @returns {Object|null} An object mapping related concepts and their relationships, or null if not found.
+     */
+    getRelationships(concept) {
+        return this.knowledgeBase[concept] ? this.knowledgeBase[concept].relations : null;
     }
 }
 
-module.exports = { KnowledgeSchema, KnowledgeUnit };
+export default KnowledgeSchema;
