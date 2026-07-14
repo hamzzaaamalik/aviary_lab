@@ -1,6 +1,8 @@
+// src/interop/ConnectorManager.js
+
 /**
- * ConnectorManager is responsible for managing connections to external systems.
- * It handles the registration and communication with various protocol adapters.
+ * ConnectorManager manages the connections and protocols for external integrations.
+ * Handles the initialization and lifecycle of connectors.
  */
 class ConnectorManager {
     constructor() {
@@ -8,57 +10,51 @@ class ConnectorManager {
     }
 
     /**
-     * Registers a new connector with the specified protocol.
-     * @param {string} protocol - The protocol identifier.
-     * @param {object} connector - The connector implementation.
-     * @throws {Error} If the protocol is already registered.
+     * Register a new connector.
+     * @param {string} name - The name of the connector.
+     * @param {Connector} connector - The connector instance.
+     * @throws Will throw an error if the connector name already exists.
      */
-    registerConnector(protocol, connector) {
-        if (this.connectors.has(protocol)) {
-            throw new Error(`Connector for protocol ${protocol} is already registered.`);
+    registerConnector(name, connector) {
+        if (this.connectors.has(name)) {
+            throw new Error(`Connector with name '${name}' already registered.`);
         }
-        this.connectors.set(protocol, connector);
+        this.connectors.set(name, connector);
     }
 
     /**
-     * Unregisters a connector for the specified protocol.
-     * @param {string} protocol - The protocol identifier.
-     * @throws {Error} If the protocol is not registered.
+     * Unregister a connector by name.
+     * @param {string} name - The name of the connector to unregister.
+     * @throws Will throw an error if the connector name does not exist.
      */
-    unregisterConnector(protocol) {
-        if (!this.connectors.delete(protocol)) {
-            throw new Error(`No connector registered for protocol ${protocol}.`);
+    unregisterConnector(name) {
+        if (!this.connectors.has(name)) {
+            throw new Error(`Connector with name '${name}' does not exist.`);
         }
+        this.connectors.delete(name);
     }
 
     /**
-     * Sends data to an external system using the specified protocol.
-     * @param {string} protocol - The protocol identifier.
-     * @param {object} data - The data to be sent.
-     * @returns {Promise} A promise resolving with the response data.
-     * @throws {Error} If no connector is registered for the protocol.
+     * Retrieve a connector by name.
+     * @param {string} name - The name of the connector to retrieve.
+     * @returns {Connector} - The connector instance.
+     * @throws Will throw an error if the connector name does not exist.
      */
-    async send(protocol, data) {
-        const connector = this.connectors.get(protocol);
-        if (!connector) {
-            throw new Error(`No connector registered for protocol ${protocol}.`);
+    getConnector(name) {
+        if (!this.connectors.has(name)) {
+            throw new Error(`Connector with name '${name}' does not exist.`);
         }
-        return await connector.send(data);
+        return this.connectors.get(name);
     }
 
     /**
-     * Receives data from an external system using the specified protocol.
-     * @param {string} protocol - The protocol identifier.
-     * @returns {Promise} A promise resolving with the received data.
-     * @throws {Error} If no connector is registered for the protocol.
+     * Initialize all registered connectors.
+     * @returns {Promise<void>} - Resolves when all connectors are initialized.
      */
-    async receive(protocol) {
-        const connector = this.connectors.get(protocol);
-        if (!connector) {
-            throw new Error(`No connector registered for protocol ${protocol}.`);
-        }
-        return await connector.receive();
+    async initializeConnectors() {
+        const initPromises = Array.from(this.connectors.values()).map(connector => connector.initialize());
+        await Promise.all(initPromises);
     }
 }
 
-export default ConnectorManager;
+module.exports = ConnectorManager;
