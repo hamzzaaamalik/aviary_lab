@@ -1,51 +1,53 @@
 /**
- * GraduationLoop: orchestrates the core loop of PROTO
- * by managing the sequence of perception, reasoning, and action.
+ * GraduationLoop orchestrates the perceive → think → act cycle.
+ * It leverages the EventBus for inter-module communication and manages
+ * the execution of the perception, reasoning, and action modules.
  */
 class GraduationLoop {
-    constructor(eventBus, moduleRegistry) {
+    constructor(eventBus, perception, reasoning, action) {
         this.eventBus = eventBus;
-        this.moduleRegistry = moduleRegistry;
-        this.running = false;
+        this.perception = perception;
+        this.reasoning = reasoning;
+        this.action = action;
+        this.isRunning = false;
     }
 
     /**
-     * Start the main loop of PROTO.
+     * Starts the Graduation Loop.
      */
     start() {
-        this.running = true;
+        if (this.isRunning) return;
+        this.isRunning = true;
         this.run();
     }
 
     /**
-     * Stop the main loop of PROTO.
+     * Stops the Graduation Loop.
      */
     stop() {
-        this.running = false;
+        this.isRunning = false;
     }
 
     /**
-     * Main execution loop that coordinates perception, reasoning, and action.
-     * @private
+     * Main loop function that orchestrates the perceive → think → act cycle.
      */
     run() {
-        if (!this.running) return;
+        if (!this.isRunning) return;
 
-        // Step 1: Perception
-        const perceptionModule = this.moduleRegistry.getModule('perception');
-        const signals = perceptionModule.processSignals();
+        // Step 1: Perceive
+        const perceptionData = this.perception.process();
+        this.eventBus.emit('perceptionData', perceptionData);
 
-        // Step 2: Reasoning
-        const reasoningModule = this.moduleRegistry.getModule('reasoning');
-        const decisions = reasoningModule.makeDecisions(signals);
+        // Step 2: Think
+        const reasoningOutput = this.reasoning.process(perceptionData);
+        this.eventBus.emit('reasoningOutput', reasoningOutput);
 
-        // Step 3: Action
-        const actionModule = this.moduleRegistry.getModule('action');
-        actionModule.executeActions(decisions);
+        // Step 3: Act
+        this.action.execute(reasoningOutput);
 
-        // Schedule next loop iteration
+        // Schedule the next run
         setImmediate(() => this.run());
     }
 }
 
-export default GraduationLoop;
+module.exports = GraduationLoop;
