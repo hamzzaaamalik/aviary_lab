@@ -1,25 +1,30 @@
 class Proto {
     constructor() {
-        this.knowledge = {};
-        this.learningRate = 0.1;
+        this.memory = {};
+        this.thoughts = [];
     }
 
-    learn(input, output) {
-        // adjust knowledge based on input and expected output
-        if (!this.knowledge[input]) {
-            this.knowledge[input] = output;
-        } else {
-            this.knowledge[input] += (output - this.knowledge[input]) * this.learningRate;
-        }
+    remember(key, value) {
+        this.memory[key] = value;
     }
 
-    predict(input) {
-        return this.knowledge[input] || null;
+    recall(key) {
+        return this.memory[key] || null;
     }
 
-    get allKnowledge() {
-        return this.knowledge;
+    think(input) {
+        const output = this.process(input);
+        this.thoughts.push(output);
+        return output;
+    }
+
+    process(input) {
+        // basic reasoning algorithm
+        return `processed: ${input}`;
     }
 }
 
-export default Proto;
+const proto = new Proto();
+
+// export instance for external access
+module.exports = proto;
