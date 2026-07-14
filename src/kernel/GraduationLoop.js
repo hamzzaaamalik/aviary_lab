@@ -1,52 +1,68 @@
-/**
- * GraduationLoop orchestrates the perception, reasoning, and action phases of PROTO's operational loop.
- * This implementation wires together modules to ensure a continuous, coherent flow of data and logic.
- * @module GraduationLoop
- */
-
-import { EventBus } from './EventBus';
-import { PerceptionManager } from './PerceptionManager';
-import { ModuleRegistry } from './ModuleRegistry';
-import { DecisionMaker } from '../proto/reasoning/DecisionMaker';
-import { SelfEvaluator } from '../proto/reflection/SelfEvaluator';
+// GraduationLoop.js
 
 /**
- * Class representing the Graduation Loop.
+ * The GraduationLoop orchestrates the perception, reasoning, and action processes
+ * within PROTO, serving as the main execution loop for the system.
  */
 class GraduationLoop {
-    constructor() {
-        this.eventBus = new EventBus();
-        this.perceptionManager = new PerceptionManager(this.eventBus);
-        this.decisionMaker = new DecisionMaker();
-        this.selfEvaluator = new SelfEvaluator();
-
-        // Registering modules with the registry
-        ModuleRegistry.registerModule('Perception', this.perceptionManager);
-        ModuleRegistry.registerModule('Reasoning', this.decisionMaker);
-        ModuleRegistry.registerModule('Reflection', this.selfEvaluator);
+    constructor(eventBus, perceptionManager, decisionMaker) {
+        this.eventBus = eventBus;
+        this.perceptionManager = perceptionManager;
+        this.decisionMaker = decisionMaker;
+        this.running = false;
     }
 
     /**
-     * Run the perception-think-act loop.
-     * @returns {void}
+     * Initializes the loop and subscribes to necessary events.
      */
-    run() {
+    init() {
+        this.eventBus.subscribe('PERCEPTION_UPDATE', this.handlePerceptionUpdate.bind(this));
+        this.eventBus.subscribe('DECISION_MADE', this.handleDecisionMade.bind(this));
+    }
+
+    /**
+     * Starts the execution loop.
+     */
+    start() {
+        this.running = true;
+        this.loop();
+    }
+
+    /**
+     * Stops the execution loop.
+     */
+    stop() {
+        this.running = false;
+    }
+
+    /**
+     * Main loop function, runs while the loop is active.
+     */
+    loop() {
+        if (!this.running) return;
         this.perceptionManager.perceive();
-        const decisions = this.decisionMaker.makeDecision(this.perceptionManager.getData());
-        this.selfEvaluator.evaluate(decisions);
-        this.executeActions(decisions);
+        const decision = this.decisionMaker.think();
+        if (decision) {
+            this.eventBus.publish('DECISION_MADE', decision);
+        }
+        requestAnimationFrame(this.loop.bind(this));
     }
 
     /**
-     * Execute the actions based on decision results.
-     * @param {Object} decisions - The decisions made by the decision maker.
-     * @returns {void}
+     * Handles updates from the perception manager.
+     * @param {Object} update - Perception update data.
      */
-    executeActions(decisions) {
-        // Logic to execute actions based on decisions
-        console.log('Executing actions:', decisions);
-        // Placeholder for action execution logic
+    handlePerceptionUpdate(update) {
+        // Process the perception update if necessary
+    }
+
+    /**
+     * Handles decisions made by the decision maker.
+     * @param {Object} decision - Decision data.
+     */
+    handleDecisionMade(decision) {
+        // Implement actions based on the decision made
     }
 }
 
-export { GraduationLoop };
+export default GraduationLoop;
