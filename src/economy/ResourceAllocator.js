@@ -1,78 +1,85 @@
 /**
- * ResourceAllocator manages the allocation of resources based on budgeting policies.
- * It ensures efficient utilization of resources while adhering to defined constraints.
+ * ResourceAllocator
+ * 
+ * This module is responsible for managing the allocation of resources within the system. 
+ * It includes methods for budgeting, tracking resource usage, and implementing allocation policies.
+ * 
+ * @module ResourceAllocator
  */
+
 class ResourceAllocator {
     constructor() {
-        this.resources = {};
-        this.budgets = {};
+        /**
+         * Budget for the current resource allocation cycle.
+         * @type {number}
+         */
+        this.budget = 0;
+        /**
+         * Dictionary to track resource usage.
+         * @type {Object}
+         */
+        this.resourceUsage = {};
     }
 
     /**
-     * Sets the budget for a given resource type.
-     * @param {string} resourceType - The type of resource to budget.
-     * @param {number} amount - The budgeted amount for the resource.
-     * @throws {Error} Throws error if the budget amount is negative.
+     * Sets the budget for resource allocation.
+     * @param {number} amount - The budget amount to set.
      */
-    setBudget(resourceType, amount) {
+    setBudget(amount) {
         if (amount < 0) {
-            throw new Error('Budget amount cannot be negative.');
+            throw new Error('Budget cannot be negative.');
         }
-        this.budgets[resourceType] = amount;
+        this.budget = amount;
     }
 
     /**
-     * Allocates resources based on the current budget and available resources.
-     * @param {string} resourceType - The type of resource to allocate.
-     * @param {number} requested - The amount of resource requested.
-     * @returns {number} - The allocated amount of resources.
-     * @throws {Error} Throws error if requested amount exceeds the budget.
+     * Allocates resources based on usage requests.
+     * @param {string} resource - The resource to allocate.
+     * @param {number} amount - The amount to allocate.
+     * @throws {Error} Throws if the request exceeds the budget or if the amount is invalid.
      */
-    allocateResources(resourceType, requested) {
-        const budget = this.budgets[resourceType] || 0;
-        const available = this.resources[resourceType] || 0;
-
-        if (requested > budget) {
-            throw new Error('Requested resource exceeds the budget.');
+    allocateResource(resource, amount) {
+        if (amount <= 0) {
+            throw new Error('Allocation amount must be greater than zero.');
         }
-        if (requested > available) {
-            requested = available;
+        if (this.budget < amount) {
+            throw new Error('Insufficient budget for this allocation.');
         }
-
-        this.resources[resourceType] -= requested;
-        return requested;
+        this.budget -= amount;
+        this.resourceUsage[resource] = (this.resourceUsage[resource] || 0) + amount;
     }
 
     /**
-     * Adds resources of a specific type.
-     * @param {string} resourceType - The type of resource to add.
-     * @param {number} amount - The amount of resources to add.
-     * @throws {Error} Throws error if the amount is negative.
+     * Retrieves the current budget.
+     * @returns {number} The current budget.
      */
-    addResources(resourceType, amount) {
-        if (amount < 0) {
-            throw new Error('Cannot add negative resources.');
-        }
-        this.resources[resourceType] = (this.resources[resourceType] || 0) + amount;
+    getBudget() {
+        return this.budget;
     }
 
     /**
-     * Gets the current budget for a given resource type.
-     * @param {string} resourceType - The type of resource.
-     * @returns {number} - The current budget for the resource type.
+     * Gets the resource usage statistics.
+     * @returns {Object} An object containing resource usage data.
      */
-    getBudget(resourceType) {
-        return this.budgets[resourceType] || 0;
+    getResourceUsage() {
+        return this.resourceUsage;
     }
 
     /**
-     * Gets the current available resources for a given type.
-     * @param {string} resourceType - The type of resource.
-     * @returns {number} - The available amount of resources.
+     * Resets the resource tracker and budget for a new cycle.
      */
-    getAvailableResources(resourceType) {
-        return this.resources[resourceType] || 0;
+    reset() {
+        this.budget = 0;
+        this.resourceUsage = {};
     }
 }
 
 module.exports = ResourceAllocator;
+
+// Example test case for ResourceAllocator
+if (require.main === module) {
+    const allocator = new ResourceAllocator();
+    allocator.setBudget(100);
+    allocator.allocateResource('CPU', 30);
+    console.log(allocator.getBudget()); // Should log 70
+    console.log(allocator.getResourceUsage()); // Should log { CPU: 30 }
