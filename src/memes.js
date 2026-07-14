@@ -1,37 +1,28 @@
-// memes.js - the chaotic playground for our memes
-
 class MemeGenerator {
     constructor() {
-        this.memeTemplates = [];
-        this.loadTemplates();
+        this.templates = [];
     }
 
-    // load default meme templates
-    loadTemplates() {
-        this.memeTemplates = [
-            { id: 1, text: "Distracted Boyfriend", keywords: ["distraction", "relationship"] },
-            { id: 2, text: "Drake Hotline Bling", keywords: ["preferences", "choices"] },
-            { id: 3, text: "Change My Mind", keywords: ["debate", "opinion"] }
-        ];
+    addTemplate(template) {
+        if (typeof template !== 'string' || template.trim() === '') {
+            throw new Error('Invalid template');
+        }
+        this.templates.push(template);
     }
 
-    // return a random meme template
-    getRandomMeme() {
-        const randomIndex = Math.floor(Math.random() * this.memeTemplates.length);
-        return this.memeTemplates[randomIndex];
+    generateMeme(context) {
+        if (this.templates.length === 0) {
+            throw new Error('No templates available');
+        }
+        const template = this.templates[Math.floor(Math.random() * this.templates.length)];
+        return this.applyContextToTemplate(template, context);
     }
 
-    // add a new meme template
-    addMemeTemplate(template) {
-        this.memeTemplates.push(template);
-    }
-
-    // generate a meme with custom text
-    generateMeme(customText) {
-        const meme = this.getRandomMeme();
-        return `{\"meme\": \"${meme.text}\", \"customText\": \"${customText}\"}`;
+    applyContextToTemplate(template, context) {
+        return template.replace(/\{(\w+)\}/g, (match, key) => {
+            return context[key] || match;
+        });
     }
 }
 
-// Exporting the MemeGenerator class
-module.exports = MemeGenerator;
+export default MemeGenerator;
