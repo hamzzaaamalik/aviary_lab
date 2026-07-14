@@ -1,31 +1,42 @@
+// memory.js
+
 class Memory {
     constructor() {
-        this.storage = new Map();
+        this.data = {};
     }
 
-    set(key, value) {
-        this.storage.set(key, value);
+    // store a value in memory
+    store(key, value) {
+        this.data[key] = value;
+        console.log(`stored: ${key} => ${value}`);
     }
 
-    get(key) {
-        return this.storage.get(key);
+    // retrieve a value from memory
+    retrieve(key) {
+        if (key in this.data) {
+            console.log(`retrieved: ${key} => ${this.data[key]}`);
+            return this.data[key];
+        } else {
+            console.log(`key not found: ${key}`);
+            return null;
+        }
     }
 
-    delete(key) {
-        return this.storage.delete(key);
-    }
-
+    // clear memory
     clear() {
-        this.storage.clear();
+        this.data = {};
+        console.log('memory cleared');
     }
 
-    has(key) {
-        return this.storage.has(key);
-    }
-
-    size() {
-        return this.storage.size;
+    // randomize memory for fun
+    chaos() {
+        const keys = Object.keys(this.data);
+        if (keys.length === 0) return;
+        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        console.log(`chaos activated! removing: ${randomKey}`);
+        delete this.data[randomKey];
     }
 }
 
+// exporting the Memory class for use
 module.exports = Memory;
