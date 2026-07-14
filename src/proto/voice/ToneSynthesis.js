@@ -1,1 +1,56 @@
-/**\n * ToneSynthesis module for PROTO.\n * This module is responsible for synthesizing tone and persona based on context and user interaction.\n * It interprets the emotional intent behind utterances and adjusts the response tone accordingly.\n *\n * @module ToneSynthesis\n */\n\nclass ToneSynthesis {\n    constructor() {\n        this.defaultTone = 'neutral';\n        this.toneMap = {\n            'happy': ["excited", "joyful", "cheerful"],\n            'sad': ["somber", "melancholic", "calm"],\n            'angry': ["frustrated", "stern", "forceful"],\n            'surprised': ["astonished", "curious", "inquisitive"]\n        };\n    }\n\n    /**\n     * Set a default tone for responses.\n     * @param {string} tone - A tone string (happy, sad, angry, surprised).\n     */\n    setDefaultTone(tone) {\n        if (this.toneMap[tone]) {\n            this.defaultTone = tone;\n        } else {\n            console.error('Invalid tone provided.');\n        }\n    }\n\n    /**\n     * Synthesize tone based on the emotional intent of the input.\n     * @param {string} input - The user input to be analyzed for emotional tone.\n     * @returns {string} - A synthesized tone based on the input.\n     */\n    synthesizeTone(input) {\n        // Simple keyword-based tone synthesis for demonstration.\n        if (input.includes('happy') || input.includes('great')) {\n            return this.toneMap['happy'][0]; // excited\n        } else if (input.includes('sad') || input.includes('bad')) {\n            return this.toneMap['sad'][0]; // somber\n        } else if (input.includes('angry') || input.includes('mad')) {\n            return this.toneMap['angry'][0]; // frustrated\n        } else if (input.includes('surprise') || input.includes('wow')) {\n            return this.toneMap['surprised'][0]; // astonished\n        }\n        return this.defaultTone;\n    }\n\n    /**\n     * Get the list of tones associated with a specific emotional state.\n     * @param {string} emotion - The emotion to retrieve tone options for.\n     * @returns {Array<string>} - List of tone options for the specified emotion.\n     */\n    getTonesForEmotion(emotion) {\n        return this.toneMap[emotion] || [];\n    }\n}\n\nmodule.exports = ToneSynthesis;
+/**
+ * ToneSynthesis class for generating personality-infused tonal variations.
+ * This class extends existing tonal outputs by incorporating personality traits,
+ * allowing for a more nuanced voice output.
+ */
+class ToneSynthesis {
+    /**
+     * Constructor for ToneSynthesis.
+     * @param {Object} personalityTraits - An object containing personality traits.
+     */
+    constructor(personalityTraits) {
+        this.personalityTraits = personalityTraits || {};
+    }
+
+    /**
+     * Generates a tonal variation based on input text and personality traits.
+     * @param {string} inputText - The text to be synthesized.
+     * @returns {string} - The synthesized tonal output.
+     */
+    synthesize(inputText) {
+        const baseTone = this.getBaseTone(inputText);
+        return this.applyPersonality(baseTone);
+    }
+
+    /**
+     * Determines the base tone based on the input text.
+     * @param {string} inputText - The text to analyze.
+     * @returns {string} - The determined base tone.
+     */
+    getBaseTone(inputText) {
+        // Simple analysis to determine base tone, can be extended.
+        if (inputText.includes('?')) {
+            return 'curious';
+        } else if (inputText.includes('!')) {
+            return 'excited';
+        }
+        return 'neutral';
+    }
+
+    /**
+     * Applies personality traits to the determined tone.
+     * @param {string} baseTone - The base tone to enhance.
+     * @returns {string} - Enhanced tonal output with personality traits.
+     */
+    applyPersonality(baseTone) {
+        const traits = Object.keys(this.personalityTraits);
+        if (traits.includes('assertive')) {
+            return `assertively ${baseTone}`;
+        } else if (traits.includes('empathetic')) {
+            return `empathetically ${baseTone}`;
+        }
+        return baseTone;
+    }
+}
+
+module.exports = ToneSynthesis;
