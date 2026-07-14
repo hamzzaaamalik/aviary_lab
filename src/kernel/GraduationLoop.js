@@ -1,58 +1,46 @@
-// GraduationLoop.js
-// The core loop for graduation processing, orchestrating the flow between modules.
-
-const EventBus = require('./EventBus');
-const GraduationProcessor = require('./GraduationProcessor');
-const GraduationManager = require('./GraduationManager');
-const GraduationCoordinator = require('./GraduationCoordinator');
-
 /**
- * Class representing the Graduation Loop.
+ * GraduationLoop - Main execution loop for PROTO's graduation process.
+ * Handles the orchestration of perception, reasoning, and action.
+ *
+ * @module GraduationLoop
  */
+
+const GraduationManager = require('./GraduationManager');
+const GraduationProcessor = require('./GraduationProcessor');
+const PerceiveThinkActLoop = require('./PerceiveThinkActLoop');
+
 class GraduationLoop {
     constructor() {
-        this.eventBus = new EventBus();
-        this.processor = new GraduationProcessor(this.eventBus);
-        this.manager = new GraduationManager(this.eventBus);
-        this.coordinator = new GraduationCoordinator(this.eventBus);
-        this.isRunning = false;
+        this.manager = new GraduationManager();
+        this.processor = new GraduationProcessor();
     }
 
     /**
-     * Starts the graduation loop, initializing all components and starting the event processing.
+     * Initializes the Graduation process.
      */
-    start() {
-        if (this.isRunning) {
-            throw new Error('GraduationLoop is already running.');
-        }
-        this.isRunning = true;
-        this.eventBus.subscribe('graduation.start', this.processGraduation.bind(this));
-        this.eventBus.publish('graduation.start');
+    init() {
+        this.manager.initialize();
+        this.processor.initialize();
     }
 
     /**
-     * Stops the graduation loop, cleaning up resources.
+     * Main loop method. Runs the perception, reasoning, and action cycle.
+     * @returns {void}
+     */
+    run() {
+        this.init();
+        setInterval(() => {
+            const perceptionData = this.manager.getPerceptionData();
+            const reasoningOutput = this.processor.process(perceptionData);
+            this.manager.executeActions(reasoningOutput);
+        }, 100); // 10 Hz loop
+    }
+
+    /**
+     * Stops the Graduation loop.
      */
     stop() {
-        if (!this.isRunning) {
-            throw new Error('GraduationLoop is not running.');
-        }
-        this.isRunning = false;
-        this.eventBus.unsubscribe('graduation.start', this.processGraduation.bind(this));
-    }
-
-    /**
-     * Processes the graduation logic by invoking the processor and manager.
-     * @param {Object} event - The event data.
-     */
-    processGraduation(event) {
-        try {
-            const graduationData = this.processor.process(event);
-            this.manager.manage(graduationData);
-            this.coordinator.coordinate(graduationData);
-        } catch (error) {
-            console.error('Error processing graduation:', error);
-        }
+        clearInterval(this.run);
     }
 }
 
