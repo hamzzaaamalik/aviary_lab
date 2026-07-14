@@ -1,47 +1,37 @@
-/**  
- * SkillInvoker class for managing skill invocation.  
- * This class allows for registering, invoking, and sandboxing skills.  
- */  
-class SkillInvoker {  
-    constructor() {  
-        this.skills = new Map();  
-    }  
+/**
+ * SkillInvoker class to manage the invocation of skills in an isolated environment.
+ * Provides an interface for executing skills with input validation and error handling.
+ * 
+ * @module SkillInvoker
+ */
 
-    /**  
-     * Registers a skill with a unique name and implementation.  
-     * @param {string} name - The unique name of the skill.  
-     * @param {function} skillFunction - The function implementing the skill logic.  
-     * @throws Will throw an error if the skill name is already registered.  
-     */  
-    registerSkill(name, skillFunction) {  
-        if (this.skills.has(name)) {  
-            throw new Error(`Skill '${name}' is already registered.`);  
-        }  
-        this.skills.set(name, skillFunction);  
-    }  
+class SkillInvoker {
+    /**
+     * Creates an instance of SkillInvoker.
+     * @param {SkillRegistry} skillRegistry - The registry of available skills.
+     * @param {SkillSandbox} skillSandbox - The sandbox for skill execution.
+     */
+    constructor(skillRegistry, skillSandbox) {
+        this.skillRegistry = skillRegistry;
+        this.skillSandbox = skillSandbox;
+    }
 
-    /**  
-     * Invokes a registered skill by name with provided arguments.  
-     * @param {string} name - The name of the skill to invoke.  
-     * @param {...any} args - Arguments to pass to the skill function.  
-     * @returns {any} - The return value of the invoked skill function.  
-     * @throws Will throw an error if the skill is not registered.  
-     */  
-    invokeSkill(name, ...args) {  
-        if (!this.skills.has(name)) {  
-            throw new Error(`Skill '${name}' is not registered.`);  
-        }  
-        const skillFunction = this.skills.get(name);  
-        return skillFunction(...args);  
-    }  
+    /**
+     * Invokes a skill by its name with provided input.
+     * @param {string} skillName - The name of the skill to invoke.
+     * @param {Object} input - The input parameters for the skill.
+     * @returns {Promise<any>} The result of the skill execution.
+     * @throws {Error} If the skill does not exist or fails to execute.
+     */
+    async invoke(skillName, input) {
+        if (!this.skillRegistry.hasSkill(skillName)) {
+            throw new Error(`Skill '${skillName}' not found in registry.`);
+        }
 
-    /**  
-     * Lists all registered skill names.  
-     * @returns {Array<string>} - An array of registered skill names.  
-     */  
-    listSkills() {  
-        return Array.from(this.skills.keys());  
-    }  
-}  
+        const skill = this.skillRegistry.getSkill(skillName);
 
-module.exports = SkillInvoker;
+        return this.skillSandbox.execute(skill, input);
+    }
+}
+
+export default SkillInvoker;
