@@ -1,29 +1,24 @@
 class Proto {
     constructor() {
-        this.memory = {};
-        this.complexity = 0;
+        this.knowledge = {};
+        this.learningRate = 0.1;
     }
 
-    store(key, value) {
-        this.memory[key] = value;
-        this.complexity += this.calculateComplexity(value);
+    learn(input, output) {
+        // adjust knowledge based on input and expected output
+        if (!this.knowledge[input]) {
+            this.knowledge[input] = output;
+        } else {
+            this.knowledge[input] += (output - this.knowledge[input]) * this.learningRate;
+        }
     }
 
-    retrieve(key) {
-        return this.memory[key] || null;
+    predict(input) {
+        return this.knowledge[input] || null;
     }
 
-    calculateComplexity(value) {
-        return typeof value === 'object' ? Object.keys(value).length : 1;
-    }
-
-    clear() {
-        this.memory = {};
-        this.complexity = 0;
-    }
-
-    status() {
-        return { size: Object.keys(this.memory).length, complexity: this.complexity };
+    get allKnowledge() {
+        return this.knowledge;
     }
 }
 
