@@ -1,35 +1,30 @@
 class MemoryStore {
     constructor() {
-        this.store = {};
+        this.store = new Map();
     }
 
     set(key, value) {
-        if (key in this.store) {
-            throw new Error(`Key \\${key} already exists.`);
-        }
-        this.store[key] = value;
+        this.store.set(key, value);
     }
 
     get(key) {
-        if (!(key in this.store)) {
-            throw new Error(`Key \\${key} does not exist.`);
-        }
-        return this.store[key];
-    }
-
-    remove(key) {
-        if (!(key in this.store)) {
-            throw new Error(`Cannot remove non-existing key: \\${key}.`);
-        }
-        delete this.store[key];
-    }
-
-    clear() {
-        this.store = {};
+        return this.store.get(key);
     }
 
     has(key) {
-        return key in this.store;
+        return this.store.has(key);
+    }
+
+    delete(key) {
+        return this.store.delete(key);
+    }
+
+    clear() {
+        this.store.clear();
+    }
+
+    entries() {
+        return this.store.entries();
     }
 }
 
