@@ -1,23 +1,44 @@
 class MemeState {
     constructor() {
-        this.state = {};
+        this.memes = new Map();
+        this.history = []; // track history for undo/redo
     }
 
-    setState(key, value) {
-        if (typeof key !== 'string') {
-            throw new Error('State key must be a string.');
+    addMeme(id, meme) {
+        if (this.memes.has(id)) {
+            throw new Error('Meme already exists.');
         }
-        this.state[key] = value;
+        this.memes.set(id, meme);
+        this.history.push({ action: 'add', id, meme });
     }
 
-    getState(key) {
-        return this.state[key];
+    removeMeme(id) {
+        if (!this.memes.has(id)) {
+            throw new Error('Meme not found.');
+        }
+        const meme = this.memes.get(id);
+        this.memes.delete(id);
+        this.history.push({ action: 'remove', id, meme });
     }
 
-    clearState() {
-        this.state = {};
+    getMeme(id) {
+        return this.memes.get(id) || null;
     }
-}
 
-const memeState = new MemeState();
-export default memeState;
+    getAllMemes() {
+        return Array.from(this.memes.values());
+    }
+
+    undo() {
+        const lastAction = this.history.pop();
+        if (!lastAction) return;
+        const { action, id, meme } = lastAction;
+        if (action === 'add') {
+            this.memes.delete(id);
+        } else if (action === 'remove') {
+            this.memes.set(id, meme);
+        }
+    }
+} 
+
+export default MemeState;
