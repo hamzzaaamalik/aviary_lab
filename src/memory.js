@@ -1,38 +1,37 @@
 class Memory {
     constructor() {
-        this.storage = {};
+        this.store = new Map();
     }
 
-    // store an item with a unique key
-    store(key, value) {
-        if (!key || !value) {
-            throw new Error('Key and value must be provided.');
-        }
-        this.storage[key] = value;
+    set(key, value) {
+        this.store.set(key, value);
     }
 
-    // retrieve an item by its key
-    retrieve(key) {
-        if (!this.storage[key]) {
-            return null; // or handle not found case
-        }
-        return this.storage[key];
+    get(key) {
+        return this.store.get(key);
     }
 
-    // delete an item by its key
+    has(key) {
+        return this.store.has(key);
+    }
+
     delete(key) {
-        if (this.storage[key]) {
-            delete this.storage[key];
-        }
+        return this.store.delete(key);
     }
 
-    // clear all stored items
     clear() {
-        this.storage = {};
+        this.store.clear();
     }
 
-    // get all stored keys
-    getAllKeys() {
-        return Object.keys(this.storage);
+    keys() {
+        return Array.from(this.store.keys());
+    }
+
+    values() {
+        return Array.from(this.store.values());
+    }
+
+    entries() {
+        return Array.from(this.store.entries());
     }
 }
