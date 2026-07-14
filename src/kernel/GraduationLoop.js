@@ -1,77 +1,80 @@
-// GraduationLoop.js
-
 /**
- * The GraduationLoop orchestrates the perceive-think-act cycle for PROTO.
- * It integrates perception, reasoning, and action to create a cohesive response.
+ * GraduationLoop manages the core loop for PROTO's self-awareness and decision-making.
+ * It orchestrates perception, reasoning, and action, ensuring a continuous flow of information.
+ * 
+ * @module GraduationLoop
  */
+
 class GraduationLoop {
     constructor(eventBus, moduleRegistry) {
         this.eventBus = eventBus;
         this.moduleRegistry = moduleRegistry;
-        this.isRunning = false;
+        this.running = false;
     }
 
     /**
-     * Starts the loop, initializing necessary modules and setting up event listeners.
+     * Starts the graduation loop.
+     * This will continuously run until stopped, processing perception, reasoning, and action phases.
      */
     start() {
-        this.isRunning = true;
-        this.initializeModules();
-        this.eventBus.subscribe('PERCEPTION_EVENT', this.handlePerception.bind(this));
-        this.eventBus.subscribe('ACTION_EVENT', this.handleAction.bind(this));
-        this.run();
+        if (this.running) {
+            console.warn('GraduationLoop is already running.');
+            return;
+        }
+        this.running = true;
+        this.loop();
     }
 
     /**
-     * Stops the loop, cleaning up resources and unsubscribing from events.
+     * Stops the graduation loop.
      */
     stop() {
-        this.isRunning = false;
-        this.eventBus.unsubscribe('PERCEPTION_EVENT', this.handlePerception.bind(this));
-        this.eventBus.unsubscribe('ACTION_EVENT', this.handleAction.bind(this));
+        this.running = false;
     }
 
     /**
-     * Initializes perception, reasoning, and action modules.
+     * Main loop that executes perception, reasoning, and action.
      */
-    initializeModules() {
-        // Assume modules are registered in the ModuleRegistry
-        this.perceptionModule = this.moduleRegistry.getModule('Perception');
-        this.reasoningModule = this.moduleRegistry.getModule('Reasoning');
-        this.actionModule = this.moduleRegistry.getModule('Action');
-    }
+    loop() {
+        if (!this.running) return;
 
-    /**
-     * The main loop that executes the perceive-think-act cycle.
-     */
-    run() {
-        if (!this.isRunning) return;
-        // Perception phase
-        const signals = this.perceptionModule.perceive();
-        // Reasoning phase
-        const decisions = this.reasoningModule.think(signals);
-        // Action phase
-        this.actionModule.act(decisions);
+        try {
+            this.perceive();
+            this.reason();
+            this.act();
+        } catch (error) {
+            console.error('Error in graduation loop:', error);
+        }
 
         // Schedule next iteration
-        setImmediate(() => this.run());
+        setImmediate(() => this.loop());
     }
 
     /**
-     * Handles perception events from the event bus.
-     * @param {Object} event - The event object containing perception data.
+     * Handles perception by gathering inputs from various sources.
      */
-    handlePerception(event) {
-        // Process the perception event
-        this.perceptionModule.processEvent(event);
+    perceive() {
+        // Assuming EventIngestionPipeline handles signal ingestion.
+        const inputs = this.moduleRegistry.getModule('EventIngestionPipeline').process();
+        this.eventBus.emit('perception:inputs', inputs);
     }
 
     /**
-     * Handles action events from the event bus.
-     * @param {Object} action - The action object to be executed.
+     * Handles reasoning by processing the gathered inputs and making decisions.
      */
-    handleAction(action) {
-        this.actionModule.execute(action);
+    reason() {
+        const inputs = this.eventBus.getData('perception:inputs');
+        const decisionPolicy = this.moduleRegistry.getModule('DecisionPolicy');
+        decisionPolicy.evaluate(inputs);
+    }
+
+    /**
+     * Handles actions based on the reasoning phase decisions.
+     */
+    act() {
+        const actions = this.eventBus.getData('reasoning:decisions');
+        const actionExecutor = this.moduleRegistry.getModule('ActionExecutor');
+        actionExecutor.execute(actions);
     }
 }
 
