@@ -1,45 +1,39 @@
+// memeCuration.js - curating the chaotic internet
+
+// Import the meme database for access to memes
+import { memes } from './memes';
+
 /**
- * meme filter function
- * This function filters memes based on the specified criteria.
- * @param {Array} memes - The array of memes to filter.
- * @param {Object} criteria - The criteria to filter memes by.
- * @returns {Array} - The filtered array of memes.
+ * Curate a selection of memes based on user engagement and freshness.
+ * @param {number} limit - The maximum number of memes to return.
+ * @returns {Array} - An array of curated memes.
  */
-function filterMemes(memes, criteria) {
-    return memes.filter(meme => {
-        for (const key in criteria) {
-            if (criteria[key] && meme[key] !== criteria[key]) {
-                return false;
-            }
-        }
-        return true;
-    });
+export function curateMemes(limit) {
+    // Filter out memes based on a simple engagement metric
+    const curated = memes.filter(meme => meme.engagement > 50).sort((a, b) => b.date - a.date);
+    // Limit the number of memes returned
+    return curated.slice(0, limit);
 }
 
 /**
- * randomize array order
- * Shuffle the memes array to provide a fresh experience.
- * @param {Array} array - The array to shuffle.
- * @returns {Array} - The shuffled array.
+ * Get trending memes based on a time window.
+ * @param {number} days - Number of days to consider for trending.
+ * @returns {Array} - An array of trending memes.
  */
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // swap
-    }
-    return array;
+export function getTrendingMemes(days) {
+    const now = Date.now();
+    const cutoff = now - (days * 24 * 60 * 60 * 1000);  // Convert days to milliseconds
+    // Filter memes that have been created within the time frame
+    return memes.filter(meme => meme.date > cutoff).sort((a, b) => b.engagement - a.engagement);
 }
 
 /**
- * get trending memes
- * Fetches the top N trending memes based on the views and filters them.
- * @param {Array} memes - The array of all memes.
- * @param {number} count - The number of trending memes to return.
- * @returns {Array} - The array of trending memes.
+ * Get a random meme from the curated list.
+ * @returns {Object|null} - A random meme object or null if none exist.
  */
-function getTrendingMemes(memes, count) {
-    const sortedMemes = memes.sort((a, b) => b.views - a.views);
-    return sortedMemes.slice(0, count);
+export function getRandomCuratedMeme() {
+    const curatedMemes = curateMemes(10);
+    if (curatedMemes.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * curatedMemes.length);
+    return curatedMemes[randomIndex];
 }
-
-module.exports = { filterMemes, shuffleArray, getTrendingMemes };
