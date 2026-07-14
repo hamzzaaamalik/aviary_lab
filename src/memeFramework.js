@@ -1,35 +1,37 @@
-// memeFramework.js
+// memeFramework.js - a modular approach to meme generation
 
-// a simple framework to handle meme creation logic
-
-class Meme {
-    constructor(title, image, caption) {
-        this.title = title;
-        this.image = image;
-        this.caption = caption;
-    }
-
-    createMeme() {
-        // logic to generate meme
-        return `Meme: ${this.title}\nImage: ${this.image}\nCaption: ${this.caption}`;
-    }
-}
-
-class MemeFactory {
+class MemeFramework {
     constructor() {
-        this.memes = [];
+        this.memeTemplates = [];
     }
 
-    addMeme(title, image, caption) {
-        const newMeme = new Meme(title, image, caption);
-        this.memes.push(newMeme);
-        return newMeme.createMeme();
+    addTemplate(template) {
+        if (this.validateTemplate(template)) {
+            this.memeTemplates.push(template);
+            console.log('Template added:', template);
+        } else {
+            console.error('Invalid template:', template);
+        }
     }
 
-    getAllMemes() {
-        return this.memes.map(meme => meme.createMeme());
+    validateTemplate(template) {
+        // Ensure the template has necessary properties
+        return template && template.id && template.content;
+    }
+
+    generateMeme(templateId, context) {
+        const template = this.memeTemplates.find(t => t.id === templateId);
+        if (!template) {
+            console.error('Template not found:', templateId);
+            return '';
+        }
+        return this.fillTemplate(template.content, context);
+    }
+
+    fillTemplate(content, context) {
+        // Replace placeholders with actual context
+        return content.replace(/\{(.*?)\}/g, (_, key) => context[key] || '');
     }
 }
 
-// export Meme and MemeFactory for external use
-module.exports = { Meme, MemeFactory };
+export default MemeFramework;
