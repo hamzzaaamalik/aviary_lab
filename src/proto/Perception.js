@@ -22,4 +22,18 @@ export class Perception {
       resolve(percept);
     });
   }
+
+  /**
+   * Process an array of sensory inputs to extract percepts.
+   * @param {Array<{input: string, urgency: number}>} inputs - An array of raw sensory inputs with urgency levels.
+   * @returns {Promise<Array<object>>} - An array of processed percepts.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  async perceiveBatch(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    const percepts = await Promise.all(inputs.map(({ input, urgency }) => this.perceive(input, urgency)));
+    return percepts;
+  }
 }
