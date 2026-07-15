@@ -73,4 +73,4 @@ export class Perception {
     const inputs = sources.map(source => ({ input: source, urgency }));
     return this.perceiveMultiple(inputs);
   }
-} 
+}
