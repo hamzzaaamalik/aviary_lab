@@ -4,43 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['I see a cat', 'I hear a dog', 'I feel the wind', 'a random thought'];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, {
-    visual: ['I see a cat'],
-    auditory: ['I hear a dog'],
-    tactile: ['I feel the wind'],
-    other: ['a random thought']
-  });
+test('perceive throws on invalid input', async () => {
+  await assert.rejects(() => perception.perceive('', 1), { message: 'input must be a non-empty string' });
+  await assert.rejects(() => perception.perceive(123, 1), { message: 'input must be a non-empty string' });
+  await assert.rejects(() => perception.perceive('test', 6), { message: 'urgency must be a number between 1 and 5' });
+  await assert.rejects(() => perception.perceive('test', 0), { message: 'urgency must be a number between 1 and 5' });
 });
 
-test('categorizeSensoryInputs throws TypeError for non-array input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+test('categorizeSensoryInputs throws on invalid inputs', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), { message: 'inputs must be an array' });
+  assert.throws(() => perception.categorizeSensoryInputs([]), { message: 'inputs array must not be empty' });
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), { message: 'input must be a string' });
 });
 
-test('categorizeSensoryInputs throws TypeError for empty array', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
+test('categorizeSensoryInputs categorizes correctly', () => {
+  const result = perception.categorizeSensoryInputs(['see the light', 'hear the sound', 'feel the touch', 'just a thought']);
+  assert.deepEqual(result, { visual: ['see the light'], auditory: ['hear the sound'], tactile: ['feel the touch'], other: ['just a thought'] });
 });
 
-test('categorizeSensoryInputs throws TypeError for non-string elements', () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
-});
-
-test('perceive processes input correctly', async () => {
-  const percept = await perception.perceive('I see a bird', 5);
-  assert.deepEqual(percept, { processed: 'Percept from: I see a bird', urgency: 5 });
-});
-
-test('perceiveMultiple processes multiple inputs correctly', async () => {
+test('perceiveMultiple processes inputs in urgent order', async () => {
   const inputs = [
-    { input: 'I see a tree', urgency: 3 },
-    { input: 'I hear a car', urgency: 2 }
+    { input: 'see a cat', urgency: 3 },
+    { input: 'hear a dog', urgency: 5 },
+    { input: 'feel the rain', urgency: 1 }
   ];
-  const percepts = await perception.perceiveMultiple(inputs);
-  assert.equal(percepts.length, 2);
-});
-
-test('perceiveMultiple throws TypeError for invalid input', async () => {
-  await assert.rejects(() => perception.perceiveMultiple('invalid'), TypeError);
+  const results = await perception.perceiveMultiple(inputs);
+  assert.equal(results[0].processed, 'Percept from: hear a dog'); // highest urgency first
 });
