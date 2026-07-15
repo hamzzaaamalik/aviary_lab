@@ -10,7 +10,7 @@ export class Perception {
    * @throws {TypeError} - If the input is not a string or urgency is out of bounds.
    */
   async perceive(input, urgency) {
-    this.#validateSensoryInput(input, urgency);
+    this.validateSensoryInput(input, urgency);
     // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
       const percept = { processed: `Percept from: ${input}`, urgency };
@@ -35,7 +35,7 @@ export class Perception {
     // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
-      this.#validateSensoryInput(input, urgency);
+      this.validateSensoryInput(input, urgency);
       const percept = await this.perceive(input, urgency);
       percepts.push(percept);
     }
@@ -44,12 +44,11 @@ export class Perception {
 
   /**
    * Validates the sensory input and urgency.
-   * @private
    * @param {string} input 
    * @param {number} urgency 
    * @throws {TypeError} - If the input or urgency is invalid.
    */
-  #validateSensoryInput(input, urgency) {
+  validateSensoryInput(input, urgency) {
     if (input === null || input === undefined) {
       throw new TypeError('input cannot be null or undefined');
     }
