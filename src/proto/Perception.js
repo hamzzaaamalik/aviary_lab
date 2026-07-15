@@ -12,6 +12,9 @@ export class Perception {
    */
   async perceive(input, urgency, filter) {
     this.validateSensoryInput(input, urgency);
+    if (urgency < 1 || urgency > 5) {
+      throw new TypeError('urgency must be a number between 1 and 5');
+    }
     if (filter) {
       if (typeof filter !== 'function') {
         throw new TypeError('filter must be a function');
@@ -44,6 +47,9 @@ export class Perception {
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
       this.validateSensoryInput(input, urgency);
+      if (urgency < 1 || urgency > 5) {
+        throw new TypeError('urgency must be a number between 1 and 5');
+      }
       const percept = await this.perceive(input, urgency, filter);
       percepts.push(percept);
     }
@@ -82,7 +88,7 @@ export class Perception {
    * Validates the sensory input and urgency.
    * @param {string} input
    * @param {number} urgency
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If the input is not a string or urgency is out of bounds.
    */
   validateSensoryInput(input, urgency) {
     if (typeof input !== 'string') {
