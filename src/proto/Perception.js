@@ -43,17 +43,28 @@ export class Perception {
   }
 
   /**
+   * Filters valid sensory inputs based on a criteria function.
+   * @param {Array<string>} inputs - Array of sensory inputs.
+   * @param {function(string): boolean} criteria - A function to evaluate each input.
+   * @returns {Array<string>} - Filtered array of valid inputs.
+   * @throws {TypeError} - If inputs is not an array.
+   */
+  filterInputs(inputs, criteria) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    return inputs.filter(criteria);
+  }
+
+  /**
    * Validates the sensory input and urgency.
    * @param {string} input 
    * @param {number} urgency 
    * @throws {TypeError} - If the input or urgency is invalid.
    */
   validateSensoryInput(input, urgency) {
-    if (input === null || input === undefined) {
-      throw new TypeError('input cannot be null or undefined');
-    }
-    if (typeof input !== 'string') {
-      throw new TypeError('input must be a string');
+    if (typeof input !== 'string' || input.trim() === '') {
+      throw new TypeError('input must be a non-empty string');
     }
     if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
       throw new TypeError('urgency must be a number between 1 and 5');
