@@ -11,6 +11,7 @@ export class Perception {
    */
   async perceive(input, urgency) {
     this.#validateSensoryInput(input, urgency);
+    this.#logUrgency(urgency);
     // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
       const percept = { processed: `Percept from: ${input}`, urgency };
@@ -34,6 +35,7 @@ export class Perception {
     const percepts = [];
     for (const { input, urgency } of inputs) {
       this.#validateSensoryInput(input, urgency);
+      this.#logUrgency(urgency);
       const percept = await this.perceive(input, urgency);
       percepts.push(percept);
     }
@@ -57,5 +59,14 @@ export class Perception {
     if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
+  }
+
+  /**
+   * Logs the urgency level for debugging purposes.
+   * @private
+   * @param {number} urgency 
+   */
+  #logUrgency(urgency) {
+    console.log(`Processing with urgency level: ${urgency}`);
   }
 }
