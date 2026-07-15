@@ -59,4 +59,17 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
+
+  /**
+   * Prioritizes and perceives multiple inputs based on urgency.
+   * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
+   * @returns {Promise<object[]>} - Array of processed percepts prioritized by urgency.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  async prioritizeAndPerceive(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    return this.perceiveMultiple(inputs);
+  }
 }
