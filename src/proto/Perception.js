@@ -82,9 +82,9 @@ export class Perception {
   }
 
   /**
-   * Validates the sensory input parameters.
-   * @param {string} input
-   * @param {number} urgency
+   * Validates the sensory input for format and urgency.
+   * @param {string} input - The input to validate.
+   * @param {number} urgency - The urgency level of the input.
    * @throws {TypeError} - If input is not a string or urgency is out of bounds.
    */
   validateSensoryInput(input, urgency) {
