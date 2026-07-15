@@ -54,11 +54,14 @@ export class Perception {
    * Categorize sensory input based on its type.
    * @param {Array<string>} inputs - Array of sensory input strings.
    * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array or contains invalid types.
+   * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      throw new TypeError('inputs array must not be empty');
     }
     const categories = { visual: [], auditory: [], tactile: [], other: [] };
     for (const input of inputs) {
@@ -82,7 +85,7 @@ export class Perception {
    * Validates the sensory input and urgency.
    * @param {string} input
    * @param {number} urgency
-   * @throws {TypeError} - If input is not a string or urgency is out of bounds.
+   * @throws {TypeError} - If the input is invalid.
    */
   validateSensoryInput(input, urgency) {
     if (typeof input !== 'string') {
