@@ -22,4 +22,29 @@ export class Perception {
       resolve(percept);
     });
   }
+
+  /**
+   * Safely process multiple inputs.
+   * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
+   * @returns {Promise<object[]>} - Array of processed percepts.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  async perceiveMultiple(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    const percepts = [];
+    for (const { input, urgency } of inputs) {
+      // Validate input and urgency before processing
+      if (typeof input !== 'string') {
+        return Promise.reject(new TypeError('input must be a string')); // Reject promise
+      }
+      if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
+        return Promise.reject(new TypeError('urgency must be a number between 1 and 5')); // Reject promise
+      }
+      const percept = await this.perceive(input, urgency);
+      percepts.push(percept);
+    }
+    return percepts;
+  }
 }
