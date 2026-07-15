@@ -2,36 +2,49 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('filterInputs filters valid sensory inputs', () => {
-  const perception = new Perception();
-  const inputs = ['input1', 'input2', 'input3'];
-  const criteria = input => input.includes('1');
-  const result = perception.filterInputs(inputs, criteria);
-  assert.deepEqual(result, ['input1']);
+const perception = new Perception();
+
+test('perceive throws on invalid input', async () => {
+  await assert.rejects(() => perception.perceive('', 3), {
+    name: 'TypeError',
+    message: 'input must be a non-empty string'
+  });
+  await assert.rejects(() => perception.perceive(123, 3), {
+    name: 'TypeError',
+    message: 'input must be a non-empty string'
+  });
 });
 
-test('filterInputs throws on invalid inputs', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.filterInputs('not an array', () => true), TypeError);
+test('perceive throws on invalid urgency', async () => {
+  await assert.rejects(() => perception.perceive('sensor', 0), {
+    name: 'TypeError',
+    message: 'urgency must be a number between 1 and 5'
+  });
+  await assert.rejects(() => perception.perceive('sensor', 6), {
+    name: 'TypeError',
+    message: 'urgency must be a number between 1 and 5'
+  });
 });
 
-test('perceiveMultiple processes filtered inputs', async () => {
-  const perception = new Perception();
+test('perceiveMultiple processes valid inputs', async () => {
   const inputs = [
-    { input: 'input1', urgency: 1 },
-    { input: 'input2', urgency: 3 },
-    { input: 'input3', urgency: 5 }
+    { input: 'sensor1', urgency: 3 },
+    { input: 'sensor2', urgency: 5 }
   ];
-  const filtered = perception.filterInputs(inputs, input => input.urgency >= 3);
-  const percepts = await perception.perceiveMultiple(filtered);
-  assert.equal(percepts.length, 2);
+  const results = await perception.perceiveMultiple(inputs);
+  assert.equal(results.length, 2);
+  assert.equal(results[0].processed, 'Percept from: sensor2');
+  assert.equal(results[1].processed, 'Percept from: sensor1');
 });
 
-test('perceive throws error on invalid urgency', async () => {
-  const perception = new Perception();
-  await assert.rejects(
-    () => perception.perceive('valid input', 6),
-    { message: 'urgency must be a number between 1 and 5' }
-  );
+test('perceiveMultiple throws on invalid input', async () => {
+  await assert.rejects(() => perception.perceiveMultiple([{ input: '', urgency: 3 }]), {
+    name: 'TypeError',
+    message: 'input must be a non-empty string'
+  });
+  await assert.rejects(() => perception.perceiveMultiple([{ input: 'sensor', urgency: 6 }]), {
+    name: 'TypeError',
+    message: 'urgency must be a number between 1 and 5'
+  });
 });
 
