@@ -51,41 +51,39 @@ export class Perception {
   }
 
   /**
-   * Categorize sensory input based on its type.
-   * @param {Array<string>} inputs - Array of sensory input strings.
-   * @returns {object} - Categorized inputs by type.
+   * Categorize sensory input based on urgency.
+   * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
+   * @returns {object} - Categorized inputs by urgency levels.
    * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
-  categorizeSensoryInputs(inputs) {
+  categorizeSensoryInputsByUrgency(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { visual: [], auditory: [], tactile: [], other: [] };
-    for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('input must be a string');
+    const categories = { high: [], medium: [], low: [] };
+    for (const { input, urgency } of inputs) {
+      if (typeof input !== 'string' || typeof urgency !== 'number') {
+        throw new TypeError('input must be a string and urgency must be a number');
       }
-      if (input.includes('see')) {
-        categories.visual.push(input);
-      } else if (input.includes('hear')) {
-        categories.auditory.push(input);
-      } else if (input.includes('feel')) {
-        categories.tactile.push(input);
+      if (urgency >= 4) {
+        categories.high.push({ input, urgency });
+      } else if (urgency >= 2) {
+        categories.medium.push({ input, urgency });
       } else {
-        categories.other.push(input);
+        categories.low.push({ input, urgency });
       }
     }
     return categories;
   }
 
   /**
-   * Validates the sensory input parameters.
-   * @param {string} input
-   * @param {number} urgency
-   * @throws {TypeError} - If input is not a string or urgency is out of bounds.
+   * Validates the sensory input based on type and urgency.
+   * @param {string} input - The raw sensory input.
+   * @param {number} urgency - The urgency level of the input (1-5).
+   * @throws {TypeError} - If the input is not a string or urgency is out of bounds.
    */
   validateSensoryInput(input, urgency) {
     if (typeof input !== 'string') {
