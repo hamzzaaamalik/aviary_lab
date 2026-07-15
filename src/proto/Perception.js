@@ -51,15 +51,40 @@ export class Perception {
   }
 
   /**
+   * Categorize sensory input based on its type.
+   * @param {Array<string>} inputs - Array of sensory input strings.
+   * @returns {object} - Categorized inputs by type.
+   * @throws {TypeError} - If inputs is not an array.
+   */
+  categorizeInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    const categories = { visual: [], auditory: [], tactile: [], other: [] };
+    for (const input of inputs) {
+      if (typeof input !== 'string') {
+        throw new TypeError('input must be a string');
+      }
+      if (input.includes('see')) {
+        categories.visual.push(input);
+      } else if (input.includes('hear')) {
+        categories.auditory.push(input);
+      } else if (input.includes('feel')) {
+        categories.tactile.push(input);
+      } else {
+        categories.other.push(input);
+      }
+    }
+    return categories;
+  }
+
+  /**
    * Validates the sensory input and urgency.
    * @param {string} input
    * @param {number} urgency
    * @throws {TypeError} - If the input or urgency is invalid.
    */
   validateSensoryInput(input, urgency) {
-    if (input === null || input === undefined) {
-      throw new TypeError('input cannot be null or undefined');
-    }
     if (typeof input !== 'string') {
       throw new TypeError('input must be a string');
     }
@@ -67,4 +92,4 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
-} 
+}
