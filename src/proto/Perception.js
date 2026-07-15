@@ -63,10 +63,11 @@ export class Perception {
     const categories = { visual: [], auditory: [], tactile: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('input must be a string');
+        categories.other.push(input); // Non-string inputs go to 'other'
+        continue;
       }
       if (input.trim() === '') {
-        categories.other.push(input); // Handle empty strings as 'other'
+        categories.other.push(input); // Handle truly empty strings as 'other'
       } else if (input.includes('see')) {
         categories.visual.push(input);
       } else if (input.includes('hear')) {
@@ -81,11 +82,10 @@ export class Perception {
   }
 
   /**
-   * Validates the sensory input and urgency.
-   * @param {string} input
-   * @param {number} urgency
-   * @throws {TypeError} - If the
-   * input is not a string or urgency is out of bounds.
+   * Validates the sensory input parameters.
+   * @param {string} input - The raw sensory input.
+   * @param {number} urgency - The urgency level of the input (1-5).
+   * @throws {TypeError} - If the input is not a string or urgency is out of bounds.
    */
   validateSensoryInput(input, urgency) {
     if (typeof input !== 'string') {
