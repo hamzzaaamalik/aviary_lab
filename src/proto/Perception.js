@@ -62,6 +62,9 @@ export class Perception {
     }
     const categories = { visual: [], auditory: [], tactile: [], other: [] };
     for (const input of inputs) {
+      if (typeof input !== 'string') {
+        throw new TypeError('input must be a string');
+      }
       if (input.includes('see')) {
         categories.visual.push(input);
       } else if (input.includes('hear')) {
@@ -82,9 +85,6 @@ export class Perception {
    * @throws {TypeError} - If the input or urgency is invalid.
    */
   validateSensoryInput(input, urgency) {
-    if (input === null || input === undefined) {
-      throw new TypeError('input cannot be null or undefined');
-    }
     if (typeof input !== 'string') {
       throw new TypeError('input must be a string');
     }
@@ -92,4 +92,4 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
-} 
+}
