@@ -41,6 +41,20 @@ export class Perception {
   }
 
   /**
+   * Filters sensory inputs based on a minimum urgency threshold.
+   * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs to filter.
+   * @param {number} minUrgency - The minimum urgency level (1-5) to include the input.
+   * @returns {Array<{input: string, urgency: number}>} - Filtered array of inputs.
+   * @throws {TypeError} - If minUrgency is not a number or out of bounds.
+   */
+  filterByUrgency(inputs, minUrgency) {
+    if (typeof minUrgency !== 'number' || minUrgency < 1 || minUrgency > 5) {
+      throw new TypeError('minUrgency must be a number between 1 and 5');
+    }
+    return inputs.filter(({ urgency }) => urgency >= minUrgency);
+  }
+
+  /**
    * Validates the sensory input and urgency.
    * @private
    * @param {string} input 
