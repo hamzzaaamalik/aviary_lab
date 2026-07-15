@@ -19,7 +19,7 @@ export class Perception {
   }
 
   /**
-   * Safely process multiple inputs.
+   * Safely process multiple sensory inputs with urgency levels.
    * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
    * @returns {Promise<object[]>} - Array of processed percepts.
    * @throws {TypeError} - If any input is invalid.
@@ -41,7 +41,7 @@ export class Perception {
   }
 
   /**
-   * Validates the sensory input and urgency.
+   * Validates the sensory input and urgency level.
    * @private
    * @param {string} input 
    * @param {number} urgency 
