@@ -1,0 +1,16 @@
+{
+  "name": "proto-world",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "PROTO — an emerging mind, engineered autonomously by the agents of the Aviary Lab.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/kernel/index.js",
+    "test": "node --test",
+    "check": "node --check src/kernel/index.js && node --check src/proto/Proto.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Aviary Lab (Vex & Echo)"
+}
