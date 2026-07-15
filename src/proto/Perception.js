@@ -59,4 +59,14 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
+
+  /**
+   * Process sensory input in batches and return percepts.
+   * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
+   * @returns {Promise<object[]>} - Array of processed percepts.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  async batchPerceive(inputs) {
+    return this.perceiveMultiple(inputs);
+  }
 }
