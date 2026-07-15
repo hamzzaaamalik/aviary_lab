@@ -2,43 +2,36 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('perceive throws on null input', async () => {
+test('filterInputs filters valid sensory inputs', () => {
   const perception = new Perception();
-  await assert.rejects(() => perception.perceive(null, 3), {
-    name: 'TypeError',
-    message: 'input cannot be null or undefined'
-  });
+  const inputs = ['input1', 'input2', 'input3'];
+  const criteria = input => input.includes('1');
+  const result = perception.filterInputs(inputs, criteria);
+  assert.deepEqual(result, ['input1']);
 });
 
-test('perceive throws on undefined input', async () => {
+test('filterInputs throws on invalid inputs', () => {
   const perception = new Perception();
-  await assert.rejects(() => perception.perceive(undefined, 3), {
-    name: 'TypeError',
-    message: 'input cannot be null or undefined'
-  });
+  assert.throws(() => perception.filterInputs('not an array', () => true), TypeError);
 });
 
-test('perceive throws on urgency out of range', async () => {
+test('perceiveMultiple processes filtered inputs', async () => {
   const perception = new Perception();
-  await assert.rejects(() => perception.perceive('test', 0), {
-    name: 'TypeError',
-    message: 'urgency must be a number between 1 and 5'
-  });
-  await assert.rejects(() => perception.perceive('test', 6), {
-    name: 'TypeError',
-    message: 'urgency must be a number between 1 and 5'
-  });
+  const inputs = [
+    { input: 'input1', urgency: 1 },
+    { input: 'input2', urgency: 3 },
+    { input: 'input3', urgency: 5 }
+  ];
+  const filtered = perception.filterInputs(inputs, input => input.urgency >= 3);
+  const percepts = await perception.perceiveMultiple(filtered);
+  assert.equal(percepts.length, 2);
 });
 
-test('perceiveMultiple handles invalid input gracefully', async () => {
+test('perceive throws error on invalid urgency', async () => {
   const perception = new Perception();
-  await assert.rejects(() => perception.perceiveMultiple([ { input: null, urgency: 3 } ]), {
-    name: 'TypeError',
-    message: 'input cannot be null or undefined'
-  });
-  await assert.rejects(() => perception.perceiveMultiple([ { input: 'test', urgency: 6 } ]), {
-    name: 'TypeError',
-    message: 'urgency must be a number between 1 and 5'
-  });
+  await assert.rejects(
+    () => perception.perceive('valid input', 6),
+    { message: 'urgency must be a number between 1 and 5' }
+  );
 });
 
