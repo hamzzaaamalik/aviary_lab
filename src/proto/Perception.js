@@ -33,6 +33,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
+    if (inputs.length === 0) {
+      return []; // Return an empty array for empty input.
+    }
     const percepts = [];
     for (const { input, urgency } of inputs) {
       // Validate input and urgency before processing
