@@ -16,6 +16,9 @@ export class PerceptionMemoryBridge {
         if (!percept || typeof percept !== 'object') {
             throw new Error('Invalid percept');
         }
+        if (percept.id === undefined) {
+            throw new Error('Percept must have a valid id');
+        }
         this.memory.store(percept);
     }
 
