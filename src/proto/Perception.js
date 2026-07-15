@@ -56,7 +56,7 @@ export class Perception {
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
-  categorizeInputs(inputs) {
+  categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
@@ -82,7 +82,7 @@ export class Perception {
    * Validates the sensory input and urgency.
    * @param {string} input
    * @param {number} urgency
-   * @throws {TypeError} - If the input or urgency is invalid.
+   * @throws {TypeError} - If the input is invalid.
    */
   validateSensoryInput(input, urgency) {
     if (typeof input !== 'string') {
