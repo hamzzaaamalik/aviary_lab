@@ -12,7 +12,10 @@ export class Perception {
    */
   async perceive(input, urgency, filter) {
     this.validateSensoryInput(input, urgency);
-    if (filter && typeof filter === 'function') {
+    if (filter) {
+      if (typeof filter !== 'function') {
+        throw new TypeError('filter must be a function');
+      }
       input = filter(input);
     }
     // Simulating sensory processing with urgency consideration.
