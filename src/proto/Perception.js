@@ -58,4 +58,19 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
-}
+
+  /**
+   * Handles sensory input from various sources and processes them accordingly.
+   * @param {Array<string>} sources - Array of sensory source identifiers.
+   * @param {number} urgency - The urgency level of the input (1-5).
+   * @returns {Promise<object[]>} - Array of processed percepts from each source.
+   * @throws {TypeError} - If any source is invalid.
+   */
+  async handleSensoryInput(sources, urgency) {
+    if (!Array.isArray(sources)) {
+      throw new TypeError('sources must be an array');
+    }
+    const inputs = sources.map(source => ({ input: source, urgency }));
+    return this.perceiveMultiple(inputs);
+  }
+} 
