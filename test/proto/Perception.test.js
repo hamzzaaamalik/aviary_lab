@@ -4,26 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeInputs classifies inputs correctly', () => {
-  const inputs = ['I can see', 'I can hear', 'I can feel', 'something else'];
+test('categorizeInputs categorizes sensory input correctly', () => {
+  const inputs = ['I see a bird', 'I hear a sound', 'I feel the wind', 'Just a thought'];
   const result = perception.categorizeInputs(inputs);
   assert.deepEqual(result, {
-    visual: ['I can see'],
-    auditory: ['I can hear'],
-    tactile: ['I can feel'],
-    other: ['something else']
+    visual: ['I see a bird'],
+    auditory: ['I hear a sound'],
+    tactile: ['I feel the wind'],
+    other: ['Just a thought']
   });
 });
 
-test('categorizeInputs throws on non-array input', () => {
+test('categorizeInputs throws error for non-array input', () => {
   assert.throws(() => perception.categorizeInputs('not an array'), TypeError);
 });
 
-test('categorizeInputs throws on non-string input', () => {
-  assert.throws(() => perception.categorizeInputs(['valid', 123]), TypeError);
+test('validateSensoryInput throws error for invalid input', () => {
+  assert.throws(() => perception.validateSensoryInput(123, 3), TypeError);
+  assert.throws(() => perception.validateSensoryInput('valid string', 10), TypeError);
 });
 
-test('categorizeInputs handles empty array', () => {
-  const result = perception.categorizeInputs([]);
-  assert.deepEqual(result, { visual: [], auditory: [], tactile: [], other: [] });
+test('perceiveMultiple processes inputs correctly', async () => {
+  const inputs = [
+    { input: 'I see a dog', urgency: 5 },
+    { input: 'I hear music', urgency: 3 }
+  ];
+  const result = await perception.perceiveMultiple(inputs);
+  assert.equal(result.length, 2);
+  assert.equal(result[0].processed, 'Percept from: I see a dog');
+  assert.equal(result[1].processed, 'Percept from: I hear music');
 });
