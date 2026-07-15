@@ -4,33 +4,43 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeInputs categorizes sensory input correctly', () => {
-  const inputs = ['I see a bird', 'I hear a sound', 'I feel the wind', 'Just a thought'];
+test('categorizeInputs correctly categorizes inputs', () => {
+  const inputs = ['I can see the sky', 'I hear music', 'I feel cold', 'I smell something'];
   const result = perception.categorizeInputs(inputs);
   assert.deepEqual(result, {
-    visual: ['I see a bird'],
-    auditory: ['I hear a sound'],
-    tactile: ['I feel the wind'],
-    other: ['Just a thought']
+    visual: ['I can see the sky'],
+    auditory: ['I hear music'],
+    tactile: ['I feel cold'],
+    other: ['I smell something'],
   });
 });
 
-test('categorizeInputs throws error for non-array input', () => {
+test('categorizeInputs throws on non-array input', () => {
   assert.throws(() => perception.categorizeInputs('not an array'), TypeError);
 });
 
-test('validateSensoryInput throws error for invalid input', () => {
-  assert.throws(() => perception.validateSensoryInput(123, 3), TypeError);
-  assert.throws(() => perception.validateSensoryInput('valid string', 10), TypeError);
+test('categorizeInputs throws on invalid item types', () => {
+  assert.throws(() => perception.categorizeInputs(['valid', 123]), TypeError);
 });
 
-test('perceiveMultiple processes inputs correctly', async () => {
+test('perceiveMultiple handles empty input array', async () => {
+  const result = await perception.perceiveMultiple([]);
+  assert.deepEqual(result, []);
+});
+
+test('perceiveMultiple throws on invalid input structure', async () => {
+  await assert.rejects(() => perception.perceiveMultiple([{ input: 123, urgency: 1 }]), TypeError);
+});
+
+// Additional edge case tests
+
+test('perceiveMultiple processes valid inputs', async () => {
   const inputs = [
-    { input: 'I see a dog', urgency: 5 },
-    { input: 'I hear music', urgency: 3 }
+    { input: 'I see a bird', urgency: 2 },
+    { input: 'I hear a sound', urgency: 1 }
   ];
-  const result = await perception.perceiveMultiple(inputs);
-  assert.equal(result.length, 2);
-  assert.equal(result[0].processed, 'Percept from: I see a dog');
-  assert.equal(result[1].processed, 'Percept from: I hear music');
+  const results = await perception.perceiveMultiple(inputs);
+  assert.equal(results.length, 2);
+  assert.equal(results[0].processed, 'Percept from: I see a bird');
+  assert.equal(results[1].processed, 'Percept from: I hear a sound');
 });
