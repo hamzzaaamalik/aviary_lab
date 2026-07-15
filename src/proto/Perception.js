@@ -58,4 +58,35 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
+
+  /**
+   * Process a batch of sensory inputs with a common urgency level.
+   * @param {string} urgency - The urgency level for all inputs (1-5).
+   * @param {Array<string>} inputs - Array of raw sensory inputs.
+   * @returns {Promise<object[]>} - Array of processed percepts.
+   * @throws {TypeError} - If any input is invalid or urgency is out of bounds.
+   */
+  async perceiveBatch(urgency, inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      return [];
+    }
+    this.#validateUrgency(urgency);
+    const percepts = await Promise.all(inputs.map(input => this.perceive(input, urgency)));
+    return percepts;
+  }
+
+  /**
+   * Validates the urgency level.
+   * @private
+   * @param {number} urgency 
+   * @throws {TypeError} - If urgency is invalid.
+   */
+  #validateUrgency(urgency) {
+    if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
+      throw new TypeError('urgency must be a number between 1 and 5');
+    }
+  }
 }

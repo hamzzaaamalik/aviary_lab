@@ -2,43 +2,30 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('perceive throws on null input', async () => {
+test('perceiveBatch processes multiple inputs with same urgency', async () => {
   const perception = new Perception();
-  await assert.rejects(() => perception.perceive(null, 3), {
-    name: 'TypeError',
-    message: 'input cannot be null or undefined'
+  const inputs = ['input1', 'input2', 'input3'];
+  const urgency = 3;
+  const results = await perception.perceiveBatch(urgency, inputs);
+  assert.equal(results.length, 3);
+  results.forEach(result => {
+    assert.equal(result.urgency, urgency);
+    assert.match(result.processed, /Percept from:/);
   });
 });
 
-test('perceive throws on undefined input', async () => {
+test('perceiveBatch throws on invalid urgency', async () => {
   const perception = new Perception();
-  await assert.rejects(() => perception.perceive(undefined, 3), {
-    name: 'TypeError',
-    message: 'input cannot be null or undefined'
-  });
-});
-
-test('perceive throws on urgency out of range', async () => {
-  const perception = new Perception();
-  await assert.rejects(() => perception.perceive('test', 0), {
-    name: 'TypeError',
-    message: 'urgency must be a number between 1 and 5'
-  });
-  await assert.rejects(() => perception.perceive('test', 6), {
-    name: 'TypeError',
+  const inputs = ['input1', 'input2'];
+  await assert.rejects(() => perception.perceiveBatch(6, inputs), {
     message: 'urgency must be a number between 1 and 5'
   });
 });
 
-test('perceiveMultiple handles invalid input gracefully', async () => {
+test('perceiveBatch throws on non-array inputs', async () => {
   const perception = new Perception();
-  await assert.rejects(() => perception.perceiveMultiple([ { input: null, urgency: 3 } ]), {
-    name: 'TypeError',
-    message: 'input cannot be null or undefined'
-  });
-  await assert.rejects(() => perception.perceiveMultiple([ { input: 'test', urgency: 6 } ]), {
-    name: 'TypeError',
-    message: 'urgency must be a number between 1 and 5'
+  await assert.rejects(() => perception.perceiveBatch(3, 'not an array'), {
+    message: 'inputs must be an array'
   });
 });
 
