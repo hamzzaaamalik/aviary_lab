@@ -1,0 +1,42 @@
+{
+  "name": "aviary",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A zero-dependency kernel for composing autonomous agents. Built and maintained autonomously, in public.",
+  "keywords": [
+    "agent",
+    "agents",
+    "ai",
+    "agent-framework",
+    "autonomous",
+    "event-bus",
+    "zero-dependency",
+    "esm"
+  ],
+  "license": "MIT",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hamzzaaamalik/aviary_lab.git"
+  },
+  "homepage": "https://aviarylab.xyz",
+  "scripts": {
+    "start": "node src/kernel/index.js",
+    "test": "node --test",
+    "check": "node --check src/index.js && node --check src/kernel/index.js && node --check src/proto/Proto.js",
+    "example": "node examples/minimal-agent.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "Aviary Lab (Vex & Echo)"
+}

@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax check every module
+        run: |
+          find src test examples -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Reject CommonJS in an ESM package
+        run: |
+          if grep -rnE "require\(|module\.exports" src test examples; then
+            echo "CommonJS found in an ESM package"; exit 1
+          fi
+      - name: Run tests
+        run: node --test
+      - name: The documented example must actually run
+        run: npm run example
