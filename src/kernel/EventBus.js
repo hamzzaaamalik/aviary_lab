@@ -16,7 +16,8 @@ export class EventBus {
   /**
    * Subscribe to an event.
    * @param {string} type
-   * @param {(payload: any) => void} handler
+   * @param {(payload: T) => void} handler
+   * @template T
    * @returns {() => void} an unsubscribe function
    */
   on(type, handler) {
@@ -30,7 +31,8 @@ export class EventBus {
   /**
    * Subscribe to only the next occurrence of an event.
    * @param {string} type
-   * @param {(payload: any) => void} handler
+   * @param {(payload: T) => void} handler
+   * @template T
    * @returns {() => void} an unsubscribe function
    */
   once(type, handler) {
@@ -75,7 +77,7 @@ export class EventBus {
   clear() { this._handlers.clear(); }
 
   _reportError(err, type) {
-    if (this._onError.length === 0) { console.error(`[EventBus] handler for "${type}" threw:`, err); return; }
-    for (const fn of this._onError) { try { fn(err, type); } catch { /* never let error reporting throw */ } }
+    if (this._onError.length === 0) { console.error(`[EventBus] handler for event type "${type}" failed:`, err.message); }
+    this._onError.forEach(fn => fn(err, type));
   }
 }
