@@ -2,6 +2,10 @@
  * Perception — the faculty responsible for processing sensory input.
  */
 export class Perception {
+  constructor() {
+    this.logs = [];
+  }
+
   /**
    * Process sensory input to extract percepts.
    * @param {string} input - The raw sensory input.
@@ -11,6 +15,7 @@ export class Perception {
    */
   async perceive(input, urgency) {
     this.validateSensoryInput(input, urgency);
+    this.logInput(input, urgency);
     // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
       const percept = { processed: `Percept from: ${input}`, urgency };
@@ -58,5 +63,26 @@ export class Perception {
     if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
+  }
+
+  /**
+   * Logs the input with its urgency for analysis.
+   * @param {string} input 
+   * @param {number} urgency 
+   */
+  logInput(input, urgency) {
+    try {
+      this.logs.push({ input, urgency, timestamp: new Date() });
+    } catch (err) {
+      console.error('Failed to log input:', err);
+    }
+  }
+
+  /**
+   * Retrieve the log of inputs.
+   * @returns {Array<{input: string, urgency: number, timestamp: Date}>} - The logs of processed inputs.
+   */
+  getLogs() {
+    return this.logs;
   }
 }
