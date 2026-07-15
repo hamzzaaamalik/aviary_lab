@@ -51,6 +51,21 @@ export class Perception {
   }
 
   /**
+   * Validate sensory input for single input.
+   * @param {string} input - The sensory input to validate.
+   * @param {number} urgency - The urgency level to validate.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  validateSensoryInput(input, urgency) {
+    if (typeof input !== 'string' || input.trim() === '') {
+      throw new TypeError('input must be a non-empty string');
+    }
+    if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
+      throw new TypeError('urgency must be a number between 1 and 5');
+    }
+  }
+
+  /**
    * Categorize sensory input based on its type.
    * @param {Array<string>} inputs - Array of sensory input strings.
    * @returns {object} - Categorized inputs by type.
@@ -79,20 +94,5 @@ export class Perception {
       }
     }
     return categories;
-  }
-
-  /**
-   * Validate sensory input for correct type and urgency.
-   * @param {string} input - The sensory input to validate.
-   * @param {number} urgency - The urgency level to validate.
-   * @throws {TypeError} - If input is not a string or urgency is out of range.
-   */
-  validateSensoryInput(input, urgency) {
-    if (typeof input !== 'string') {
-      throw new TypeError('input must be a string');
-    }
-    if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
-      throw new TypeError('urgency must be a number between 1 and 5');
-    }
   }
 }
