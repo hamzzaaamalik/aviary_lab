@@ -15,6 +15,17 @@ test('perceiveMultiple throws on invalid inputs', async () => {
   await assert.rejects(() => perception.perceiveMultiple([{ input: 'test', urgency: 6 }]), { message: 'urgency must be a number between 1 and 5' });
 });
 
+test('categorizeInputs categorizes inputs correctly', () => {
+  const inputs = ['see the sky', 'hear the sound', 'feel the warmth', 'unknown input'];
+  const categories = perception.categorizeInputs(inputs);
+  assert.deepEqual(categories, {
+    visual: ['see the sky'],
+    auditory: ['hear the sound'],
+    tactile: ['feel the warmth'],
+    other: ['unknown input']
+  });
+});
+
 // Additional tests to validate proper functioning
 
 test('perceiveMultiple processes valid inputs', async () => {
@@ -25,4 +36,3 @@ test('perceiveMultiple processes valid inputs', async () => {
   const results = await perception.perceiveMultiple(inputs);
   assert.equal(results.length, 2);
 });
-
