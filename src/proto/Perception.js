@@ -65,7 +65,9 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('input must be a string');
       }
-      if (input.includes('see')) {
+      if (input.trim() === '') {
+        categories.other.push(input); // Handle empty strings as 'other'
+      } else if (input.includes('see')) {
         categories.visual.push(input);
       } else if (input.includes('hear')) {
         categories.auditory.push(input);
@@ -82,7 +84,8 @@ export class Perception {
    * Validates the sensory input and urgency.
    * @param {string} input
    * @param {number} urgency
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If the
+   * input is not a string or urgency is out of bounds.
    */
   validateSensoryInput(input, urgency) {
     if (typeof input !== 'string') {
