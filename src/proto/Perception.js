@@ -92,4 +92,4 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
-} 
+}
