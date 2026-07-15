@@ -54,7 +54,7 @@ export class Perception {
    * Categorize sensory input based on its type.
    * @param {Array<string>} inputs - Array of sensory input strings.
    * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
   categorizeInputs(inputs) {
     if (!Array.isArray(inputs)) {
