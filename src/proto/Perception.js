@@ -71,7 +71,11 @@ export class Perception {
    * @param {number} urgency 
    */
   logInput(input, urgency) {
-    this.logs.push({ input, urgency, timestamp: new Date() });
+    try {
+      this.logs.push({ input, urgency, timestamp: new Date() });
+    } catch (err) {
+      console.error('Failed to log input:', err);
+    }
   }
 
   /**
