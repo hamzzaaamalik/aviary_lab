@@ -43,9 +43,10 @@ export class Perception {
   /**
    * Aggregate multiple percepts based on urgency level.
    * @param {Array<object>} percepts - Array of processed percepts.
-   * @returns {object} - Aggregated percepts.
+   * @returns {object} - Aggregated percepts by urgency level.
+   * @throws {TypeError} - If percepts is invalid or empty.
    */
-  aggregatePercepts(percepts) {
+  aggregatePerceptsByUrgency(percepts) {
     if (!Array.isArray(percepts) || percepts.length === 0) {
       throw new TypeError('percepts must be a non-empty array');
     }
