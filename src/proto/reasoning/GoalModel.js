@@ -5,8 +5,12 @@
 export class GoalModel {
     /**
      * @param {string} description - The description of the goal.
+     * @throws {Error} - Throws an error if the description is empty.
      */
     constructor(description) {
+        if (!description || description.trim() === '') {
+            throw new Error('Description cannot be empty.');
+        }
         this.description = description;
         this.completed = false;
     }
