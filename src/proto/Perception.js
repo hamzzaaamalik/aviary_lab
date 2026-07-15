@@ -51,6 +51,31 @@ export class Perception {
   }
 
   /**
+   * Categorize sensory input based on its type.
+   * @param {Array<string>} inputs - Array of sensory input strings.
+   * @returns {object} - Categorized inputs by type.
+   * @throws {TypeError} - If inputs is not an array.
+   */
+  categorizeInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    const categories = { visual: [], auditory: [], tactile: [], other: [] };
+    for (const input of inputs) {
+      if (input.includes('see')) {
+        categories.visual.push(input);
+      } else if (input.includes('hear')) {
+        categories.auditory.push(input);
+      } else if (input.includes('feel')) {
+        categories.tactile.push(input);
+      } else {
+        categories.other.push(input);
+      }
+    }
+    return categories;
+  }
+
+  /**
    * Validates the sensory input and urgency.
    * @param {string} input
    * @param {number} urgency
