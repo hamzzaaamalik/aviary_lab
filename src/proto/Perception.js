@@ -78,21 +78,28 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { visual: [], auditory: [], tactile: [], other: [] };
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      if (input.includes('see')) {
-        categories.visual.push(input);
-      } else if (input.includes('hear')) {
-        categories.auditory.push(input);
-      } else if (input.includes('feel')) {
-        categories.tactile.push(input);
-      } else {
-        categories.other.push(input);
+      const type = this.detectType(input);
+      if (!categories[type]) {
+        categories[type] = [];
       }
+      categories[type].push(input);
     }
     return categories;
   }
-}
+
+  /**
+   * Detect the type of sensory input (e.g., 'audio', 'visual', 'text').
+   * @param {string} input - The input to classify.
+   * @returns {string} - The type of the input.
+   */
+  detectType(input) {
+    if (input.startsWith('audio:')) return 'audio';
+    if (input.startsWith('visual:')) return 'visual';
+    return 'text';
+  }
+}  
