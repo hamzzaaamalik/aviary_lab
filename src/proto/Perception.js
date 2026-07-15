@@ -83,9 +83,9 @@ export class Perception {
 
   /**
    * Validates the sensory input parameters.
-   * @param {string} input
-   * @param {number} urgency
-   * @throws {TypeError} - If input is not a string or urgency is out of bounds.
+   * @param {string} input - The raw sensory input.
+   * @param {number} urgency - The urgency level of the input (1-5).
+   * @throws {TypeError} - If the input is not a string or urgency is out of bounds.
    */
   validateSensoryInput(input, urgency) {
     if (typeof input !== 'string') {
@@ -94,5 +94,17 @@ export class Perception {
     if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
+  }
+
+  /**
+   * Process and categorize multiple inputs.
+   * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
+   * @returns {Promise<{ percepts: object[], categories: object }>} - Object containing processed percepts and categories.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  async perceiveAndCategorize(inputs) {
+    const categories = this.categorizeSensoryInputs(inputs.map(input => input.input));
+    const percepts = await this.perceiveMultiple(inputs);
+    return { percepts, categories };
   }
 }
