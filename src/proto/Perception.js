@@ -32,6 +32,8 @@ export class Perception {
       return []; // Return an empty array for empty input.
     }
     const percepts = [];
+    // Sort inputs by urgency, higher urgency first.
+    inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
       this.#validateSensoryInput(input, urgency);
       const percept = await this.perceive(input, urgency);
