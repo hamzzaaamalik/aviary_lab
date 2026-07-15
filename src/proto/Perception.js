@@ -33,14 +33,17 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
+    if (inputs.length === 0) {
+      return []; // Return an empty array for empty input.
+    }
     const percepts = [];
     for (const { input, urgency } of inputs) {
       // Validate input and urgency before processing
       if (typeof input !== 'string') {
-        return Promise.reject(new TypeError('input must be a string')); // Reject promise
+        throw new TypeError('input must be a string');
       }
       if (typeof urgency !== 'number' || urgency < 1 || urgency > 5) {
-        return Promise.reject(new TypeError('urgency must be a number between 1 and 5')); // Reject promise
+        throw new TypeError('urgency must be a number between 1 and 5');
       }
       const percept = await this.perceive(input, urgency);
       percepts.push(percept);
