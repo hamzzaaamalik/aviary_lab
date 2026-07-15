@@ -83,7 +83,7 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = this.detectType(input);
+      const [type] = input.split(':');
       if (!categories[type]) {
         categories[type] = [];
       }
@@ -91,15 +91,4 @@ export class Perception {
     }
     return categories;
   }
-
-  /**
-   * Detect the type of sensory input (e.g., 'audio', 'visual', 'text').
-   * @param {string} input - The input to classify.
-   * @returns {string} - The type of the input.
-   */
-  detectType(input) {
-    if (input.startsWith('audio:')) return 'audio';
-    if (input.startsWith('visual:')) return 'visual';
-    return 'text';
-  }
-}  
+}

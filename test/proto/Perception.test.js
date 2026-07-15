@@ -27,3 +27,6 @@ test('categorizeSensoryInputs throws on invalid input type', () => {
   assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
 });
 
+test('categorizeSensoryInputs throws on non-string inputs', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', null, 'another:input']), TypeError);
+});
