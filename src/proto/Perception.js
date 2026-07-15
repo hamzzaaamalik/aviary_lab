@@ -47,6 +47,7 @@ export class Perception {
    * @param {Array<string>} inputs - Array of sensory inputs.
    * @param {function(string): boolean} criteria - A function to evaluate each input.
    * @returns {Array<string>} - Filtered array of valid inputs.
+   * @throws {TypeError} - If inputs is not an array.
    */
   filterInputs(inputs, criteria) {
     if (!Array.isArray(inputs)) {
