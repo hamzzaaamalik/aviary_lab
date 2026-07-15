@@ -41,6 +41,23 @@ export class Perception {
   }
 
   /**
+   * Aggregate multiple percepts based on urgency level.
+   * @param {Array<object>} percepts - Array of processed percepts.
+   * @returns {object} - Aggregated percepts.
+   */
+  aggregatePercepts(percepts) {
+    if (!Array.isArray(percepts) || percepts.length === 0) {
+      throw new TypeError('percepts must be a non-empty array');
+    }
+    const aggregated = percepts.reduce((acc, { processed, urgency }) => {
+      acc[urgency] = acc[urgency] || [];
+      acc[urgency].push(processed);
+      return acc;
+    }, {});
+    return aggregated;
+  }
+
+  /**
    * Validates the sensory input and urgency.
    * @private
    * @param {string} input 
