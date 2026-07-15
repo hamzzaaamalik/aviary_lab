@@ -6,11 +6,18 @@ export class Perception {
    * Process sensory input to extract percepts.
    * @param {string} input - The raw sensory input.
    * @param {number} urgency - The urgency level of the input (1-5).
+   * @param {Function} [filter] - Optional filter function to refine input processing.
    * @returns {Promise<object>} - The processed percept.
    * @throws {TypeError} - If the input is not a string or urgency is out of bounds.
    */
-  async perceive(input, urgency) {
+  async perceive(input, urgency, filter) {
     this.validateSensoryInput(input, urgency);
+    if (filter) {
+      if (typeof filter !== 'function') {
+        throw new TypeError('filter must be a function');
+      }
+      input = filter(input);
+    }
     // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
       const percept = { processed: `Percept from: ${input}`, urgency };
@@ -21,10 +28,11 @@ export class Perception {
   /**
    * Safely process multiple inputs.
    * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
+   * @param {Function} [filter] - Optional filter function to refine input processing.
    * @returns {Promise<object[]>} - Array of processed percepts.
    * @throws {TypeError} - If any input is invalid.
    */
-  async perceiveMultiple(inputs) {
+  async perceiveMultiple(inputs, filter) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
@@ -36,7 +44,7 @@ export class Perception {
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
       this.validateSensoryInput(input, urgency);
-      const percept = await this.perceive(input, urgency);
+      const percept = await this.perceive(input, urgency, filter);
       percepts.push(percept);
     }
     return percepts;
@@ -44,8 +52,8 @@ export class Perception {
 
   /**
    * Validates the sensory input and urgency.
-   * @param {string} input 
-   * @param {number} urgency 
+   * @param {string} input
+   * @param {number} urgency
    * @throws {TypeError} - If the input or urgency is invalid.
    */
   validateSensoryInput(input, urgency) {
@@ -59,4 +67,4 @@ export class Perception {
       throw new TypeError('urgency must be a number between 1 and 5');
     }
   }
-}
+} 
