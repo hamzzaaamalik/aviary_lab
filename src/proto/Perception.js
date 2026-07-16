@@ -78,17 +78,26 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {};
+    const categories = {
+      audio: [],
+      video: [],
+      text: [],
+      unknown: [],
+    };
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
-      }
-      const [type] = input.split(':');
-      if (!categories[type]) {
-        categories[type] = [];
-      }
+      const type = this.determineInputType(input);
       categories[type].push(input);
     }
     return categories;
+  }
+
+  /**
+   * Determine the type of input based on its prefix.
+   * @param {string} input - The sensory input to determine the type for.
+   * @returns {string} - The type of the input.
+   */
+  determineInputType(input) {
+    const [prefix] = input.split(':');
+    return ['audio', 'video', 'text'].includes(prefix) ? prefix : 'unknown';
   }
 }

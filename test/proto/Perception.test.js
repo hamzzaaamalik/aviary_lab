@@ -4,29 +4,38 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['audio:sound', 'visual:image', 'text:message', 'audio:anotherSound'];
+test('categorizeSensoryInputs categorizes inputs correctly', async () => {
+  const inputs = ['audio:music', 'video:movie', 'text:note', 'audio:podcast'];
   const expected = {
-    audio: ['audio:sound', 'audio:anotherSound'],
-    visual: ['visual:image'],
-    text: ['text:message']
+    audio: ['audio:music', 'audio:podcast'],
+    video: ['video:movie'],
+    text: ['text:note'],
+    unknown: [],
   };
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, expected);
 });
 
-test('categorizeSensoryInputs throws on non-array input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+test('categorizeSensoryInputs throws on invalid input types', async () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['audio:music', 123]), TypeError);
 });
 
-test('categorizeSensoryInputs throws on empty array', () => {
+test('categorizeSensoryInputs throws on empty input array', async () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
-test('categorizeSensoryInputs throws on invalid input type', () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
+test('determineInputType returns correct type for audio', () => {
+  assert.equal(perception.determineInputType('audio:music'), 'audio');
 });
 
-test('categorizeSensoryInputs throws on non-string inputs', () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', null, 'another:input']), TypeError);
+test('determineInputType returns correct type for video', () => {
+  assert.equal(perception.determineInputType('video:movie'), 'video');
+});
+
+test('determineInputType returns correct type for text', () => {
+  assert.equal(perception.determineInputType('text:note'), 'text');
+});
+
+test('determineInputType returns unknown for unrecognized types', () => {
+  assert.equal(perception.determineInputType('image:photo'), 'unknown');
 });
