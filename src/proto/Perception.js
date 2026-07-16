@@ -78,19 +78,27 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { audio: [], visual: [] };
+    const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+      const category = this.classifyInput(input);
+      if (!categories[category]) {
+        categories[category] = [];
       }
-      if (input.startsWith('sound')) {
-        categories.audio.push(input);
-      } else if (input.startsWith('sight')) {
-        categories.visual.push(input);
-      } else {
-        throw new TypeError('input does not match known categories');
-      }
+      categories[category].push(input);
     }
     return categories;
+  }
+
+  /**
+   * Classify an input into a category based on its content.
+   * @param {string} input - The sensory input to classify.
+   * @returns {string} - The category of the input.
+   */
+  classifyInput(input) {
+    // Simple categorization logic based on content.
+    if (input.includes('sound')) return 'audio';
+    if (input.includes('sight')) return 'visual';
+    if (input.includes('touch')) return 'tactile';
+    return 'unknown'; // Default category for unrecognized inputs
   }
 }
