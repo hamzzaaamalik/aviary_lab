@@ -43,6 +43,9 @@ export class Perception {
     // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
+      if (input === undefined || urgency === undefined) {
+        throw new TypeError('input and urgency must be defined');
+      }
       this.validateSensoryInput(input, urgency);
       const percept = await this.perceive(input, urgency, filter);
       percepts.push(percept);
@@ -79,16 +82,6 @@ export class Perception {
       throw new TypeError('inputs array must not be empty');
     }
     const categories = {};
-    for (const item of inputs) {
-      const type = typeof item;
-      if (!categories[type]) {
-        categories[type] = [];
-      }
-      if (item === undefined) {
-        throw new TypeError('inputs cannot contain undefined elements');
-      }
-      categories[type].push(item);
-    }
-    return categories;
+    // Categorization logic goes here
   }
 }

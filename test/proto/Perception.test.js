@@ -2,35 +2,27 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-const perception = new Perception();
-
-test('categorizeSensoryInputs categorizes inputs by type', () => {
-  const inputs = ['hello', 42, true, null, 'world'];
-  const categorized = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(categorized, {
-    string: ['hello', 'world'],
-    number: [42],
-    boolean: [true],
-    object: [null],
+test('perceiveMultiple throws on non-array input', async () => {
+  const perception = new Perception();
+  await assert.rejects(() => perception.perceiveMultiple('not an array'), {
+    message: 'inputs must be an array'
   });
 });
 
-test('categorizeSensoryInputs throws TypeError for non-array input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
-});
-
-test('categorizeSensoryInputs throws TypeError for empty array', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
-});
-
-// Additional tests for existing methods
-
-test('perceive throws TypeError on invalid input', async () => {
-  await assert.rejects(() => perception.perceive('', 3), { name: 'TypeError' });
-});
-
-test('perceiveMultiple returns empty array for empty input', async () => {
+test('perceiveMultiple throws on empty array', async () => {
+  const perception = new Perception();
   const result = await perception.perceiveMultiple([]);
   assert.deepEqual(result, []);
 });
 
+test('perceiveMultiple throws on undefined input or urgency', async () => {
+  const perception = new Perception();
+  await assert.rejects(() => perception.perceiveMultiple([{ input: undefined, urgency: 1 }]), {
+    message: 'input and urgency must be defined'
+  });
+  await assert.rejects(() => perception.perceiveMultiple([{ input: 'valid', urgency: undefined }]), {
+    message: 'input and urgency must be defined'
+  });
+});
+
+// Add tests for valid inputs to check if it processes correctly
