@@ -43,9 +43,13 @@ export class Perception {
     // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
-      this.validateSensoryInput(input, urgency);
-      const percept = await this.perceive(input, urgency, filter);
-      percepts.push(percept);
+      try {
+        this.validateSensoryInput(input, urgency);
+        const percept = await this.perceive(input, urgency, filter);
+        percepts.push(percept);
+      } catch (err) {
+        console.error(`Failed to perceive input: ${input}. Error: ${err.message}`);
+      }
     }
     return percepts;
   }
@@ -78,17 +82,29 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { url: [], text: [] };
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
-      if (input.startsWith('http://') || input.startsWith('https://')) {
-        categories.url.push(input);
-      } else {
-        categories.text.push(input);
+      const type = this.detectInputType(input);
+      if (!categories[type]) {
+        categories[type] = [];
       }
+      categories[type].push(input);
     }
     return categories;
+  }
+
+  /**
+   * Detect the type of input based on its content.
+   * @param {string} input - The sensory input to analyze.
+   * @returns {string} - The type of the input.
+   */
+  detectInputType(input) {
+    // Example categorization logic, extend as needed.
+    if (input.startsWith('audio:')) return 'audio';
+    if (input.startsWith('video:')) return 'video';
+    return 'text';
   }
 }
