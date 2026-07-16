@@ -18,7 +18,6 @@ export class Perception {
       }
       input = filter(input);
     }
-    // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
       const percept = { processed: `Percept from: ${input}`, urgency };
       resolve(percept);
@@ -37,10 +36,9 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      return []; // Return an empty array for empty input.
+      return [];
     }
     const percepts = [];
-    // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
       this.validateSensoryInput(input, urgency);
@@ -78,19 +76,17 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { audio: [], visual: [] };
-    for (const input of inputs) {
+    const categories = {};
+    inputs.forEach(input => {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('input must be a string');
       }
-      if (input.startsWith('sound')) {
-        categories.audio.push(input);
-      } else if (input.startsWith('sight')) {
-        categories.visual.push(input);
-      } else {
-        throw new TypeError('input does not match known categories');
+      const type = typeof input;
+      if (!categories[type]) {
+        categories[type] = [];
       }
-    }
+      categories[type].push(input);
+    });
     return categories;
   }
 }

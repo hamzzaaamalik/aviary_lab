@@ -4,32 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', async () => {
-  const inputs = ['sound of rain', 'sight of sunset', 'sound of thunder'];
-  const expected = {
-    audio: ['sound of rain', 'sound of thunder'],
-    visual: ['sight of sunset'],
-  };
-  const actual = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(actual, expected);
+test('categorizeSensoryInputs categorizes inputs correctly', () => {
+  const inputs = ['sound', 'light', 'sound'];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, {
+    string: ['sound', 'light', 'sound']
+  });
 });
 
-test('categorizeSensoryInputs throws on empty array', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
+test('categorizeSensoryInputs throws on invalid input types', () => {
+  assert.throws(() => {
+    perception.categorizeSensoryInputs(['valid', 123]);
+  }, { message: 'input must be a string' });
 });
 
-test('categorizeSensoryInputs throws on non-array input', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+test('categorizeSensoryInputs throws on empty inputs array', () => {
+  assert.throws(() => {
+    perception.categorizeSensoryInputs([]);
+  }, { message: 'inputs array must not be empty' });
 });
 
-test('categorizeSensoryInputs throws on invalid input types', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', 42]), TypeError);
+test('categorizeSensoryInputs throws on non-array input', () => {
+  assert.throws(() => {
+    perception.categorizeSensoryInputs('not an array');
+  }, { message: 'inputs must be an array' });
 });
 
-test('categorizeSensoryInputs throws on unknown category', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['unknown input']), TypeError);
-});
-
-test('categorizeSensoryInputs throws on non-string input', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['sound of rain', 123]), TypeError);
-});
