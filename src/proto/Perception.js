@@ -79,29 +79,17 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categories = {};
+    const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = this.detectType(input);
-      if (!categories[type]) {
-        categories[type] = [];
+      const [type] = input.split(':');
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
-      categories[type].push(input);
+      categorized[type].push(input);
     }
-    return categories;
-  }
-
-  /**
-   * Detect input type (dummy implementation).
-   * @param {string} input - The input string to categorize.
-   * @returns {string} - The detected type.
-   */
-  detectType(input) {
-    // Simple categorization: can be extended based on requirements.
-    if (input.startsWith('audio')) return 'audio';
-    if (input.startsWith('video')) return 'video';
-    return 'text';
+    return categorized;
   }
 }
