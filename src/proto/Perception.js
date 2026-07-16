@@ -43,9 +43,13 @@ export class Perception {
     // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
-      this.validateSensoryInput(input, urgency);
-      const percept = await this.perceive(input, urgency, filter);
-      percepts.push(percept);
+      try {
+        this.validateSensoryInput(input, urgency);
+        const percept = await this.perceive(input, urgency, filter);
+        percepts.push(percept);
+      } catch (err) {
+        console.error(`Failed to perceive input: ${input}. Error: ${err.message}`);
+      }
     }
     return percepts;
   }
@@ -83,7 +87,7 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('each input must be a string');
       }
-      const type = this.identifyInputType(input);
+      const type = this.detectInputType(input);
       if (!categories[type]) {
         categories[type] = [];
       }
@@ -93,15 +97,14 @@ export class Perception {
   }
 
   /**
-   * Identify the type of an input string (stub method, to be implemented).
-   * @param {string} input - The input string.
-   * @returns {string} - The identified type of the input.
+   * Detect the type of input based on its content.
+   * @param {string} input - The sensory input to analyze.
+   * @returns {string} - The type of the input.
    */
-  identifyInputType(input) {
-    // Placeholder logic for input type identification.
-    // In practice, this would analyze the input content.
-    if (input.startsWith('http')) return 'url';
-    if (input.includes('@')) return 'email';
+  detectInputType(input) {
+    // Example categorization logic, extend as needed.
+    if (input.startsWith('audio:')) return 'audio';
+    if (input.startsWith('video:')) return 'video';
     return 'text';
   }
 }
