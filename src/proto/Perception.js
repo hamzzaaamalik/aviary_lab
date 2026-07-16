@@ -80,10 +80,10 @@ export class Perception {
     }
     const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+      if (typeof input !== 'string' || input.trim() === '') {
+        throw new TypeError('all inputs must be non-empty strings');
       }
-      const type = input.startsWith('audio:') ? 'audio' : 'visual';
+      const [type] = input.split(':'); // Categorize by type before the colon
       if (!categories[type]) {
         categories[type] = [];
       }
