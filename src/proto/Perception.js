@@ -82,17 +82,32 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categorized = {};
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('every input must be a string');
       }
-      const type = input.startsWith('http') ? 'url' : 'text';
-      if (!categorized[type]) {
-        categorized[type] = [];
+      const type = this.detectInputType(input);
+      if (!categories[type]) {
+        categories[type] = [];
       }
-      categorized[type].push(input);
+      categories[type].push(input);
     }
-    return categorized;
+    return categories;
   }
-}
+
+  /**
+   * Detect the type of the input string.
+   * @param {string} input - The input string to analyze.
+   * @returns {string} - The detected type of the input.
+   */
+  detectInputType(input) {
+    if (input.startsWith('http')) {
+      return 'url';
+    } else if (input.match(/\d+/)) {
+      return 'number';
+    } else {
+      return 'text';
+    }
+  }
+}  
