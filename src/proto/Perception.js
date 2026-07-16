@@ -80,19 +80,31 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be empty');
+      throw new TypeError('inputs array cannot be empty');
     }
     const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
-      const [type] = input.split(':');
+      const type = this.inferType(input);
       if (!categorized[type]) {
         categorized[type] = [];
       }
       categorized[type].push(input);
     }
     return categorized;
+  }
+
+  /**
+   * Infer the type of sensory input based on its content.
+   * @param {string} input - The sensory input string.
+   * @returns {string} - The inferred type of input.
+   */
+  inferType(input) {
+    // Simple type inference logic (this can be extended)
+    if (input.startsWith('image:')) return 'image';
+    if (input.startsWith('sound:')) return 'sound';
+    return 'text';
   }
 }
