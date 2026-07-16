@@ -80,7 +80,9 @@ export class Perception {
     }
     const categories = {};
     for (const input of inputs) {
-      this.validateSensoryInput(input, 1); // validate with a default urgency
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
+      }
       const type = typeof input;
       if (!categories[type]) {
         categories[type] = [];
