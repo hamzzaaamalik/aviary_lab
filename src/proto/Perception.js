@@ -80,13 +80,7 @@ export class Perception {
     }
     const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string' || input.trim() === '') {
-        throw new TypeError('all inputs must be non-empty strings');
-      }
-      const [type] = input.split(':');
-      if (!type) {
-        throw new TypeError('input must contain a valid type');
-      }
+      const type = typeof input;
       if (!categories[type]) {
         categories[type] = [];
       }
