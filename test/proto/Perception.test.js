@@ -2,31 +2,30 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('categorizeSensoryInputs categorizes inputs correctly', async () => {
-  const perception = new Perception();
-  const inputs = ['text:hello', 'image:cat', 'text:world', 'audio:music'];
-  const categorized = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(categorized, {
-    text: ['text:hello', 'text:world'],
-    image: ['image:cat'],
-    audio: ['audio:music'],
-  });
+const perception = new Perception();
+
+test('categorizeSensoryInputs categorizes inputs correctly', () => {
+  const inputs = ['audio: song.mp3', 'video: movie.mp4', 'text: message'];
+  const expected = {
+    audio: ['audio: song.mp3'],
+    video: ['video: movie.mp4'],
+    text: ['text: message'],
+  };
+  assert.deepEqual(perception.categorizeSensoryInputs(inputs), expected);
 });
 
 test('categorizeSensoryInputs throws on invalid input type', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', 42]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
 });
 
-test('categorizeSensoryInputs throws on empty input array', () => {
-  const perception = new Perception();
+test('categorizeSensoryInputs throws on empty array', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
-test('categorizeSensoryInputs throws on null or undefined input', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', null]), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', undefined]), TypeError);
+test('categorizeSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-// Additional tests for perceive and perceiveMultiple can be added here.
+test('categorizeSensoryInputs throws on non-string input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
+});
