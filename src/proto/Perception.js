@@ -43,6 +43,9 @@ export class Perception {
     // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
+      if (input === undefined || urgency === undefined) {
+        throw new TypeError('input and urgency must be defined');
+      }
       this.validateSensoryInput(input, urgency);
       const percept = await this.perceive(input, urgency, filter);
       percepts.push(percept);
@@ -67,7 +70,7 @@ export class Perception {
 
   /**
    * Categorize sensory input based on its type.
-   * @param {Array<string>} inputs - Array of sensory input strings.
+   * @param {Array<any>} inputs - Array of sensory input items.
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
@@ -78,30 +81,7 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {
-      auditory: [],
-      visual: [],
-      tactile: [],
-      olfactory: [],
-      gustatory: []
-    };
-    for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
-      }
-      // Simple categorization logic based on keywords
-      if (input.includes('sound')) {
-        categories.auditory.push(input);
-      } else if (input.includes('sight')) {
-        categories.visual.push(input);
-      } else if (input.includes('touch')) {
-        categories.tactile.push(input);
-      } else if (input.includes('smell')) {
-        categories.olfactory.push(input);
-      } else if (input.includes('taste')) {
-        categories.gustatory.push(input);
-      }
-    }
-    return categories;
+    const categories = {};
+    // Categorization logic goes here
   }
 }
