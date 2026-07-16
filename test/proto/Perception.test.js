@@ -8,8 +8,8 @@ test('categorizeSensoryInputs categorizes inputs correctly', () => {
   const inputs = ['sound:rain', 'sound:thunder', 'visual:lightning', 'visual:clouds'];
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, {
-    sound: ['sound:rain', 'sound:thunder'],
-    visual: ['visual:lightning', 'visual:clouds']
+    sound: ['rain', 'thunder'],
+    visual: ['lightning', 'clouds']
   });
 });
 
