@@ -80,36 +80,19 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be empty');
+      throw new TypeError('inputs array must not be empty');
     }
     const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = this.determineType(input);
+      const type = input.startsWith('http') ? 'url' : 'text';
       if (!categorized[type]) {
         categorized[type] = [];
       }
       categorized[type].push(input);
     }
     return categorized;
-  }
-
-  /**
-   * Determine the type of the input string.
-   * @param {string} input - The input string to analyze.
-   * @returns {string} - The type of the input.
-   */
-  determineType(input) {
-    // Simple type determination based on input content.
-    if (input.startsWith('image:')) {
-      return 'image';
-    } else if (input.startsWith('audio:')) {
-      return 'audio';
-    } else if (input.startsWith('text:')) {
-      return 'text';
-    }
-    return 'unknown';
   }
 }
