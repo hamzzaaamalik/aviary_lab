@@ -80,14 +80,14 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs array must not be empty');
+      throw new TypeError('inputs array cannot be empty');
     }
     const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
-      const type = 'text'; // This can be extended for more types in future.
+      const [type] = input.split(':'); // Assuming 'type:value' format
       if (!categorized[type]) {
         categorized[type] = [];
       }
