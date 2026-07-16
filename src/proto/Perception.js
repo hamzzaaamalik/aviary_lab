@@ -80,31 +80,23 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs array must not be empty');
+      throw new TypeError('inputs cannot be an empty array');
     }
-    const categories = {};
+    const categorized = { string: [], number: [], boolean: [], object: [] };
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+      const type = typeof input;
+      if (type === 'string') {
+        categorized.string.push(input);
+      } else if (type === 'number') {
+        categorized.number.push(input);
+      } else if (type === 'boolean') {
+        categorized.boolean.push(input);
+      } else if (input === null || type === 'object') {
+        categorized.object.push(input);
+      } else {
+        throw new TypeError(`Invalid input type: ${type}`);
       }
-      const type = this.detectInputType(input);
-      if (!categories[type]) {
-        categories[type] = [];
-      }
-      categories[type].push(input);
     }
-    return categories;
-  }
-
-  /**
-   * Detect the type of input based on its content.
-   * @param {string} input - The sensory input to analyze.
-   * @returns {string} - The type of the input.
-   */
-  detectInputType(input) {
-    // Example categorization logic, extend as needed.
-    if (input.startsWith('audio:')) return 'audio';
-    if (input.startsWith('video:')) return 'video';
-    return 'text';
+    return categorized;
   }
 }
