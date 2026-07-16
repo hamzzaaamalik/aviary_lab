@@ -78,30 +78,32 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {
-      auditory: [],
-      visual: [],
-      tactile: [],
-      olfactory: [],
-      gustatory: []
-    };
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('each input must be a string');
       }
-      // Simple categorization logic based on keywords
-      if (input.includes('sound')) {
-        categories.auditory.push(input);
-      } else if (input.includes('sight')) {
-        categories.visual.push(input);
-      } else if (input.includes('touch')) {
-        categories.tactile.push(input);
-      } else if (input.includes('smell')) {
-        categories.olfactory.push(input);
-      } else if (input.includes('taste')) {
-        categories.gustatory.push(input);
+      const type = this.detectType(input);
+      if (!categories[type]) {
+        categories[type] = [];
       }
+      categories[type].push(input);
     }
     return categories;
+  }
+
+  /**
+   * Detect the type of sensory input (simplified example).
+   * @param {string} input - The sensory input to analyze.
+   * @returns {string} - The type of input.
+   */
+  detectType(input) {
+    if (input.startsWith('http')) {
+      return 'url';
+    }
+    if (input.startsWith('data:')) {
+      return 'data';
+    }
+    return 'text';
   }
 }
