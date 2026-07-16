@@ -80,27 +80,18 @@ export class Perception {
     }
     const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+      if (typeof input !== 'string' || input.trim() === '') {
+        throw new TypeError('all inputs must be non-empty strings');
       }
-      const type = this.determineInputType(input);
+      const [type] = input.split(':');
+      if (!type) {
+        throw new TypeError('input must contain a valid type');
+      }
       if (!categories[type]) {
         categories[type] = [];
       }
       categories[type].push(input);
     }
     return categories;
-  }
-
-  /**
-   * Determine the type of input based on its content.
-   * @param {string} input - The input to classify.
-   * @returns {string} - The type of the input.
-   */
-  determineInputType(input) {
-    if (input.startsWith('audio:')) return 'audio';
-    if (input.startsWith('video:')) return 'video';
-    if (input.startsWith('image:')) return 'image';
-    return 'text'; // Default type
   }
 }
