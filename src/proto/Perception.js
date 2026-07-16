@@ -44,7 +44,7 @@ export class Perception {
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
       try {
-        this.validateSensoryInput(input, urgency);
+        await this.validateSensoryInput(input, urgency);
         const percept = await this.perceive(input, urgency, filter);
         percepts.push(percept);
       } catch (err) {
@@ -79,29 +79,17 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categories = {};
-    for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+    const categorized = {};
+    inputs.forEach(input => {
+      const [type, value] = input.split(':');
+      if (typeof type !== 'string' || typeof value !== 'string') {
+        throw new TypeError('inputs must be strings in the format type:value');
       }
-      const type = this.determineType(input);
-      if (!categories[type]) {
-        categories[type] = [];
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
-      categories[type].push(input);
-    }
-    return categories;
-  }
-
-  /**
-   * Determine the type of a sensory input.
-   * @param {string} input - The sensory input to categorize.
-   * @returns {string} - The determined type.
-   */
-  determineType(input) {
-    // Simple heuristic for categorization (can be extended).
-    if (input.startsWith('visual:')) return 'visual';
-    if (input.startsWith('auditory:')) return 'auditory';
-    return 'other';
+      categorized[type].push(input);
+    });
+    return categorized;
   }
 }

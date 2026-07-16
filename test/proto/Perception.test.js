@@ -22,3 +22,12 @@ test('categorizeSensoryInputs throws on invalid input', () => {
 test('categorizeSensoryInputs throws on empty input', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
+
+test('perceiveMultiple handles promise rejections properly', async () => {
+  const inputs = [
+    { input: 'valid:input', urgency: 3 },
+    { input: '', urgency: 1 }, // invalid
+  ];
+  const results = await perception.perceiveMultiple(inputs);
+  assert.equal(results.length, 1); // Only valid input should be processed
+});
