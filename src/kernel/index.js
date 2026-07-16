@@ -10,14 +10,6 @@ export function createKernel() {
   const bus = new EventBus();
   const context = { bus, startedAt: Date.now(), version: '0.1.0' };
   context.registry = new ModuleRegistry(context);
-  bus.onError((err, type) => console.error(`[kernel] event "${type}" handler failed:`, err.message));
+  bus.onError((err, type) => console.error(`[kernel] event error: ${err.message}`));
   return context;
-}
-
-const isMain = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
-if (isMain) {
-  const kernel = createKernel();
-  const booted = kernel.registry.boot();
-  console.log(`[kernel] online — modules booted: ${booted.length ? booted.join(', ') : '(none yet)'} `);
-  kernel.bus.emit('kernel:ready', { at: kernel.startedAt });
 }
