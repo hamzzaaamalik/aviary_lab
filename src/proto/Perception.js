@@ -79,27 +79,20 @@ export class Perception {
       throw new TypeError('inputs array must not be empty');
     }
     const categories = {
-      auditory: [],
-      visual: [],
-      tactile: [],
-      olfactory: [],
-      gustatory: []
+      url: [],
+      data: [],
+      text: [],
     };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      // Simple categorization logic based on keywords
-      if (input.includes('sound')) {
-        categories.auditory.push(input);
-      } else if (input.includes('sight')) {
-        categories.visual.push(input);
-      } else if (input.includes('touch')) {
-        categories.tactile.push(input);
-      } else if (input.includes('smell')) {
-        categories.olfactory.push(input);
-      } else if (input.includes('taste')) {
-        categories.gustatory.push(input);
+      if (input.startsWith('http://') || input.startsWith('https://')) {
+        categories.url.push(input);
+      } else if (input.startsWith('data:')) {
+        categories.data.push(input);
+      } else {
+        categories.text.push(input);
       }
     }
     return categories;
