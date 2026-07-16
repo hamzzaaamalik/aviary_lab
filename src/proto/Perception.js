@@ -30,14 +30,14 @@ export class Perception {
    * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
    * @param {Function} [filter] - Optional filter function to refine input processing.
    * @returns {Promise<object[]>} - Array of processed percepts.
-   * @throws {TypeError} - If any input is invalid.
+   * @throws {TypeError} - If any input is invalid or if inputs is empty.
    */
   async perceiveMultiple(inputs, filter) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      return []; // Return an empty array for empty input.
+      throw new TypeError('inputs array must not be empty');
     }
     const percepts = [];
     // Sort inputs by urgency, higher urgency first.
@@ -69,7 +69,7 @@ export class Perception {
    * Categorize sensory input based on its type.
    * @param {Array<string>} inputs - Array of sensory input strings.
    * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
@@ -78,26 +78,17 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {
-      audio: [],
-      video: [],
-      text: [],
-      unknown: [],
-    };
+    const categories = {};
     for (const input of inputs) {
-      const type = this.determineInputType(input);
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
+      }
+      const type = input.startsWith('warning') ? 'warning' : 'normal';
+      if (!categories[type]) {
+        categories[type] = [];
+      }
       categories[type].push(input);
     }
     return categories;
-  }
-
-  /**
-   * Determine the type of input based on its prefix.
-   * @param {string} input - The sensory input to determine the type for.
-   * @returns {string} - The type of the input.
-   */
-  determineInputType(input) {
-    const [prefix] = input.split(':');
-    return ['audio', 'video', 'text'].includes(prefix) ? prefix : 'unknown';
   }
 }

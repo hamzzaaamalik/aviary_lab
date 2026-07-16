@@ -4,38 +4,27 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', async () => {
-  const inputs = ['audio:music', 'video:movie', 'text:note', 'audio:podcast'];
-  const expected = {
-    audio: ['audio:music', 'audio:podcast'],
-    video: ['video:movie'],
-    text: ['text:note'],
-    unknown: [],
-  };
+test('perceive throws on invalid input', async () => {
+  await assert.rejects(() => perception.perceive('', 1), { message: 'input must be a non-empty string' });
+  await assert.rejects(() => perception.perceive('test', 6), { message: 'urgency must be a number between 1 and 5' });
+});
+
+test('perceiveMultiple throws on invalid inputs', async () => {
+  await assert.rejects(() => perception.perceiveMultiple('not an array'), { message: 'inputs must be an array' });
+  await assert.rejects(() => perception.perceiveMultiple([], null), { message: 'inputs array must not be empty' });
+});
+
+test('categorizeSensoryInputs categorizes correctly', () => {
+  const inputs = ['normal input', 'warning input', 'another normal input'];
   const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, expected);
+  assert.deepEqual(result, {
+    normal: ['normal input', 'another normal input'],
+    warning: ['warning input']
+  });
 });
 
-test('categorizeSensoryInputs throws on invalid input types', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['audio:music', 123]), TypeError);
+test('categorizeSensoryInputs throws on invalid inputs', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['valid input', 123]), { message: 'all inputs must be strings' });
 });
 
-test('categorizeSensoryInputs throws on empty input array', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
-});
-
-test('determineInputType returns correct type for audio', () => {
-  assert.equal(perception.determineInputType('audio:music'), 'audio');
-});
-
-test('determineInputType returns correct type for video', () => {
-  assert.equal(perception.determineInputType('video:movie'), 'video');
-});
-
-test('determineInputType returns correct type for text', () => {
-  assert.equal(perception.determineInputType('text:note'), 'text');
-});
-
-test('determineInputType returns unknown for unrecognized types', () => {
-  assert.equal(perception.determineInputType('image:photo'), 'unknown');
-});
