@@ -80,29 +80,19 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be empty');
+      throw new TypeError('inputs array must not be empty');
     }
     const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = this.detectType(input);
+      const type = 'text'; // This can be extended for more types in future.
       if (!categorized[type]) {
         categorized[type] = [];
       }
       categorized[type].push(input);
     }
     return categorized;
-  }
-
-  /**
-   * Detect the type of the input (e.g., 'text', 'image', etc.).
-   * @param {string} input - The sensory input to classify.
-   * @returns {string} - The type of the input.
-   */
-  detectType(input) {
-    // Placeholder for type detection logic, can be extended. 
-    return 'text'; // Defaulting to 'text' for simplicity.
   }
 }

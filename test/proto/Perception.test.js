@@ -4,7 +4,7 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes input by type', () => {
+test('categorizeSensoryInputs correctly categorizes inputs by type', () => {
   const inputs = ['hello', 'world', 'test'];
   const expected = { text: ['hello', 'world', 'test'] };
   const result = perception.categorizeSensoryInputs(inputs);
