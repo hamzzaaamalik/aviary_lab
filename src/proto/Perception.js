@@ -76,27 +76,37 @@ export class Perception {
    * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
   categorizeSensoryInputs(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('inputs must be an array');
+    if (!Array.isArray(inputs) || inputs.length === 0) {
+      throw new TypeError('inputs must be a non-empty array');
     }
-    if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be an empty array');
-    }
-    const categorized = { auditory: [], visual: [], tactile: [], other: [] };
+    const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      if (input.includes('sound')) {
-        categorized.auditory.push(input);
-      } else if (input.includes('sight')) {
-        categorized.visual.push(input);
-      } else if (input.includes('touch')) {
-        categorized.tactile.push(input);
-      } else {
-        categorized.other.push(input);
+      const type = this.determineInputType(input);
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
+      categorized[type].push(input);
     }
     return categorized;
+  }
+
+  /**
+   * Determine the type of the input based on its content.
+   * @param {string} input - The sensory input string.
+   * @returns {string} - The type of the input.
+   */
+  determineInputType(input) {
+    // Simple categorization logic based on content.
+    if (input.startsWith('text:')) {
+      return 'text';
+    } else if (input.startsWith('image:')) {
+      return 'image';
+    } else if (input.startsWith('audio:')) {
+      return 'audio';
+    }
+    return 'unknown';
   }
 }
