@@ -73,19 +73,26 @@ export class Perception {
    * Categorize sensory input based on its type.
    * @param {Array<string>} inputs - Array of sensory input strings.
    * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
   categorizeSensoryInputs(inputs) {
-    if (!Array.isArray(inputs) || inputs.length === 0) {
-      throw new TypeError('inputs must be a non-empty array');
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      return { string: [], number: [], boolean: [] }; // Handle empty array case.
     }
     const categorized = { string: [], number: [], boolean: [] };
     for (const input of inputs) {
-      const type = typeof input;
-      if (!categorized[type]) {
-        throw new TypeError(`Unsupported input type: ${type}`);
+      if (typeof input === 'string') {
+        categorized.string.push(input);
+      } else if (typeof input === 'number') {
+        categorized.number.push(input);
+      } else if (typeof input === 'boolean') {
+        categorized.boolean.push(input);
+      } else {
+        throw new TypeError('unsupported input type');
       }
-      categorized[type].push(input);
     }
     return categorized;
   }
