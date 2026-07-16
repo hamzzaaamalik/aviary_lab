@@ -79,17 +79,17 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categories = {};
+    const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('All inputs must be strings');
       }
-      const type = input[0]; // Simplistic categorization by first character.
-      if (!categories[type]) {
-        categories[type] = [];
+      const key = input.charAt(0).toLowerCase();
+      if (!categorized[key]) {
+        categorized[key] = [];
       }
-      categories[type].push(input);
+      categorized[key].push(input);
     }
-    return categories;
+    return categorized;
   }
 }
