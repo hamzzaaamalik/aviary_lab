@@ -76,26 +76,20 @@ export class Perception {
    * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
   categorizeSensoryInputs(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('inputs must be an array');
+    if (!Array.isArray(inputs) || inputs.length === 0) {
+      throw new TypeError('inputs must be a non-empty array');
     }
-    if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be an empty array');
-    }
-    const categorized = { auditory: [], visual: [], tactile: [], other: [] };
+    const categorized = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+      if (input === null || input === undefined) {
+        throw new TypeError('input cannot be null or undefined');
       }
-      if (input.includes('sound')) {
-        categorized.auditory.push(input);
-      } else if (input.includes('sight')) {
-        categorized.visual.push(input);
-      } else if (input.includes('touch')) {
-        categorized.tactile.push(input);
-      } else {
-        categorized.other.push(input);
+      const [type] = input.split(':');
+      if (!type) {
+        throw new TypeError('input must be in the format type:value');
       }
+      categorized[type] = categorized[type] || [];
+      categorized[type].push(input);
     }
     return categorized;
   }
