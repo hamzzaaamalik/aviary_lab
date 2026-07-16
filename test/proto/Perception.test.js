@@ -14,6 +14,20 @@ test('perceiveMultiple throws on invalid inputs', async () => {
   await assert.rejects(() => perception.perceiveMultiple([], null), { message: 'inputs array must not be empty' });
 });
 
+test('perceiveMultiple handles edge cases', async () => {
+  const inputs = [
+    { input: 'normal input', urgency: 1 },
+    { input: 'warning input', urgency: 5 },
+    { input: 'another normal input', urgency: 3 }
+  ];
+  const result = await perception.perceiveMultiple(inputs);
+  assert.deepEqual(result, [
+    { processed: 'Percept from: warning input', urgency: 5 },
+    { processed: 'Percept from: another normal input', urgency: 3 },
+    { processed: 'Percept from: normal input', urgency: 1 }
+  ]);
+});
+
 test('categorizeSensoryInputs categorizes correctly', () => {
   const inputs = ['normal input', 'warning input', 'another normal input'];
   const result = perception.categorizeSensoryInputs(inputs);
@@ -27,4 +41,3 @@ test('categorizeSensoryInputs throws on invalid inputs', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
   assert.throws(() => perception.categorizeSensoryInputs(['valid input', 123]), { message: 'all inputs must be strings' });
 });
-
