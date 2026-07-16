@@ -8,8 +8,8 @@ test('categorizeSensoryInputs categorizes inputs correctly', () => {
   const inputs = ['info: all systems operational', 'error: system failure', 'info: backup online'];
   const categorized = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(categorized, {
-    error: ['error: system failure'],
-    info: ['info: all systems operational', 'info: backup online']
+    error: ['system failure'],
+    info: ['all systems operational', 'backup online']
   });
 });
 
@@ -22,3 +22,8 @@ test('categorizeSensoryInputs handles empty array', () => {
   const result = perception.categorizeSensoryInputs([]);
   assert.deepEqual(result, {});
 });
+
+test('categorizeSensoryInputs throws on non-string input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['valid input', 123]), TypeError);
+});
+
