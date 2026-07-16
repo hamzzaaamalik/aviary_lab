@@ -78,32 +78,23 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {};
+    const categories = {
+      url: [],
+      data: [],
+      text: [],
+    };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      const type = this.detectType(input);
-      if (!categories[type]) {
-        categories[type] = [];
+      if (input.startsWith('http://') || input.startsWith('https://')) {
+        categories.url.push(input);
+      } else if (input.startsWith('data:')) {
+        categories.data.push(input);
+      } else {
+        categories.text.push(input);
       }
-      categories[type].push(input);
     }
     return categories;
-  }
-
-  /**
-   * Detect the type of sensory input (simplified example).
-   * @param {string} input - The sensory input to analyze.
-   * @returns {string} - The type of input.
-   */
-  detectType(input) {
-    if (input.startsWith('http')) {
-      return 'url';
-    }
-    if (input.startsWith('data:')) {
-      return 'data';
-    }
-    return 'text';
   }
 }
