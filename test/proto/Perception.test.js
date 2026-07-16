@@ -21,3 +21,13 @@ test('categorizeSensoryInputs throws on invalid input', () => {
 test('categorizeSensoryInputs throws on empty input', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
+
+test('categorizeSensoryInputs handles null and undefined inputs', () => {
+  const inputs = [null, undefined, 'validInput'];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, {
+    object: [null],
+    undefined: [undefined],
+    string: ['validInput']
+  });
+});
