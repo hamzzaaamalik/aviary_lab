@@ -79,17 +79,17 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categories = {};
+    const categorized = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+      if (typeof input !== 'string' || input.trim() === '') {
+        throw new TypeError('each input must be a non-empty string');
       }
-      const type = input.startsWith('sound:') ? 'sound' : 'visual'; // Basic categorization logic.
-      if (!categories[type]) {
-        categories[type] = [];
+      const [type] = input.split(':');
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
-      categories[type].push(input);
+      categorized[type].push(input);
     }
-    return categories;
+    return categorized;
   }
 }
