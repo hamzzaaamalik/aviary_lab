@@ -87,9 +87,10 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
+      // Simple categorization based on keywords
       if (input.includes('sound')) {
         categories.auditory.push(input);
-      } else if (input.includes('sight')) {
+      } else if (input.includes('sight') || input.includes('view')) {
         categories.visual.push(input);
       } else if (input.includes('touch')) {
         categories.tactile.push(input);
