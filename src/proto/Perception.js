@@ -78,17 +78,30 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { url: [], text: [] };
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
-      if (input.startsWith('http://') || input.startsWith('https://')) {
-        categories.url.push(input);
-      } else {
-        categories.text.push(input);
+      const type = this.identifyInputType(input);
+      if (!categories[type]) {
+        categories[type] = [];
       }
+      categories[type].push(input);
     }
     return categories;
+  }
+
+  /**
+   * Identify the type of an input string (stub method, to be implemented).
+   * @param {string} input - The input string.
+   * @returns {string} - The identified type of the input.
+   */
+  identifyInputType(input) {
+    // Placeholder logic for input type identification.
+    // In practice, this would analyze the input content.
+    if (input.startsWith('http')) return 'url';
+    if (input.includes('@')) return 'email';
+    return 'text';
   }
 }
