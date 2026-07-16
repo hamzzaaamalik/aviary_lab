@@ -87,12 +87,29 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':');
+      const type = this.determineType(input);
       if (!categorized[type]) {
         categorized[type] = [];
       }
       categorized[type].push(input);
     }
     return categorized;
+  }
+
+  /**
+   * Determine the type of the input string.
+   * @param {string} input - The input string to analyze.
+   * @returns {string} - The type of the input.
+   */
+  determineType(input) {
+    // Simple type determination based on input content.
+    if (input.startsWith('image:')) {
+      return 'image';
+    } else if (input.startsWith('audio:')) {
+      return 'audio';
+    } else if (input.startsWith('text:')) {
+      return 'text';
+    }
+    return 'unknown';
   }
 }
