@@ -82,17 +82,17 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs cannot be empty');
     }
-    const categories = {};
+    const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = input.startsWith('image:') ? 'image' : 'text';
-      if (!categories[type]) {
-        categories[type] = [];
+      const [type] = input.split(':');
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
-      categories[type].push(input);
+      categorized[type].push(input);
     }
-    return categories;
+    return categorized;
   }
 }
