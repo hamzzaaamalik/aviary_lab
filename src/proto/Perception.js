@@ -78,26 +78,29 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { auditory: [], visual: [], tactile: [], other: [] };
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const category = this.getCategory(input);
+      const category = this.determineCategory(input);
+      if (!categories[category]) {
+        categories[category] = [];
+      }
       categories[category].push(input);
     }
     return categories;
   }
 
   /**
-   * Get the category of a sensory input.
-   * @param {string} input - The sensory input string.
-   * @returns {string} - The category of the input.
+   * Determine the category for a given input.
+   * @param {string} input - The sensory input to categorize.
+   * @returns {string} - The determined category.
    */
-  getCategory(input) {
-    if (input.includes('sound')) return 'auditory';
-    if (input.includes('sight')) return 'visual';
-    if (input.includes('touch')) return 'tactile';
+  determineCategory(input) {
+    // A simple categorization based on input content. Extend as needed.
+    if (input.includes('danger')) return 'danger';
+    if (input.includes('neutral')) return 'neutral';
     return 'other';
   }
-} 
+}
