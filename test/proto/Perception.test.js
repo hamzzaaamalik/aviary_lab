@@ -22,3 +22,13 @@ test('categorizeSensoryInputs throws for empty array', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
+test('categorizeSensoryInputs throws for non-string input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['sound:dog', 123]), TypeError);
+});
+
+test('categorizeSensoryInputs handles inputs with no categories', () => {
+  const inputs = ['unknown:item'];
+  const expected = { unknown: ['unknown:item'] };
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, expected);
+});
