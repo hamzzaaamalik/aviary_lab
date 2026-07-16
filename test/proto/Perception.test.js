@@ -29,3 +29,4 @@ test('categorizeSensoryInputs throws on non-array input', () => {
     perception.categorizeSensoryInputs('not an array');
   }, { message: 'inputs must be an array' });
 });
+
