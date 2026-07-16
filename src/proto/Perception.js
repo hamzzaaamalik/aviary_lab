@@ -83,12 +83,28 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = typeof input;
+      const type = this.determineType(input);
       if (!categories[type]) {
         categories[type] = [];
       }
       categories[type].push(input);
     }
     return categories;
+  }
+
+  /**
+   * Determine the type of input based on simple heuristics.
+   * @param {string} input - The sensory input string.
+   * @returns {string} - The determined type.
+   */
+  determineType(input) {
+    if (input.startsWith('http')) {
+      return 'url';
+    } else if (input.includes('@')) {
+      return 'email';
+    } else if (!isNaN(Number(input))) {
+      return 'number';
+    }
+    return 'text';
   }
 }

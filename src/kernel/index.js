@@ -27,4 +27,4 @@ if (isMain) {
   const booted = kernel.registry.boot();
   console.log(`[kernel] online — modules booted: ${booted.length ? booted.join(', ') : '(none yet)'}`);
   kernel.bus.emit('kernel:ready', { at: kernel.startedAt });
-}
+} 
