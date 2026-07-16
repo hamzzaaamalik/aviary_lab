@@ -85,7 +85,7 @@ export class Perception {
     const categorized = { auditory: [], visual: [], tactile: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
       if (input.includes('sound')) {
         categorized.auditory.push(input);
