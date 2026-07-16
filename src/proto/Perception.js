@@ -81,9 +81,9 @@ export class Perception {
     const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      const type = typeof input;
+      const type = input.startsWith('error:') ? 'error' : 'info';
       if (!categories[type]) {
         categories[type] = [];
       }
