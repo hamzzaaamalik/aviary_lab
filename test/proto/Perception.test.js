@@ -4,11 +4,11 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['sound: hello', 'image: cat', 'sound: music', 'image: dog'];
+test('categorizeSensoryInputs correctly categorizes audio and visual inputs', () => {
+  const inputs = ['audio:noise', 'visual:image', 'audio:music', 'visual:video'];
   const expected = {
-    audio: ['sound: hello', 'sound: music'],
-    visual: ['image: cat', 'image: dog'],
+    audio: ['audio:noise', 'audio:music'],
+    visual: ['visual:image', 'visual:video']
   };
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, expected);
@@ -22,6 +22,6 @@ test('categorizeSensoryInputs throws on empty array', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
-test('categorizeSensoryInputs throws on non-string input', () => {
+test('categorizeSensoryInputs throws on invalid input type', () => {
   assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
 });
