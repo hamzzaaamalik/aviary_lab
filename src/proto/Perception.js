@@ -78,17 +78,13 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { audio: [], visual: [] };
+    const categories = { string: [], number: [], boolean: [], object: [] };
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
-      }
-      if (input.startsWith('sound')) {
-        categories.audio.push(input);
-      } else if (input.startsWith('sight')) {
-        categories.visual.push(input);
+      const type = typeof input;
+      if (type === 'string' || type === 'number' || type === 'boolean' || type === 'object') {
+        categories[type].push(input);
       } else {
-        throw new TypeError('input does not match known categories');
+        throw new TypeError('inputs array must contain only strings, numbers, booleans, or objects');
       }
     }
     return categories;
