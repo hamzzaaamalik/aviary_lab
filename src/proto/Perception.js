@@ -80,21 +80,17 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be an empty array');
+      throw new TypeError('inputs array cannot be empty');
     }
-    const categorized = { string: [], number: [], boolean: [], object: [] };
+
+    const categorized = { strings: [], numbers: [], others: [] };
     for (const input of inputs) {
-      const type = typeof input;
-      if (type === 'string') {
-        categorized.string.push(input);
-      } else if (type === 'number') {
-        categorized.number.push(input);
-      } else if (type === 'boolean') {
-        categorized.boolean.push(input);
-      } else if (input === null || type === 'object') {
-        categorized.object.push(input);
+      if (typeof input === 'string') {
+        categorized.strings.push(input);
+      } else if (typeof input === 'number') {
+        categorized.numbers.push(input);
       } else {
-        throw new TypeError(`Invalid input type: ${type}`);
+        categorized.others.push(input);
       }
     }
     return categorized;
