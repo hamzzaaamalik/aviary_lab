@@ -20,10 +20,17 @@ test('categorizeSensoryInputs throws on invalid input type', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
+
 test('categorizeSensoryInputs throws on empty input array', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
+
 test('categorizeSensoryInputs throws on non-string input', () => {
   assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
+});
+
+
+test('categorizeSensoryInputs throws with specific error message on non-string input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', true]), TypeError, 'input must be a string, received: boolean');
 });
