@@ -78,22 +78,14 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {
-      url: [],
-      data: [],
-      text: [],
-    };
+    const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+      this.validateSensoryInput(input, 1); // validate with a default urgency
+      const type = typeof input;
+      if (!categories[type]) {
+        categories[type] = [];
       }
-      if (input.startsWith('http://') || input.startsWith('https://')) {
-        categories.url.push(input);
-      } else if (input.startsWith('data:')) {
-        categories.data.push(input);
-      } else {
-        categories.text.push(input);
-      }
+      categories[type].push(input);
     }
     return categories;
   }
