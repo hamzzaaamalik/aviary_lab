@@ -71,7 +71,7 @@ export class Perception {
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
-  categorizeSensoryInputs(inputs) {
+  categorizeAndValidateSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
@@ -80,27 +80,14 @@ export class Perception {
     }
     const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+      if (input === null || typeof input !== 'string') {
+        throw new TypeError('inputs must be non-null strings');
       }
-      const type = this.detectType(input);
-      if (!categories[type]) {
-        categories[type] = [];
-      }
+      const [type] = input.split(':');
+      categories[type] = categories[type] || [];
       categories[type].push(input);
     }
     return categories;
   }
+}  
 
-  /**
-   * Detect the type of the input string — basic example.
-   * @param {string} input - The input string to categorize.
-   * @returns {string} - The detected type of the input.
-   */
-  detectType(input) {
-    // Placeholder logic for type detection, extend as needed.
-    if (input.startsWith('audio:')) return 'audio';
-    if (input.startsWith('video:')) return 'video';
-    return 'text';
-  }
-}
