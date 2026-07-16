@@ -80,21 +80,21 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be an empty array');
+      throw new TypeError('inputs must not be empty');
     }
-    const categorized = { string: [], number: [], boolean: [], object: [] };
+    const categorized = { auditory: [], visual: [], tactile: [], other: [] };
     for (const input of inputs) {
-      const type = typeof input;
-      if (type === 'string') {
-        categorized.string.push(input);
-      } else if (type === 'number') {
-        categorized.number.push(input);
-      } else if (type === 'boolean') {
-        categorized.boolean.push(input);
-      } else if (input === null || type === 'object') {
-        categorized.object.push(input);
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
+      }
+      if (input.includes('sound')) {
+        categorized.auditory.push(input);
+      } else if (input.includes('image')) {
+        categorized.visual.push(input);
+      } else if (input.includes('touch')) {
+        categorized.tactile.push(input);
       } else {
-        throw new TypeError(`Invalid input type: ${type}`);
+        categorized.other.push(input);
       }
     }
     return categorized;
