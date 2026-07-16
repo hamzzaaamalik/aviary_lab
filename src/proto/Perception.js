@@ -79,19 +79,16 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categorized = { text: [], audio: [], video: [], other: [] };
+    const categorized = { url: [], text: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      if (input.startsWith('audio:')) {
-        categorized.audio.push(input);
-      } else if (input.startsWith('video:')) {
-        categorized.video.push(input);
-      } else if (input.trim() !== '') {
-        categorized.text.push(input);
+      const trimmedInput = input.trim();
+      if (trimmedInput.startsWith('http://') || trimmedInput.startsWith('https://')) {
+        categorized.url.push(trimmedInput);
       } else {
-        categorized.other.push(input);
+        categorized.text.push(trimmedInput);
       }
     }
     return categorized;
