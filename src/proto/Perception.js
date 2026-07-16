@@ -78,29 +78,19 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {};
+    const categories = { danger: [], neutral: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
-      const category = this.determineCategory(input);
-      if (!categories[category]) {
-        categories[category] = [];
+      if (input.includes('danger')) {
+        categories.danger.push(input);
+      } else if (input.includes('neutral')) {
+        categories.neutral.push(input);
+      } else {
+        categories.other.push(input);
       }
-      categories[category].push(input);
     }
     return categories;
-  }
-
-  /**
-   * Determine the category for a given input.
-   * @param {string} input - The sensory input to categorize.
-   * @returns {string} - The determined category.
-   */
-  determineCategory(input) {
-    // A simple categorization based on input content. Extend as needed.
-    if (input.includes('danger')) return 'danger';
-    if (input.includes('neutral')) return 'neutral';
-    return 'other';
   }
 }
