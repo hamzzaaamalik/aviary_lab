@@ -80,27 +80,18 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be empty');
+      throw new TypeError('inputs array cannot be empty');
     }
-    const categorized = { sounds: [], sights: [], smells: [], other: [] };
+    const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':');
-      switch (type) {
-        case 'sound':
-          categorized.sounds.push(input);
-          break;
-        case 'sight':
-          categorized.sights.push(input);
-          break;
-        case 'smell':
-          categorized.smells.push(input);
-          break;
-        default:
-          categorized.other.push(input);
+      const type = input.startsWith('audio:') ? 'audio' : 'visual';
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
+      categorized[type].push(input);
     }
     return categorized;
   }
