@@ -79,17 +79,14 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categorized = {};
-    inputs.forEach(input => {
-      const [type, value] = input.split(':');
-      if (typeof type !== 'string' || typeof value !== 'string') {
-        throw new TypeError('inputs must be strings in the format type:value');
-      }
+    const categorized = { string: [], number: [], boolean: [] };
+    for (const input of inputs) {
+      const type = typeof input;
       if (!categorized[type]) {
-        categorized[type] = [];
+        throw new TypeError(`Unsupported input type: ${type}`);
       }
       categorized[type].push(input);
-    });
+    }
     return categorized;
   }
 }
