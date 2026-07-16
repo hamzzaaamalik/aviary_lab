@@ -82,17 +82,29 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categorized = {};
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
-      const type = 'text'; // This can be extended for more types in future.
-      if (!categorized[type]) {
-        categorized[type] = [];
+      const type = this.getInputType(input);
+      if (!categories[type]) {
+        categories[type] = [];
       }
-      categorized[type].push(input);
+      categories[type].push(input);
     }
-    return categorized;
+    return categories;
+  }
+
+  /**
+   * Determine the type of sensory input.
+   * @param {string} input - The sensory input to classify.
+   * @returns {string} - The type of the input.
+   */
+  getInputType(input) {
+    // Simple categorization logic based on content.
+    if (input.startsWith('audio:')) return 'audio';
+    if (input.startsWith('video:')) return 'video';
+    return 'text';
   }
 }
