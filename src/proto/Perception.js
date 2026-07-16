@@ -79,22 +79,14 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    const categorized = {
-      audio: [],
-      visual: [],
-      tactile: [],
-      other: []
-    };
+    const categorized = { audio: [], visual: [], tactile: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('each input must be a string');
       }
-      if (input.startsWith('audio:')) {
-        categorized.audio.push(input);
-      } else if (input.startsWith('visual:')) {
-        categorized.visual.push(input);
-      } else if (input.startsWith('tactile:')) {
-        categorized.tactile.push(input);
+      const [type] = input.split(':');
+      if (categorized[type]) {
+        categorized[type].push(input);
       } else {
         categorized.other.push(input);
       }

@@ -26,3 +26,13 @@ test('categorizeSensoryInputs throws on invalid input type', () => {
   assert.throws(() => perception.categorizeSensoryInputs(['audio:sound1', 2]), TypeError);
 });
 
+test('categorizeSensoryInputs handles empty input array', () => {
+  const result = perception.categorizeSensoryInputs([]);
+  const expected = { audio: [], visual: [], tactile: [], other: [] };
+  assert.deepEqual(result, expected);
+});
+
+test('categorizeSensoryInputs throws on non-string inputs', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['audio:sound1', 123]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['audio:sound1', null]), TypeError);
+});
