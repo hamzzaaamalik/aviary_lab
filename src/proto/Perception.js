@@ -82,9 +82,9 @@ export class Perception {
     const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
-      const type = this.detectType(input);
+      const [type] = input.split(':');
       if (!categorized[type]) {
         categorized[type] = [];
       }
@@ -92,15 +92,4 @@ export class Perception {
     }
     return categorized;
   }
-
-  /**
-   * Detect the type of input based on simple heuristics.
-   * @param {string} input - The input to classify.
-   * @returns {string} - Type of the input.
-   */
-  detectType(input) {
-    if (input.startsWith('image:')) return 'image';
-    if (input.startsWith('text:')) return 'text';
-    return 'unknown';
-  }
-} 
+}
