@@ -73,27 +73,35 @@ export class Perception {
    * Categorize sensory input based on its type.
    * @param {Array<string>} inputs - Array of sensory input strings.
    * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categorized = { text: [], audio: [], video: [], other: [] };
+    const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      if (input.startsWith('audio:')) {
-        categorized.audio.push(input);
-      } else if (input.startsWith('video:')) {
-        categorized.video.push(input);
-      } else if (input.trim() !== '') {
-        categorized.text.push(input);
-      } else {
-        categorized.other.push(input);
+      const type = this.detectInputType(input);
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
+      categorized[type].push(input);
     }
     return categorized;
+  }
+
+  /**
+   * Detect the type of input (for example, can be extended later).
+   * @param {string} input - The sensory input to check.
+   * @returns {string} - The type of the input.
+   */
+  detectInputType(input) {
+    // Basic type detection, can be expanded.
+    if (input.startsWith('sound:')) return 'sound';
+    if (input.startsWith('sight:')) return 'sight';
+    return 'unknown';
   }
 }
