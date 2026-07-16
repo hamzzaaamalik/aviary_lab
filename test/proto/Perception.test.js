@@ -23,4 +23,10 @@ test('categorizeSensoryInputs throws on empty input array', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
+test('categorizeSensoryInputs throws on null or undefined input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', null]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', undefined]), TypeError);
+});
+
 // Additional tests for perceive and perceiveMultiple can be added here.

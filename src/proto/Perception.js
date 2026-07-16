@@ -81,32 +81,16 @@ export class Perception {
     }
     const categorized = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+      if (input === null || input === undefined) {
+        throw new TypeError('input cannot be null or undefined');
       }
-      const type = this.determineInputType(input);
-      if (!categorized[type]) {
-        categorized[type] = [];
+      const [type] = input.split(':');
+      if (!type) {
+        throw new TypeError('input must be in the format type:value');
       }
+      categorized[type] = categorized[type] || [];
       categorized[type].push(input);
     }
     return categorized;
-  }
-
-  /**
-   * Determine the type of the input based on its content.
-   * @param {string} input - The sensory input string.
-   * @returns {string} - The type of the input.
-   */
-  determineInputType(input) {
-    // Simple categorization logic based on content.
-    if (input.startsWith('text:')) {
-      return 'text';
-    } else if (input.startsWith('image:')) {
-      return 'image';
-    } else if (input.startsWith('audio:')) {
-      return 'audio';
-    }
-    return 'unknown';
   }
 }
