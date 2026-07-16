@@ -71,26 +71,23 @@ export class Perception {
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
-  categorizeSensoryInputs(inputs) {
+  categorizeAndValidateSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { danger: [], neutral: [], other: [] };
+    const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+      if (input === null || typeof input !== 'string') {
+        throw new TypeError('inputs must be non-null strings');
       }
-      if (input.includes('danger')) {
-        categories.danger.push(input);
-      } else if (input.includes('neutral')) {
-        categories.neutral.push(input);
-      } else {
-        categories.other.push(input);
-      }
+      const [type] = input.split(':');
+      categories[type] = categories[type] || [];
+      categories[type].push(input);
     }
     return categories;
   }
-}
+}  
+

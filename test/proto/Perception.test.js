@@ -4,25 +4,28 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = [
-    'this is a danger signal',
-    'neutral observation',
-    'another danger alert',
-    'just a random statement'
-  ];
-  const expected = {
-    danger: ['this is a danger signal', 'another danger alert'],
-    neutral: ['neutral observation'],
-    other: ['just a random statement']
-  };
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, expected);
+test('categorizeAndValidateSensoryInputs categorizes inputs correctly', () => {
+  const inputs = ['audio:track1', 'video:clip1', 'text:hello', 'audio:track2'];
+  const categories = perception.categorizeAndValidateSensoryInputs(inputs);
+  assert.deepEqual(categories, {
+    audio: ['audio:track1', 'audio:track2'],
+    video: ['video:clip1'],
+    text: ['text:hello'],
+  });
 });
 
-test('categorizeSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
+test('categorizeAndValidateSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.categorizeAndValidateSensoryInputs('not an array'), TypeError);
 });
 
+test('categorizeAndValidateSensoryInputs throws on empty array', () => {
+  assert.throws(() => perception.categorizeAndValidateSensoryInputs([]), TypeError);
+});
+
+test('categorizeAndValidateSensoryInputs throws on invalid input type', () => {
+  assert.throws(() => perception.categorizeAndValidateSensoryInputs(['valid', 123]), TypeError);
+});
+
+test('categorizeAndValidateSensoryInputs throws on null input', () => {
+  assert.throws(() => perception.categorizeAndValidateSensoryInputs(['valid', null]), TypeError);
+});
