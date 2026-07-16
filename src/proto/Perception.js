@@ -82,7 +82,7 @@ export class Perception {
     const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
       const [type] = input.split(':');
       if (!categorized[type]) {
