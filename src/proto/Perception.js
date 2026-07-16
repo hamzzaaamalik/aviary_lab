@@ -83,12 +83,13 @@ export class Perception {
       visual: [],
       tactile: [],
       olfactory: [],
-      gustatory: [],
+      gustatory: []
     };
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('each input must be a string');
       }
+      // Simple categorization logic based on keywords
       if (input.includes('sound')) {
         categories.auditory.push(input);
       } else if (input.includes('sight')) {
