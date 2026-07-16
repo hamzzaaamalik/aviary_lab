@@ -5,25 +5,27 @@ import { Perception } from '../../src/proto/Perception.js';
 const perception = new Perception();
 
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['input1', 123, true, 'input2'];
+  const inputs = ['sound:beep', 'image:cat', 'touch:soft', 'other:info'];
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, {
-    string: ['input1', 'input2'],
-    number: [123],
-    boolean: [true]
+    audio: ['sound:beep'],
+    visual: ['image:cat'],
+    tactile: ['touch:soft'],
+    other: ['other:info']
   });
 });
 
 test('categorizeSensoryInputs throws on invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['sound:beep', 42]), TypeError);
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
+test('categorizeSensoryInputs handles empty input', () => {
   const result = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(result, { string: [], number: [], boolean: [] });
-});
-
-test('categorizeSensoryInputs throws on unsupported types', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([null]), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs([{ key: 'value' }]), TypeError);
+  assert.deepEqual(result, {
+    audio: [],
+    visual: [],
+    tactile: [],
+    other: []
+  });
 });
