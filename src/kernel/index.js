@@ -15,7 +15,7 @@ import { Perception } from '../proto/Perception.js';  // wire the new Perception
  */
 export function createKernel() {
   const bus = new EventBus();
-  const context = { bus, startedAt: Date.now(), version: '0.1.0' };
+  const context = { bus, startedAt: Date.now(), version: '0.1.0' };  
   context.registry = new ModuleRegistry(context);
   bus.onError((err, type) => console.error(`[kernel] event "${type}" handler failed:`, err.message));
   return context;
@@ -25,6 +25,6 @@ const isMain = process.argv[1] && import.meta.url.endsWith(process.argv[1].repla
 if (isMain) {
   const kernel = createKernel();
   const booted = kernel.registry.boot();
-  console.log(`[kernel] online — modules booted: ${booted.length ? booted.join(', ') : '(none yet)'}`);
+  console.log(`[kernel] online — modules booted: ${booted.length ? booted.join(', ') : '(none yet)'} `);
   kernel.bus.emit('kernel:ready', { at: kernel.startedAt });
 }

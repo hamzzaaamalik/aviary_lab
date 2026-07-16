@@ -79,16 +79,25 @@ export class Perception {
       throw new TypeError('inputs array must not be empty');
     }
     const categories = {};
-    for (const input of inputs) {
-      if (typeof input !== 'string' || input.trim() === '') {
-        throw new TypeError('all inputs must be non-empty strings');
-      }
-      const [type] = input.split(':'); // Categorize by type before the colon
+    inputs.forEach(input => {
+      const type = this.detectInputType(input);
       if (!categories[type]) {
         categories[type] = [];
       }
       categories[type].push(input);
-    }
+    });
     return categories;
+  }
+
+  /**
+   * Detect the type of input based on heuristics.
+   * @param {string} input - The sensory input to analyze.
+   * @returns {string} - The type of the input.
+   */
+  detectInputType(input) {
+    // Simplified heuristic for demonstration purposes.
+    if (input.startsWith('sound:')) return 'audio';
+    if (input.startsWith('image:')) return 'visual';
+    return 'other';
   }
 }
