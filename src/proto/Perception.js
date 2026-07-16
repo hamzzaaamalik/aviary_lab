@@ -84,25 +84,12 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('each input must be a string');
       }
-      const type = this.detectInputType(input);
+      const [type] = input.split(':');
       if (!categorized[type]) {
         categorized[type] = [];
       }
       categorized[type].push(input);
     }
     return categorized;
-  }
-
-  /**
-   * Detect the type of input based on its content.
-   * @param {string} input - The sensory input to categorize.
-   * @returns {string} - The type of the input.
-   */
-  detectInputType(input) {
-    // Simple type detection logic (can be extended)
-    if (input.startsWith('sound:')) return 'sound';
-    if (input.startsWith('sight:')) return 'sight';
-    if (input.startsWith('touch:')) return 'touch';
-    return 'unknown';
   }
 }
