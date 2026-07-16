@@ -78,16 +78,16 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { url: [], text: [] };
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      if (input.startsWith('http://') || input.startsWith('https://')) {
-        categories.url.push(input);
-      } else {
-        categories.text.push(input);
+      const type = input.startsWith('error:') ? 'error' : 'normal';
+      if (!categories[type]) {
+        categories[type] = [];
       }
+      categories[type].push(input);
     }
     return categories;
   }
