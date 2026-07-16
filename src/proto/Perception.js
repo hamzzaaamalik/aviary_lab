@@ -91,19 +91,12 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      if (input.startsWith('sound of')) {
-        categorized.sound.push(input);
-      } else if (input.startsWith('sight of')) {
-        categorized.sight.push(input);
-      } else if (input.startsWith('touch of')) {
-        categorized.touch.push(input);
-      } else if (input.startsWith('taste of')) {
-        categorized.taste.push(input);
-      } else if (input.startsWith('smell of')) {
-        categorized.smell.push(input);
-      } else {
-        categorized.other.push(input);
-      }
+      if (/sound/i.test(input)) categorized.sound.push(input);
+      else if (/sight/i.test(input)) categorized.sight.push(input);
+      else if (/touch/i.test(input)) categorized.touch.push(input);
+      else if (/taste/i.test(input)) categorized.taste.push(input);
+      else if (/smell/i.test(input)) categorized.smell.push(input);
+      else categorized.other.push(input);
     }
     return categorized;
   }

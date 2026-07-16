@@ -47,3 +47,4 @@ test('categorizeInputs throws on invalid input type', () => {
   const perception = new Perception();
   assert.throws(() => perception.categorizeInputs(['valid input', 123]), TypeError);
 });
+
