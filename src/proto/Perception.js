@@ -44,7 +44,7 @@ export class Perception {
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
       try {
-        this.validateSensoryInput(input, urgency);
+        await this.validateSensoryInput(input, urgency);
         const percept = await this.perceive(input, urgency, filter);
         percepts.push(percept);
       } catch (err) {
@@ -79,21 +79,17 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categorized = { text: [], audio: [], video: [], other: [] };
-    for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+    const categorized = {};
+    inputs.forEach(input => {
+      const [type, value] = input.split(':');
+      if (typeof type !== 'string' || typeof value !== 'string') {
+        throw new TypeError('inputs must be strings in the format type:value');
       }
-      if (input.startsWith('audio:')) {
-        categorized.audio.push(input);
-      } else if (input.startsWith('video:')) {
-        categorized.video.push(input);
-      } else if (input.trim() !== '') {
-        categorized.text.push(input);
-      } else {
-        categorized.other.push(input);
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
-    }
+      categorized[type].push(input);
+    });
     return categorized;
   }
 }
