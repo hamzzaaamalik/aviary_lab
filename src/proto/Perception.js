@@ -75,7 +75,7 @@ export class Perception {
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
-  categorizeSensoryInputs(inputs) {
+  categorizeInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
@@ -91,16 +91,15 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      // Simple categorization based on keywords.
-      if (input.includes('sound')) {
+      if (input.startsWith('sound of')) {
         categorized.sound.push(input);
-      } else if (input.includes('sight')) {
+      } else if (input.startsWith('sight of')) {
         categorized.sight.push(input);
-      } else if (input.includes('touch')) {
+      } else if (input.startsWith('touch of')) {
         categorized.touch.push(input);
-      } else if (input.includes('taste')) {
+      } else if (input.startsWith('taste of')) {
         categorized.taste.push(input);
-      } else if (input.includes('smell')) {
+      } else if (input.startsWith('smell of')) {
         categorized.smell.push(input);
       } else {
         categorized.other.push(input);

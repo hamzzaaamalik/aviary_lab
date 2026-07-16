@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
+test('categorizeInputs categorizes inputs correctly', () => {
   const perception = new Perception();
   const inputs = [
     'sound of rain',
@@ -20,13 +20,13 @@ test('categorizeSensoryInputs categorizes inputs correctly', () => {
     smell: ['smell of coffee'],
     other: ['some random input'],
   };
-  const result = perception.categorizeSensoryInputs(inputs);
+  const result = perception.categorizeInputs(inputs);
   assert.deepEqual(result, expected);
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
+test('categorizeInputs handles empty array', () => {
   const perception = new Perception();
-  const result = perception.categorizeSensoryInputs([]);
+  const result = perception.categorizeInputs([]);
   const expected = {
     sound: [],
     sight: [],
@@ -36,4 +36,14 @@ test('categorizeSensoryInputs handles empty array', () => {
     other: [],
   };
   assert.deepEqual(result, expected);
+});
+
+test('categorizeInputs throws on non-array input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeInputs('not an array'), TypeError);
+});
+
+test('categorizeInputs throws on invalid input type', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeInputs(['valid input', 123]), TypeError);
 });
