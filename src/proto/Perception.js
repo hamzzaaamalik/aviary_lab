@@ -78,19 +78,32 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { danger: [], neutral: [], other: [] };
+    const categories = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      if (input.includes('danger')) {
-        categories.danger.push(input);
-      } else if (input.includes('neutral')) {
-        categories.neutral.push(input);
-      } else {
-        categories.other.push(input);
+      const type = this.determineInputType(input);
+      if (!categories[type]) {
+        categories[type] = [];
       }
+      categories[type].push(input);
     }
     return categories;
   }
-}
+
+  /**
+   * Determine the type of the input based on some heuristic.
+   * @param {string} input - The sensory input to classify.
+   * @returns {string} - The type of the input (e.g., 'sight', 'sound').
+   */
+  determineInputType(input) {
+    // Simple heuristic: classify by first character (just for illustration)
+    const firstChar = input.charAt(0).toLowerCase();
+    if (firstChar >= 'a' && firstChar <= 'm') {
+      return 'sight';
+    } else {
+      return 'sound';
+    }
+  }
+}  
