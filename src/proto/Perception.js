@@ -80,19 +80,31 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs array must not be empty');
+      throw new TypeError('inputs cannot be empty');
     }
-    const categorized = {};
-    for (const input of inputs) {
+    const categorized = {
+      auditory: [],
+      visual: [],
+      tactile: [],
+      olfactory: [],
+      gustatory: []
+    };
+    inputs.forEach(input => {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = 'text'; // This can be extended for more types in future.
-      if (!categorized[type]) {
-        categorized[type] = [];
+      if (input.startsWith('sound:')) {
+        categorized.auditory.push(input);
+      } else if (input.startsWith('sight:')) {
+        categorized.visual.push(input);
+      } else if (input.startsWith('touch:')) {
+        categorized.tactile.push(input);
+      } else if (input.startsWith('smell:')) {
+        categorized.olfactory.push(input);
+      } else if (input.startsWith('taste:')) {
+        categorized.gustatory.push(input);
       }
-      categorized[type].push(input);
-    }
+    });
     return categorized;
   }
 }
