@@ -80,10 +80,10 @@ export class Perception {
     }
     const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string' || input.trim() === '') {
-        throw new TypeError('all inputs must be non-empty strings');
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':'); // Categorize by type before the colon
+      const type = this.detectType(input);
       if (!categories[type]) {
         categories[type] = [];
       }
@@ -91,4 +91,16 @@ export class Perception {
     }
     return categories;
   }
-}
+
+  /**
+   * Detect the type of a sensory input.
+   * @param {string} input - The sensory input string.
+   * @returns {string} - The type of the input.
+   */
+  detectType(input) {
+    // Basic example of type detection based on content.
+    if (input.startsWith('visual:')) return 'visual';
+    if (input.startsWith('auditory:')) return 'auditory';
+    return 'unknown';
+  }
+}  
