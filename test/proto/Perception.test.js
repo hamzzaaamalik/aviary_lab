@@ -4,33 +4,27 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Previous tests...
-
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['info: temperature rising', 'error: overheating', 'info: normal'];
-  const expected = {
-    info: ['info: temperature rising', 'info: normal'],
-    error: ['error: overheating']
-  };
+  const inputs = [
+    'sound of rain',
+    'sight of stars',
+    'touch of fabric',
+    'smell of coffee',
+    'taste of honey',
+  ];
   const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, expected);
+  assert.deepEqual(result, {
+    auditory: ['sound of rain'],
+    visual: ['sight of stars'],
+    tactile: ['touch of fabric'],
+    olfactory: ['smell of coffee'],
+    gustatory: ['taste of honey'],
+  });
 });
 
-test('categorizeSensoryInputs throws on invalid input type', () => {
+test('categorizeSensoryInputs throws on invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
-});
-
-
-test('categorizeSensoryInputs throws on empty input array', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['valid input', 123]), TypeError);
 });
 
-
-test('categorizeSensoryInputs throws on non-string input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
-});
-
-
-test('categorizeSensoryInputs throws with specific error message on non-string input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', true]), TypeError, 'input must be a string, received: boolean');
-});
