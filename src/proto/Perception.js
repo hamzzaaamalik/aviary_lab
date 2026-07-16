@@ -80,14 +80,14 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs array must not be empty');
+      throw new TypeError('inputs array cannot be empty');
     }
     const categorized = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+      if (typeof input !== 'string' || input.trim() === '') {
+        throw new TypeError('each input must be a non-empty string');
       }
-      const type = 'text'; // This can be extended for more types in future.
+      const type = input.startsWith('sound:') ? 'sound' : 'visual';
       if (!categorized[type]) {
         categorized[type] = [];
       }
