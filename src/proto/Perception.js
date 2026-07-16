@@ -75,24 +75,28 @@ export class Perception {
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
-  categorizeSensoryInputs(inputs) {
+  categorizeInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    if (inputs.length === 0) {
-      return { string: [], number: [], boolean: [] }; // Handle empty array case.
-    }
-    const categorized = { string: [], number: [], boolean: [] };
+    const categorized = {
+      sound: [],
+      sight: [],
+      touch: [],
+      taste: [],
+      smell: [],
+      other: [],
+    };
     for (const input of inputs) {
-      if (typeof input === 'string') {
-        categorized.string.push(input);
-      } else if (typeof input === 'number') {
-        categorized.number.push(input);
-      } else if (typeof input === 'boolean') {
-        categorized.boolean.push(input);
-      } else {
-        throw new TypeError('unsupported input type');
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
       }
+      if (/sound/i.test(input)) categorized.sound.push(input);
+      else if (/sight/i.test(input)) categorized.sight.push(input);
+      else if (/touch/i.test(input)) categorized.touch.push(input);
+      else if (/taste/i.test(input)) categorized.taste.push(input);
+      else if (/smell/i.test(input)) categorized.smell.push(input);
+      else categorized.other.push(input);
     }
     return categorized;
   }
