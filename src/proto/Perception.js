@@ -78,18 +78,16 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = { danger: [], neutral: [], other: [] };
+    const categories = {};
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+      if (typeof input !== 'string' || input.trim() === '') {
+        throw new TypeError('all inputs must be non-empty strings');
       }
-      if (input.includes('danger')) {
-        categories.danger.push(input);
-      } else if (input.includes('neutral')) {
-        categories.neutral.push(input);
-      } else {
-        categories.other.push(input);
+      const [type] = input.split(':'); // Categorize by type before the colon
+      if (!categories[type]) {
+        categories[type] = [];
       }
+      categories[type].push(input);
     }
     return categories;
   }
