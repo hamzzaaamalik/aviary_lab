@@ -22,3 +22,8 @@ test('categorizeSensoryInputs throws on invalid input', () => {
 test('categorizeSensoryInputs throws on empty array', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
+
+test('categorizeSensoryInputs throws on invalid type', () => {
+  const inputs = ['valid', {}, [], () => {}];
+  assert.throws(() => perception.categorizeSensoryInputs(inputs), TypeError);
+});
