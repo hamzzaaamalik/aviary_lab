@@ -16,3 +16,6 @@ test('categorizeSensoryInputs throws on invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInputs([1, 2, 3]), TypeError);
 });
 
+test('categorizeSensoryInputs throws on empty array', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
+});
