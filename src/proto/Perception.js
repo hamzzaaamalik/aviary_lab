@@ -83,12 +83,24 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':');
-      if (!categories[type]) {
-        categories[type] = [];
+      const category = this.determineCategory(input);
+      if (!categories[category]) {
+        categories[category] = [];
       }
-      categories[type].push(input);
+      categories[category].push(input);
     }
     return categories;
+  }
+
+  /**
+   * Determine the category of an input based on its content.
+   * @param {string} input - The input string to categorize.
+   * @returns {string} - The category of the input.
+   */
+  determineCategory(input) {
+    // Simplified categorization logic — can be extended.
+    if (input.includes('sound')) return 'audio';
+    if (input.includes('sight')) return 'visual';
+    return 'other';
   }
 }
