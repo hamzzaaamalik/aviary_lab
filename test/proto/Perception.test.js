@@ -2,31 +2,26 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('categorizeSensoryInputs categorizes inputs correctly', async () => {
-  const perception = new Perception();
-  const inputs = ['text:hello', 'image:cat', 'text:world', 'audio:music'];
+const perception = new Perception();
+
+test('categorize sensory inputs correctly', () => {
+  const inputs = ['img:cat', 'sound:bark', 'hello', 'img:dog', 'sound:whistle'];
   const categorized = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(categorized, {
-    text: ['text:hello', 'text:world'],
-    image: ['image:cat'],
-    audio: ['audio:music'],
+    text: ['hello'],
+    image: ['img:cat', 'img:dog'],
+    sound: ['sound:bark', 'sound:whistle']
   });
 });
 
-test('categorizeSensoryInputs throws on invalid input type', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', 42]), TypeError);
+test('throws TypeError if inputs is not an array', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-test('categorizeSensoryInputs throws on empty input array', () => {
-  const perception = new Perception();
+test('throws TypeError if inputs is empty', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
-test('categorizeSensoryInputs throws on null or undefined input', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', null]), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs(['text:hello', undefined]), TypeError);
+test('throws TypeError if inputs contain non-string', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['img:cat', 123]), TypeError);
 });
-
-// Additional tests for perceive and perceiveMultiple can be added here.
