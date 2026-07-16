@@ -79,17 +79,17 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    const categorized = { audio: [], visual: [], tactile: [], other: [] };
+    const categorized = {};
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':');
-      if (categorized[type]) {
-        categorized[type].push(input);
-      } else {
-        categorized.other.push(input);
+      // Example categorization logic, can be adjusted per requirements.
+      const category = input.startsWith('sound') ? 'auditory' : 'visual';
+      if (!categorized[category]) {
+        categorized[category] = [];
       }
+      categorized[category].push(input);
     }
     return categorized;
   }
