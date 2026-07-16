@@ -82,24 +82,24 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs cannot be empty');
     }
-    const categorized = {
-      sounds: [],
-      sights: [],
-      smells: [],
-      other: []
-    };
+    const categorized = { sounds: [], sights: [], smells: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('each input must be a string');
       }
-      if (input.includes('sound')) {
-        categorized.sounds.push(input);
-      } else if (input.includes('sight')) {
-        categorized.sights.push(input);
-      } else if (input.includes('smell')) {
-        categorized.smells.push(input);
-      } else {
-        categorized.other.push(input);
+      const [type] = input.split(':');
+      switch (type) {
+        case 'sound':
+          categorized.sounds.push(input);
+          break;
+        case 'sight':
+          categorized.sights.push(input);
+          break;
+        case 'smell':
+          categorized.smells.push(input);
+          break;
+        default:
+          categorized.other.push(input);
       }
     }
     return categorized;
