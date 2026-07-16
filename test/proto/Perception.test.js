@@ -23,5 +23,9 @@ test('categorizeSensoryInputs throws TypeError for empty input', () => {
   assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
 
+test('categorizeSensoryInputs throws TypeError for non-string input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', null]), TypeError);
+});
+
 // Existing tests...
 
