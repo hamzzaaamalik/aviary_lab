@@ -79,21 +79,16 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categorized = {
-      text: [],
-      audio: [],
-      video: [],
-      other: []
-    };
+    const categorized = { text: [], audio: [], video: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
       if (input.startsWith('audio:')) {
         categorized.audio.push(input);
       } else if (input.startsWith('video:')) {
         categorized.video.push(input);
-      } else if (input.trim().length > 0) {
+      } else if (input.trim() !== '') {
         categorized.text.push(input);
       } else {
         categorized.other.push(input);
