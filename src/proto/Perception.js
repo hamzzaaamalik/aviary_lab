@@ -78,16 +78,23 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {};
+    const categories = {
+      auditory: [],
+      visual: [],
+      tactile: [],
+    };
     for (const input of inputs) {
-      if (typeof input !== 'string' || input.trim() === '') {
-        throw new TypeError('all inputs must be non-empty strings');
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':'); // Categorize by type before the colon
-      if (!categories[type]) {
-        categories[type] = [];
+      // Simple categorization based on keywords
+      if (input.includes('sound')) {
+        categories.auditory.push(input);
+      } else if (input.includes('sight') || input.includes('view')) {
+        categories.visual.push(input);
+      } else if (input.includes('touch')) {
+        categories.tactile.push(input);
       }
-      categories[type].push(input);
     }
     return categories;
   }
