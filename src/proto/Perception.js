@@ -30,14 +30,14 @@ export class Perception {
    * @param {Array<{input: string, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
    * @param {Function} [filter] - Optional filter function to refine input processing.
    * @returns {Promise<object[]>} - Array of processed percepts.
-   * @throws {TypeError} - If any input is invalid.
+   * @throws {TypeError} - If any input is invalid or if inputs is empty.
    */
   async perceiveMultiple(inputs, filter) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      return []; // Return an empty array for empty input.
+      throw new TypeError('inputs array must not be empty');
     }
     const percepts = [];
     // Sort inputs by urgency, higher urgency first.
@@ -69,7 +69,7 @@ export class Perception {
    * Categorize sensory input based on its type.
    * @param {Array<string>} inputs - Array of sensory input strings.
    * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
@@ -78,17 +78,17 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {};
+    const categorized = { normal: [], warning: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':');
-      if (!categories[type]) {
-        categories[type] = [];
+      if (input.includes('warning')) {
+        categorized.warning.push(input);
+      } else {
+        categorized.normal.push(input);
       }
-      categories[type].push(input);
     }
-    return categories;
+    return categorized;
   }
 }
