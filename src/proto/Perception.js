@@ -84,7 +84,7 @@ export class Perception {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const [type] = input.split(':');
+      const [type] = input.split(':'); // Expecting format like 'type: value'
       if (!categorized[type]) {
         categorized[type] = [];
       }
