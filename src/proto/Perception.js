@@ -79,20 +79,16 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    if (inputs.length === 0) {
-      return { string: [], number: [], boolean: [] }; // Handle empty array case.
-    }
-    const categorized = { string: [], number: [], boolean: [] };
+    const categorized = {};
     for (const input of inputs) {
-      if (typeof input === 'string') {
-        categorized.string.push(input);
-      } else if (typeof input === 'number') {
-        categorized.number.push(input);
-      } else if (typeof input === 'boolean') {
-        categorized.boolean.push(input);
-      } else {
-        throw new TypeError('unsupported input type');
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
       }
+      const type = input.startsWith('error:') ? 'error' : 'normal';
+      if (!categorized[type]) {
+        categorized[type] = [];
+      }
+      categorized[type].push(input);
     }
     return categorized;
   }
