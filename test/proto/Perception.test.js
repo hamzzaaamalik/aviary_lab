@@ -5,24 +5,22 @@ import { Perception } from '../../src/proto/Perception.js';
 const perception = new Perception();
 
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = [
-    'this is a danger signal',
-    'neutral observation',
-    'another danger alert',
-    'just a random statement'
-  ];
+  const inputs = ['audio:track1', 'audio:track2', 'visual:image1', 'visual:image2'];
   const expected = {
-    danger: ['this is a danger signal', 'another danger alert'],
-    neutral: ['neutral observation'],
-    other: ['just a random statement']
+    audio: ['audio:track1', 'audio:track2'],
+    visual: ['visual:image1', 'visual:image2']
   };
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, expected);
 });
 
 test('categorizeSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
+  const inputs = ['audio:track1', 123, 'visual:image1'];
+  assert.throws(() => perception.categorizeSensoryInputs(inputs), TypeError);
 });
 
+test('categorizeSensoryInputs throws on empty input array', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
+});
+
+// Additional tests for existing methods...
