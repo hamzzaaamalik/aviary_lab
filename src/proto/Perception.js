@@ -79,19 +79,19 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    if (inputs.length === 0) {
-      return { string: [], number: [], boolean: [] }; // Handle empty array case.
-    }
-    const categorized = { string: [], number: [], boolean: [] };
+    const categorized = { audio: [], visual: [], tactile: [], other: [] };
     for (const input of inputs) {
-      if (typeof input === 'string') {
-        categorized.string.push(input);
-      } else if (typeof input === 'number') {
-        categorized.number.push(input);
-      } else if (typeof input === 'boolean') {
-        categorized.boolean.push(input);
+      if (typeof input !== 'string') {
+        throw new TypeError('input must be a string');
+      }
+      if (input.startsWith('sound:')) {
+        categorized.audio.push(input);
+      } else if (input.startsWith('image:')) {
+        categorized.visual.push(input);
+      } else if (input.startsWith('touch:')) {
+        categorized.tactile.push(input);
       } else {
-        throw new TypeError('unsupported input type');
+        categorized.other.push(input);
       }
     }
     return categorized;
