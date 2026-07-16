@@ -4,32 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', async () => {
-  const inputs = ['sound of rain', 'sight of sunset', 'sound of thunder'];
-  const expected = {
-    audio: ['sound of rain', 'sound of thunder'],
-    visual: ['sight of sunset'],
-  };
-  const actual = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(actual, expected);
+test('categorizeSensoryInputs categorizes inputs correctly', () => {
+  const inputs = ['sound of music', 'sight of stars', 'touch of rain'];
+  const categories = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(categories, {
+    auditory: ['sound of music'],
+    visual: ['sight of stars'],
+    tactile: ['touch of rain']
+  });
 });
 
-test('categorizeSensoryInputs throws on empty array', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
-});
-
-test('categorizeSensoryInputs throws on non-array input', async () => {
+test('categorizeSensoryInputs throws on invalid inputs', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
 });
 
-test('categorizeSensoryInputs throws on invalid input types', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['valid', 42]), TypeError);
-});
-
-test('categorizeSensoryInputs throws on unknown category', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['unknown input']), TypeError);
-});
-
-test('categorizeSensoryInputs throws on non-string input', async () => {
-  assert.throws(() => perception.categorizeSensoryInputs(['sound of rain', 123]), TypeError);
+test('getCategory returns correct category', () => {
+  assert.equal(perception.getCategory('sound of music'), 'auditory');
+  assert.equal(perception.getCategory('sight of stars'), 'visual');
+  assert.equal(perception.getCategory('touch of rain'), 'tactile');
+  assert.equal(perception.getCategory('a random input'), 'other');
 });
