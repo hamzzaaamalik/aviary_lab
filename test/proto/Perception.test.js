@@ -10,7 +10,8 @@ test('categorizeSensoryInputs categorizes inputs correctly', () => {
   assert.deepEqual(categories, {
     auditory: ['sound of music'],
     visual: ['sight of stars'],
-    tactile: ['touch of rain']
+    tactile: ['touch of rain'],
+    other: []
   });
 });
 
@@ -25,4 +26,13 @@ test('getCategory returns correct category', () => {
   assert.equal(perception.getCategory('sight of stars'), 'visual');
   assert.equal(perception.getCategory('touch of rain'), 'tactile');
   assert.equal(perception.getCategory('a random input'), 'other');
+});
+
+test('categorizeSensoryInputs handles mixed input types', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', 123]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['valid', true]), TypeError);
+});
+
+test('categorizeSensoryInputs throws on empty input array', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([]), TypeError);
 });
