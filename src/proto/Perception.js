@@ -80,29 +80,23 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs array cannot be empty');
+      throw new TypeError('inputs must not be empty');
     }
     const categorized = { auditory: [], visual: [], tactile: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+        throw new TypeError('all inputs must be strings');
       }
-      const type = this.detectInputType(input);
-      categorized[type].push(input);
+      if (input.includes('sound')) {
+        categorized.auditory.push(input);
+      } else if (input.includes('image')) {
+        categorized.visual.push(input);
+      } else if (input.includes('touch')) {
+        categorized.tactile.push(input);
+      } else {
+        categorized.other.push(input);
+      }
     }
     return categorized;
-  }
-
-  /**
-   * Detect the type of input based on its content.
-   * @param {string} input - The input string to analyze.
-   * @returns {string} - The detected type of the input.
-   */
-  detectInputType(input) {
-    // Simple heuristics for type detection.
-    if (input.includes('sound')) return 'auditory';
-    if (input.includes('image')) return 'visual';
-    if (input.includes('touch')) return 'tactile';
-    return 'other';
   }
 }
