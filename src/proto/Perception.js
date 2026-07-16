@@ -77,32 +77,20 @@ export class Perception {
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs) || inputs.length === 0) {
-      throw new TypeError('inputs must be a non-empty array of strings');
+      throw new TypeError('inputs must be a non-empty array');
     }
-    const categorized = {};
+    const categorized = { url: [], text: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = this.determineType(input);
-      if (!categorized[type]) {
-        categorized[type] = [];
+      const trimmedInput = input.trim();
+      if (trimmedInput.startsWith('http://') || trimmedInput.startsWith('https://')) {
+        categorized.url.push(trimmedInput);
+      } else {
+        categorized.text.push(trimmedInput);
       }
-      categorized[type].push(input);
     }
     return categorized;
-  }
-
-  /**
-   * Determine the type of input based on its content.
-   * @param {string} input - The input string to categorize.
-   * @returns {string} - The type of the input (e.g., 'text', 'image').
-   */
-  determineType(input) {
-    // Simple type determination logic (could be expanded)
-    if (input.startsWith('http')) {
-      return 'url';
-    }
-    return 'text';
   }
 }
