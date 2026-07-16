@@ -78,21 +78,15 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs array must not be empty');
     }
-    const categories = {
-      audio: [],
-      visual: [],
-      other: []
-    };
+    const categories = { url: [], text: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('inputs must contain only strings');
+        throw new TypeError('all inputs must be strings');
       }
-      if (input.startsWith('sound')) {
-        categories.audio.push(input);
-      } else if (input.startsWith('sight')) {
-        categories.visual.push(input);
+      if (input.startsWith('http://') || input.startsWith('https://')) {
+        categories.url.push(input);
       } else {
-        categories.other.push(input);
+        categories.text.push(input);
       }
     }
     return categories;
