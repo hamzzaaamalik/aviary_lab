@@ -81,14 +81,13 @@ export class Perception {
     }
     const categorized = {};
     for (const input of inputs) {
-      if (input === null || input === undefined) {
-        throw new TypeError('input cannot be null or undefined');
+      if (typeof input !== 'string' || input.trim() === '') {
+        throw new TypeError('each input must be a non-empty string');
       }
       const [type] = input.split(':');
-      if (!type) {
-        throw new TypeError('input must be in the format type:value');
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
-      categorized[type] = categorized[type] || [];
       categorized[type].push(input);
     }
     return categorized;
