@@ -67,7 +67,7 @@ export class Perception {
 
   /**
    * Categorize sensory input based on its type.
-   * @param {Array<string>} inputs - Array of sensory input strings.
+   * @param {Array<any>} inputs - Array of sensory input items.
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array, contains invalid types, or is empty.
    */
@@ -79,12 +79,15 @@ export class Perception {
       throw new TypeError('inputs array must not be empty');
     }
     const categories = {};
-    for (const input of inputs) {
-      const type = typeof input;
+    for (const item of inputs) {
+      const type = typeof item;
       if (!categories[type]) {
         categories[type] = [];
       }
-      categories[type].push(input);
+      if (item === undefined) {
+        throw new TypeError('inputs cannot contain undefined elements');
+      }
+      categories[type].push(item);
     }
     return categories;
   }
