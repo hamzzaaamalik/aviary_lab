@@ -80,13 +80,14 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs cannot be an empty array');
+      throw new TypeError('inputs array cannot be empty');
     }
     const categorized = { auditory: [], visual: [], tactile: [], other: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
-        throw new TypeError('all inputs must be strings');
+        throw new TypeError('each input must be a string');
       }
+      // Simple categorization logic based on input content.
       if (input.includes('sound')) {
         categorized.auditory.push(input);
       } else if (input.includes('sight')) {
