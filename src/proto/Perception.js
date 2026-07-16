@@ -84,10 +84,10 @@ export class Perception {
     }
     const categorized = {};
     for (const input of inputs) {
-      if (typeof input !== 'string' || input.trim() === '') {
-        throw new TypeError('each input must be a non-empty string');
+      if (typeof input !== 'string') {
+        throw new TypeError('each input must be a string');
       }
-      const type = input.startsWith('sound:') ? 'sound' : 'visual';
+      const [type] = input.split(':'); // Assuming 'type:value' format
       if (!categorized[type]) {
         categorized[type] = [];
       }

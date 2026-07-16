@@ -27,3 +27,9 @@ test('categorizeSensoryInputs throws TypeError for invalid input type', () => {
   const perception = new Perception();
   assert.throws(() => perception.categorizeSensoryInputs(['sound:clap', 123]), TypeError);
 });
+
+test('categorizeSensoryInputs throws TypeError for non-string input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeSensoryInputs(['sound:clap', null]), TypeError);
+});
+
