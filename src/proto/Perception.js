@@ -79,16 +79,12 @@ export class Perception {
     if (!Array.isArray(inputs) || inputs.length === 0) {
       throw new TypeError('inputs must be a non-empty array');
     }
-    const categorized = {};
+    const categorized = { string: [] };
     for (const input of inputs) {
       if (typeof input !== 'string') {
         throw new TypeError('all inputs must be strings');
       }
-      const type = typeof input;
-      if (!categorized[type]) {
-        categorized[type] = [];
-      }
-      categorized[type].push(input);
+      categorized.string.push(input);
     }
     return categorized;
   }
