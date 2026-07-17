@@ -29,4 +29,21 @@ export class Perception {
   process(inputs) {
     return this.categorizeSensoryInputs(inputs);
   }
+
+  /**
+   * Validate the sensory inputs for expected types.
+   * @param {Array<*>} inputs - An array of sensory inputs.
+   * @throws {TypeError} - If any input is of an unsupported type.
+   */
+  validateInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    for (const input of inputs) {
+      const type = typeof input;
+      if (!['string', 'number', 'boolean', 'object', 'function'].includes(type)) {
+        throw new TypeError(`unsupported input type: ${type}`);
+      }
+    }
+  }
 }
