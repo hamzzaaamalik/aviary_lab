@@ -27,6 +27,8 @@ export class Perception {
    * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
   process(inputs) {
-    return this.categorizeSensoryInputs(inputs);
+    const categorized = this.categorizeSensoryInputs(inputs);
+    // Additional validation on categorized inputs can be done here if needed
+    return categorized;
   }
 }
