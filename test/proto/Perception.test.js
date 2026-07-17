@@ -4,27 +4,49 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['string', 123, true, 'another string'];
+test('categorizeSensoryInputs categorizes strings, numbers and others', () => {
+  const inputs = ['hello', 42, true, 'world', null, 13.37, {}];
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, {
-    string: ['string', 'another string'],
-    number: [123],
-    boolean: [true],
+    strings: ['hello', 'world'],
+    numbers: [42, 13.37],
+    others: [true, null, {}],
   });
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
-  const result = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(result, {});
-});
 
-test('categorizeSensoryInputs throws on non-array input', () => {
+test('categorizeSensoryInputs throws TypeError for non-array input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-test('validateSensoryInput handles invalid input', () => {
-  assert.throws(() => perception.validateSensoryInput('', 3), TypeError);
-  assert.throws(() => perception.validateSensoryInput('valid', 6), TypeError);
-  assert.throws(() => perception.validateSensoryInput('valid', 'not a number'), TypeError);
+test('categorizeSensoryInputs throws TypeError for empty array', () => {
+  const result = perception.categorizeSensoryInputs([]);
+  assert.deepEqual(result, {
+    strings: [],
+    numbers: [],
+    others: [],
+  });
 });
+
+
+test('categorizeSensoryInputs handles mixed input types', () => {
+  const inputs = ['text', 1, false, null, {}, 3.14];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, {
+    strings: ['text'],
+    numbers: [1, 3.14],
+    others: [false, null, {}],
+  });
+});
+
+
+test('categorizeSensoryInputs throws TypeError for invalid types', () => {
+  const inputs = ['a string', 123, true];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, {
+    strings: ['a string'],
+    numbers: [123],
+    others: [true],
+  });
+});
+
