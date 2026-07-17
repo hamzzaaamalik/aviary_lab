@@ -38,6 +38,10 @@ export class Perception {
    * @returns {object} - Categorized inputs by type.
    */
   process(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+    }
+
     const validInputs = [];
     const errors = [];
 
@@ -54,3 +58,4 @@ export class Perception {
     return { categorized, errors };
   }
 } 
+
