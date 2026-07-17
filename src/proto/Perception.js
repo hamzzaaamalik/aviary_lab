@@ -80,7 +80,13 @@ export class Perception {
     return inputs.reduce((acc, input) => {
       const type = typeof input;
       if (!acc[type]) acc[type] = [];
-      acc[type].push(input);
+      if (input === null) {
+        acc['object'].push(input);
+      } else if (type === 'number' || type === 'string' || type === 'boolean') {
+        acc[type].push(input);
+      } else {
+        throw new TypeError(`Unsupported input type: ${type}`);
+      }
       return acc;
     }, {});
   }
