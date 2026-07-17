@@ -20,7 +20,7 @@ export class Perception {
     }
     // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
-      const percept = { processed: `Percept from: ${input}`, urgency };
+      const percept = { processed: `Percept from: ${input}`, urgency }; 
       resolve(percept);
     });
   }
@@ -79,18 +79,14 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    const categorized = { audio: [], visual: [], tactile: [], other: [] };
-    for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
+    const categorized = {};
+    inputs.forEach(input => {
+      const type = typeof input;
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
-      const [type] = input.split(':');
-      if (categorized[type]) {
-        categorized[type].push(input);
-      } else {
-        categorized.other.push(input);
-      }
-    }
+      categorized[type].push(input);
+    });
     return categorized;
   }
 }
