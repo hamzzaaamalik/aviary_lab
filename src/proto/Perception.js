@@ -85,7 +85,7 @@ export class Perception {
         categorized.strings.push(input);
       } else if (typeof input === 'number') {
         categorized.numbers.push(input);
-      } else if (typeof input === 'object' && input !== null) {
+      } else if (input !== null && typeof input === 'object') {
         categorized.objects.push(input);
       } else {
         categorized.others.push(input);
