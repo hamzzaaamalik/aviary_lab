@@ -21,3 +21,12 @@ test('categorizeSensoryInputs handles empty array', () => {
   const result = perception.categorizeSensoryInputs([]);
   assert.deepEqual(result, {});
 });
+
+test('process processes inputs and categorizes them', () => {
+  const result = perception.process([1, 'test', false, 2]);
+  assert.deepEqual(result, {
+    number: [1, 2],
+    string: ['test'],
+    boolean: [false]
+  });
+});

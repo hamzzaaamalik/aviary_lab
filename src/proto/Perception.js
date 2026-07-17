@@ -21,13 +21,12 @@ export class Perception {
   }
 
   /**
-   * Example method to process inputs (placeholder for future implementation).
+   * Process inputs and return categorized inputs by type.
    * @param {Array<*>} inputs - An array of sensory inputs.
-   * @returns {void}
+   * @returns {object} - Categorized inputs by type.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
   process(inputs) {
-    // Implement processing logic here in the future.
+    return this.categorizeSensoryInputs(inputs);
   }
-}  
-
-
+}
