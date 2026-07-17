@@ -82,7 +82,7 @@ export class Perception {
     const categorized = {};
     for (const input of inputs) {
       const type = typeof input;
-      if (!(type in categorized)) {
+      if (!categorized[type]) {
         categorized[type] = [];
       }
       categorized[type].push(input);

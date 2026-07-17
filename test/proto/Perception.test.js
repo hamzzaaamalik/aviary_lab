@@ -19,7 +19,7 @@ test('categorizeSensoryInputs throws TypeError for non-array input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-test('categorizeSensoryInputs throws TypeError for empty array', () => {
+test('categorizeSensoryInputs returns empty object for empty array', () => {
   const result = perception.categorizeSensoryInputs([]);
   assert.deepEqual(result, {});
 });
@@ -39,3 +39,4 @@ test('categorizeSensoryInputs throws TypeError for invalid type', () => {
   assert.throws(() => perception.categorizeSensoryInputs(null), TypeError);
   assert.throws(() => perception.categorizeSensoryInputs(123), TypeError);
 });
+
