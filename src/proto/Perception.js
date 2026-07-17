@@ -65,12 +65,26 @@ export class Perception {
    * Process sensory inputs with detailed error reporting.
    * @param {Array<*>} inputs - An array of sensory inputs to process.
    * @returns {{categorized: object, errors: Array<string>}} - Categorized inputs and any validation errors.
+   * @throws {TypeError} - If inputs is not an array.
    */
   processWithDetailedErrors(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+    }
+
     const results = this.process(inputs);
     return {
       categorized: results.categorized,
       errors: results.errors.length > 0 ? results.errors : []
     };
+  }
+
+  /**
+   * Process sensory inputs and return them with categorized results and errors.
+   * @param {Array<*>} inputs - An array of sensory inputs to process.
+   * @returns {{categorized: object, errors: Array<string>}} - Detailed results of processing.
+   */
+  processAndReport(inputs) {
+    return this.processWithDetailedErrors(inputs);
   }
 } 
