@@ -29,4 +29,27 @@ export class Perception {
   process(inputs) {
     return this.categorizeSensoryInputs(inputs);
   }
+
+  /**
+   * Validate individual sensory input.
+   * @param {*} input - A sensory input value.
+   * @throws {TypeError} - If the input is of an invalid type.
+   */
+  validateInput(input) {
+    const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
+    if (!validTypes.includes(typeof input)) {
+      throw new TypeError(`Invalid input type: ${typeof input}`);
+    }
+  }
+
+  /**
+   * Process and validate inputs, returning categorized inputs by type.
+   * @param {Array<*>} inputs - An array of sensory inputs.
+   * @returns {object} - Categorized inputs by type.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
+   */
+  processWithValidation(inputs) {
+    inputs.forEach(input => this.validateInput(input));
+    return this.process(inputs);
+  }
 }
