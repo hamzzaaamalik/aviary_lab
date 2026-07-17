@@ -4,29 +4,37 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs by type', () => {
-  const result = perception.categorizeSensoryInputs([1, 'a', true, 2, 'b', false]);
+test('categorizeSensoryInputs with valid array', () => {
+  const result = perception.categorizeSensoryInputs(['a', 1, true, null]);
   assert.deepEqual(result, {
-    number: [1, 2],
-    string: ['a', 'b'],
-    boolean: [true, false]
+    string: ['a'],
+    number: [1],
+    boolean: [true],
+    object: [null]
   });
 });
 
-test('categorizeSensoryInputs throws TypeError for non-array input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError, 'inputs must be an array');
+test('categorizeSensoryInputs throws TypeError on non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError,
+    'Expected an array for inputs, received string');
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
-  const result = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(result, {});
+test('validateInput throws TypeError on invalid input type', () => {
+  assert.throws(() => perception.validateInput(Symbol()), TypeError,
+    'Invalid input type: symbol. Expected one of: string, number, object, boolean, undefined, function');
 });
 
-test('process processes inputs and categorizes them', () => {
-  const result = perception.process([1, 'test', false, 2]);
-  assert.deepEqual(result, {
-    number: [1, 2],
-    string: ['test'],
-    boolean: [false]
+test('processWithValidation returns errors for invalid inputs', () => {
+  const result = perception.processWithValidation(['valid', 42, Symbol()]);
+  assert.deepEqual(result.errors, ['Invalid input type: symbol. Expected one of: string, number, object, boolean, undefined, function']);
+  assert.deepEqual(result.categorized, {
+    string: ['valid'],
+    number: [42]
   });
+});
+
+test('processWithValidation handles empty input', () => {
+  const result = perception.processWithValidation([]);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.categorized, {});
 });
