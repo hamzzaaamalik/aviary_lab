@@ -79,8 +79,15 @@ export class Perception {
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(input);
+      if (!(type in acc)) acc[type] = [];
+      if (type === 'object' && input === null) {
+        if (!acc['object']) acc['object'] = [];
+        acc['object'].push(input);
+      } else if (type === 'function') {
+        console.warn('Ignoring function input');
+      } else {
+        acc[type].push(input);
+      }
       return acc;
     }, {});
   }
