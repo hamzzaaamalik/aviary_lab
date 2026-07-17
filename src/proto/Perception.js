@@ -70,7 +70,7 @@ export class Perception {
     const results = this.process(inputs);
     return {
       categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : null
+      errors: results.errors.length > 0 ? results.errors : []
     };
   }
 } 
