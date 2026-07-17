@@ -20,3 +20,14 @@ test('categorizeSensoryInputs throws TypeError for invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
   assert.throws(() => perception.categorizeSensoryInputs(null), TypeError);
 });
+
+test('perceiveMultiple handles edge cases', async () => {
+  const inputs = [
+    { input: 'test', urgency: 3 },
+    { input: '', urgency: 1 },
+    { input: 'hello', urgency: 6 },
+    { input: 'world', urgency: 2 }
+  ];
+  const results = await perception.perceiveMultiple(inputs);
+  assert.equal(results.length, 2); // Valid inputs only
+});
