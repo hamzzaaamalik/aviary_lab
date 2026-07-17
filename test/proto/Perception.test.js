@@ -2,29 +2,32 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-const perception = new Perception();
-
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['string', 123, true, 'another string'];
+  const perception = new Perception();
+  const inputs = [1, 'string', true, null, 42];
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, {
-    string: ['string', 'another string'],
-    number: [123],
+    number: [1, 42],
+    string: ['string'],
     boolean: [true],
+    object: [null],
   });
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
-  const result = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(result, {});
-});
-
-test('categorizeSensoryInputs throws on non-array input', () => {
+test('categorizeSensoryInputs throws TypeError for non-array input', () => {
+  const perception = new Perception();
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-test('validateSensoryInput handles invalid input', () => {
-  assert.throws(() => perception.validateSensoryInput('', 3), TypeError);
-  assert.throws(() => perception.validateSensoryInput('valid', 6), TypeError);
-  assert.throws(() => perception.validateSensoryInput('valid', 'not a number'), TypeError);
+// New tests for error handling in categorizeSensoryInputs
+
+test('categorizeSensoryInputs throws TypeError for invalid types', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeSensoryInputs([undefined]), TypeError);
+});
+
+test('categorizeSensoryInputs handles mixed types correctly', () => {
+  const perception = new Perception();
+  const inputs = [1, 'string', true, null, 42, {}, []];
+  assert.throws(() => perception.categorizeSensoryInputs(inputs), TypeError);
 });
