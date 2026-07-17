@@ -17,3 +17,9 @@ test('categorizeSensoryInputs throws on empty array', () => {
   const result = perception.categorizeSensoryInputs([]);
   assert.deepEqual(result, { strings: [], numbers: [], others: [] });
 });
+
+test('categorizeSensoryInputs categorizes mixed types correctly', () => {
+  const inputs = ['hello', 42, false, 'world', null];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, { strings: ['hello', 'world'], numbers: [42], others: [false, null] });
+});
