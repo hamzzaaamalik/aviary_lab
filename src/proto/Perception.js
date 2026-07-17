@@ -10,7 +10,7 @@ export class Perception {
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('inputs must be an array');
+      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
@@ -37,7 +37,7 @@ export class Perception {
   validateInput(input) {
     const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
     if (!validTypes.includes(typeof input)) {
-      throw new TypeError(`Invalid input type: ${typeof input}`);
+      throw new TypeError(`Invalid input type: ${typeof input}. Expected one of: ${validTypes.join(', ')}`);
     }
   }
 
@@ -62,4 +62,4 @@ export class Perception {
     const categorized = this.process(validInputs);
     return { categorized, errors };
   }
-}
+} 
