@@ -21,15 +21,6 @@ export class Perception {
   }
 
   /**
-   * Process inputs and return categorized inputs by type.
-   * @param {Array<*>} inputs - An array of sensory inputs.
-   * @returns {object} - Categorized inputs by type.
-   */
-  process(inputs) {
-    return this.categorizeSensoryInputs(inputs);
-  }
-
-  /**
    * Validate individual sensory input.
    * @param {*} input - A sensory input value.
    * @throws {TypeError} - If the input is of an invalid type.
@@ -42,11 +33,15 @@ export class Perception {
   }
 
   /**
-   * Process and validate inputs, returning categorized inputs by type.
+   * Process inputs and return categorized inputs by type.
    * @param {Array<*>} inputs - An array of sensory inputs.
    * @returns {object} - Categorized inputs by type.
    */
-  processWithValidation(inputs) {
+  process(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+    }
+
     const validInputs = [];
     const errors = [];
 
@@ -59,7 +54,8 @@ export class Perception {
       }
     });
 
-    const categorized = this.process(validInputs);
+    const categorized = this.categorizeSensoryInputs(validInputs);
     return { categorized, errors };
   }
 } 
+
