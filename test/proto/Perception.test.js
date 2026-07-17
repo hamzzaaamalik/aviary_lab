@@ -4,29 +4,28 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs by type', () => {
-  const result = perception.categorizeSensoryInputs([1, 'a', true, 2, 'b', false]);
+test('categorizeSensoryInputs categorizes valid inputs', () => {
+  const inputs = [1, 'text', true, { key: 'value' }];
+  const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, {
-    number: [1, 2],
-    string: ['a', 'b'],
-    boolean: [true, false]
+    number: [1],
+    string: ['text'],
+    boolean: [true],
+    object: [{ key: 'value' }]
   });
 });
 
-test('categorizeSensoryInputs throws TypeError for non-array input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError, 'inputs must be an array');
+test('categorizeSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
-  const result = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(result, {});
+test('validateInputs accepts valid inputs', () => {
+  const validInputs = [1, 'test', false, { a: 1 }];
+  assert.doesNotThrow(() => perception.validateInputs(validInputs));
 });
 
-test('process processes inputs and categorizes them', () => {
-  const result = perception.process([1, 'test', false, 2]);
-  assert.deepEqual(result, {
-    number: [1, 2],
-    string: ['test'],
-    boolean: [false]
-  });
+test('validateInputs throws on unsupported input type', () => {
+  const invalidInputs = [1, 'test', Symbol('symbol')];
+  assert.throws(() => perception.validateInputs(invalidInputs), TypeError);
 });
+
