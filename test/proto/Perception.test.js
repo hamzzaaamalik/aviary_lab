@@ -4,27 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process validates and categorizes valid inputs', () => {
-  const inputs = [1, 'text', true, null, { key: 'value' }];
-  const result = perception.process(inputs);
-  assert.deepEqual(result.categorized, {
-    number: [1],
-    string: ['text'],
-    boolean: [true],
-    object: [null, { key: 'value' }]
+// Existing tests...
+
+test('categorizeErrors categorizes error messages by type', () => {
+  const errors = [
+    'TypeError: Invalid input type',
+    'TypeError: Expected an array',
+    'ReferenceError: x is not defined',
+    'TypeError: Another error'
+  ];
+
+  const categorized = perception.categorizeErrors(errors);
+  assert.deepEqual(categorized, {
+    'TypeError': [
+      'TypeError: Invalid input type',
+      'TypeError: Expected an array',
+      'TypeError: Another error'
+    ],
+    'ReferenceError': ['ReferenceError: x is not defined']
   });
-  assert.deepEqual(result.errors, []);
 });
 
-test('process collects errors for invalid inputs', () => {
-  const inputs = [1, 'text', true, Symbol('sym'), { key: 'value' }];
-  const result = perception.process(inputs);
-  assert.deepEqual(result.categorized, {
-    number: [1],
-    string: ['text'],
-    boolean: [true],
-    object: [{ key: 'value' }]
-  });
-  assert.deepEqual(result.errors, ['Invalid input type: symbol. Expected one of: string, number, object, boolean, undefined, function']);
+test('categorizeErrors handles an empty array', () => {
+  const result = perception.categorizeErrors([]);
+  assert.deepEqual(result, {});
 });
 

@@ -62,15 +62,31 @@ export class Perception {
   }
 
   /**
+   * Categorize errors based on their type.
+   * @param {Array<string>} errors - An array of error messages.
+   * @returns {object} - Categorized errors by type.
+   */
+  categorizeErrors(errors) {
+    return errors.reduce((acc, error) => {
+      const type = error.split(':')[0]; // Extract type from error message
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(error);
+      return acc;
+    }, {});
+  }
+
+  /**
    * Process sensory inputs with detailed error reporting.
    * @param {Array<*>} inputs - An array of sensory inputs to process.
-   * @returns {{categorized: object, errors: Array<string>}} - Categorized inputs and any validation errors.
+   * @returns {{categorized: object, errors: Array<string>, categorizedErrors: object}} - Categorized inputs and any validation errors.
    */
-  processWithDetailedErrors(inputs) {
+  processWithErrors(inputs) {
     const results = this.process(inputs);
+    const categorizedErrors = this.categorizeErrors(results.errors);
     return {
       categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : []
+      errors: results.errors.length > 0 ? results.errors : [],
+      categorizedErrors
     };
   }
-} 
+}
