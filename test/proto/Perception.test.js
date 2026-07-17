@@ -23,3 +23,10 @@ test('categorizeSensoryInputs throws on invalid input types', () => {
   assert.throws(() => perception.categorizeSensoryInputs(undefined), TypeError);
 });
 
+// Additional test cases
+
+test('categorizeSensoryInputs handles empty array', () => {
+  const categorized = perception.categorizeSensoryInputs([]);
+  assert.deepEqual(categorized, {});
+});
+
