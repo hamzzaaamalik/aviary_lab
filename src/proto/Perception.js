@@ -73,4 +73,4 @@ export class Perception {
       errors: results.errors.length > 0 ? results.errors : null
     };
   }
-}
+} 
