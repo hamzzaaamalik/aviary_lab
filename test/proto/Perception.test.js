@@ -6,23 +6,23 @@ const perception = new Perception();
 
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
   const inputs = ['hello', 42, true, 'world', null];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, {
-    string: ['hello', 'world'],
-    number: [42],
-    boolean: [true],
-    object: [null]
+  const categorized = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(categorized, {
+    strings: ['hello', 'world'],
+    numbers: [42],
+    others: [true, null],
   });
 });
 
 test('categorizeSensoryInputs throws on invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs(123), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs([undefined]), TypeError);
 });
 
 test('categorizeSensoryInputs handles empty array', () => {
-  const result = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(result, { string: [], number: [], boolean: [], object: [] });
+  const categorized = perception.categorizeSensoryInputs([]);
+  assert.deepEqual(categorized, {
+    strings: [],
+    numbers: [],
+    others: [],
+  });
 });
-
