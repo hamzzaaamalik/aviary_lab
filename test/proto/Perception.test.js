@@ -31,3 +31,12 @@ test('categorizeSensoryInputs throws on non-array input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
+test('validateSensoryInput throws on empty string input', () => {
+  assert.throws(() => perception.validateSensoryInput('', 3), TypeError);
+});
+
+test('validateSensoryInput throws on invalid urgency', () => {
+  assert.throws(() => perception.validateSensoryInput('input', 0), TypeError);
+  assert.throws(() => perception.validateSensoryInput('input', 6), TypeError);
+  assert.throws(() => perception.validateSensoryInput('input', 'not a number'), TypeError);
+});
