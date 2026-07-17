@@ -30,9 +30,25 @@ export class Perception {
    */
   validateInput(input) {
     const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
+    const seenObjects = new WeakSet();  // Track visited objects to avoid circular references
+    this._validate(input, validTypes, seenObjects);
+  }
+
+  /**
+   * Recursive validation with circular reference handling.
+   * @param {*} input - A sensory input value.
+   * @param {Array<string>} validTypes - Array of valid types.
+   * @param {WeakSet} seenObjects - Set of seen objects to track circular references.
+   * @throws {TypeError} - If the input is of an invalid type or a circular reference is detected.
+   */
+  _validate(input, validTypes, seenObjects) {
     if (input !== null && typeof input === 'object') {
+      if (seenObjects.has(input)) {
+        throw new TypeError('Circular reference detected');
+      }
+      seenObjects.add(input);
       for (const key in input) {
-        this.validateInput(input[key]);  // Recursively validate nested objects
+        this._validate(input[key], validTypes, seenObjects);
       }
     }
     if (!validTypes.includes(typeof input)) {
@@ -90,7 +106,7 @@ export class Perception {
     const categorizedErrors = this.categorizeErrors(results.errors);
     return {
       categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : [],
+      errors: results.errors,
       categorizedErrors
     };
   }
