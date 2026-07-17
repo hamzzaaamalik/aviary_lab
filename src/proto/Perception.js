@@ -6,11 +6,14 @@ export class Perception {
    * Process multiple sensory inputs and categorize them by type.
    * @param {Array<*>} inputs - An array of sensory input values.
    * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array.
+   * @throws {TypeError} - If inputs is not an array or is empty.
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+    }
+    if (inputs.length === 0) {
+      return {};
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
@@ -57,5 +60,17 @@ export class Perception {
     const categorized = this.categorizeSensoryInputs(validInputs);
     return { categorized, errors };
   }
-} 
-
+  
+  /**
+   * Process sensory inputs with detailed error reporting.
+   * @param {Array<*>} inputs - An array of sensory inputs to process.
+   * @returns {{categorized: object, errors: Array<string>}} - Categorized inputs and any validation errors.
+   */
+  processWithDetailedErrors(inputs) {
+    const results = this.process(inputs);
+    return {
+      categorized: results.categorized,
+      errors: results.errors.length > 0 ? results.errors : null
+    };
+  }
+}
