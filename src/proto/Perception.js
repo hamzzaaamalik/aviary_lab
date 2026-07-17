@@ -18,9 +18,8 @@ export class Perception {
       }
       input = filter(input);
     }
-    // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
-      const percept = { processed: `Percept from: ${input}`, urgency }; 
+      const percept = { processed: `Percept from: ${input}`, urgency };
       resolve(percept);
     });
   }
@@ -40,7 +39,6 @@ export class Perception {
       return []; // Return an empty array for empty input.
     }
     const percepts = [];
-    // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
       try {
@@ -79,18 +77,11 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    const categorized = { strings: [], numbers: [], objects: [], others: [] };
-    for (const input of inputs) {
-      if (typeof input === 'string') {
-        categorized.strings.push(input);
-      } else if (typeof input === 'number') {
-        categorized.numbers.push(input);
-      } else if (typeof input === 'object' && input !== null) {
-        categorized.objects.push(input);
-      } else {
-        categorized.others.push(input);
-      }
-    }
-    return categorized;
+    return inputs.reduce((acc, input) => {
+      const type = typeof input;
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(input);
+      return acc;
+    }, {});
   }
 }
