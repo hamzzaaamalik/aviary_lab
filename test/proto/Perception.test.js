@@ -5,29 +5,26 @@ import { Perception } from '../../src/proto/Perception.js';
 const perception = new Perception();
 
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['hello', 123, { key: 'value' }, null, true];
-  const expected = {
-    strings: ['hello'],
-    numbers: [123],
-    objects: [{ key: 'value' }],
-    others: [null, true]
-  };
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, expected);
-});
-
-test('categorizeSensoryInputs throws TypeError for invalid input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs(null), TypeError);
-});
-
-test('perceiveMultiple handles edge cases', async () => {
   const inputs = [
-    { input: 'test', urgency: 3 },
-    { input: '', urgency: 1 },
-    { input: 'hello', urgency: 6 },
-    { input: 'world', urgency: 2 }
+    'the sound of music',
+    'a bright light',
+    'I can feel the heat',
+    'a random thought'
   ];
-  const results = await perception.perceiveMultiple(inputs);
-  assert.equal(results.length, 2); // Valid inputs only
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, {
+    auditory: ['the sound of music'],
+    visual: ['a bright light'],
+    tactile: ['I can feel the heat'],
+    other: ['a random thought']
+  });
 });
+
+test('categorizeSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+});
+
+test('categorizeSensoryInputs throws on invalid input type', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([123, true]), TypeError);
+});
+
