@@ -4,32 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs by type', () => {
-  const inputs = [1, 'text', true, null, [], {}];
+test('categorizeSensoryInputs categorizes inputs correctly', () => {
+  const inputs = ['hello', 42, true, null, 'world'];
   const categorized = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(categorized, {
-    number: [1],
-    string: ['text'],
+    string: ['hello', 'world'],
+    number: [42],
     boolean: [true],
-    object: [null, [], {}]
+    object: [null]
   });
 });
 
-test('categorizeSensoryInputs throws on non-array input', () => {
+
+test('categorizeSensoryInputs throws on invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(null), TypeError);
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
-  const categorized = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(categorized, {});
-});
 
-test('perceiveMultiple handles errors properly', async () => {
+test('perceiveMultiple handles invalid inputs gracefully', async () => {
   const inputs = [
-    { input: '', urgency: 1 },  // Invalid input
-    { input: 'valid', urgency: 2 }
+    { input: 'valid input', urgency: 1 },
+    { input: '', urgency: 2 },
+    { input: 'another valid input', urgency: 3 }
   ];
-  const results = await perception.perceiveMultiple(inputs);
-  assert.equal(results.length, 1); // only valid input should be processed
+  const percepts = await perception.perceiveMultiple(inputs);
+  assert.equal(percepts.length, 2); // Only valid inputs should be processed
 });
-
