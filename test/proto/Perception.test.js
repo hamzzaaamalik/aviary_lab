@@ -27,4 +27,9 @@ test('categorizeSensoryInputs handles empty array', () => {
   assert.deepEqual(result, expected);
 });
 
+test('categorizeSensoryInputs throws on invalid input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+});
+
 // Additional tests for perceive and perceiveMultiple would go here.
