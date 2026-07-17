@@ -24,12 +24,17 @@ export class Perception {
   }
 
   /**
-   * Validate individual sensory input.
+   * Validate individual sensory input, including checks for nested objects.
    * @param {*} input - A sensory input value.
    * @throws {TypeError} - If the input is of an invalid type.
    */
   validateInput(input) {
     const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
+    if (input !== null && typeof input === 'object') {
+      for (const key in input) {
+        this.validateInput(input[key]);  // Recursively validate nested objects
+      }
+    }
     if (!validTypes.includes(typeof input)) {
       throw new TypeError(`Invalid input type: ${typeof input}. Expected one of: ${validTypes.join(', ')}`);
     }
@@ -89,31 +94,4 @@ export class Perception {
       categorizedErrors
     };
   }
-
-  /**
-   * Process sensory inputs with enhanced error handling.
-   * @param {Array<*>} inputs - An array of sensory inputs to process.
-   * @returns {{categorized: object, errors: Array<string>, categorizedErrors: object}} - Categorized inputs and any validation errors.
-   * @throws {TypeError} - If inputs is not an array or contains invalid types.
-   */
-  enhancedProcess(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
-    }
-
-    const validInputs = [];
-    const errors = [];
-
-    inputs.forEach(input => {
-      try {
-        this.validateInput(input);
-        validInputs.push(input);
-      } catch (error) {
-        errors.push(error.message);
-      }
-    });
-
-    const categorized = this.categorizeSensoryInputs(validInputs);
-    return { categorized, errors, categorizedErrors: this.categorizeErrors(errors) };
-  }
-} 
+}
