@@ -73,4 +73,14 @@ export class Perception {
       errors: results.errors.length > 0 ? results.errors : []
     };
   }
+
+  /**
+   * Process sensory inputs and return them with categorized results and errors.
+   * @param {Array<*>} inputs - An array of sensory inputs to process.
+   * @returns {{categorized: object, errors: Array<string>}} - Detailed results of processing.
+   */
+  processAndReport(inputs) {
+    const results = this.processWithDetailedErrors(inputs);
+    return results;
+  }
 } 
