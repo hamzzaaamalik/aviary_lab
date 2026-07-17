@@ -14,6 +14,9 @@ export class Perception {
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
+      if (!['string', 'number', 'boolean', 'object', 'function'].includes(type)) {
+        throw new TypeError(`Invalid input type: ${type}`);
+      }
       if (!acc[type]) acc[type] = [];
       acc[type].push(input);
       return acc;
