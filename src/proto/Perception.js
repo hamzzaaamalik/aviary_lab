@@ -3,24 +3,17 @@
  */
 export class Perception {
   /**
-   * Process multiple sensory inputs and categorize them by type.
+   * Validate an array of sensory inputs.
    * @param {Array<*>} inputs - An array of sensory input values.
-   * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array or is empty.
    */
-  categorizeSensoryInputs(inputs) {
+  validateInputsArray(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
     if (inputs.length === 0) {
-      return {};
+      throw new TypeError('Input array cannot be empty.');
     }
-    return inputs.reduce((acc, input) => {
-      const type = typeof input;
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(input);
-      return acc;
-    }, {});
   }
 
   /**
@@ -36,14 +29,26 @@ export class Perception {
   }
 
   /**
-   * Process inputs and return categorized inputs by type.
+   * Process multiple sensory inputs and categorize them by type.
    * @param {Array<*>} inputs - An array of sensory inputs.
    * @returns {object} - Categorized inputs by type.
    */
+  categorizeSensoryInputs(inputs) {
+    return inputs.reduce((acc, input) => {
+      const type = typeof input;
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(input);
+      return acc;
+    }, {});
+  }
+
+  /**
+   * Process inputs and return categorized inputs by type.
+   * @param {Array<*>} inputs - An array of sensory inputs.
+   * @returns {{categorized: object, errors: Array<string>}} - Categorized inputs and any validation errors.
+   */
   process(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
-    }
+    this.validateInputsArray(inputs);
 
     const validInputs = [];
     const errors = [];
