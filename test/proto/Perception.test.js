@@ -18,3 +18,11 @@ test('categorizeSensoryInputs throws on non-array input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
+test('categorizeSensoryInputs handles empty array', () => {
+  const result = perception.categorizeSensoryInputs([]);
+  assert.deepEqual(result, {
+    strings: [],
+    numbers: [],
+    others: []
+  });
+});
