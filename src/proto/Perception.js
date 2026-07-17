@@ -73,4 +73,16 @@ export class Perception {
       errors: results.errors.length > 0 ? results.errors : []
     };
   }
+
+  /**
+   * Validate multiple sensory inputs.
+   * @param {Array<*>} inputs - An array of sensory input values.
+   * @throws {TypeError} - If any input is of an invalid type.
+   */
+  validateMultipleInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+    }
+    inputs.forEach(input => this.validateInput(input));
+  }
 } 
