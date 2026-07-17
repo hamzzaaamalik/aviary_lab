@@ -28,6 +28,7 @@ test('categorizeSensoryInputs throws TypeError for empty array', () => {
   });
 });
 
+
 test('categorizeSensoryInputs handles mixed input types', () => {
   const inputs = ['text', 1, false, null, {}, 3.14];
   const result = perception.categorizeSensoryInputs(inputs);
@@ -37,3 +38,15 @@ test('categorizeSensoryInputs handles mixed input types', () => {
     others: [false, null, {}],
   });
 });
+
+
+test('categorizeSensoryInputs throws TypeError for invalid types', () => {
+  const inputs = ['a string', 123, true];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, {
+    strings: ['a string'],
+    numbers: [123],
+    others: [true],
+  });
+});
+
