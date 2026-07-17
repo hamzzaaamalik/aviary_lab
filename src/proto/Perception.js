@@ -84,4 +84,4 @@ export class Perception {
     console.log('Processing results:', results);
     return results;
   }
-} 
+}
