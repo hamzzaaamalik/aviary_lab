@@ -84,4 +84,24 @@ export class Perception {
       return acc;
     }, {});
   }
+
+  /**
+   * Enhanced categorization of sensory input with urgency levels.
+   * @param {Array<{input: *, urgency: number}>} inputs - Array of sensory inputs with urgency levels.
+   * @returns {object} - Categorized inputs by type and their urgency levels.
+   * @throws {TypeError} - If inputs is not an array or contains invalid types.
+   */
+  categorizeInputsByUrgency(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    return inputs.reduce((acc, { input, urgency }) => {
+      this.validateSensoryInput(input, urgency);
+      const type = typeof input;
+      if (!acc[type]) acc[type] = {};
+      if (!acc[type][urgency]) acc[type][urgency] = [];
+      acc[type][urgency].push(input);
+      return acc;
+    }, {});
+  }
 }
