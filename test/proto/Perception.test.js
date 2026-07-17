@@ -22,3 +22,4 @@ test('categorizeSensoryInputs handles empty array', () => {
   const categorized = perception.categorizeSensoryInputs([]);
   assert.deepEqual(categorized, { text: [], number: [], other: [] });
 });
+

@@ -80,22 +80,16 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
 
-    const categories = {
-      text: [],
-      number: [],
-      other: []
-    };
-
+    const categorized = { text: [], number: [], other: [] };
     for (const input of inputs) {
       if (typeof input === 'string') {
-        categories.text.push(input);
+        categorized.text.push(input);
       } else if (typeof input === 'number') {
-        categories.number.push(input);
+        categorized.number.push(input);
       } else {
-        categories.other.push(input);
+        categorized.other.push(input);
       }
     }
-
-    return categories;
+    return categorized;
   }
 }
