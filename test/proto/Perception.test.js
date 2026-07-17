@@ -24,4 +24,5 @@ test('categorizeSensoryInputs throws TypeError for invalid input', () => {
   const perception = new Perception();
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
   assert.throws(() => perception.categorizeSensoryInputs([123]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['valid:string', 123]), TypeError);
 });

@@ -81,18 +81,14 @@ export class Perception {
     }
     const categorized = { audio: [], visual: [], tactile: [], other: [] };
     for (const input of inputs) {
-      if (typeof input === 'string') {
-        if (input.startsWith('audio:')) {
-          categorized.audio.push(input);
-        } else if (input.startsWith('visual:')) {
-          categorized.visual.push(input);
-        } else if (input.startsWith('tactile:')) {
-          categorized.tactile.push(input);
-        } else {
-          categorized.other.push(input);
-        }
+      if (typeof input !== 'string') {
+        throw new TypeError('all inputs must be strings');
+      }
+      const [type] = input.split(':');
+      if (type && categorized[type]) {
+        categorized[type].push(input);
       } else {
-        throw new TypeError('Each input must be a string');
+        categorized.other.push(input);
       }
     }
     return categorized;
