@@ -30,3 +30,4 @@ test('categorizeSensoryInputs handles empty array', () => {
 test('categorizeSensoryInputs throws on non-array input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
+
