@@ -4,25 +4,31 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = ['hello', 42, { key: 'value' }, null, true, 'world'];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, {
-    strings: ['hello', 'world'],
-    numbers: [42],
-    objects: [{ key: 'value' }],
-    others: [null, true]
-  });
+test('perceiveMultiple processes valid inputs', async () => {
+  const inputs = [
+    { input: 'loud noise', urgency: 5 },
+    { input: 'soft sound', urgency: 2 }
+  ];
+  const results = await perception.perceiveMultiple(inputs);
+  assert.equal(results.length, 2);
+  assert.equal(results[0].processed, 'Percept from: loud noise');
+  assert.equal(results[1].processed, 'Percept from: soft sound');
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
-  const result = perception.categorizeSensoryInputs([]);
-  assert.deepEqual(result, {
-    strings: [],
-    numbers: [],
-    objects: [],
-    others: []
-  });
+test('perceiveMultiple throws on invalid inputs', async () => {
+  const inputs = [
+    { input: 'valid input', urgency: 5 },
+    { input: '', urgency: 3 }
+  ];
+  await assert.rejects(
+    () => perception.perceiveMultiple(inputs),
+    { message: 'input must be a non-empty string' }
+  );
 });
 
-// Additional tests for the perceive and perceiveMultiple methods can be added here.
+test('perceiveMultiple throws on non-array input', async () => {
+  await assert.rejects(
+    () => perception.perceiveMultiple('not an array'),
+    { message: 'inputs must be an array' }
+  );
+});

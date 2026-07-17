@@ -43,13 +43,9 @@ export class Perception {
     // Sort inputs by urgency, higher urgency first.
     inputs.sort((a, b) => b.urgency - a.urgency);
     for (const { input, urgency } of inputs) {
-      try {
-        await this.validateSensoryInput(input, urgency);
-        const percept = await this.perceive(input, urgency, filter);
-        percepts.push(percept);
-      } catch (err) {
-        console.error(`Failed to perceive input: ${input}. Error: ${err.message}`);
-      }
+      this.validateSensoryInput(input, urgency);
+      const percept = await this.perceive(input, urgency, filter);
+      percepts.push(percept);
     }
     return percepts;
   }
@@ -79,17 +75,13 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    const categorized = { strings: [], numbers: [], objects: [], others: [] };
+    const categorized = {};
     for (const input of inputs) {
-      if (typeof input === 'string') {
-        categorized.strings.push(input);
-      } else if (typeof input === 'number') {
-        categorized.numbers.push(input);
-      } else if (input !== null && typeof input === 'object') {
-        categorized.objects.push(input);
-      } else {
-        categorized.others.push(input);
+      const type = typeof input;
+      if (!categorized[type]) {
+        categorized[type] = [];
       }
+      categorized[type].push(input);
     }
     return categorized;
   }
