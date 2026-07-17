@@ -4,32 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
   const perception = new Perception();
-  const inputs = ['hello', 42, { key: 'value' }, null, true];
-  const expected = {
-    strings: ['hello'],
-    numbers: [42],
-    objects: [{ key: 'value' }],
-    others: [null, true]
-  };
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, expected);
+  const inputs = [
+    'audio:sound1',
+    'visual:image1',
+    'tactile:feeling1',
+    'random text',
+    'audio:sound2'
+  ];
+  const categorized = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(categorized, {
+    audio: ['audio:sound1', 'audio:sound2'],
+    visual: ['visual:image1'],
+    tactile: ['tactile:feeling1'],
+    other: ['random text']
+  });
 });
 
-test('categorizeSensoryInputs handles empty array', () => {
-  const perception = new Perception();
-  const result = perception.categorizeSensoryInputs([]);
-  const expected = {
-    strings: [],
-    numbers: [],
-    objects: [],
-    others: []
-  };
-  assert.deepEqual(result, expected);
-});
-
-test('categorizeSensoryInputs throws on invalid input', () => {
+test('categorizeSensoryInputs throws TypeError for invalid input', () => {
   const perception = new Perception();
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([123]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs(['valid:string', 123]), TypeError);
 });
-
-// Additional tests for perceive and perceiveMultiple would go here.
