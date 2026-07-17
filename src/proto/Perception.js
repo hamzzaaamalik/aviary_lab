@@ -29,7 +29,7 @@ export class Perception {
    * @throws {TypeError} - If the input is of an invalid type.
    */
   validateInput(input) {
-    const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
+    const validTypes = ['string', 'number', 'object', 'boolean', 'function']; // removed 'undefined'
     if (!validTypes.includes(typeof input)) {
       throw new TypeError(`Invalid input type: ${typeof input}. Expected one of: ${validTypes.join(', ')}`);
     }

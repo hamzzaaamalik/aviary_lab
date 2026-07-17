@@ -4,27 +4,37 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process validates and categorizes valid inputs', () => {
-  const inputs = [1, 'text', true, null, { key: 'value' }];
-  const result = perception.process(inputs);
-  assert.deepEqual(result.categorized, {
-    number: [1],
+test('categorizeSensoryInputs categorizes valid inputs', () => {
+  const result = perception.categorizeSensoryInputs(['text', 42, true, null]);
+  assert.deepEqual(result, {
     string: ['text'],
+    number: [42],
     boolean: [true],
-    object: [null, { key: 'value' }]
+    object: [null],
   });
-  assert.deepEqual(result.errors, []);
 });
 
-test('process collects errors for invalid inputs', () => {
-  const inputs = [1, 'text', true, Symbol('sym'), { key: 'value' }];
-  const result = perception.process(inputs);
+test('categorizeSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+});
+
+test('categorizeSensoryInputs returns empty object for empty array', () => {
+  assert.deepEqual(perception.categorizeSensoryInputs([]), {});
+});
+
+test('validateInput throws on invalid types', () => {
+  assert.throws(() => perception.validateInput(undefined), TypeError);
+  assert.throws(() => perception.validateInput(Symbol()), TypeError);
+});
+
+test('process handles mixed valid and invalid inputs', () => {
+  const result = perception.process(['valid', 123, null, undefined, true]);
   assert.deepEqual(result.categorized, {
-    number: [1],
-    string: ['text'],
+    string: ['valid'],
+    number: [123],
+    object: [null],
     boolean: [true],
-    object: [{ key: 'value' }]
   });
-  assert.deepEqual(result.errors, ['Invalid input type: symbol. Expected one of: string, number, object, boolean, undefined, function']);
+  assert.deepEqual(result.errors, ['Invalid input type: undefined. Expected one of: string, number, object, boolean, function']);
 });
 
