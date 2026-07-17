@@ -20,7 +20,7 @@ export class Perception {
     }
     // Simulating sensory processing with urgency consideration.
     return new Promise((resolve) => {
-      const percept = { processed: `Percept from: ${input}`, urgency };
+      const percept = { processed: `Percept from: ${input}`, urgency }; 
       resolve(percept);
     });
   }
@@ -71,7 +71,7 @@ export class Perception {
 
   /**
    * Categorize sensory input based on its type.
-   * @param {Array<string>} inputs - Array of sensory input strings.
+   * @param {Array<*>} inputs - Array of sensory input values.
    * @returns {object} - Categorized inputs by type.
    * @throws {TypeError} - If inputs is not an array or contains invalid types.
    */
@@ -79,17 +79,14 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    const categorized = { audio: [], visual: [], tactile: [], other: [] };
+    const categorized = { string: [], number: [], boolean: [], object: [] };
     for (const input of inputs) {
-      if (typeof input !== 'string') {
-        throw new TypeError('each input must be a string');
-      }
-      const [type] = input.split(':');
-      if (categorized[type]) {
-        categorized[type].push(input);
-      } else {
-        categorized.other.push(input);
-      }
+      const type = typeof input;
+      if (type === 'string') categorized.string.push(input);
+      else if (type === 'number') categorized.number.push(input);
+      else if (type === 'boolean') categorized.boolean.push(input);
+      else if (input === null || type === 'object') categorized.object.push(input);
+      else throw new TypeError('Invalid input type');
     }
     return categorized;
   }
