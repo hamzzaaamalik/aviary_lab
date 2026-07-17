@@ -79,7 +79,12 @@ export class Perception {
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
-      if (!acc[type]) acc[type] = [];
+      if (type === 'undefined') {
+        throw new TypeError('input must not be undefined');
+      }
+      if (!acc[type]) {
+        acc[type] = [];
+      }
       acc[type].push(input);
       return acc;
     }, {});
