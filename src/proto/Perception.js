@@ -80,7 +80,7 @@ export class Perception {
    * @param {Array<*>} inputs - An array of sensory inputs to process.
    * @returns {{categorized: object, errors: Array<string>, categorizedErrors: object}} - Categorized inputs and any validation errors.
    */
-  processWithErrors(inputs) {
+  processWithDetailedErrors(inputs) {
     const results = this.process(inputs);
     const categorizedErrors = this.categorizeErrors(results.errors);
     return {
