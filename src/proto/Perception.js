@@ -76,4 +76,23 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Enhanced processing for multiple sensory inputs with error handling.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @returns {Array<{category: string, error?: string}>} - An array of results with categories and errors.
+   */
+  processWithErrors(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return inputs.map(input => {
+      try {
+        const category = this.categorizeSensoryInput(input);
+        return { category };
+      } catch (error) {
+        return { category: 'error', error: error.message };
+      }
+    });
+  }
 }
