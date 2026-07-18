@@ -76,4 +76,19 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Enhanced method to validate sensory input with logging.
+   * @param {any} input - The sensory input to validate.
+   * @returns {boolean} - True if valid, false otherwise.
+   */
+  validateInputWithLogging(input) {
+    try {
+      this.categorizeSensoryInput(input);
+      return true;
+    } catch (error) {
+      console.error('Validation failed:', error.message);
+      return false;
+    }
+  }
 }
