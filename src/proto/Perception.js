@@ -12,7 +12,7 @@ export class Perception {
    */
   categorizeSensoryInput(sensoryInput) {
     if (typeof sensoryInput !== 'object' || sensoryInput === null) {
-      throw new TypeError('Invalid sensory input');
+      throw new TypeError('Invalid sensory input: must be a non-null object');
     }
     // Enhanced categorization logic
     if ('sight' in sensoryInput) return 'visual';
@@ -88,7 +88,7 @@ export class Perception {
     }
     return inputs.map(input => {
       try {
-        const category = this.handleSingleInput(input);
+        const category = this.categorizeSensoryInput(input);
         return { input, category };
       } catch (error) {
         return { input, category: 'error', error: error.message };
