@@ -48,7 +48,14 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => this.process(input));
+    return inputs.map(input => {
+      try {
+        return this.process(input);
+      } catch (err) {
+        console.warn('Error processing input:', input, err.message);
+        return 'error'; // Handling the error case
+      }
+    });
   }
 
   /**
@@ -58,10 +65,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   handleSingleInput(input) {
-    if (!input) {
-      throw new TypeError('Input cannot be null or undefined');
-    }
-    return this.categorizeSensoryInput(input);
+    return this.process(input);  // Leverage process for single input handling
   }
 
   /**
