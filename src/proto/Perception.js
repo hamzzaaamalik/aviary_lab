@@ -82,7 +82,7 @@ export class Perception {
    * @param {Array<any>} inputs - An array of sensory inputs.
    * @returns {Array<{input: any, category: string, error?: string}>} - An array of objects containing input, category, and potential error messages.
    */
-  processWithErrorHandling(inputs) {
+  validateAndProcess(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
