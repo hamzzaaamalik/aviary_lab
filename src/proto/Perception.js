@@ -82,27 +82,19 @@ export class Perception {
    * Validates a single input.
    * @param {any} input - The input to validate.
    * @throws {TypeError} - If the input is invalid.
-   * @private
    */
   _validateInput(input) {
-    if (!input) {
-      throw new TypeError('Input cannot be null or undefined');
-    }
-    if (typeof input !== 'object' || input === null) {
-      throw new TypeError('Invalid sensory input: must be a non-null object');
-    }
+    if (input == null) throw new TypeError('Input cannot be null or undefined.');
+    // Add more validation rules if needed
   }
 
   /**
    * Validates an array of inputs.
-   * @param {Array<any>} inputs - The inputs to validate.
-   * @throws {TypeError} - If the inputs are invalid.
-   * @private
+   * @param {Array<any>} inputs - The array of inputs to validate.
+   * @throws {TypeError} - If any input is invalid.
    */
   _validateArray(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
-    inputs.forEach(input => this._validateInput(input)); // Validate each input
+    if (!Array.isArray(inputs)) throw new TypeError('Expected an array of inputs.');
+    inputs.forEach(input => this._validateInput(input));
   }
 }
