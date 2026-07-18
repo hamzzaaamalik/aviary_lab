@@ -67,3 +67,4 @@ export class Perception {
     return inputs.map(input => this.process(input));
   }
 }  
+
