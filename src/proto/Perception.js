@@ -76,4 +76,17 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validates and processes an object input, returning its category.
+   * @param {Object} input - The sensory object to handle.
+   * @returns {string} - The category of the sensory object.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  validateAndProcess(input) {
+    if (typeof input !== 'object' || input === null) {
+      throw new TypeError('Invalid sensory object');
+    }
+    return this.categorizeSensoryInput(input);
+  }
 }
