@@ -92,5 +92,4 @@ export class Perception {
       categorizedErrors
     };
   }
-
-}
+} 
