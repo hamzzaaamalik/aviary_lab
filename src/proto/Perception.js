@@ -84,9 +84,9 @@ export class Perception {
    * @throws {TypeError} - If the input is not a valid sensory object.
    */
   validateAndCategorizeInput(input) {
-    if (typeof input !== 'object' || input === null) {
-      throw new TypeError('Input must be a non-null object');
+    if (!input || typeof input !== 'object') {
+      throw new TypeError('Input must be a valid sensory object');
     }
     return this.categorizeSensoryInput(input);
   }
-}
+}  
