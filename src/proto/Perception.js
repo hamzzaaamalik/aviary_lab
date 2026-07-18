@@ -76,4 +76,13 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Enhanced validation for sensory input types.
+   * @param {any} input - The input to validate.
+   * @returns {boolean} - True if valid, otherwise false.
+   */
+  validateInputType(input) {
+    return typeof input === 'object' && input !== null;
+  }
 }
