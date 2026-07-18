@@ -74,6 +74,19 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => this.handleSingleInput(input));
+    const categories = [];
+    for (const input of inputs) {
+      try {
+        categories.push(this.handleSingleInput(input));
+      } catch (error) {
+        if (error instanceof TypeError) {
+          console.error('Error handling input:', input, error.message);
+          categories.push(`error: ${error.message}`); // Provide specific error feedback
+        } else {
+          throw error;
+        }
+      }
+    }
+    return categories;
   }
 }
