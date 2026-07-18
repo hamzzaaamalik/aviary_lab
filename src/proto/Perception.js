@@ -65,10 +65,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   handleSingleInput(input) {
-    if (!input) {
-      throw new TypeError('Input cannot be null or undefined');
-    }
-    return this.categorizeSensoryInput(input);
+    return this.process(input);  // Leverage process for single input handling
   }
 
   /**
