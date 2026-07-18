@@ -88,8 +88,12 @@ export class Perception {
       throw new TypeError('Data must be an array');
     }
     return data.map(input => {
-      const category = this.categorizeSensoryInput(input);
-      return { input, category };
+      try {
+        return { input, category: this.categorizeSensoryInput(input) };
+      } catch (error) {
+        console.warn('Error categorizing input:', input, error.message);
+        return { input, category: 'error' };
+      }
     });
   }
 }
