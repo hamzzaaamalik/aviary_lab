@@ -92,4 +92,5 @@ export class Perception {
       return { input, category };
     });
   }
-}
+} 
+
