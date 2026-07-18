@@ -1,95 +1,31 @@
+// src/proto/Perception.js
+
 /**
- * Perception — the faculty responsible for processing sensory input.
+ * Perception module for handling sensory inputs.
  */
 export class Perception {
   /**
-   * Process multiple sensory inputs and categorize them by type.
-   * @param {Array<*>} inputs - An array of sensory input values.
-   * @returns {object} - Categorized inputs by type.
-   * @throws {TypeError} - If inputs is not an array or is empty.
+   * Categorizes sensory inputs into known types.
+   * @param {any} sensoryInput - The input to be categorized.
+   * @returns {string} - The category of the sensory input.
+   * @throws {TypeError} - If the input is not valid.
    */
-  categorizeSensoryInputs(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+  categorizeSensoryInput(sensoryInput) {
+    if (typeof sensoryInput !== 'object' || sensoryInput === null) {
+      throw new TypeError('Invalid sensory input');
     }
-    if (inputs.length === 0) {
-      return {};
-    }
-    return inputs.reduce((acc, input) => {
-      const type = typeof input;
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(input);
-      return acc;
-    }, {});
+    // Placeholder categorization logic
+    if ('sight' in sensoryInput) return 'visual';
+    if ('sound' in sensoryInput) return 'auditory';
+    return 'unknown';
   }
 
   /**
-   * Validate individual sensory input.
-   * @param {*} input - A sensory input value.
-   * @throws {TypeError} - If the input is of an invalid type.
+   * Process the incoming sensory data and categorize it.
+   * @param {any} data - The sensory data.
+   * @returns {string} - The result of the categorization.
    */
-  validateInput(input) {
-    const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
-    if (!validTypes.includes(typeof input)) {
-      throw new TypeError(`Invalid input type: ${typeof input}. Expected one of: ${validTypes.join(', ')}`);
-    }
+  process(data) {
+    return this.categorizeSensoryInput(data);
   }
-
-  /**
-   * Process inputs and return categorized inputs by type.
-   * @param {Array<*>} inputs - An array of sensory inputs.
-   * @returns {object} - Categorized inputs by type.
-   */
-  process(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
-    }
-
-    const validInputs = [];
-    const errors = [];
-
-    inputs.forEach(input => {
-      try {
-        this.validateInput(input);
-        validInputs.push(input);
-      } catch (error) {
-        errors.push(error.message);
-      }
-    });
-
-    const categorized = this.categorizeSensoryInputs(validInputs);
-    return { categorized, errors };
-  }
-
-  /**
-   * Categorize errors based on their type.
-   * @param {Array<string>} errors - An array of error messages.
-   * @returns {object} - Categorized errors by type.
-   */
-  categorizeErrors(errors) {
-    if (!Array.isArray(errors)) {
-      throw new TypeError('Expected an array for errors, received ' + typeof errors);
-    }
-    return errors.reduce((acc, error) => {
-      const type = error.split(':')[0]; // Extract type from error message
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(error);
-      return acc;
-    }, {});
-  }
-
-  /**
-   * Process sensory inputs with detailed error reporting.
-   * @param {Array<*>} inputs - An array of sensory inputs to process.
-   * @returns {{categorized: object, errors: Array<string>, categorizedErrors: object}} - Categorized inputs and any validation errors.
-   */
-  processWithErrors(inputs) {
-    const results = this.process(inputs);
-    const categorizedErrors = this.categorizeErrors(results.errors);
-    return {
-      categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : [],
-      categorizedErrors
-    };
-  }
-} 
+}
