@@ -87,8 +87,8 @@ export class Perception {
       this.categorizeSensoryInput(input);
       return true;
     } catch (error) {
-      console.error('Validation failed:', error.message);
+      console.error('Validation error:', error.message);
       return false;
     }
   }
-}
+} 
