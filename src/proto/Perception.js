@@ -76,4 +76,22 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Process and validate sensory input with detailed error handling.
+   * @param {any} data - The sensory data to process.
+   * @returns {string} - The category of the sensory input.
+   * @throws {TypeError} - If the input data is invalid.
+   */
+  validateAndProcess(data) {
+    if (!data) {
+      throw new TypeError('Data cannot be null or undefined');
+    }
+    try {
+      return this.process(data);
+    } catch (error) {
+      console.error('Processing error:', error.message);
+      throw error;
+    }
+  }
 }
