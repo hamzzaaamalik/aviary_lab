@@ -76,4 +76,4 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
-}
+} 
