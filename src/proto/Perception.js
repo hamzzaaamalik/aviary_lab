@@ -13,7 +13,7 @@ export class Perception {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
     if (inputs.length === 0) {
-      return {};
+      throw new TypeError('Inputs array cannot be empty.');
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
@@ -43,6 +43,9 @@ export class Perception {
   process(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+    }
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty.');
     }
 
     const validInputs = [];
