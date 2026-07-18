@@ -76,4 +76,21 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validate sensory input format and return a detailed error message.
+   * @param {any} input - The sensory input to validate.
+   * @throws {TypeError} - If the input format is incorrect.
+   */
+  validateInputFormat(input) {
+    if (typeof input !== 'object' || input === null) {
+      throw new TypeError('Input must be a non-null object.');
+    }
+    const validKeys = ['sight', 'sound', 'smell', 'taste', 'touch'];
+    const keys = Object.keys(input);
+    const invalidKeys = keys.filter(key => !validKeys.includes(key));
+    if (invalidKeys.length > 0) {
+      throw new TypeError('Invalid keys in input: ' + invalidKeys.join(', '));
+    }
+  }
 }
