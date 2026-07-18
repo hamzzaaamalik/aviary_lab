@@ -89,4 +89,4 @@ export class Perception {
     }
     return this.categorizeSensoryInput(input);
   }
-}
+} 
