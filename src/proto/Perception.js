@@ -67,6 +67,9 @@ export class Perception {
    * @returns {object} - Categorized errors by type.
    */
   categorizeErrors(errors) {
+    if (!Array.isArray(errors) || errors.length === 0) {
+      return {};
+    }
     return errors.reduce((acc, error) => {
       const type = error.split(':')[0]; // Extract type from error message
       if (!acc[type]) acc[type] = [];
