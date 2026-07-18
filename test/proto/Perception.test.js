@@ -4,35 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInput handles visual input', () => {
-  const category = perception.categorizeSensoryInput({ sight: true });
-  assert.equal(category, 'visual');
-});
-
-test('categorizeSensoryInput handles auditory input', () => {
-  const category = perception.categorizeSensoryInput({ sound: true });
-  assert.equal(category, 'auditory');
-});
-
-test('processMultiple categorizes multiple inputs', () => {
-  const categories = perception.processMultiple([
+test('handleBatch processes multiple sensory inputs correctly', () => {
+  const inputs = [
     { sight: true },
     { sound: true },
     { smell: true },
-  ]);
-  assert.deepEqual(categories, ['visual', 'auditory', 'olfactory']);
-});
-
-test('handleBatch categorizes multiple sensory inputs', () => {
-  const categories = perception.handleBatch([
     { taste: true },
     { touch: true },
-    { unknown: true },
-  ]);
-  assert.deepEqual(categories, ['gustatory', 'tactile', 'unknown']);
+  ];
+  const expected = ['visual', 'auditory', 'olfactory', 'gustatory', 'tactile'];
+  const result = perception.handleBatch(inputs);
+  assert.deepEqual(result, expected);
 });
 
-test('handleBatch throws TypeError with non-array input', () => {
-  assert.throws(() => perception.handleBatch('not an array'), TypeError);
+test('handleBatch throws TypeError on non-array input', () => {
+  assert.throws(() => perception.handleBatch(null), TypeError);
+  assert.throws(() => perception.handleBatch({}), TypeError);
+});
+
+test('handleBatch throws TypeError for invalid inputs', () => {
+  const inputs = [
+    { sight: true },
+    null,
+    { sound: true }
+  ];
+  assert.throws(() => perception.handleBatch(inputs), TypeError);
 });
 

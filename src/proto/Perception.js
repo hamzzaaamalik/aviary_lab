@@ -85,8 +85,9 @@ export class Perception {
    */
   handleBatch(dataArray) {
     if (!Array.isArray(dataArray)) {
-      throw new TypeError('Data must be an array');
+      throw new TypeError('dataArray must be an array');
     }
-    return dataArray.map(data => this.process(data));
+    return this.processMultiple(dataArray);
   }
-}
+} 
+
