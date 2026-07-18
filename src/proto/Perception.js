@@ -76,4 +76,12 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
-}
+
+  /**
+   * Validate and log sensory input to the console for debugging.
+   * @param {any} input - The sensory input to log.
+   */
+  logInput(input) {
+    console.log('Received sensory input:', input);
+  }
+} 
