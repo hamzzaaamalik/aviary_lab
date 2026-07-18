@@ -76,4 +76,14 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validate, process and categorize multiple sensory inputs.
+   * @param {Array<any>} inputs - An array of sensory data inputs.
+   * @returns {Array<string>} - An array of categories for each sensory input.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  processAll(inputs) {
+    return this.processMultiple(inputs);
+  }
 }
