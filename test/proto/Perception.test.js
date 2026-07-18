@@ -31,3 +31,12 @@ test('processMultiple categorizes multiple inputs asynchronously', async () => {
     { input: { taste: true }, category: 'gustatory' }
   ]);
 });
+
+test('processMultiple throws on empty input array', async () => {
+  try {
+    await perception.processMultiple([]);
+    assert.fail('Expected processMultiple to throw');
+  } catch (err) {
+    assert.equal(err.message, 'Inputs array cannot be empty');
+  }
+});
