@@ -87,8 +87,8 @@ export class Perception {
     try {
       return this.process(data);
     } catch (error) {
-      console.error('Error processing data:', error.message);
+      console.warn('Unexpected format for sensory data:', data);
       throw error;
     }
   }
-} 
+}
