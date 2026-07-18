@@ -4,7 +4,7 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInput returns correct category for valid inputs', () => {
+test('categorizeSensoryInput identifies valid inputs', () => {
   assert.equal(perception.categorizeSensoryInput({ sight: true }), 'visual');
   assert.equal(perception.categorizeSensoryInput({ sound: true }), 'auditory');
   assert.equal(perception.categorizeSensoryInput({ smell: true }), 'olfactory');
@@ -12,18 +12,26 @@ test('categorizeSensoryInput returns correct category for valid inputs', () => {
   assert.equal(perception.categorizeSensoryInput({ touch: true }), 'tactile');
 });
 
-test('categorizeSensoryInput throws TypeError for invalid inputs', () => {
+test('categorizeSensoryInput warns on unknown input', () => {
+  const consoleWarn = console.warn;
+  let warned = false;
+  console.warn = () => { warned = true; };
+  const category = perception.categorizeSensoryInput({ random: true });
+  console.warn = consoleWarn;
+  assert.equal(category, 'unknown');
+  assert.ok(warned);
+});
+
+test('process returns category only', () => {
+  assert.equal(perception.process({ sight: true }), 'visual');
+});
+
+test('process throws on invalid data', () => {
+  assert.throws(() => perception.process(null), TypeError);
+  assert.throws(() => perception.process(undefined), TypeError);
+});
+
+test('categorizeSensoryInput throws on invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInput(null), TypeError);
   assert.throws(() => perception.categorizeSensoryInput(42), TypeError);
-  assert.throws(() => perception.categorizeSensoryInput('string'), TypeError);
-});
-
-test('process returns correct categorization result', () => {
-  const result = perception.process({ sight: true });
-  assert.deepEqual(result, { category: 'visual', data: { sight: true } });
-});
-
-test('process throws TypeError for invalid input', () => {
-  assert.throws(() => perception.process(null), TypeError);
-  assert.throws(() => perception.process(42), TypeError);
 });

@@ -28,11 +28,13 @@ export class Perception {
   /**
    * Process the incoming sensory data and categorize it.
    * @param {any} data - The sensory data.
-   * @returns {{ category: string, data: any }} - The result of the categorization.
+   * @returns {string} - The category of the sensory input.
    * @throws {TypeError} - If the input data is invalid.
    */
   process(data) {
-    const category = this.categorizeSensoryInput(data);
-    return { category, data };  // Return both category and original data
+    if (!data) {
+      throw new TypeError('Data cannot be null or undefined');
+    }
+    return this.categorizeSensoryInput(data);  // Return only the category
   }
-} 
+}
