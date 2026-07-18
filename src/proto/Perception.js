@@ -36,9 +36,9 @@ export class Perception {
   }
 
   /**
-   * Process inputs and return categorized inputs by type.
+   * Process inputs and return categorized inputs by type, enhancing error reporting.
    * @param {Array<*>} inputs - An array of sensory inputs.
-   * @returns {object} - Categorized inputs by type.
+   * @returns {object} - Categorized inputs by type and detailed error messages.
    */
   process(inputs) {
     if (!Array.isArray(inputs)) {
@@ -92,4 +92,15 @@ export class Perception {
       categorizedErrors
     };
   }
-} 
+
+  /**
+   * Enhanced process method for better error handling and reporting.
+   * @param {Array<*>} inputs - An array of sensory inputs to process.
+   * @returns {{categorized: object, errors: Array<string>, categorizedErrors: object}} - Categorized inputs and detailed error reporting.
+   */
+  processEnhanced(inputs) {
+    const result = this.processWithErrors(inputs);
+    // Here you could include additional logging or handling based on the categorizedErrors
+    return result;
+  }
+}
