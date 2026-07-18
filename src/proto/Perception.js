@@ -76,4 +76,18 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Asynchronously process sensory data inputs and categorize them.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @returns {Promise<Array<string>>} - A promise that resolves to an array of categories.
+   * @throws {TypeError} - If inputs are invalid.
+   */
+  async processAsync(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    const categories = await Promise.all(inputs.map(input => this.process(input)));
+    return categories;
+  }
 }
