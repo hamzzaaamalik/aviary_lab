@@ -84,7 +84,7 @@ export class Perception {
    */
   validateInputFormat(input) {
     if (typeof input !== 'object' || input === null) {
-      throw new TypeError('Input must be a non-null object');
+      throw new TypeError('Input must be an object');
     }
   }
 }
