@@ -90,4 +90,4 @@ export class Perception {
     const category = this.categorizeSensoryInput(input);
     return { category, input };
   }
-} 
+}
