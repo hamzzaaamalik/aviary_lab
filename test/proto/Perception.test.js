@@ -2,31 +2,52 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-const perception = new Perception();
-
-// Existing tests...
-
-test('categorizeErrors categorizes error messages by type', () => {
-  const errors = [
-    'TypeError: Invalid input type',
-    'TypeError: Expected an array',
-    'ReferenceError: x is not defined',
-    'TypeError: Another error'
-  ];
-
-  const categorized = perception.categorizeErrors(errors);
-  assert.deepEqual(categorized, {
-    'TypeError': [
-      'TypeError: Invalid input type',
-      'TypeError: Expected an array',
-      'TypeError: Another error'
-    ],
-    'ReferenceError': ['ReferenceError: x is not defined']
-  });
+test('categorizeSensoryInput categorizes visual input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ sight: true });
+  assert.equal(result, 'visual');
 });
 
-test('categorizeErrors handles an empty array', () => {
-  const result = perception.categorizeErrors([]);
-  assert.deepEqual(result, {});
+test('categorizeSensoryInput categorizes auditory input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ sound: true });
+  assert.equal(result, 'auditory');
+});
+
+test('categorizeSensoryInput categorizes olfactory input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ smell: true });
+  assert.equal(result, 'olfactory');
+});
+
+test('categorizeSensoryInput categorizes gustatory input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ taste: true });
+  assert.equal(result, 'gustatory');
+});
+
+test('categorizeSensoryInput categorizes tactile input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ touch: true });
+  assert.equal(result, 'tactile');
+});
+
+test('categorizeSensoryInput returns unknown for unrecognized input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ motion: true });
+  assert.equal(result, 'unknown');
+});
+
+test('categorizeSensoryInput throws TypeError for invalid input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeSensoryInput(null), TypeError);
+  assert.throws(() => perception.categorizeSensoryInput(42), TypeError);
+  assert.throws(() => perception.categorizeSensoryInput('string'), TypeError);
+});
+
+test('process method returns correct categorization', () => {
+  const perception = new Perception();
+  const result = perception.process({ sight: true });
+  assert.equal(result, 'visual');
 });
 
