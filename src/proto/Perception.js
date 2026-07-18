@@ -48,6 +48,11 @@ export class Perception {
     const validInputs = [];
     const errors = [];
 
+    if (inputs.length === 0) {
+      errors.push('Input array cannot be empty.');
+      return { categorized: {}, errors };
+    }
+
     inputs.forEach(input => {
       try {
         this.validateInput(input);
@@ -88,15 +93,5 @@ export class Perception {
       errors: results.errors.length > 0 ? results.errors : [],
       categorizedErrors
     };
-  }
-
-  /**
-   * Process multiple sensory inputs and report errors through the kernel.
-   * @param {Array<*>} inputs - An array of sensory inputs to process.
-   * @returns {Promise<void>}
-   */
-  async processMultiple(inputs) {
-    const { categorized, errors, categorizedErrors } = this.processWithErrors(inputs);
-    this.kernel.bus.emit('perception:processed', { categorized, errors, categorizedErrors });
   }
 }
