@@ -4,29 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
+test('categorizeSensoryInputs categorizes valid inputs', () => {
+  const result = perception.categorizeSensoryInputs([1, "test", true, null]);
+  assert.deepEqual(result, { number: [1], string: ["test"], boolean: [true], object: [null] });
+});
 
-test('categorizeErrors categorizes error messages by type', () => {
-  const errors = [
-    'TypeError: Invalid input type',
-    'TypeError: Expected an array',
-    'ReferenceError: x is not defined',
-    'TypeError: Another error'
-  ];
+test('categorizeSensoryInputs throws TypeError for non-array inputs', () => {
+  assert.throws(() => perception.categorizeSensoryInputs("not an array"), TypeError);
+});
 
-  const categorized = perception.categorizeErrors(errors);
-  assert.deepEqual(categorized, {
-    'TypeError': [
-      'TypeError: Invalid input type',
-      'TypeError: Expected an array',
-      'TypeError: Another error'
-    ],
-    'ReferenceError': ['ReferenceError: x is not defined']
+test('validateInput throws TypeError for invalid input types', () => {
+  assert.throws(() => perception.validateInput(Symbol()), TypeError);
+});
+
+test('process returns categorized inputs and errors', () => {
+  const result = perception.process([1, "test", Symbol()]);
+  assert.deepEqual(result.categorized, { number: [1], string: ["test"] });
+  assert.deepEqual(result.errors, ["Invalid input type: symbol. Expected one of: string, number, object, boolean, undefined, function"]);
+});
+
+test('processWithErrors returns categorized inputs and categorized errors', () => {
+  const result = perception.processWithErrors([1, "test", Symbol()]);
+  assert.deepEqual(result.categorized, { number: [1], string: ["test"] });
+  assert.deepEqual(result.errors, ["Invalid input type: symbol. Expected one of: string, number, object, boolean, undefined, function"]);
+  assert.deepEqual(result.categorizedErrors, {
+    'Invalid input type': ["Invalid input type: symbol. Expected one of: string, number, object, boolean, undefined, function"]
   });
 });
-
-test('categorizeErrors handles an empty array', () => {
-  const result = perception.categorizeErrors([]);
-  assert.deepEqual(result, {});
-});
-
