@@ -89,4 +89,20 @@ export class Perception {
       categorizedErrors
     };
   }
+
+  /**
+   * Process multiple sensory inputs and report errors through the kernel.
+   * @param {Array<*>} inputs - An array of sensory inputs to process.
+   * @returns {Promise<{categorized: object, errors: Array<string>, categorizedErrors: object}>} - Processed results with error details.
+   */
+  async processInputs(inputs) {
+    return new Promise((resolve, reject) => {
+      try {
+        const results = this.processWithErrors(inputs);
+        resolve(results);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 }
