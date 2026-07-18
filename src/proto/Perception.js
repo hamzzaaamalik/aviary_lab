@@ -32,7 +32,7 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   process(data) {
-    if (!data) {
+    if (data == null) {  // Cover null and undefined in one check
       throw new TypeError('Data cannot be null or undefined');
     }
     return this.categorizeSensoryInput(data);  // Return only the category
@@ -48,6 +48,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty');
+    }
     return inputs.map(input => this.process(input));
   }
 
@@ -58,7 +61,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   handleSingleInput(input) {
-    if (!input) {
+    if (input == null) {  // Cover null and undefined in one check
       throw new TypeError('Input cannot be null or undefined');
     }
     return this.categorizeSensoryInput(input);
@@ -73,6 +76,9 @@ export class Perception {
   handleMultipleInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty');
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
