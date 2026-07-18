@@ -13,7 +13,7 @@ export class Perception {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
     if (inputs.length === 0) {
-      return {};
+      throw new TypeError('Input array cannot be empty.');
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
@@ -48,6 +48,11 @@ export class Perception {
     const validInputs = [];
     const errors = [];
 
+    if (inputs.length === 0) {
+      errors.push('Input array cannot be empty.');
+      return { categorized: {}, errors };
+    }
+
     inputs.forEach(input => {
       try {
         this.validateInput(input);
@@ -68,7 +73,7 @@ export class Perception {
    */
   categorizeErrors(errors) {
     return errors.reduce((acc, error) => {
-      const type = error.split(':')[0]; // Extract type from error message
+      const type = error.split(':')[0].trim(); // Extract type from error message
       if (!acc[type]) acc[type] = [];
       acc[type].push(error);
       return acc;
