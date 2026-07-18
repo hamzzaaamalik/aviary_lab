@@ -76,4 +76,17 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Filters valid sensory inputs from an array.
+   * @param {Array<any>} inputs - The sensory inputs to filter.
+   * @returns {Array<any>} - Valid sensory inputs.
+   * @throws {TypeError} - If inputs is not an array.
+   */
+  filterValidInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return inputs.filter(input => typeof input === 'object' && input !== null);
+  }
 }
