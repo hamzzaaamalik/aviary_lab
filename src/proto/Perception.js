@@ -86,4 +86,4 @@ export class Perception {
       throw new TypeError('Invalid sensory input: expected an object, received ' + typeof input);
     }
   }
-} 
+}
