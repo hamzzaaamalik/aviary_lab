@@ -65,9 +65,13 @@ export class Perception {
    * Categorize errors based on their type.
    * @param {Array<string>} errors - An array of error messages.
    * @returns {object} - Categorized errors by type.
+   * @throws {TypeError} - If errors is not an array or is empty.
    */
   categorizeErrors(errors) {
-    if (!Array.isArray(errors) || errors.length === 0) {
+    if (!Array.isArray(errors)) {
+      throw new TypeError('Expected an array for errors, received ' + typeof errors);
+    }
+    if (errors.length === 0) {
       return {};
     }
     return errors.reduce((acc, error) => {
