@@ -76,4 +76,17 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Logs the categories of multiple sensory inputs.
+   * @param {Array<any>} inputs - An array of sensory inputs to log.
+   * @returns {void}
+   * @throws {TypeError} - If any input is invalid.
+   */
+  logCategories(inputs) {
+    const categories = this.handleMultipleInputs(inputs);
+    categories.forEach((category, index) => {
+      console.log(`Input ${index + 1}: Category - ${category}`);
+    });
+  }
 }
