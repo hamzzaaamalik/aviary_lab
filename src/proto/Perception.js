@@ -88,19 +88,8 @@ export class Perception {
     const categorizedErrors = this.categorizeErrors(results.errors);
     return {
       categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : [],
+      errors: results.errors.length > 0 ? results.errors : null,
       categorizedErrors
     };
   }
-
-  /**
-   * Enhanced process method for better error handling and reporting.
-   * @param {Array<*>} inputs - An array of sensory inputs to process.
-   * @returns {{categorized: object, errors: Array<string>, categorizedErrors: object}} - Categorized inputs and detailed error reporting.
-   */
-  processEnhanced(inputs) {
-    const result = this.processWithErrors(inputs);
-    // Here you could include additional logging or handling based on the categorizedErrors
-    return result;
-  }
-}
+} 
