@@ -74,8 +74,14 @@ export class Perception {
       throw new TypeError('Inputs array cannot be empty');
     }
     return Promise.all(inputs.map(async (input) => {
-      if (input === null || input === undefined) {
-        throw new TypeError('Input cannot be null or undefined');
+      if (input === null) {
+        throw new TypeError('Input cannot be null');
+      }
+      if (input === undefined) {
+        throw new TypeError('Input cannot be undefined');
+      }
+      if (typeof input === 'object' && Object.keys(input).length === 0) {
+        throw new TypeError('Input cannot be an empty object');
       }
       const category = await this.process(input);
       return { input, category };
@@ -83,13 +89,18 @@ export class Perception {
   }
 
   /**
-   * Process and validate multiple sensory data inputs, categorizing them efficiently
-   * @param {Array<any>} data - An array of sensory data inputs.
-   * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
+   * Process and validate multiple sensory data inputs, categorizing them efficiently.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async processAndValidateMultiple(data) {
-    const categorized = await this.processMultiple(data);
-    return this.validateAndCategorize(categorized);
+  async processAndValidate(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty');
+    }
+    return this.validateAndCategorize(inputs);
   }
-}
+}  
