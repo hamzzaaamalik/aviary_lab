@@ -87,6 +87,6 @@ export class Perception {
     if (!Array.isArray(dataArray)) {
       throw new TypeError('Data must be an array');
     }
-    return this.processMultiple(dataArray);
+    return dataArray.map(data => this.process(data));
   }
 }
