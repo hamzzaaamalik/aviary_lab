@@ -10,7 +10,7 @@ export class Perception {
    */
   categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+      throw new TypeError(`Expected an array for inputs, received ${typeof inputs}.`);
     }
     if (inputs.length === 0) {
       return {};
@@ -31,7 +31,7 @@ export class Perception {
   validateInput(input) {
     const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
     if (!validTypes.includes(typeof input)) {
-      throw new TypeError(`Invalid input type: ${typeof input}. Expected one of: ${validTypes.join(', ')}`);
+      throw new TypeError(`Invalid input type: ${typeof input}. Expected one of: ${validTypes.join(', ')}.`);
     }
   }
 
@@ -42,7 +42,10 @@ export class Perception {
    */
   process(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
+      throw new TypeError(`Expected an array for inputs, received ${typeof inputs}.`);
+    }
+    if (inputs.length === 0) {
+      return { categorized: {}, errors: [] };
     }
 
     const validInputs = [];
@@ -68,7 +71,7 @@ export class Perception {
    */
   categorizeErrors(errors) {
     if (!Array.isArray(errors)) {
-      throw new TypeError('Expected an array for errors, received ' + typeof errors);
+      throw new TypeError(`Expected an array for errors, received ${typeof errors}.`);
     }
     return errors.reduce((acc, error) => {
       const type = error.split(':')[0]; // Extract type from error message
