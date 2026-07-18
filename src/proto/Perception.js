@@ -30,7 +30,7 @@ export class Perception {
    */
   validateInput(input) {
     const validTypes = ['string', 'number', 'object', 'boolean', 'undefined', 'function'];
-    if (!validTypes.includes(typeof input)) {
+    if (input === null || !validTypes.includes(typeof input)) {
       throw new TypeError(`Invalid input type: ${typeof input}. Expected one of: ${validTypes.join(', ')}`);
     }
   }
@@ -71,7 +71,7 @@ export class Perception {
       throw new TypeError('Expected an array for errors, received ' + typeof errors);
     }
     return errors.reduce((acc, error) => {
-      const type = error.split(':')[0]; // Extract type from error message
+      const type = typeof error === 'string' ? error.split(':')[0] : 'unknown'; // Handle non-stringable errors
       if (!acc[type]) acc[type] = [];
       acc[type].push(error);
       return acc;
@@ -93,4 +93,3 @@ export class Perception {
     };
   }
 }
-
