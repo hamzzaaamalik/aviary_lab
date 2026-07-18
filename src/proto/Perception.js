@@ -76,4 +76,16 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validate sensory input format and log invalid types.
+   * @param {any} input - The sensory input to validate.
+   * @throws {TypeError} - If input is not valid.
+   */
+  validateInputFormat(input) {
+    if (typeof input !== 'object' || input === null) {
+      console.warn('Received an invalid input type:', input);
+      throw new TypeError('Input must be a valid object.');
+    }
+  }
 }
