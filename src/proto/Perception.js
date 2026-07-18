@@ -14,9 +14,14 @@ export class Perception {
     if (typeof sensoryInput !== 'object' || sensoryInput === null) {
       throw new TypeError('Invalid sensory input');
     }
-    // Placeholder categorization logic
+    // Enhanced categorization logic
     if ('sight' in sensoryInput) return 'visual';
     if ('sound' in sensoryInput) return 'auditory';
+    if ('smell' in sensoryInput) return 'olfactory';
+    if ('taste' in sensoryInput) return 'gustatory';
+    if ('touch' in sensoryInput) return 'tactile';
+
+    console.warn('Unknown sensory input received:', sensoryInput);
     return 'unknown';
   }
 
@@ -28,4 +33,5 @@ export class Perception {
   process(data) {
     return this.categorizeSensoryInput(data);
   }
-}
+} 
+

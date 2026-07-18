@@ -14,9 +14,27 @@ test('categorizeSensoryInput categorizes auditory input', () => {
   assert.equal(result, 'auditory');
 });
 
-test('categorizeSensoryInput returns unknown for unrecognized input', () => {
+test('categorizeSensoryInput categorizes olfactory input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ smell: true });
+  assert.equal(result, 'olfactory');
+});
+
+test('categorizeSensoryInput categorizes gustatory input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ taste: true });
+  assert.equal(result, 'gustatory');
+});
+
+test('categorizeSensoryInput categorizes tactile input', () => {
   const perception = new Perception();
   const result = perception.categorizeSensoryInput({ touch: true });
+  assert.equal(result, 'tactile');
+});
+
+test('categorizeSensoryInput returns unknown for unrecognized input', () => {
+  const perception = new Perception();
+  const result = perception.categorizeSensoryInput({ motion: true });
   assert.equal(result, 'unknown');
 });
 
@@ -32,3 +50,4 @@ test('process method returns correct categorization', () => {
   const result = perception.process({ sight: true });
   assert.equal(result, 'visual');
 });
+
