@@ -12,7 +12,7 @@ export class Perception {
    */
   categorizeSensoryInput(sensoryInput) {
     if (typeof sensoryInput !== 'object' || sensoryInput === null) {
-      throw new TypeError('Invalid sensory input');
+      throw new TypeError('Invalid sensory input: Input must be a non-null object.');
     }
     // Enhanced categorization logic
     if ('sight' in sensoryInput) return 'visual';
@@ -33,7 +33,7 @@ export class Perception {
    */
   process(data) {
     if (!data) {
-      throw new TypeError('Data cannot be null or undefined');
+      throw new TypeError('Data cannot be null or undefined.');
     }
     return this.categorizeSensoryInput(data);  // Return only the category
   }
@@ -46,7 +46,7 @@ export class Perception {
    */
   processMultiple(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
+      throw new TypeError('Inputs must be an array.');
     }
     return inputs.map(input => this.process(input));
   }
@@ -59,7 +59,7 @@ export class Perception {
    */
   handleSingleInput(input) {
     if (!input) {
-      throw new TypeError('Input cannot be null or undefined');
+      throw new TypeError('Input cannot be null or undefined.');
     }
     return this.categorizeSensoryInput(input);
   }
@@ -72,8 +72,21 @@ export class Perception {
    */
   handleMultipleInputs(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
+      throw new TypeError('Inputs must be an array.');
     }
     return inputs.map(input => this.handleSingleInput(input));
+  }
+
+  /**
+   * Process and validate sensory input with detailed error handling.
+   * @param {any} data - The sensory data to process.
+   * @returns {string} - The category of the sensory input.
+   * @throws {TypeError} - If the input data is invalid.
+   */
+  validateAndProcess(data) {
+    if (!data) {
+      throw new TypeError('Data cannot be null or undefined.');
+    }
+    return this.categorizeSensoryInput(data);
   }
 }
