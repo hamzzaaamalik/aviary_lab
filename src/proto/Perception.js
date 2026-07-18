@@ -44,6 +44,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError(`Expected an array for inputs, received ${typeof inputs}.`);
     }
+    if (inputs.length === 0) {
+      return { categorized: {}, errors: [] };
+    }
 
     const validInputs = [];
     const errors = [];
@@ -92,4 +95,4 @@ export class Perception {
       categorizedErrors
     };
   }
-}
+} 
