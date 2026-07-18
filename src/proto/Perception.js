@@ -64,7 +64,12 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return Promise.all(inputs.map(input => this.process(input)));
+    return Promise.all(inputs.map(async (input) => {
+      if (!input) {
+        throw new TypeError('Input cannot be null or undefined');
+      }
+      return this.process(input);
+    }));
   }
 }  
 
