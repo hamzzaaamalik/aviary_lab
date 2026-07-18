@@ -14,6 +14,7 @@ test('categorizeSensoryInput classifies sound input', () => {
   assert.equal(result, 'auditory');
 });
 
+
 test('process handles valid sensory input', () => {
   const result = perception.process({ touch: true });
   assert.equal(result, 'tactile');
@@ -21,6 +22,10 @@ test('process handles valid sensory input', () => {
 
 test('process throws TypeError on null input', () => {
   assert.throws(() => perception.process(null), TypeError);
+});
+
+test('process throws TypeError on undefined input', () => {
+  assert.throws(() => perception.process(undefined), TypeError);
 });
 
 test('processMultiple categorizes multiple inputs', () => {
@@ -41,4 +46,3 @@ test('validateAndCategorize returns categorized results', () => {
 test('validateAndCategorize throws TypeError on non-array input', () => {
   assert.throws(() => perception.validateAndCategorize(null), TypeError);
 });
-
