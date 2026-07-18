@@ -12,7 +12,7 @@ export class Perception {
    */
   categorizeSensoryInput(sensoryInput) {
     if (typeof sensoryInput !== 'object' || sensoryInput === null) {
-      throw new TypeError('Invalid sensory input');
+      throw new TypeError('Invalid sensory input: must be a non-null object');
     }
     // Enhanced categorization logic
     if ('sight' in sensoryInput) return 'visual';
@@ -75,5 +75,21 @@ export class Perception {
       throw new TypeError('Inputs must be an array');
     }
     return inputs.map(input => this.handleSingleInput(input));
+  }
+
+  /**
+   * Validate sensory data and emit categorized results.
+   * @param {Array<any>} data - An array of sensory data inputs.
+   * @returns {Array<{input: any, category: string}>} - Categorized results.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  validateAndCategorize(data) {
+    if (!Array.isArray(data)) {
+      throw new TypeError('Data must be an array');
+    }
+    return data.map(input => {
+      const category = this.categorizeSensoryInput(input);
+      return { input, category };
+    });
   }
 }
