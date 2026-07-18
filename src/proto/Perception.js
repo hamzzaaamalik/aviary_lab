@@ -21,7 +21,6 @@ export class Perception {
     if ('taste' in sensoryInput) return 'gustatory';
     if ('touch' in sensoryInput) return 'tactile';
 
-    console.warn('Unknown sensory input received:', sensoryInput);
     return 'unknown';
   }
 
@@ -35,4 +34,22 @@ export class Perception {
     const category = this.categorizeSensoryInput(data);
     return { category, data };  // Return both category and original data
   }
+
+  /**
+   * Enhance error handling for processing sensory inputs.
+   * @param {any} data - The sensory data to process.
+   * @returns {{ category: string, data: any, error: string | null }} - Result of processing with error handling.
+   */
+  processWithErrorHandling(data) {
+    if (typeof data !== 'object' || data === null) {
+      return { category: 'error', data, error: 'Invalid input: not an object' };
+    }
+    try {
+      return this.process(data);
+    } catch (error) {
+      console.error('Error processing sensory data:', error);
+      return { category: 'error', data, error: error.message };
+    }
+  }
 } 
+
