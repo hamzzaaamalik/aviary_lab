@@ -28,6 +28,7 @@ test('handleSingleInput handles a valid input', () => {
   assert.equal(result, 'olfactory');
 });
 
+
 test('handleSingleInput throws TypeError for invalid input', () => {
   assert.throws(() => perception.handleSingleInput(null), TypeError);
 });
@@ -36,4 +37,9 @@ test('handleMultipleInputs processes multiple inputs correctly', () => {
   const inputs = [{ taste: true }, { sight: true }, { sound: true }];
   const result = perception.handleMultipleInputs(inputs);
   assert.deepEqual(result, ['gustatory', 'visual', 'auditory']);
+});
+
+test('handleMultipleInputs throws TypeError for invalid input', () => {
+  assert.throws(() => perception.handleMultipleInputs(null), TypeError);
+  assert.throws(() => perception.handleMultipleInputs({}), TypeError);
 });
