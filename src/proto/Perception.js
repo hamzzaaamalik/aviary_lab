@@ -28,10 +28,11 @@ export class Perception {
   /**
    * Process the incoming sensory data and categorize it.
    * @param {any} data - The sensory data.
-   * @returns {string} - The result of the categorization.
+   * @returns {{ category: string, data: any }} - The result of the categorization.
+   * @throws {TypeError} - If the input data is invalid.
    */
   process(data) {
-    return this.categorizeSensoryInput(data);
+    const category = this.categorizeSensoryInput(data);
+    return { category, data };  // Return both category and original data
   }
 } 
-
