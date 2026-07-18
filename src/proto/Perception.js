@@ -12,6 +12,7 @@ export class Perception {
    */
   categorizeSensoryInput(sensoryInput) {
     if (typeof sensoryInput !== 'object' || sensoryInput === null) {
+      console.warn('Invalid sensory input received: expected a non-null object');
       throw new TypeError('Invalid sensory input: must be a non-null object');
     }
     // Enhanced categorization logic
@@ -33,6 +34,7 @@ export class Perception {
    */
   validateAndCategorize(data) {
     if (!Array.isArray(data)) {
+      console.warn('Data must be an array');
       throw new TypeError('Data must be an array');
     }
     return data.map(input => {
@@ -49,6 +51,7 @@ export class Perception {
    */
   async process(data) {
     if (!data) {
+      console.warn('Data cannot be null or undefined');
       throw new TypeError('Data cannot be null or undefined');
     }
     return this.categorizeSensoryInput(data);  // Return only the category
@@ -62,14 +65,15 @@ export class Perception {
    */
   async processMultiple(inputs) {
     if (!Array.isArray(inputs)) {
+      console.warn('Inputs must be an array');
       throw new TypeError('Inputs must be an array');
     }
     return Promise.all(inputs.map(async (input) => {
       if (!input) {
+        console.warn('Input cannot be null or undefined');
         throw new TypeError('Input cannot be null or undefined');
       }
       return this.process(input);
     }));
   }
 }  
-
