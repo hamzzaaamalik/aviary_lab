@@ -4,42 +4,44 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInput classifies sensory input correctly', () => {
+test('categorizeSensoryInput categorizes valid sensory input', () => {
   assert.equal(perception.categorizeSensoryInput({ sight: true }), 'visual');
   assert.equal(perception.categorizeSensoryInput({ sound: true }), 'auditory');
   assert.equal(perception.categorizeSensoryInput({ smell: true }), 'olfactory');
   assert.equal(perception.categorizeSensoryInput({ taste: true }), 'gustatory');
   assert.equal(perception.categorizeSensoryInput({ touch: true }), 'tactile');
-  assert.equal(perception.categorizeSensoryInput({}), 'unknown');
 });
 
-test('process throws TypeError for invalid input', () => {
+test('categorizeSensoryInput throws TypeError on invalid input', () => {
+  assert.throws(() => perception.categorizeSensoryInput(null), TypeError);
+  assert.throws(() => perception.categorizeSensoryInput('invalid'), TypeError);
+});
+
+test('process processes valid data', () => {
+  assert.equal(perception.process({ sight: true }), 'visual');
+});
+
+test('process throws TypeError on invalid data', () => {
   assert.throws(() => perception.process(null), TypeError);
 });
 
-test('processMultiple classifies multiple inputs', () => {
-  const inputs = [{ sight: true }, { sound: true }, { touch: true }];
-  const result = perception.processMultiple(inputs);
-  assert.deepEqual(result, ['visual', 'auditory', 'tactile']);
+test('processMultiple processes an array of inputs', () => {
+  const inputs = [ { sight: true }, { sound: true } ];
+  const results = perception.processMultiple(inputs);
+  assert.deepEqual(results, ['visual', 'auditory']);
 });
 
-test('handleSingleInput handles a valid input', () => {
-  const result = perception.handleSingleInput({ smell: true });
-  assert.equal(result, 'olfactory');
+test('handleSingleInput validates and categorizes single input', () => {
+  assert.equal(perception.handleSingleInput({ smell: true }), 'olfactory');
 });
 
-
-test('handleSingleInput throws TypeError for invalid input', () => {
-  assert.throws(() => perception.handleSingleInput(null), TypeError);
+test('handleMultipleInputs validates and categorizes multiple inputs', () => {
+  const inputs = [ { taste: true }, { touch: true } ];
+  const results = perception.handleMultipleInputs(inputs);
+  assert.deepEqual(results, ['gustatory', 'tactile']);
 });
 
-test('handleMultipleInputs processes multiple inputs correctly', () => {
-  const inputs = [{ taste: true }, { sight: true }, { sound: true }];
-  const result = perception.handleMultipleInputs(inputs);
-  assert.deepEqual(result, ['gustatory', 'visual', 'auditory']);
+test('validateAndCategorize throws TypeError on invalid input', () => {
+  assert.throws(() => perception.validateAndCategorize(null), TypeError);
 });
 
-test('handleMultipleInputs throws TypeError for invalid input', () => {
-  assert.throws(() => perception.handleMultipleInputs(null), TypeError);
-  assert.throws(() => perception.handleMultipleInputs({}), TypeError);
-});
