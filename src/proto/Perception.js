@@ -87,9 +87,6 @@ export class Perception {
     if (!Array.isArray(data)) {
       throw new TypeError('Data must be an array');
     }
-    return data.map(item => ({
-      input: item,
-      category: this.categorizeSensoryInput(item),
-    }));
+    return data.map(input => ({ input, category: this.categorizeSensoryInput(input) }));
   }
-}
+} 
