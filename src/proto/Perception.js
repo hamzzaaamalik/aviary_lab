@@ -76,4 +76,15 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Enhanced method to log and categorize sensory inputs with detail.
+   * @param {any} input - The sensory input.
+   * @returns {string} - The category of the sensory input with logging.
+   */
+  logAndCategorize(input) {
+    const category = this.categorizeSensoryInput(input);
+    console.log('Categorized input:', input, 'as', category);
+    return category;
+  }
 }
