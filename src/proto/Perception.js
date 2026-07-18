@@ -48,13 +48,7 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => {
-      try {
-        return this.process(input);
-      } catch (err) {
-        return { error: err.message };
-      }
-    });
+    return inputs.map(input => this.process(input));
   }
 
   /**

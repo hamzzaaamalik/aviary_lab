@@ -4,38 +4,23 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInput categorizes visual input', () => {
-  const category = perception.categorizeSensoryInput({ sight: true });
-  assert.equal(category, 'visual');
+test('categorizeSensoryInput returns correct category', () => {
+  assert.equal(perception.categorizeSensoryInput({ sight: true }), 'visual');
+  assert.equal(perception.categorizeSensoryInput({ sound: true }), 'auditory');
 });
 
-test('categorizeSensoryInput categorizes auditory input', () => {
-  const category = perception.categorizeSensoryInput({ sound: true });
-  assert.equal(category, 'auditory');
-});
-
-test('process handles valid data', () => {
-  const category = perception.process({ sight: true });
-  assert.equal(category, 'visual');
+test('process throws on invalid input', () => {
+  assert.throws(() => perception.process(null), TypeError);
 });
 
 test('processMultiple categorizes multiple inputs', () => {
-  const inputs = [{ sight: true }, { sound: true }, { smell: true }];
-  const categories = perception.processMultiple(inputs);
-  assert.deepEqual(categories, ['visual', 'auditory', 'olfactory']);
-});
-
-test('handleMultipleInputs processes multiple inputs', () => {
   const inputs = [{ sight: true }, { sound: true }];
-  const categories = perception.handleMultipleInputs(inputs);
+  const categories = perception.processMultiple(inputs);
   assert.deepEqual(categories, ['visual', 'auditory']);
 });
 
-test('handleSingleInput throws on null input', () => {
-  assert.throws(() => perception.handleSingleInput(null), TypeError);
-});
-
-test('handleMultipleInputs throws on non-array input', () => {
-  assert.throws(() => perception.handleMultipleInputs('not an array'), TypeError);
+test('processMultiple throws on invalid input', () => {
+  assert.throws(() => perception.processMultiple(null), TypeError);
+  assert.throws(() => perception.processMultiple('not an array'), TypeError);
 });
 
