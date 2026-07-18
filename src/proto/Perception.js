@@ -37,4 +37,17 @@ export class Perception {
     }
     return this.categorizeSensoryInput(data);  // Return only the category
   }
+
+  /**
+   * Handle multiple sensory data inputs and categorize them.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @returns {Array<string>} - An array of categories for each sensory input.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  processMultiple(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return inputs.map(input => this.process(input));
+  }
 }
