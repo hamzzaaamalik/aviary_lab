@@ -85,10 +85,10 @@ export class Perception {
    */
   validateAndCategorize(data) {
     if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array');
+      throw new TypeError('Data must be an array of sensory inputs');
     }
     return data.map(input => {
-      const category = this.categorizeSensoryInput(input);
+      const category = this.handleSingleInput(input);
       return { input, category };
     });
   }
