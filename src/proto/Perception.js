@@ -84,11 +84,18 @@ export class Perception {
   }
 
   /**
-   * Enhanced validation for sensory input types.
-   * @param {any} input - The input to validate.
-   * @returns {boolean} - True if valid, otherwise false.
+   * Enhanced validation for sensory inputs and returning their categories.
+   * @param {Array<any>} inputs - An array of sensory inputs to validate.
+   * @returns {Array<string>} - Categories of the sensory inputs.
+   * @throws {TypeError} - If any input is invalid.
    */
-  validateInputType(input) {
-    return typeof input === 'object' && input !== null;
+  validateAndCategorize(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty');
+    }
+    return inputs.map(input => this.handleSingleInput(input));
   }
 }
