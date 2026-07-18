@@ -81,13 +81,12 @@ export class Perception {
       } catch (error) {
         if (error instanceof TypeError) {
           console.error('Error handling input:', input, error.message);
-          categories.push('error'); // Indicate an error occurred for this input
+          categories.push(`error: ${error.message}`); // Provide specific error feedback
         } else {
-          throw error; // Rethrow unexpected errors
+          throw error;
         }
       }
     }
-    console.log('Processed categories:', categories);
     return categories;
   }
 }
