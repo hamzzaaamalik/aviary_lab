@@ -50,4 +50,30 @@ export class Perception {
     }
     return inputs.map(input => this.process(input));
   }
+
+  /**
+   * Validate and handle a single sensory input, returning its category.
+   * @param {any} input - The sensory input to handle.
+   * @returns {string} - The category of the sensory input.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  handleSingleInput(input) {
+    if (!input) {
+      throw new TypeError('Input cannot be null or undefined');
+    }
+    return this.categorizeSensoryInput(input);
+  }
+
+  /**
+   * Validate and handle multiple sensory inputs, returning their categories.
+   * @param {Array<any>} inputs - An array of sensory inputs to handle.
+   * @returns {Array<string>} - An array of categories for each sensory input.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  handleMultipleInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return inputs.map(input => this.handleSingleInput(input));
+  }
 }

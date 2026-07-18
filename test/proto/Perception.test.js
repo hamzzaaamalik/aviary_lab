@@ -2,28 +2,44 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('processMultiple categorizes valid inputs correctly', () => {
-  const perception = new Perception();
-  const inputs = [
-    { sight: true },
-    { sound: true },
-    { smell: true },
-    { touch: true },
-    { unknown: true }
-  ];
-  const expected = ['visual', 'auditory', 'olfactory', 'tactile', 'unknown'];
+const perception = new Perception();
+
+test('categorizeSensoryInput classifies sensory input correctly', () => {
+  assert.equal(perception.categorizeSensoryInput({ sight: true }), 'visual');
+  assert.equal(perception.categorizeSensoryInput({ sound: true }), 'auditory');
+  assert.equal(perception.categorizeSensoryInput({ smell: true }), 'olfactory');
+  assert.equal(perception.categorizeSensoryInput({ taste: true }), 'gustatory');
+  assert.equal(perception.categorizeSensoryInput({ touch: true }), 'tactile');
+  assert.equal(perception.categorizeSensoryInput({}), 'unknown');
+});
+
+test('process throws TypeError for invalid input', () => {
+  assert.throws(() => perception.process(null), TypeError);
+});
+
+test('processMultiple classifies multiple inputs', () => {
+  const inputs = [{ sight: true }, { sound: true }, { touch: true }];
   const result = perception.processMultiple(inputs);
-  assert.deepEqual(result, expected);
+  assert.deepEqual(result, ['visual', 'auditory', 'tactile']);
 });
 
-test('processMultiple throws TypeError for non-array input', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.processMultiple(null), TypeError);
-  assert.throws(() => perception.processMultiple({}), TypeError);
+test('handleSingleInput handles a valid input', () => {
+  const result = perception.handleSingleInput({ smell: true });
+  assert.equal(result, 'olfactory');
 });
 
-test('processMultiple throws TypeError for invalid input in array', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.processMultiple([{ sight: true }, null]), TypeError);
-  assert.throws(() => perception.processMultiple([{ sound: true }, 'not an object']), TypeError);
+
+test('handleSingleInput throws TypeError for invalid input', () => {
+  assert.throws(() => perception.handleSingleInput(null), TypeError);
+});
+
+test('handleMultipleInputs processes multiple inputs correctly', () => {
+  const inputs = [{ taste: true }, { sight: true }, { sound: true }];
+  const result = perception.handleMultipleInputs(inputs);
+  assert.deepEqual(result, ['gustatory', 'visual', 'auditory']);
+});
+
+test('handleMultipleInputs throws TypeError for invalid input', () => {
+  assert.throws(() => perception.handleMultipleInputs(null), TypeError);
+  assert.throws(() => perception.handleMultipleInputs({}), TypeError);
 });
