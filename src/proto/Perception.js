@@ -80,6 +80,11 @@ export class Perception {
     if (sensoryInputs.length === 0) {
       throw new TypeError('Sensory inputs array cannot be empty');
     }
-    return sensoryInputs.map(input => this.handleSingleInput(input));
+    for (const input of sensoryInputs) {
+      if (input == null) {
+        throw new TypeError('Each sensory input must be non-null');
+      }
+    }
+    return sensoryInputs.map(input => this.categorizeSensoryInput(input));
   }
-} 
+}
