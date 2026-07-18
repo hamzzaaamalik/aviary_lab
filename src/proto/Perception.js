@@ -13,7 +13,7 @@ export class Perception {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
     if (inputs.length === 0) {
-      return {};
+      throw new TypeError('Inputs array cannot be empty.');
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
@@ -44,6 +44,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty.');
+    }
 
     const validInputs = [];
     const errors = [];
@@ -67,6 +70,7 @@ export class Perception {
    * @returns {object} - Categorized errors by type.
    */
   categorizeErrors(errors) {
+    if (errors.length === 0) return {};
     return errors.reduce((acc, error) => {
       const type = error.split(':')[0]; // Extract type from error message
       if (!acc[type]) acc[type] = [];
