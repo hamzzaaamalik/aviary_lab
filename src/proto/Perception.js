@@ -80,24 +80,14 @@ export class Perception {
         results.push(this.handleSingleInput(input));
       } catch (error) {
         console.warn('Invalid input encountered:', input, error.message);
-        results.push('invalid'); // or handle differently as needed
+        results.push('invalid'); // Log invalid inputs and return 'invalid' for them
       }
     }
     return results;
   }
 
   /**
-   * Validate and categorize sensory input with logging for unknown types.
-   * @param {any} input - The sensory input to categorize.
-   * @returns {string} - The category of the sensory input.
-   * @throws {TypeError} - If input is invalid.
-   */
-  validateAndCategorize(input) {
-    try {
-      return this.categorizeSensoryInput(input);
-    } catch (error) {
-      console.warn('Validation failed:', input, error.message);
-      throw error;
-    }
-  }
+   * Validate and categorize sensory input with logging f
+   * … (truncated)  
+  */
 }
