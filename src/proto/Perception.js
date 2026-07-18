@@ -71,5 +71,4 @@ export class Perception {
       return this.process(input);
     }));
   }
-}  
-
+}
