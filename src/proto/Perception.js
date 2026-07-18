@@ -74,7 +74,14 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => this.handleSingleInput(input));
+    return inputs.map(input => {
+      try {
+        return this.handleSingleInput(input);
+      } catch (e) {
+        console.warn('Error handling input:', input, e.message);
+        return 'invalid';  // Default category for invalid inputs
+      }
+    });
   }
 
   /**
@@ -85,9 +92,11 @@ export class Perception {
    */
   validateAndCategorize(data) {
     if (!Array.isArray(data)) {
-      throw new TypeError('Input data must be an array');
+      throw new TypeError('Data must be an array');
     }
-    return data.map(input => ({ input, category: this.categorizeSensoryInput(input) }));
+    return data.map(input => {
+      const category = this.categorizeSensoryInput(input);
+      return { input, category };
+    });
   }
-} 
-
+}
