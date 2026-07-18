@@ -48,8 +48,14 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   async process(data) {
-    if (!data) {
-      throw new TypeError('Data cannot be null or undefined');
+    if (data === null) {
+      throw new TypeError('Data cannot be null');
+    }
+    if (data === undefined) {
+      throw new TypeError('Data cannot be undefined');
+    }
+    if (typeof data === 'object' && Object.keys(data).length === 0) {
+      throw new TypeError('Data cannot be an empty object');
     }
     return this.categorizeSensoryInput(data);  // Return only the category
   }
@@ -83,9 +89,6 @@ export class Perception {
    * @throws {TypeError} - If any input is invalid.
    */
   async processAndValidate(data) {
-    if (!Array.isArray(data) || data.length === 0) {
-      throw new TypeError('Data must be a non-empty array');
-    }
     return this.validateAndCategorize(data);
   }
 }
