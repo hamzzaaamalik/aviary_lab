@@ -32,7 +32,7 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   process(data) {
-    if (!data) {
+    if (data === null || data === undefined) {
       throw new TypeError('Data cannot be null or undefined');
     }
     return this.categorizeSensoryInput(data);  // Return only the category
@@ -58,7 +58,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   handleSingleInput(input) {
-    if (!input) {
+    if (input === null || input === undefined) {
       throw new TypeError('Input cannot be null or undefined');
     }
     return this.categorizeSensoryInput(input);
@@ -76,4 +76,20 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
-}
+
+  /**
+   * Validates and processes incoming sensory data while logging unexpected formats.
+   * @param {any} data - The sensory data to log and categorize.
+   * @returns {string} - The category of the sensory input.
+   * @throws {TypeError} - If the input data is invalid.
+   */
+  validateAndProcess(data) {
+    try {
+      return this.process(data);
+    } catch (error) {
+      console.error('Error processing data:', error);
+      throw error;
+    }
+  }
+} 
+
