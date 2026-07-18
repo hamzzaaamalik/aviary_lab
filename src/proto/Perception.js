@@ -11,9 +11,7 @@ export class Perception {
    * @throws {TypeError} - If the input is not valid.
    */
   categorizeSensoryInput(sensoryInput) {
-    if (typeof sensoryInput !== 'object' || sensoryInput === null) {
-      throw new TypeError('Invalid sensory input');
-    }
+    this.validateInputFormat(sensoryInput);
     // Enhanced categorization logic
     if ('sight' in sensoryInput) return 'visual';
     if ('sound' in sensoryInput) return 'auditory';
@@ -85,7 +83,7 @@ export class Perception {
   validateInputFormat(input) {
     if (typeof input !== 'object' || input === null) {
       console.warn('Received an invalid input type:', input);
-      throw new TypeError('Input must be a valid object.');
+      throw new TypeError('Invalid sensory input: expected an object, received ' + typeof input);
     }
   }
-}
+} 
