@@ -11,9 +11,7 @@ export class Perception {
    * @throws {TypeError} - If the input is not valid.
    */
   categorizeSensoryInput(sensoryInput) {
-    if (typeof sensoryInput !== 'object' || sensoryInput === null) {
-      throw new TypeError('Invalid sensory input: must be a non-null object');
-    }
+    this._validateInput(sensoryInput); // Consolidated validation
     // Enhanced categorization logic
     if ('sight' in sensoryInput) return 'visual';
     if ('sound' in sensoryInput) return 'auditory';
@@ -32,9 +30,7 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   process(data) {
-    if (!data) {
-      throw new TypeError('Data cannot be null or undefined');
-    }
+    this._validateInput(data); // Consolidated validation
     return this.categorizeSensoryInput(data);  // Return only the category
   }
 
@@ -45,9 +41,7 @@ export class Perception {
    * @throws {TypeError} - If any input is invalid.
    */
   processMultiple(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
+    this._validateArray(inputs); // Consolidated validation
     return inputs.map(input => this.process(input));
   }
 
@@ -58,9 +52,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   handleSingleInput(input) {
-    if (!input) {
-      throw new TypeError('Input cannot be null or undefined');
-    }
+    this._validateInput(input); // Consolidated validation
     return this.categorizeSensoryInput(input);
   }
 
@@ -71,9 +63,7 @@ export class Perception {
    * @throws {TypeError} - If any input is invalid.
    */
   handleMultipleInputs(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
+    this._validateArray(inputs); // Consolidated validation
     return inputs.map(input => this.handleSingleInput(input));
   }
 
@@ -84,12 +74,35 @@ export class Perception {
    * @throws {TypeError} - If any input is invalid.
    */
   validateAndCategorize(data) {
-    if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array of sensory inputs');
+    this._validateArray(data);
+    return data.map(input => ({ input, category: this.categorizeSensoryInput(input) }));
+  }
+
+  /**
+   * Validates a single input.
+   * @param {any} input - The input to validate.
+   * @throws {TypeError} - If the input is invalid.
+   * @private
+   */
+  _validateInput(input) {
+    if (!input) {
+      throw new TypeError('Input cannot be null or undefined');
     }
-    return data.map(input => {
-      const category = this.handleSingleInput(input);
-      return { input, category };
-    });
+    if (typeof input !== 'object' || input === null) {
+      throw new TypeError('Invalid sensory input: must be a non-null object');
+    }
+  }
+
+  /**
+   * Validates an array of inputs.
+   * @param {Array<any>} inputs - The inputs to validate.
+   * @throws {TypeError} - If the inputs are invalid.
+   * @private
+   */
+  _validateArray(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    inputs.forEach(input => this._validateInput(input)); // Validate each input
   }
 }
