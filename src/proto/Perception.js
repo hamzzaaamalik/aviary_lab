@@ -71,7 +71,7 @@ export class Perception {
       throw new TypeError('Expected an array for errors, received ' + typeof errors);
     }
     return errors.reduce((acc, error) => {
-      const type = error.split(':')[0]; // Extract type from error message
+      const type = error.split(':')[0] || 'Unknown'; // Default to 'Unknown' if split fails
       if (!acc[type]) acc[type] = [];
       acc[type].push(error);
       return acc;
@@ -89,7 +89,7 @@ export class Perception {
     return {
       categorized: results.categorized,
       errors: results.errors.length > 0 ? results.errors : [],
-      categorizedErrors
+      categorizedErrors,
     };
   }
 } 
