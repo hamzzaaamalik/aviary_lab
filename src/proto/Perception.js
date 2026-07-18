@@ -13,7 +13,7 @@ export class Perception {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
     if (inputs.length === 0) {
-      return {};
+      throw new TypeError('Input array cannot be empty.');
     }
     return inputs.reduce((acc, input) => {
       const type = typeof input;
@@ -68,7 +68,7 @@ export class Perception {
    */
   categorizeErrors(errors) {
     return errors.reduce((acc, error) => {
-      const type = error.split(':')[0]; // Extract type from error message
+      const type = error.split(':')[0].trim(); // Extract type from error message
       if (!acc[type]) acc[type] = [];
       acc[type].push(error);
       return acc;
@@ -93,16 +93,10 @@ export class Perception {
   /**
    * Process multiple sensory inputs and report errors through the kernel.
    * @param {Array<*>} inputs - An array of sensory inputs to process.
-   * @returns {Promise<{categorized: object, errors: Array<string>, categorizedErrors: object}>} - Processed results with error details.
+   * @returns {Promise<void>}
    */
-  async processInputs(inputs) {
-    return new Promise((resolve, reject) => {
-      try {
-        const results = this.processWithErrors(inputs);
-        resolve(results);
-      } catch (error) {
-        reject(error);
-      }
-    });
+  async processMultiple(inputs) {
+    const { categorized, errors, categorizedErrors } = this.processWithErrors(inputs);
+    this.kernel.bus.emit('perception:processed', { categorized, errors, categorizedErrors });
   }
 }
