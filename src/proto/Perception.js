@@ -36,9 +36,9 @@ export class Perception {
   }
 
   /**
-   * Process inputs and return categorized inputs by type.
+   * Process inputs and return categorized inputs by type, enhancing error reporting.
    * @param {Array<*>} inputs - An array of sensory inputs.
-   * @returns {object} - Categorized inputs by type.
+   * @returns {object} - Categorized inputs by type and detailed error messages.
    */
   process(inputs) {
     if (!Array.isArray(inputs)) {
@@ -88,7 +88,7 @@ export class Perception {
     const categorizedErrors = this.categorizeErrors(results.errors);
     return {
       categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : [],
+      errors: results.errors.length > 0 ? results.errors : null,
       categorizedErrors
     };
   }
