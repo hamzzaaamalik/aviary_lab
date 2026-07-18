@@ -35,6 +35,9 @@ export class Perception {
     if (!Array.isArray(data)) {
       throw new TypeError('Data must be an array');
     }
+    if (data.length === 0) {
+      throw new TypeError('Data array cannot be empty');
+    }
     return data.map(input => {
       const category = this.categorizeSensoryInput(input);
       return { input, category };
@@ -47,7 +50,7 @@ export class Perception {
    * @returns {string} - The category of the sensory input.
    * @throws {TypeError} - If the input data is invalid.
    */
-  process(data) {
+  categorize(data) {
     if (!data) {
       throw new TypeError('Data cannot be null or undefined');
     }
@@ -64,6 +67,10 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => this.process(input));
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty');
+    }
+    return inputs.map(input => this.categorize(input));
   }
 }  
+
