@@ -76,4 +76,15 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validates a sensory input against specific criteria.
+   * @param {any} input - The sensory input to validate.
+   * @throws {TypeError} - If the input does not meet validation criteria.
+   */
+  validateInput(input) {
+    if (typeof input !== 'object' || input === null) {
+      throw new TypeError('Invalid input: must be a non-null object');
+    }
+  }
 }
