@@ -38,7 +38,7 @@ export class Perception {
   /**
    * Process inputs and return categorized inputs by type.
    * @param {Array<*>} inputs - An array of sensory inputs.
-   * @returns {object} - Categorized inputs by type.
+   * @returns {object} - Categorized inputs by type and validation errors.
    */
   process(inputs) {
     if (!Array.isArray(inputs)) {
@@ -71,7 +71,7 @@ export class Perception {
       throw new TypeError('Expected an array for errors, received ' + typeof errors);
     }
     return errors.reduce((acc, error) => {
-      const type = error.split(':')[0]; // Extract type from error message
+      const type = error.split(':')[0] || 'Unknown'; // Default to 'Unknown' if split fails
       if (!acc[type]) acc[type] = [];
       acc[type].push(error);
       return acc;
@@ -89,7 +89,7 @@ export class Perception {
     return {
       categorized: results.categorized,
       errors: results.errors.length > 0 ? results.errors : [],
-      categorizedErrors
+      categorizedErrors,
     };
   }
 } 
