@@ -65,7 +65,7 @@ export class Perception {
       throw new TypeError('Inputs must be an array');
     }
     return Promise.all(inputs.map(async (input) => {
-      if (!input) {
+      if (input === null || input === undefined) {
         throw new TypeError('Input cannot be null or undefined');
       }
       return this.process(input);
