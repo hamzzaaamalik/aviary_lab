@@ -32,7 +32,7 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   process(data) {
-    if (!data) {
+    if (data === null || data === undefined) {
       throw new TypeError('Data cannot be null or undefined');
     }
     return this.categorizeSensoryInput(data);  // Return only the category
@@ -58,7 +58,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   handleSingleInput(input) {
-    if (!input) {
+    if (input === null || input === undefined) {
       throw new TypeError('Input cannot be null or undefined');
     }
     return this.categorizeSensoryInput(input);
@@ -87,8 +87,9 @@ export class Perception {
     try {
       return this.process(data);
     } catch (error) {
-      console.warn('Unexpected format for sensory data:', data);
+      console.error('Error processing data:', error);
       throw error;
     }
   }
-}
+} 
+
