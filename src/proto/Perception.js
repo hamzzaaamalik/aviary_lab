@@ -76,4 +76,17 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validates and logs input types for better debugging.
+   * @param {any} input - The sensory input to validate.
+   * @throws {TypeError} - If the input type is not recognized.
+   */
+  validateInput(input) {
+    const validTypes = ['object'];
+    const inputType = typeof input;
+    if (!validTypes.includes(inputType)) {
+      throw new TypeError(`Expected input to be one of ${validTypes.join(', ')}, received ${inputType}`);
+    }
+  }
 }
