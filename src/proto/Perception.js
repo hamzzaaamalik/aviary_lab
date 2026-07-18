@@ -86,7 +86,7 @@ export class Perception {
     const validTypes = ['object'];
     const inputType = typeof input;
     if (!validTypes.includes(inputType)) {
-      throw new TypeError('Invalid input type: ' + inputType);
+      throw new TypeError(`Expected input to be one of ${validTypes.join(', ')}, received ${inputType}`);
     }
   }
 }
