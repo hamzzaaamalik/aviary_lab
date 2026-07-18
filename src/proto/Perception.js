@@ -76,4 +76,17 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validate and categorize sensory input with detailed error reporting.
+   * @param {any} input - The sensory input to evaluate.
+   * @returns {string} - The category, or throws an error if invalid.
+   * @throws {TypeError} - If the input is not a valid sensory object.
+   */
+  validateAndCategorizeInput(input) {
+    if (typeof input !== 'object' || input === null) {
+      throw new TypeError('Input must be a non-null object');
+    }
+    return this.categorizeSensoryInput(input);
+  }
 }
