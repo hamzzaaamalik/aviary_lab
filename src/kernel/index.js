@@ -1,3 +1,4 @@
+// src/kernel/index.js
 import { EventBus } from './EventBus.js';
 import { ModuleRegistry } from './ModuleRegistry.js';
 import { Perception } from '../proto/Perception.js';  // wire the new Perception module
@@ -12,5 +13,4 @@ export function createKernel() {
   context.registry = new ModuleRegistry(context);
   bus.onError((err, type) => console.error(`[kernel] event error: ${err.message}`));
   return context;
-} 
-
+}

@@ -76,4 +76,23 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Process a batch of sensory data inputs and categorize them.
+   * @param {Array<any>} batchData - An array of sensory data to process.
+   * @returns {Array<string>} - An array of categories for each sensory input.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  processBatch(batchData) {
+    if (!Array.isArray(batchData)) {
+      throw new TypeError('Batch data must be an array');
+    }
+    return batchData.map(data => {
+      try {
+        return this.categorizeSensoryInput(data);
+      } catch (error) {
+        return error.message; // Return error message instead of throwing
+      }
+    });
+  }
 }
