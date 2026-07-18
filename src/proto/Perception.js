@@ -57,18 +57,22 @@ export class Perception {
   /**
    * Handle multiple sensory data inputs and categorize them asynchronously.
    * @param {Array<any>} inputs - An array of sensory data.
-   * @returns {Promise<Array<string>>} - An array of categories for each sensory input.
+   * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
   async processMultiple(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
+    if (inputs.length === 0) {
+      throw new TypeError('Inputs array cannot be empty');
+    }
     return Promise.all(inputs.map(async (input) => {
       if (input === null || input === undefined) {
         throw new TypeError('Input cannot be null or undefined');
       }
-      return this.process(input);
+      const category = await this.process(input);
+      return { input, category };
     }));
   }
 }
