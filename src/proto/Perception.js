@@ -76,4 +76,19 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
-}
+
+  /**
+   * Validates and processes incoming sensory data while logging unexpected formats.
+   * @param {any} data - The sensory data to log and categorize.
+   * @returns {string} - The category of the sensory input.
+   * @throws {TypeError} - If the input data is invalid.
+   */
+  validateAndProcess(data) {
+    try {
+      return this.process(data);
+    } catch (error) {
+      console.error('Error processing data:', error.message);
+      throw error;
+    }
+  }
+} 
