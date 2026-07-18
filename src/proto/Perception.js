@@ -76,4 +76,14 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
-}
+
+  /**
+   * Process and log sensory input data for debugging.
+   * @param {any} data - The sensory data to be processed.
+   * @returns {void}
+   */
+  processAndLog(data) {
+    const category = this.process(data);
+    console.log(`Processed input: ${JSON.stringify(data)}, Category: ${category}`);
+  }
+} 
