@@ -76,4 +76,17 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validates and enhances sensory input handling logic.
+   * @param {any} input - The sensory input to validate.
+   * @returns {string} - Enhanced category or throws TypeError.
+   * @throws {TypeError} - If input is invalid.
+   */
+  validateAndCategorize(input) {
+    if (!input) {
+      throw new TypeError('Input cannot be null or undefined');
+    }
+    return this.categorizeSensoryInput(input);
+  }
 }
