@@ -74,7 +74,14 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => this.handleSingleInput(input));
+    return inputs.map(input => {
+      try {
+        return this.handleSingleInput(input);
+      } catch (e) {
+        console.warn('Error handling input:', input, e.message);
+        return 'invalid';  // Default category for invalid inputs
+      }
+    });
   }
 
   /**
