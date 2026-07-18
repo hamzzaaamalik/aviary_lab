@@ -76,4 +76,13 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
-}
+
+  /**
+   * Validates the format of sensory input data.
+   * @param {any} data - The sensory data to validate.
+   * @returns {boolean} - True if valid, otherwise false.
+   */
+  validateInput(data) {
+    return typeof data === 'object' && data !== null;
+  }
+} 
