@@ -74,6 +74,20 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => this.handleSingleInput(input));
+    const results = [];
+    for (const input of inputs) {
+      try {
+        results.push(this.handleSingleInput(input));
+      } catch (error) {
+        console.warn('Invalid input encountered:', input, error.message);
+        results.push('invalid'); // Log invalid inputs and return 'invalid' for them
+      }
+    }
+    return results;
   }
+
+  /**
+   * Validate and categorize sensory input with logging f
+   * … (truncated)  
+  */
 }
