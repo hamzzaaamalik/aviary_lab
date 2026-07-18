@@ -89,4 +89,13 @@ export class Perception {
       categorizedErrors
     };
   }
-}
+
+  /**
+   * Process inputs with detailed error reporting and categorization.
+   * @param {Array<*>} inputs - An array of sensory inputs to process.
+   * @returns {{categorized: object, errors: Array<string>, categorizedErrors: object}} - Categorized inputs and categorized errors.
+   */
+  processAndCategorize(inputs) {
+    return this.processWithErrors(inputs);
+  }
+} 
