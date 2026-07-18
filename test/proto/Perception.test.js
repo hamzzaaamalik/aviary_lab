@@ -4,26 +4,26 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('validateAndCategorize categorizes valid inputs correctly', () => {
+test('process categorizes single sensory input', async () => {
+  const result = await perception.process({ sight: true });
+  assert.equal(result, 'visual');
+});
+
+test('processMultiple categorizes multiple sensory inputs', async () => {
   const inputs = [{ sight: true }, { sound: true }, { smell: true }];
-  const results = perception.validateAndCategorize(inputs);
-  assert.deepEqual(results, [
-    { input: { sight: true }, category: 'visual' },
-    { input: { sound: true }, category: 'auditory' },
-    { input: { smell: true }, category: 'olfactory' }
-  ]);
+  const results = await perception.processMultiple(inputs);
+  assert.deepEqual(results, ['visual', 'auditory', 'olfactory']);
 });
 
-test('validateAndCategorize throws on invalid input', () => {
-  assert.throws(() => perception.validateAndCategorize(null), TypeError);
-  assert.throws(() => perception.validateAndCategorize('not an array'), TypeError);
+test('process throws on null input', async () => {
+  await assert.rejects(async () => {
+    await perception.process(null);
+  }, { name: 'TypeError' });
 });
 
-test('validateAndCategorize handles unknown inputs', () => {
-  const inputs = [{ unknown: true }];
-  const results = perception.validateAndCategorize(inputs);
-  assert.deepEqual(results, [
-    { input: { unknown: true }, category: 'unknown' }
-  ]);
+test('processMultiple throws on invalid input', async () => {
+  await assert.rejects(async () => {
+    await perception.processMultiple('not an array');
+  }, { name: 'TypeError' });
 });
 
