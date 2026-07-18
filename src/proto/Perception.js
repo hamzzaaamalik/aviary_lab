@@ -74,7 +74,14 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    return inputs.map(input => this.handleSingleInput(input));
+    return inputs.map(input => {
+      try {
+        return this.handleSingleInput(input);
+      } catch (err) {
+        console.warn('Error handling input:', input, err.message);
+        return 'error';
+      }
+    });
   }
 
   /**
@@ -84,7 +91,7 @@ export class Perception {
    */
   validateInputFormat(input) {
     if (typeof input !== 'object' || input === null) {
-      throw new TypeError('Input must be an object');
+      throw new TypeError('Input must be a non-null object');
     }
   }
 }
