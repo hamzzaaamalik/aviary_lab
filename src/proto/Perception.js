@@ -44,6 +44,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Expected an array for inputs, received ' + typeof inputs);
     }
+    if (inputs.length === 0) {
+      return { categorized: {}, errors: [] };
+    }
 
     const validInputs = [];
     const errors = [];
@@ -65,8 +68,12 @@ export class Perception {
    * Categorize errors based on their type.
    * @param {Array<string>} errors - An array of error messages.
    * @returns {object} - Categorized errors by type.
+   * @throws {TypeError} - If errors is not an array.
    */
   categorizeErrors(errors) {
+    if (!Array.isArray(errors)) {
+      throw new TypeError('Expected an array for errors, received ' + typeof errors);
+    }
     return errors.reduce((acc, error) => {
       const type = error.split(':')[0]; // Extract type from error message
       if (!acc[type]) acc[type] = [];
@@ -85,8 +92,8 @@ export class Perception {
     const categorizedErrors = this.categorizeErrors(results.errors);
     return {
       categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : [],
-      categorizedErrors
+      errors: results.errors,
+      categorizedErrors,
     };
   }
-}
+} 
