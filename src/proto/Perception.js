@@ -92,8 +92,8 @@ export class Perception {
     const categorizedErrors = this.categorizeErrors(results.errors);
     return {
       categorized: results.categorized,
-      errors: results.errors.length > 0 ? results.errors : [],
-      categorizedErrors
+      errors: results.errors,
+      categorizedErrors,
     };
   }
-}
+} 
