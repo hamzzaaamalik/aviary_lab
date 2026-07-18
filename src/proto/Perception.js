@@ -76,4 +76,19 @@ export class Perception {
     }
     return inputs.map(input => this.handleSingleInput(input));
   }
+
+  /**
+   * Validate and categorize sensory input with logging for unknown types.
+   * @param {any} input - The sensory input to categorize.
+   * @returns {string} - The category of the sensory input.
+   * @throws {TypeError} - If input is invalid.
+   */
+  validateAndCategorize(input) {
+    try {
+      return this.categorizeSensoryInput(input);
+    } catch (error) {
+      console.error('Error categorizing input:', error.message);
+      throw error;
+    }
+  }
 }
