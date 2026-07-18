@@ -32,6 +32,9 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   process(data) {
+    if (!data) {
+      throw new TypeError('Data cannot be null or undefined');
+    }
     const category = this.categorizeSensoryInput(data);
     return { category, data };  // Return both category and original data
   }
