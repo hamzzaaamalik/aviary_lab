@@ -4,47 +4,59 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInput classifies visual input', () => {
-  const input = { sight: 'bright' };
-  const category = perception.categorizeSensoryInput(input);
-  assert.equal(category, 'visual');
+test('categorizeSensoryInputs classifies visual input', () => {
+  const inputs = [{ type: 'visual', data: 'image data' }];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, [{ input: inputs[0], category: 'visual' }]);
 });
 
-test('categorizeSensoryInput throws on invalid input', () => {
-  assert.throws(() => perception.categorizeSensoryInput(null), TypeError);
-  assert.throws(() => perception.categorizeSensoryInput(42), TypeError);
-  assert.throws(() => perception.categorizeSensoryInput('string'), TypeError);
-});
-
-test('process handles array of inputs', async () => {
-  const data = [{ sight: 'bright' }, { sound: 'loud' }];
-  const result = await perception.process(data);
+test('process handles array of inputs', () => {
+  const inputs = [{ type: 'visual', data: 'image data' }, { type: 'auditory', data: 'sound data' }];
+  const result = perception.process(inputs);
   assert.deepEqual(result, [
-    { input: data[0], category: 'visual' },
-    { input: data[1], category: 'auditory' }
+    { input: inputs[0], category: 'visual', context: 'sight-related context' },
+    { input: inputs[1], category: 'auditory', context: 'sound-related context' }
   ]);
 });
 
-test('process handles single input', async () => {
-  const data = { smell: 'sweet' };
-  const result = await perception.process(data);
-  assert.deepEqual(result, [{ input: data, category: 'olfactory' }]);
+test('process handles single input', () => {
+  const inputs = [{ type: 'olfactory', data: 'smell data' }];
+  const result = perception.process(inputs);
+  assert.deepEqual(result, [{ input: inputs[0], category: 'olfactory', context: 'smell-related context' }]);
 });
 
-test('process throws on invalid data', async () => {
-  await assert.rejects(() => perception.process(null), TypeError);
-  await assert.rejects(() => perception.process(undefined), TypeError);
-  await assert.rejects(() => perception.process({}), TypeError);
+test('process throws on invalid data', () => {
+  assert.throws(() => perception.process('invalid data'), TypeError);
 });
 
-test('filterByCriteria filters based on criteria function', () => {
-  const inputs = [{ sight: 'bright' }, { sound: 'loud' }, { smell: 'sweet' }];
-  const criteria = (input) => 'sight' in input;
-  const result = perception.filterByCriteria(inputs, criteria);
-  assert.deepEqual(result, [{ sight: 'bright' }]);
+test('enhanceContext correctly enhances data', () => {
+  const categorizedData = [
+    { input: { type: 'visual' }, category: 'visual' },
+    { input: { type: 'auditory' }, category: 'auditory' }
+  ];
+  const result = perception.enhanceContext(categorizedData);
+  assert.deepEqual(result, [
+    { input: { type: 'visual' }, category: 'visual', context: 'sight-related context' },
+    { input: { type: 'auditory' }, category: 'auditory', context: 'sound-related context' }
+  ]);
 });
 
-test('filterByCriteria throws on invalid inputs', () => {
-  assert.throws(() => perception.filterByCriteria(null, () => true), TypeError);
-  assert.throws(() => perception.filterByCriteria([], null), TypeError);
+test('enhanceContext throws on invalid categorized data', () => {
+  assert.throws(() => perception.enhanceContext('invalid data'), TypeError);
+});
+
+test('categorizeSensoryInputs handles empty array', () => {
+  const result = perception.categorizeSensoryInputs([]);
+  assert.deepEqual(result, []);
+});
+
+test('process handles empty array', () => {
+  const result = perception.process([]);
+  assert.deepEqual(result, []);
+});
+
+test('categorizeSensoryInputs throws on non-object input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([42]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([null]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([true]), TypeError);
 });

@@ -5,93 +5,84 @@
  */
 export class Perception {
   /**
-   * Categorizes sensory inputs into known types.
-   * @param {any} sensoryInput - The input to be categorized.
-   * @returns {string} - The category of the sensory input.
-   * @throws {TypeError} - If the input is not valid.
+   * Categorize sensory input based on type.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string}>} - Categorized sensory data.
+   * @throws {TypeError} - If the input is invalid.
    */
-  categorizeSensoryInput(sensoryInput) {
-    if (typeof sensoryInput !== 'object' || sensoryInput === null) {
-      throw new TypeError('Invalid sensory input: must be a non-null object');
-    }
-    // Enhanced categorization logic
-    if ('sight' in sensoryInput) return 'visual';
-    if ('sound' in sensoryInput) return 'auditory';
-    if ('smell' in sensoryInput) return 'olfactory';
-    if ('taste' in sensoryInput) return 'gustatory';
-    if ('touch' in sensoryInput) return 'tactile';
-
-    console.warn('Unknown sensory input received:', sensoryInput);
-    return 'unknown';
-  }
-
-  /**
-   * Validate sensory data and emit categorized results.
-   * @param {Array<any>} data - An array of sensory data inputs.
-   * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
-   * @throws {TypeError} - If any input is invalid.
-   */
-  async validateAndCategorize(data) {
-    if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array');
-    }
-    return Promise.all(data.map(async (input) => {
-      const category = this.categorizeSensoryInput(input);
-      return { input, category };
-    }));
-  }
-
-  /**
-   * Process the incoming sensory data and categorize it.
-   * @param {any} data - The sensory data.
-   * @returns {Promise<Array<{input: any, category: string}>>} - Array of categorized results.
-   * @throws {TypeError} - If the input data is invalid.
-   */
-  async process(data) {
-    if (data === null) {
-      throw new TypeError('Data cannot be null');
-    }
-    if (data === undefined) {
-      throw new TypeError('Data cannot be undefined');
-    }
-    if (typeof data === 'object' && Object.keys(data).length === 0) {
-      throw new TypeError('Data cannot be an empty object');
-    }
-    if (Array.isArray(data)) {
-      return this.validateAndCategorize(data);
-    }
-    // Handle single input case
-    const category = this.categorizeSensoryInput(data);
-    return [{ input: data, category }];
-  }
-
-  /**
-   * Filter sensory data based on defined criteria.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @param {Function} criteria - A function that determines if an input meets the criteria.
-   * @returns {Array<any>} - An array of filtered inputs.
-   * @throws {TypeError} - If criteria is not a function or inputs is not an array.
-   */
-  filterByCriteria(inputs, criteria) {
+  categorizeSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    if (typeof criteria !== 'function') {
-      throw new TypeError('Criteria must be a function');
+    return inputs.map(input => {
+      if (typeof input !== 'object' || input === null) {
+        throw new TypeError('Input must be an object');
+      }
+      // Simple categorization logic based on input properties.
+      const category = this._determineCategory(input);
+      return { input, category };
+    });
+  }
+
+  /**
+   * Process sensory inputs and enhance them.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  process(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
     }
-    return inputs.filter(criteria);
+    const categorized = this.categorizeSensoryInputs(inputs);
+    return this.enhanceContext(categorized);
   }
 
   /**
    * Enhance sensory data with additional context.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @param {Object} context - Additional context to append to each input.
-   * @returns {Array<{input: any, context: Object}>} - Enhanced sensory data.
+   * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @throws {TypeError} - If the input is invalid.
    */
-  enhanceWithContext(inputs, context) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
+  enhanceContext(categorizedData) {
+    if (!Array.isArray(categorizedData)) {
+      throw new TypeError('Categorized data must be an array');
     }
-    return inputs.map(input => ({ input, context }));
+    return categorizedData.map(item => {
+      const context = this._determineContext(item.category);
+      return { ...item, context };
+    });
   }
+
+  /**
+   * Determine category based on input properties.
+   * @param {object} input - The sensory input.
+   * @returns {string} - The category for the input.
+   */
+  _determineCategory(input) {
+    if (input.type === 'visual') return 'visual';
+    if (input.type === 'auditory') return 'auditory';
+    if (input.type === 'olfactory') return 'olfactory';
+    if (input.type === 'gustatory') return 'gustatory';
+    if (input.type === 'tactile') return 'tactile';
+    return 'unknown';
+  }
+
+  /**
+   * Determine context based on the category.
+   * @param {string} category - The category of the sensory input.
+   * @returns {string} - The context for the category.
+   */
+  _determineContext(category) {
+    switch (category) {
+      case 'visual': return 'sight-related context';
+      case 'auditory': return 'sound-related context';
+      case 'olfactory': return 'smell-related context';
+      case 'gustatory': return 'taste-related context';
+      case 'tactile': return 'touch-related context';
+      default: return 'unknown context';
+    }
+  }
+
+  // Remaining methods...
 }
