@@ -58,6 +58,19 @@ export class Perception {
   }
 
   /**
+   * Refine sensory input by filtering out invalid inputs.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<any>} - Valid filtered inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  refineSensoryInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return inputs.filter(input => typeof input === 'object' && input !== null && input.type);
+  }
+
+  /**
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
    * @returns {string} - The category for the input.
@@ -83,7 +96,7 @@ export class Perception {
       case 'olfactory': return 'context related to olfactory perception';
       case 'gustatory': return 'context related to gustatory perception';
       case 'tactile': return 'context related to tactile perception';
-      default: return 'context unknown';
+      default: return 'unknown context';
     }
   }
 }
