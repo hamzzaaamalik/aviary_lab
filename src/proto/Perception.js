@@ -81,4 +81,17 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
+  /**
+   * Enhance sensory data processing with additional validation.
+   * @param {Array<any>} data - An array of sensory data inputs.
+   * @returns {Promise<Array<{input: any, category: string}>>} - Enhanced categorized results.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  async enhanceProcess(data) {
+    if (!Array.isArray(data) || data.length === 0) {
+      throw new TypeError('Data must be a non-empty array');
+    }
+    return this.validateAndCategorize(data);
+  }
 }
