@@ -81,7 +81,7 @@ export class Perception {
     if (input.type === 'auditory') return 'auditory';
     if (input.type === 'olfactory') return 'olfactory';
     if (input.type === 'gustatory') return 'gustatory';
-    return 'unknown'; // Default case for unknown types
+    throw new TypeError('Unknown input type');
   }
 
   /**
