@@ -18,8 +18,11 @@ export class Perception {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Input must be a non-null object with a type property');
       }
-      // Simple categorization logic based on input properties.
+      // Corrected categorization logic based on input properties.
       const category = this._determineCategory(input);
+      if (!category) {
+        throw new TypeError('Unknown input type');
+      }
       return { input, category };
     });
   }
@@ -74,28 +77,28 @@ export class Perception {
   /**
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
-   * @returns {string} - The category for the input.
+   * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
     if (input.type === 'visual') return 'visual';
     if (input.type === 'auditory') return 'auditory';
     if (input.type === 'olfactory') return 'olfactory';
     if (input.type === 'gustatory') return 'gustatory';
-    throw new TypeError('Unknown input type');
+    return undefined;
   }
 
   /**
    * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - The context for the category.
+   * @returns {string} - The context for the input.
    */
   _determineContext(category) {
-    switch (category) {
-      case 'visual': return 'sight context';
-      case 'auditory': return 'sound context';
-      case 'olfactory': return 'smell context';
-      case 'gustatory': return 'taste context';
-      default: return 'unknown context';
-    }
+    const contexts = {
+      visual: 'seen',
+      auditory: 'heard',
+      olfactory: 'smelled',
+      gustatory: 'tasted'
+    };
+    return contexts[category] || 'unknown';
   }
 }
