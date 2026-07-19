@@ -68,7 +68,7 @@ export class Perception {
     if (input.type === 'olfactory') return 'olfactory';
     if (input.type === 'gustatory') return 'gustatory';
     if (input.type === 'tactile') return 'tactile';
-    return 'unknown';
+    return 'unknown'; // Explicitly return 'unknown' for valid inputs without a known type
   }
 
   /**
@@ -83,7 +83,8 @@ export class Perception {
       case 'olfactory': return 'context related to olfactory perception';
       case 'gustatory': return 'context related to gustatory perception';
       case 'tactile': return 'context related to tactile perception';
-      default: return 'context unknown';
+      case 'unknown': return 'context for unknown perception'; // Added context for unknown category
+      default: return 'unknown context';
     }
   }
 }
