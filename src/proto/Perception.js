@@ -85,9 +85,13 @@ export class Perception {
   /**
    * Determine context based on category.
    * @param {string} category - The category of the sensory input.
-   * @returns {string} - The context associated with the category.
+   * @returns {string} - The context for the input.
+   * @throws {TypeError} - If the category is invalid.
    */
   _determineContext(category) {
+    if (typeof category !== 'string') {
+      throw new TypeError('Category must be a string');
+    }
     switch (category) {
       case 'visual': return 'sight context';
       case 'auditory': return 'sound context';
