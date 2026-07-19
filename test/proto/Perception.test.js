@@ -2,35 +2,34 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-const perception = new Perception();
-
-test('categorizeSensoryInputs categorizes valid inputs', () => {
-  const inputs = [
-    { type: 'visual', data: 'image data' },
-    { type: 'auditory', data: 'sound data' }
-  ];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.equal(result.length, 2);
-  assert.equal(result[0].category, 'visual');
-  assert.equal(result[1].category, 'auditory');
+test('categorizeSensoryInputs throws TypeError on non-array input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-test('categorizeSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs(null), TypeError);
-  assert.throws(() => perception.categorizeSensoryInputs({}), TypeError);
+test('categorizeSensoryInputs throws TypeError on invalid object input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorizeSensoryInputs([{ type: null }]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([{ notType: 'test' }]), TypeError);
 });
 
-test('process enhances categorized data', () => {
-  const inputs = [
-    { type: 'visual', data: 'image data' }
-  ];
+test('process throws TypeError on non-array input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.process('not an array'), TypeError);
+});
+
+test('enhanceContext throws TypeError on non-array input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.enhanceContext('not an array'), TypeError);
+});
+
+test('process handles valid inputs correctly', () => {
+  const perception = new Perception();
+  const inputs = [{ type: 'visual' }, { type: 'auditory' }];
   const result = perception.process(inputs);
-  assert.equal(result.length, 1);
-  assert.equal(result[0].context, 'sight-related context');
-});
-
-test('process throws on invalid input', () => {
-  assert.throws(() => perception.process(null), TypeError);
-  assert.throws(() => perception.process({}), TypeError);
+  assert.deepEqual(result, [
+    { input: { type: 'visual' }, category: 'visual', context: 'sight-related context' },
+    { input: { type: 'auditory' }, category: 'auditory', context: 'sound-related context' }
+  ]);
 });
 

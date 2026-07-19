@@ -15,8 +15,8 @@ export class Perception {
       throw new TypeError('Inputs must be an array');
     }
     return inputs.map(input => {
-      if (typeof input !== 'object' || input === null) {
-        throw new TypeError('Input must be an object');
+      if (typeof input !== 'object' || input === null || !input.type) {
+        throw new TypeError('Input must be a non-null object with a type property');
       }
       // Simple categorization logic based on input properties.
       const category = this._determineCategory(input);
@@ -85,5 +85,5 @@ export class Perception {
   }
 
   // Remaining methods...
-
+  
 }
