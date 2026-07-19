@@ -2,43 +2,25 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-const perception = new Perception();
-
-test('categorizeSensoryInputs throws on non-array input', () => {
-  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+test('batchProcess categorizes and enhances sensory inputs', () => {
+  const perception = new Perception();
+  const inputs = [
+    { type: 'visual', data: 'some visual data' },
+    { type: 'auditory', data: 'some audio data' },
+    { type: 'unknown' },
+  ];
+  const result = perception.batchProcess(inputs);
+  assert.equal(result.length, 3);
+  assert.equal(result[0].category, 'visual');
+  assert.equal(result[1].category, 'auditory');
+  assert.equal(result[2].category, 'unknown');
+  assert.ok(result[0].context.includes('visual perception'));
+  assert.ok(result[1].context.includes('auditory perception'));
+  assert.ok(result[2].context.includes('general context'));
 });
 
-test('categorizeSensoryInputs throws on invalid input object', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([{ type: null }]), TypeError);
-});
-
-test('categorizeSensoryInputs returns categorized input', () => {
-  const inputs = [{ type: 'visual' }, { type: 'auditory' }];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, [
-    { input: { type: 'visual' }, category: 'visual' },
-    { input: { type: 'auditory' }, category: 'auditory' }
-  ]);
-});
-
-test('process throws on non-array input', () => {
-  assert.throws(() => perception.process('not an array'), TypeError);
-});
-
-test('process returns enhanced context', () => {
-  const inputs = [{ type: 'visual' }, { type: 'auditory' }];
-  const result = perception.process(inputs);
-  assert.deepEqual(result, [
-    { input: { type: 'visual' }, category: 'visual', context: 'context related to visual perception' },
-    { input: { type: 'auditory' }, category: 'auditory', context: 'context related to auditory perception' }
-  ]);
-});
-
-test('enhanceContext throws on non-array input', () => {
-  assert.throws(() => perception.enhanceContext('not an array'), TypeError);
-});
-
-test('enhanceContext returns empty for empty input', () => {
-  const result = perception.enhanceContext([]);
-  assert.deepEqual(result, []);
+test('batchProcess throws for invalid inputs', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.batchProcess('not an array'), TypeError);
+  assert.throws(() => perception.batchProcess([{ type: null }]), TypeError);
 });

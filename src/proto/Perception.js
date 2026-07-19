@@ -39,6 +39,20 @@ export class Perception {
   }
 
   /**
+   * Batch process sensory inputs, categorizing and enhancing them in one step.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  batchProcess(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    const categorized = this.categorizeSensoryInputs(inputs);
+    return this.enhanceContext(categorized);
+  }
+
+  /**
    * Enhance sensory data with additional context.
    * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
    * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
@@ -83,7 +97,7 @@ export class Perception {
       case 'olfactory': return 'context related to olfactory perception';
       case 'gustatory': return 'context related to gustatory perception';
       case 'tactile': return 'context related to tactile perception';
-      default: return 'context related to unknown perception';
+      default: return 'general context';
     }
   }
 }
