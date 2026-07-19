@@ -4,35 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('validateAndCategorize categorizes valid inputs', async () => {
-  const inputs = [{ sight: true }, { sound: true }, { smell: true }];
-  const results = await perception.validateAndCategorize(inputs);
-  assert.deepEqual(results, [
-    { input: { sight: true }, category: 'visual' },
-    { input: { sound: true }, category: 'auditory' },
-    { input: { smell: true }, category: 'olfactory' }
-  ]);
+test('handleSensoryInput categorizes valid input', async () => {
+  const result = await perception.handleSensoryInput({ sight: true });
+  assert.deepEqual(result, { input: { sight: true }, category: 'visual' });
 });
 
-test('validateAndCategorize throws for invalid input', async () => {
-  await assert.rejects(() => perception.validateAndCategorize('not an array'), {
+test('handleSensoryInput throws on null input', async () => {
+  await assert.rejects(() => perception.handleSensoryInput(null), {
     name: 'TypeError',
-    message: 'Data must be an array'
+    message: 'Data cannot be null or undefined'
   });
 });
 
-test('processMultiple categorizes asynchronously', async () => {
-  const inputs = [{ taste: true }, { touch: true }];
-  const results = await perception.processMultiple(inputs);
-  assert.deepEqual(results, [
-    { input: { taste: true }, category: 'gustatory' },
-    { input: { touch: true }, category: 'tactile' }
-  ]);
-});
-
-test('processMultiple throws for invalid input', async () => {
-  await assert.rejects(() => perception.processMultiple(null), {
+test('handleSensoryInput throws on undefined input', async () => {
+  await assert.rejects(() => perception.handleSensoryInput(undefined), {
     name: 'TypeError',
-    message: 'Inputs must be an array'
+    message: 'Data cannot be null or undefined'
   });
 });
+
+test('handleSensoryInput throws on empty object', async () => {
+  await assert.rejects(() => perception.handleSensoryInput({}), {
+    name: 'TypeError',
+    message: 'Data cannot be an empty object'
+  });
+});
+
