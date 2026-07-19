@@ -84,14 +84,15 @@ export class Perception {
 
   /**
    * Enhance sensory data with additional context.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @param {Object} context - Additional context to append to each input.
-   * @returns {Array<{input: any, context: Object}>} - Enhanced sensory data.
+   * @param {Array<{input: any, category: string}>} categorizedData - The categorized sensory data.
+   * @param {string} context - Additional context to append to each data entry.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced data.
    */
-  enhanceWithContext(inputs, context) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
+  enhanceWithContext(categorizedData, context) {
+    if (!Array.isArray(categorizedData)) {
+      throw new TypeError('Categorized data must be an array');
     }
-    return inputs.map(input => ({ input, context }));
+    return categorizedData.map(data => ({ ...data, context }));
   }
-}
+}  
+
