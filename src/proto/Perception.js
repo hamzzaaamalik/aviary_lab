@@ -83,12 +83,12 @@ export class Perception {
   }
 
   /**
-   * Process and validate multiple sensory data inputs, returning categorized results.
-   * @param {Array<any>} data - An array of sensory data inputs.
-   * @returns {Promise<Array<{input: any, category: string}>>} - Array of categorized results.
+   * Process and validate multiple sensory data inputs.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async processAndValidateMultiple(data) {
-    return this.validateAndCategorize(data);
+  async processAndValidateMultiple(inputs) {
+    return this.validateAndCategorize(inputs);
   }
 }
