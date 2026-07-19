@@ -4,23 +4,23 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('filterByCriteria filters valid inputs', () => {
+test('filterSensoryInputs filters correctly based on criteria', () => {
   const inputs = [
     { sight: true },
     { sound: true },
-    { smell: true },
-    { irrelevant: true }
+    { taste: true },
+    { touch: true },
+    null,
+    undefined,
+    {},
   ];
-  const criteria = (input) => 'sight' in input;
-  const filtered = perception.filterByCriteria(inputs, criteria);
+  const criteria = (input) => input && 'sight' in input;
+  const filtered = perception.filterSensoryInputs(inputs, criteria);
   assert.deepEqual(filtered, [{ sight: true }]);
 });
 
-test('filterByCriteria throws on non-array input', () => {
-  assert.throws(() => perception.filterByCriteria('not an array', () => true), TypeError);
-});
-
-test('filterByCriteria throws on non-function criteria', () => {
-  assert.throws(() => perception.filterByCriteria([], 'not a function'), TypeError);
+test('filterSensoryInputs throws TypeError on invalid inputs', () => {
+  assert.throws(() => perception.filterSensoryInputs('not an array', () => true), TypeError);
+  assert.throws(() => perception.filterSensoryInputs([], 'not a function'), TypeError);
 });
 
