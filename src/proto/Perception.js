@@ -82,7 +82,7 @@ export class Perception {
         return { input, category };
       } catch (err) {
         console.error('Error processing input:', input, err);
-        throw err; // Re-throw the error for further handling
+        throw err;  // rethrow to ensure Promise.all handles it
       }
     }));
   }
