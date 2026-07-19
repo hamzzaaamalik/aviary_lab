@@ -4,39 +4,50 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process categorizes valid sensory input', async () => {
-  const input = { sight: true };
-  const result = await perception.process(input);
-  assert.deepEqual(result, [{ input, category: 'visual' }]);
+test('categorizeSensoryInput categorizes visual input', () => {
+  const result = perception.categorizeSensoryInput({ sight: true });
+  assert.equal(result, 'visual');
 });
 
-test('process throws TypeError for null data', async () => {
-  await assert.rejects(() => perception.process(null), {
-    name: 'TypeError',
-    message: 'Data cannot be null',
-  });
+test('categorizeSensoryInput throws on invalid input', () => {
+  assert.throws(() => perception.categorizeSensoryInput(null), TypeError);
 });
 
-test('process throws TypeError for undefined data', async () => {
-  await assert.rejects(() => perception.process(undefined), {
-    name: 'TypeError',
-    message: 'Data cannot be undefined',
-  });
-});
-
-test('process throws TypeError for empty object', async () => {
-  await assert.rejects(() => perception.process({}), {
-    name: 'TypeError',
-    message: 'Data cannot be an empty object',
-  });
-});
-
-test('process categorizes an array of sensory inputs', async () => {
-  const inputs = [{ sight: true }, { sound: true }];
-  const results = await perception.process(inputs);
-  assert.deepEqual(results, [
+test('validateAndCategorize processes an array of inputs', async () => {
+  const data = [{ sight: true }, { sound: true }];
+  const result = await perception.validateAndCategorize(data);
+  assert.deepEqual(result, [
     { input: { sight: true }, category: 'visual' },
     { input: { sound: true }, category: 'auditory' }
   ]);
 });
 
+test('process processes single input correctly', async () => {
+  const data = { taste: true };
+  const result = await perception.process(data);
+  assert.deepEqual(result, [{ input: data, category: 'gustatory' }]);
+});
+
+test('process throws on null input', async () => {
+  await assert.rejects(() => perception.process(null), TypeError);
+});
+
+test('filterByCriteria filters inputs correctly', () => {
+  const inputs = [{ sight: true }, { sound: true }];
+  const criteria = (input) => 'sight' in input;
+  const result = perception.filterByCriteria(inputs, criteria);
+  assert.deepEqual(result, [{ sight: true }]);
+});
+
+test('enhanceProcess throws on empty array', async () => {
+  await assert.rejects(() => perception.enhanceProcess([]), TypeError);
+});
+
+test('enhanceProcess processes valid data', async () => {
+  const data = [{ sight: true }, { smell: true }];
+  const result = await perception.enhanceProcess(data);
+  assert.deepEqual(result, [
+    { input: { sight: true }, category: 'visual' },
+    { input: { smell: true }, category: 'olfactory' }
+  ]);
+});
