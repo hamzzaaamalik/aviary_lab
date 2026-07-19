@@ -61,33 +61,11 @@ export class Perception {
   }
 
   /**
-   * Handle multiple sensory data inputs and categorize them asynchronously.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
-   * @throws {TypeError} - If any input is invalid.
-   */
-  async processMultiple(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
-    if (inputs.length === 0) {
-      throw new TypeError('Inputs array cannot be empty');
-    }
-    return Promise.all(inputs.map(async (input) => {
-      if (input === null || input === undefined) {
-        throw new TypeError('Input cannot be null or undefined');
-      }
-      const category = await this.process(input);
-      return { input, category };
-    }));
-  }
-
-  /**
    * Filter sensory data based on defined criteria.
    * @param {Array<any>} inputs - An array of sensory data.
-   * @param {Function} criteria - A function that defines the filtering criteria.
-   * @returns {Array<any>} - An array of filtered sensory data.
-   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
+   * @param {Function} criteria - A function that determines if an input meets the criteria.
+   * @returns {Array<any>} - An array of filtered inputs.
+   * @throws {TypeError} - If criteria is not a function or inputs is not an array.
    */
   filterByCriteria(inputs, criteria) {
     if (!Array.isArray(inputs)) {
@@ -98,5 +76,17 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
-}
 
+  /**
+   * Handle multiple sensory data inputs and categorize them asynchronously.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
+   * @throws {TypeError} - If any input is invalid.
+   */
+  async handleMultipleInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return this.validateAndCategorize(inputs);
+  }
+}
