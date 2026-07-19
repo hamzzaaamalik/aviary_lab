@@ -33,3 +33,4 @@ test('process throws on invalid input', () => {
   assert.throws(() => perception.process(null), TypeError);
   assert.throws(() => perception.process({}), TypeError);
 });
+
