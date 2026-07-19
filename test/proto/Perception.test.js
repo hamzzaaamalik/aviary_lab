@@ -20,4 +20,27 @@ test('batchProcess categorizes and enhances sensory inputs', () => {
   assert.equal(result[2].context, 'smell context');
 });
 
-// Add more tests as needed
+test('categorizeSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+});
+
+test('categorizeSensoryInputs throws on invalid input object', () => {
+  const inputs = [
+    { type: 'visual', data: 'image1' },
+    'invalid input'
+  ];
+  assert.throws(() => perception.categorizeSensoryInputs(inputs), TypeError);
+});
+
+test('process throws on non-array input', () => {
+  assert.throws(() => perception.process('not an array'), TypeError);
+});
+
+test('enhanceContext throws on non-array input', () => {
+  assert.throws(() => perception.enhanceContext('not an array'), TypeError);
+});
+
+test('categorizeSensoryInputs throws on unknown input type', () => {
+  const inputs = [{ type: 'unknown', data: 'data' }];
+  assert.throws(() => perception.categorizeSensoryInputs(inputs), TypeError);
+});
