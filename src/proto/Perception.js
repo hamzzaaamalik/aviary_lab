@@ -80,18 +80,8 @@ export class Perception {
         const category = await this.process(input);
         return { input, category };  // Return valid input and its category
       } catch (error) {
-        return { input, error: error.message };  // Return error for invalid input
+        return { input, error: error.message };  // Return error message
       }
     }));
   }
-
-  /**
-   * Process and validate multiple sensory data inputs.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @returns {Promise<Array<{input: any, category: string, error?: string}>>} - Categorized results with potential errors.
-   * @throws {TypeError} - If inputs are invalid.
-   */
-  async processAndValidateMultiple(inputs) {
-    return this.processMultiple(inputs);
-  }
-}
+} 
