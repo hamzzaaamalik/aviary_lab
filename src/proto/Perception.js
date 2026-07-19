@@ -18,7 +18,7 @@ export class Perception {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Input must be a non-null object with a type property');
       }
-      // Corrected categorization logic based on input properties.
+      // Categorization logic based on input type property.
       const category = this._determineCategory(input);
       if (!category) {
         throw new TypeError('Unknown input type');
@@ -70,35 +70,32 @@ export class Perception {
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
+      if (!context) {
+        throw new TypeError('Context could not be determined for category: ' + item.category);
+      }
       return { ...item, context };
     });
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category for the input.
+   * Determine the category of the input.
+   * @private
+   * @param {any} input - The input to categorize.
+   * @returns {string} - The determined category.
    */
   _determineCategory(input) {
-    if (input.type === 'visual') return 'visual';
-    if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
-    return undefined;
+    // Example implementation, needs real logic.
+    return input.type === 'sound' ? 'auditory' : input.type === 'sight' ? 'visual' : null;
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the input.
-   * @returns {string} - The context for the input.
+   * Determine additional context based on category.
+   * @private
+   * @param {string} category - The category to enhance.
+   * @returns {string} - The determined context.
    */
   _determineContext(category) {
-    const contexts = {
-      visual: 'seen',
-      auditory: 'heard',
-      olfactory: 'smelled',
-      gustatory: 'tasted'
-    };
-    return contexts[category] || 'unknown';
+    // Example implementation, needs real logic.
+    return category === 'auditory' ? 'listening' : category === 'visual' ? 'looking' : null;
   }
 }

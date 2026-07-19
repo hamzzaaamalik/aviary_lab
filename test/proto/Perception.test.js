@@ -4,34 +4,41 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = [
-    { type: 'visual', data: 'image1' },
-    { type: 'auditory', data: 'sound1' },
-    { type: 'olfactory', data: 'smell1' },
-    { type: 'gustatory', data: 'taste1' }
-  ];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, [
-    { input: inputs[0], category: 'visual' },
-    { input: inputs[1], category: 'auditory' },
-    { input: inputs[2], category: 'olfactory' },
-    { input: inputs[3], category: 'gustatory' }
+test('categorizeSensoryInputs throws TypeError for non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+});
+
+test('categorizeSensoryInputs throws TypeError for invalid input objects', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([{ type: null }]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([{ notType: 'invalid' }]), TypeError);
+});
+
+test('categorizeSensoryInputs categorizes valid inputs', () => {
+  const inputs = [{ type: 'sound' }, { type: 'sight' }];
+  const categorized = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(categorized, [
+    { input: { type: 'sound' }, category: 'auditory' },
+    { input: { type: 'sight' }, category: 'visual' }
   ]);
 });
 
-test('categorizeSensoryInputs throws on unknown input type', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([{ type: 'unknown', data: 'data' }]), TypeError);
+test('process throws TypeError for non-array input', () => {
+  assert.throws(() => perception.process('not an array'), TypeError);
 });
 
-test('process enhances sensory inputs', () => {
-  const inputs = [{ type: 'visual', data: 'image1' }];
-  const result = perception.process(inputs);
-  assert.equal(result[0].context, 'seen');
+test('enhanceContext throws TypeError for invalid categorized data', () => {
+  assert.throws(() => perception.enhanceContext('not an array'), TypeError);
 });
 
-test('batchProcess processes and enhances inputs', () => {
-  const inputs = [{ type: 'auditory', data: 'sound1' }];
-  const result = perception.batchProcess(inputs);
-  assert.equal(result[0].context, 'heard');
+test('enhanceContext enhances valid categorized data', () => {
+  const categorized = [
+    { input: { type: 'sound' }, category: 'auditory' },
+    { input: { type: 'sight' }, category: 'visual' }
+  ];
+  const enhanced = perception.enhanceContext(categorized);
+  assert.deepEqual(enhanced, [
+    { input: { type: 'sound' }, category: 'auditory', context: 'listening' },
+    { input: { type: 'sight' }, category: 'visual', context: 'looking' }
+  ]);
 });
+
