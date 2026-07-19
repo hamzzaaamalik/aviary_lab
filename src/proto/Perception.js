@@ -85,4 +85,5 @@ export class Perception {
   }
 
   // Remaining methods...
+
 }
