@@ -12,7 +12,7 @@ export class Perception {
    */
   categorizeSensoryInput(sensoryInput) {
     if (typeof sensoryInput !== 'object' || sensoryInput === null) {
-      throw new TypeError('Invalid sensory input: must be a non-null object');
+      throw new TypeError('Invalid sensory input: must be a non-null object.');
     }
     // Enhanced categorization logic
     if ('sight' in sensoryInput) return 'visual';
@@ -33,7 +33,7 @@ export class Perception {
    */
   validateAndCategorize(data) {
     if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array');
+      throw new TypeError('Data must be an array of sensory inputs.');
     }
     return data.map(input => {
       const category = this.categorizeSensoryInput(input);
@@ -49,13 +49,13 @@ export class Perception {
    */
   async process(data) {
     if (data === null) {
-      throw new TypeError('Data cannot be null');
+      throw new TypeError('Data cannot be null.');
     }
     if (data === undefined) {
-      throw new TypeError('Data cannot be undefined');
+      throw new TypeError('Data cannot be undefined.');
     }
     if (typeof data === 'object' && Object.keys(data).length === 0) {
-      throw new TypeError('Data cannot be an empty object');
+      throw new TypeError('Data cannot be an empty object.');
     }
     return this.categorizeSensoryInput(data);  // Return only the category
   }
@@ -68,14 +68,14 @@ export class Perception {
    */
   async processMultiple(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
+      throw new TypeError('Inputs must be an array of sensory data.');
     }
     if (inputs.length === 0) {
-      throw new TypeError('Inputs array cannot be empty');
+      throw new TypeError('Inputs array cannot be empty.');
     }
     return Promise.all(inputs.map(async (input) => {
       if (input === null || input === undefined) {
-        throw new TypeError('Input cannot be null or undefined');
+        throw new TypeError('Input cannot be null or undefined.');
       }
       const category = await this.process(input);
       return { input, category };
@@ -83,17 +83,13 @@ export class Perception {
   }
 
   /**
-   * Process and validate multiple sensory data inputs, categorizing them efficiently
-   * @param {Array<any>} data - An array of sensory data.
+   * Process and validate multiple sensory data inputs, categorizing them efficiently.
+   * @param {Array<any>} data - An array of sensory data inputs.
    * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async validateAndCategorizeMultiple(data) {
-    if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array');
-    }
-    return Promise.all(data.map(async (input) => {
-      return this.validateAndCategorize(input);
-    }));
+  async validateAndProcessMultiple(data) {
+    const categorizedResults = await this.processMultiple(data);
+    return categorizedResults;
   }
 }
