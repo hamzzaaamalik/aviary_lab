@@ -19,7 +19,7 @@ export class Perception {
         throw new TypeError('Input must be a non-null object with a type property');
       }
       // Simple categorization logic based on input properties.
-      const category = this._determineCategory(input);
+      const category = this._classifyInputType(input);
       return { input, category };
     });
   }
@@ -71,8 +71,9 @@ export class Perception {
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
    * @returns {string} - The category for the input.
+   * @throws {TypeError} - If the input type is unknown.
    */
-  _determineCategory(input) {
+  _classifyInputType(input) {
     const type = input.type.toLowerCase();
     if (type === 'visual') return 'visual';
     if (type === 'auditory') return 'auditory';
@@ -83,8 +84,8 @@ export class Perception {
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category of the input.
-   * @returns {string} - Context for the input.
+   * @param {string} category - The category of the sensory input.
+   * @returns {string} - The context associated with the category.
    */
   _determineContext(category) {
     switch (category) {
