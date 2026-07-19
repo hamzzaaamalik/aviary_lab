@@ -88,7 +88,8 @@ export class Perception {
    * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async processAndValidate(data) {
-    return this.validateAndCategorize(data);
+  async validateAndProcessMultiple(data) {
+    const categorizedResults = await this.processMultiple(data);
+    return categorizedResults;
   }
 }
