@@ -80,24 +80,10 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function');
     }
-    return inputs.filter(input => {
-      try {
-        return criteria(input);
-      } catch (error) {
-        throw new Error(`Error in criteria function: ${error.message}`);
-      }
-    });
-  }
-
-  /**
-   * Process and filter sensory data based on defined criteria.
-   * @param {Array<any>} data - An array of sensory data to be processed and filtered.
-   * @param {Function} criteria - A function that defines the filtering criteria.
-   * @returns {Promise<Array<any>>} - An array of processed and filtered sensory data.
-   * @throws {TypeError} - If data is not an array or criteria is not a function.
-   */
-  async processAndFilter(data, criteria) {
-    const processedData = await this.process(data);
-    return this.filterByCriteria(processedData, criteria);
+    try {
+      return inputs.filter(input => criteria(input));
+    } catch (error) {
+      throw new Error('Error occurred while filtering inputs: ' + error.message);
+    }
   }
 }
