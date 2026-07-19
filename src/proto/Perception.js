@@ -45,11 +45,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   batchProcess(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
-    const categorized = this.categorizeSensoryInputs(inputs);
-    return this.enhanceContext(categorized);
+    return this.process(inputs);
   }
 
   /**
@@ -77,17 +73,18 @@ export class Perception {
    * @returns {string} - The category for the input.
    */
   _determineCategory(input) {
-    if (input.type === 'visual') return 'visual';
-    if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
-    throw new TypeError('Unknown input type');
+    const type = input.type.toLowerCase();
+    if (type === 'visual') return 'visual';
+    if (type === 'auditory') return 'auditory';
+    if (type === 'olfactory') return 'olfactory';
+    if (type === 'gustatory') return 'gustatory';
+    throw new TypeError('Unknown input type: ' + input.type);
   }
 
   /**
    * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - The context for the category.
+   * @returns {string} - Context for the input.
    */
   _determineContext(category) {
     switch (category) {
@@ -95,7 +92,7 @@ export class Perception {
       case 'auditory': return 'sound context';
       case 'olfactory': return 'smell context';
       case 'gustatory': return 'taste context';
-      default: return 'unknown context';
+      default: throw new TypeError('Unknown category: ' + category);
     }
   }
 }
