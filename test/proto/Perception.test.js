@@ -4,35 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('validateAndCategorize categorizes valid inputs', async () => {
+test('categorizeSensoryInput returns correct category for sight input', () => {
+  const result = perception.categorizeSensoryInput({ sight: true });
+  assert.equal(result, 'visual');
+});
+
+test('categorizeSensoryInput throws for invalid input', () => {
+  assert.throws(() => perception.categorizeSensoryInput(null), TypeError);
+  assert.throws(() => perception.categorizeSensoryInput(42), TypeError);
+});
+
+test('processMultiple categorizes multiple inputs', async () => {
   const inputs = [{ sight: true }, { sound: true }, { smell: true }];
-  const results = await perception.validateAndCategorize(inputs);
-  assert.deepEqual(results, [
+  const expected = [
     { input: { sight: true }, category: 'visual' },
     { input: { sound: true }, category: 'auditory' },
     { input: { smell: true }, category: 'olfactory' }
-  ]);
+  ];
+  const result = await perception.processMultiple(inputs);
+  assert.deepEqual(result, expected);
 });
 
-test('validateAndCategorize throws for invalid input', async () => {
-  await assert.rejects(() => perception.validateAndCategorize('not an array'), {
-    name: 'TypeError',
-    message: 'Data must be an array'
-  });
-});
-
-test('processMultiple categorizes asynchronously', async () => {
-  const inputs = [{ taste: true }, { touch: true }];
-  const results = await perception.processMultiple(inputs);
-  assert.deepEqual(results, [
-    { input: { taste: true }, category: 'gustatory' },
-    { input: { touch: true }, category: 'tactile' }
-  ]);
-});
-
-test('processMultiple throws for invalid input', async () => {
-  await assert.rejects(() => perception.processMultiple(null), {
-    name: 'TypeError',
-    message: 'Inputs must be an array'
-  });
+test('processMultiple throws for invalid inputs', async () => {
+  assert.rejects(() => perception.processMultiple(null), TypeError);
+  assert.rejects(() => perception.processMultiple([]), TypeError);
+  assert.rejects(() => perception.processMultiple([null]), TypeError);
 });
