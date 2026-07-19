@@ -8,19 +8,22 @@ test('filterByCriteria filters valid inputs', () => {
   const inputs = [
     { sight: true },
     { sound: true },
-    { smell: true },
-    { irrelevant: true }
+    { taste: true },
+    { invalid: true }
   ];
-  const criteria = (input) => 'sight' in input;
+  const criteria = input => 'sight' in input || 'sound' in input;
   const filtered = perception.filterByCriteria(inputs, criteria);
-  assert.deepEqual(filtered, [{ sight: true }]);
+  assert.deepEqual(filtered, [
+    { sight: true },
+    { sound: true }
+  ]);
 });
 
-test('filterByCriteria throws on non-array input', () => {
-  assert.throws(() => perception.filterByCriteria('not an array', () => true), TypeError);
+test('filterByCriteria throws for non-array inputs', () => {
+  assert.throws(() => perception.filterByCriteria('not an array', () => {}), TypeError);
 });
 
-test('filterByCriteria throws on non-function criteria', () => {
+test('filterByCriteria throws for non-function criteria', () => {
   assert.throws(() => perception.filterByCriteria([], 'not a function'), TypeError);
 });
 
