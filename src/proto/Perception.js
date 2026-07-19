@@ -89,6 +89,9 @@ export class Perception {
    * @throws {TypeError} - If any input is invalid.
    */
   async processAndValidate(data) {
-    return this.validateAndCategorize(data);
+    if (!Array.isArray(data)) {
+      throw new TypeError('Data must be an array');
+    }
+    return this.processMultiple(data);
   }
 }
