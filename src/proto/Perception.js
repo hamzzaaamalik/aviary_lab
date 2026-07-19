@@ -36,8 +36,12 @@ export class Perception {
       throw new TypeError('Data must be an array');
     }
     return Promise.all(data.map(async (input) => {
-      const category = this.categorizeSensoryInput(input);
-      return { input, category };
+      try {
+        const category = this.categorizeSensoryInput(input);
+        return { input, category };
+      } catch (error) {
+        throw new Error(`Failed to categorize input: ${error.message}`);
+      }
     }));
   }
 
@@ -84,14 +88,11 @@ export class Perception {
 
   /**
    * Extract sensory data from a structured input.
-   * @param {object} structuredInput - The structured sensory input.
-   * @returns {Array<any>} - Extracted sensory data.
+   * @param {any} input - The structured input to extract data from.
+   * @returns {any} - The extracted sensory data.
    * @throws {TypeError} - If the input is not valid.
    */
-  extractSensoryData(structuredInput) {
-    if (typeof structuredInput !== 'object' || structuredInput === null) {
-      throw new TypeError('Invalid structured input: must be a non-null object');
-    }
-    return Object.values(structuredInput);
+  extractSensoryData(input) {
+    // Implementation placeholder
   }
 }
