@@ -4,35 +4,23 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('validateAndCategorize categorizes valid inputs', async () => {
-  const inputs = [{ sight: true }, { sound: true }, { smell: true }];
-  const results = await perception.validateAndCategorize(inputs);
-  assert.deepEqual(results, [
-    { input: { sight: true }, category: 'visual' },
-    { input: { sound: true }, category: 'auditory' },
-    { input: { smell: true }, category: 'olfactory' }
-  ]);
+test('filterByCriteria filters valid inputs', () => {
+  const inputs = [
+    { sight: true },
+    { sound: true },
+    { smell: true },
+    { irrelevant: true }
+  ];
+  const criteria = (input) => 'sight' in input;
+  const filtered = perception.filterByCriteria(inputs, criteria);
+  assert.deepEqual(filtered, [{ sight: true }]);
 });
 
-test('validateAndCategorize throws for invalid input', async () => {
-  await assert.rejects(() => perception.validateAndCategorize('not an array'), {
-    name: 'TypeError',
-    message: 'Data must be an array'
-  });
+test('filterByCriteria throws on non-array input', () => {
+  assert.throws(() => perception.filterByCriteria('not an array', () => true), TypeError);
 });
 
-test('processMultiple categorizes asynchronously', async () => {
-  const inputs = [{ taste: true }, { touch: true }];
-  const results = await perception.processMultiple(inputs);
-  assert.deepEqual(results, [
-    { input: { taste: true }, category: 'gustatory' },
-    { input: { touch: true }, category: 'tactile' }
-  ]);
+test('filterByCriteria throws on non-function criteria', () => {
+  assert.throws(() => perception.filterByCriteria([], 'not a function'), TypeError);
 });
 
-test('processMultiple throws for invalid input', async () => {
-  await assert.rejects(() => perception.processMultiple(null), {
-    name: 'TypeError',
-    message: 'Inputs must be an array'
-  });
-});
