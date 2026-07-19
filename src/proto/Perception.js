@@ -52,7 +52,7 @@ export class Perception {
       return []; // Handle empty input arrays gracefully
     }
     return categorizedData.map(item => {
-      const context = this._determineContext(item.category);
+      const context = this._determineContext(item.category, item.input);
       return { ...item, context };
     });
   }
@@ -72,18 +72,20 @@ export class Perception {
   }
 
   /**
-   * Determine context based on the input category.
+   * Determine context based on the input category and properties.
    * @param {string} category - The category of the sensory input.
+   * @param {object} input - The sensory input object.
    * @returns {string} - The context for the category.
    */
-  _determineContext(category) {
+  _determineContext(category, input) {
+    const defaultContext = 'general context';
     switch (category) {
-      case 'visual': return 'context related to visual perception';
-      case 'auditory': return 'context related to auditory perception';
+      case 'visual': return input.detail ? `visual context with detail: ${input.detail}` : 'context related to visual perception';
+      case 'auditory': return input.volume ? `auditory context with volume: ${input.volume}` : 'context related to auditory perception';
       case 'olfactory': return 'context related to olfactory perception';
       case 'gustatory': return 'context related to gustatory perception';
       case 'tactile': return 'context related to tactile perception';
-      default: return 'context related to unknown perception';
+      default: return defaultContext;
     }
   }
 }
