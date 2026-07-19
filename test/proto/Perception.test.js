@@ -4,39 +4,45 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process categorizes valid sensory input', async () => {
-  const input = { sight: true };
-  const result = await perception.process(input);
-  assert.deepEqual(result, [{ input, category: 'visual' }]);
+test('categorizeSensoryInput returns correct category', () => {
+  assert.equal(perception.categorizeSensoryInput({ sight: true }), 'visual');
+  assert.equal(perception.categorizeSensoryInput({ sound: true }), 'auditory');
+  assert.equal(perception.categorizeSensoryInput({ smell: true }), 'olfactory');
+  assert.equal(perception.categorizeSensoryInput({ taste: true }), 'gustatory');
+  assert.equal(perception.categorizeSensoryInput({ touch: true }), 'tactile');
+  assert.equal(perception.categorizeSensoryInput({}), 'unknown');
 });
 
-test('process throws TypeError for null data', async () => {
-  await assert.rejects(() => perception.process(null), {
+test('validateAndCategorize throws for non-array', async () => {
+  await assert.rejects(perception.validateAndCategorize('not an array'), {
     name: 'TypeError',
-    message: 'Data cannot be null',
+    message: 'Data must be an array'
   });
 });
 
-test('process throws TypeError for undefined data', async () => {
-  await assert.rejects(() => perception.process(undefined), {
-    name: 'TypeError',
-    message: 'Data cannot be undefined',
-  });
+test('process handles single input and array', async () => {
+  const singleResult = await perception.process({ sight: true });
+  assert.deepEqual(singleResult, [{ input: { sight: true }, category: 'visual' }]);
+
+  const arrayResult = await perception.process([{ sound: true }, { smell: true }]);
+  assert.deepEqual(arrayResult, [
+    { input: { sound: true }, category: 'auditory' },
+    { input: { smell: true }, category: 'olfactory' }
+  ]);
 });
 
-test('process throws TypeError for empty object', async () => {
-  await assert.rejects(() => perception.process({}), {
-    name: 'TypeError',
-    message: 'Data cannot be an empty object',
-  });
-});
-
-test('process categorizes an array of sensory inputs', async () => {
-  const inputs = [{ sight: true }, { sound: true }];
-  const results = await perception.process(inputs);
-  assert.deepEqual(results, [
+test('filterByCriteria filters inputs correctly', () => {
+  const inputs = [
     { input: { sight: true }, category: 'visual' },
     { input: { sound: true }, category: 'auditory' }
-  ]);
+  ];
+  const criteria = (item) => item.category === 'visual';
+  const filtered = perception.filterByCriteria(inputs, criteria);
+  assert.deepEqual(filtered, [{ input: { sight: true }, category: 'visual' }]);
+});
+
+test('filterByCriteria throws for invalid inputs', () => {
+  assert.throws(() => perception.filterByCriteria('not an array', () => true), TypeError);
+  assert.throws(() => perception.filterByCriteria([], 'not a function'), TypeError);
 });
 

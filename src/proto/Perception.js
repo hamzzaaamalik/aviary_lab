@@ -83,20 +83,14 @@ export class Perception {
   }
 
   /**
-   * Enhance sensory data processing with filtering capabilities.
-   * @param {Array<any>} data - An array of sensory data to be filtered.
-   * @param {Function} criteria - A function that determines if an input meets the criteria.
-   * @returns {Promise<Array<any>>} - A promise that resolves to the filtered sensory data.
-   * @throws {TypeError} - If criteria is not a function or data is not an array.
+   * Enhance sensory data processing with filtering.
+   * @param {Array<any>} data - The sensory data to process.
+   * @param {Function} criteria - A function to filter the data.
+   * @returns {Promise<Array<{input: any, category: string}>>} - Filtered and categorized results.
+   * @throws {TypeError} - If the criteria is not a function.
    */
-  async enhanceFiltering(data, criteria) {
-    if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array');
-    }
-    if (typeof criteria !== 'function') {
-      throw new TypeError('Criteria must be a function');
-    }
-    const categorizedResults = await this.process(data);
-    return this.filterByCriteria(categorizedResults, criteria);
+  async enhanceProcess(data, criteria) {
+    const categorized = await this.process(data);
+    return this.filterByCriteria(categorized, criteria);
   }
 }
