@@ -84,26 +84,18 @@ export class Perception {
    * @returns {string} - The determined category.
    */
   _determineCategory(input) {
-    switch (input.type) {
-      case 'sensor': return 'sensory';
-      case 'action': return 'motor';
-      // Add more cases as necessary for future input types.
-      default: return null;
-    }
+    // Example implementation, needs real logic.
+    return input.type === 'sound' ? 'auditory' : input.type === 'sight' ? 'visual' : null;
   }
 
   /**
-   * Determine the context based on category.
+   * Determine additional context based on category.
    * @private
-   * @param {string} category - The category to determine context for.
+   * @param {string} category - The category to enhance.
    * @returns {string} - The determined context.
    */
   _determineContext(category) {
-    switch (category) {
-      case 'sensory': return 'environmental context';
-      case 'motor': return 'movement context';
-      // Add more cases as necessary for context determination.
-      default: return null;
-    }
+    // Example implementation, needs real logic.
+    return category === 'auditory' ? 'listening' : category === 'visual' ? 'looking' : null;
   }
 }
