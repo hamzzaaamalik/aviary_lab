@@ -39,6 +39,19 @@ export class Perception {
   }
 
   /**
+   * Batch process sensory inputs, categorizing and enhancing them in one step.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  batchProcess(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return this.enhanceContext(this.categorizeSensoryInputs(inputs));
+  }
+
+  /**
    * Enhance sensory data with additional context.
    * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
    * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
@@ -67,23 +80,22 @@ export class Perception {
     if (input.type === 'auditory') return 'auditory';
     if (input.type === 'olfactory') return 'olfactory';
     if (input.type === 'gustatory') return 'gustatory';
-    if (input.type === 'tactile') return 'tactile';
-    return 'unknown';
+    return 'unknown'; // Fallback for unrecognized types
   }
 
   /**
-   * Determine context based on the input category.
+   * Determine context based on category.
    * @param {string} category - The category of the sensory input.
-   * @returns {string} - The context for the category.
+   * @returns {string} - Contextual information for the input.
    */
   _determineContext(category) {
+    // Simple context logic based on category
     switch (category) {
-      case 'visual': return 'context related to visual perception';
-      case 'auditory': return 'context related to auditory perception';
-      case 'olfactory': return 'context related to olfactory perception';
-      case 'gustatory': return 'context related to gustatory perception';
-      case 'tactile': return 'context related to tactile perception';
-      default: return 'context related to unknown perception';
+      case 'visual': return 'visual perception';
+      case 'auditory': return 'auditory perception';
+      case 'olfactory': return 'olfactory perception';
+      case 'gustatory': return 'gustatory perception';
+      default: return 'general context';
     }
   }
 }
