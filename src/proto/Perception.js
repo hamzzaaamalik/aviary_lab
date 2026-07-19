@@ -20,6 +20,7 @@ export class Perception {
       }
       // Simple categorization logic based on input properties.
       const category = this._determineCategory(input);
+      console.log(`Categorized input: ${JSON.stringify(input)} as ${category}`);
       return { input, category };
     });
   }
@@ -53,6 +54,7 @@ export class Perception {
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
+      console.log(`Enhanced context for category ${item.category}: ${context}`);
       return { ...item, context };
     });
   }
@@ -83,7 +85,7 @@ export class Perception {
       case 'olfactory': return 'context related to olfactory perception';
       case 'gustatory': return 'context related to gustatory perception';
       case 'tactile': return 'context related to tactile perception';
-      default: return 'context unknown';
+      default: return 'general context';
     }
   }
 }
