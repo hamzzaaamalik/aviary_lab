@@ -35,6 +35,9 @@ export class Perception {
     if (!Array.isArray(data)) {
       throw new TypeError('Data must be an array');
     }
+    if (data.length === 0) {
+      throw new TypeError('Data array cannot be empty');
+    }
     return Promise.all(data.map(async (input) => {
       try {
         const category = this.categorizeSensoryInput(input);
@@ -84,15 +87,5 @@ export class Perception {
       throw new TypeError('Criteria must be a function');
     }
     return inputs.filter(criteria);
-  }
-
-  /**
-   * Extract sensory data from a structured input.
-   * @param {any} input - The structured input to extract data from.
-   * @returns {any} - The extracted sensory data.
-   * @throws {TypeError} - If the input is not valid.
-   */
-  extractSensoryData(input) {
-    // Implementation placeholder
   }
 }
