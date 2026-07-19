@@ -83,8 +83,8 @@ export class Perception {
       case 'olfactory': return 'context related to olfactory perception';
       case 'gustatory': return 'context related to gustatory perception';
       case 'tactile': return 'context related to tactile perception';
-      case 'unknown': return 'context related to unknown perception';
-      default: return 'context not defined'; // Fallback for cases not explicitly handled
+      case 'unknown': return 'context for unknown perception'; // Added context for unknown category
+      default: return 'unknown context';
     }
   }
 }
