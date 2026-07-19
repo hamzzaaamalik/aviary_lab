@@ -79,6 +79,10 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function');
     }
+    if (criteria.length === 0) {
+      throw new TypeError('Criteria function cannot be empty');
+    }
     return inputs.filter(criteria);
   }
+
 }

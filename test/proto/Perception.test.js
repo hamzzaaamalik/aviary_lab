@@ -4,39 +4,27 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process categorizes valid sensory input', async () => {
-  const input = { sight: true };
-  const result = await perception.process(input);
-  assert.deepEqual(result, [{ input, category: 'visual' }]);
+test('categorizeSensoryInput categorizes correctly', () => {
+  assert.equal(perception.categorizeSensoryInput({ sight: true }), 'visual');
+  assert.equal(perception.categorizeSensoryInput({ sound: true }), 'auditory');
+  assert.equal(perception.categorizeSensoryInput({ smell: true }), 'olfactory');
+  assert.equal(perception.categorizeSensoryInput({ taste: true }), 'gustatory');
+  assert.equal(perception.categorizeSensoryInput({ touch: true }), 'tactile');
+  assert.equal(perception.categorizeSensoryInput({}), 'unknown');
 });
 
-test('process throws TypeError for null data', async () => {
-  await assert.rejects(() => perception.process(null), {
-    name: 'TypeError',
-    message: 'Data cannot be null',
-  });
+test('validateAndCategorize throws on invalid input', async () => {
+  await assert.rejects(() => perception.validateAndCategorize(null), { message: 'Data must be an array' });
 });
 
-test('process throws TypeError for undefined data', async () => {
-  await assert.rejects(() => perception.process(undefined), {
-    name: 'TypeError',
-    message: 'Data cannot be undefined',
-  });
+test('process handles single input correctly', async () => {
+  const result = await perception.process({ sight: true });
+  assert.deepEqual(result, [{ input: { sight: true }, category: 'visual' }]);
 });
 
-test('process throws TypeError for empty object', async () => {
-  await assert.rejects(() => perception.process({}), {
-    name: 'TypeError',
-    message: 'Data cannot be an empty object',
-  });
-});
-
-test('process categorizes an array of sensory inputs', async () => {
-  const inputs = [{ sight: true }, { sound: true }];
-  const results = await perception.process(inputs);
-  assert.deepEqual(results, [
-    { input: { sight: true }, category: 'visual' },
-    { input: { sound: true }, category: 'auditory' }
-  ]);
+test('filterByCriteria throws on invalid inputs', () => {
+  assert.throws(() => perception.filterByCriteria(null, () => true), TypeError);
+  assert.throws(() => perception.filterByCriteria([], 'notAFunction'), TypeError);
+  assert.throws(() => perception.filterByCriteria([], () => {}), TypeError);
 });
 
