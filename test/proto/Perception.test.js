@@ -4,34 +4,39 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('filterByCriteria filters inputs correctly', () => {
-  const inputs = [{ type: 'sound' }, { type: 'sight' }, { type: 'scent' }];
-  const criteria = (input) => input.type === 'sound';
-  const result = perception.filterByCriteria(inputs, criteria);
-  assert.deepEqual(result, [{ type: 'sound' }]);
-});
-
-test('filterByCriteria throws on non-array inputs', () => {
-  assert.throws(() => perception.filterByCriteria({}, () => true), TypeError);
-});
-
-test('filterByCriteria throws on non-function criteria', () => {
-  assert.throws(() => perception.filterByCriteria([], 'not-a-function'), TypeError);
-});
-
-// Additional tests for process method
-
 test('process categorizes valid sensory input', async () => {
-  const result = await perception.process({ sight: true });
-  assert.equal(result, 'visual');
+  const input = { sight: true };
+  const result = await perception.process(input);
+  assert.deepEqual(result, [{ input, category: 'visual' }]);
 });
 
-test('process throws on null input', async () => {
-  await assert.rejects(() => perception.process(null), { name: 'TypeError' });
+test('process throws TypeError for null data', async () => {
+  await assert.rejects(() => perception.process(null), {
+    name: 'TypeError',
+    message: 'Data cannot be null',
+  });
 });
 
-test('process throws on undefined input', async () => {
-  await assert.rejects(() => perception.process(undefined), { name: 'TypeError' });
+test('process throws TypeError for undefined data', async () => {
+  await assert.rejects(() => perception.process(undefined), {
+    name: 'TypeError',
+    message: 'Data cannot be undefined',
+  });
 });
 
-// Add more tests as necessary for other methods
+test('process throws TypeError for empty object', async () => {
+  await assert.rejects(() => perception.process({}), {
+    name: 'TypeError',
+    message: 'Data cannot be an empty object',
+  });
+});
+
+test('process categorizes an array of sensory inputs', async () => {
+  const inputs = [{ sight: true }, { sound: true }];
+  const results = await perception.process(inputs);
+  assert.deepEqual(results, [
+    { input: { sight: true }, category: 'visual' },
+    { input: { sound: true }, category: 'auditory' }
+  ]);
+});
+
