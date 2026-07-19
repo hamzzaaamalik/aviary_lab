@@ -15,8 +15,8 @@ export class Perception {
       throw new TypeError('Inputs must be an array');
     }
     return inputs.map(input => {
-      if (typeof input !== 'object' || input === null) {
-        throw new TypeError('Input must be an object');
+      if (typeof input !== 'object' || input === null || !input.type) {
+        throw new TypeError('Input must be a non-null object with a type property');
       }
       // Simple categorization logic based on input properties.
       const category = this._determineCategory(input);
@@ -47,6 +47,9 @@ export class Perception {
   enhanceContext(categorizedData) {
     if (!Array.isArray(categorizedData)) {
       throw new TypeError('Categorized data must be an array');
+    }
+    if (categorizedData.length === 0) {
+      return []; // Handle empty input arrays gracefully
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
@@ -83,7 +86,4 @@ export class Perception {
       default: return 'unknown context';
     }
   }
-
-  // Remaining methods...
-
 }
