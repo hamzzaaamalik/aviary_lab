@@ -81,4 +81,16 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
+  /**
+   * Filter and categorize sensory data based on defined criteria.
+   * @param {Array<any>} data - An array of sensory data inputs.
+   * @param {Function} criteria - A function that determines if an input meets the criteria.
+   * @returns {Promise<Array<{input: any, category: string}>>} - Filtered and categorized results.
+   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
+   */
+  async filterAndCategorize(data, criteria) {
+    const filteredInputs = this.filterByCriteria(data, criteria);
+    return this.validateAndCategorize(filteredInputs);
+  }
 }
