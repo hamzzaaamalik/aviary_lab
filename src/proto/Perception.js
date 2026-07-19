@@ -81,12 +81,12 @@ export class Perception {
     if (input.type === 'auditory') return 'auditory';
     if (input.type === 'olfactory') return 'olfactory';
     if (input.type === 'gustatory') return 'gustatory';
-    return 'unknown'; // Fallback
+    return 'unknown'; // Default case for unknown types
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
+   * @param {string} category - The category of the input.
    * @returns {string} - The context for the category.
    */
   _determineContext(category) {

@@ -27,3 +27,8 @@ test('batchProcess throws error for invalid input object', () => {
   ];
   assert.throws(() => perception.batchProcess(inputs), TypeError);
 });
+
+test('batchProcess returns empty array for no inputs', () => {
+  const result = perception.batchProcess([]);
+  assert.deepEqual(result, []);
+});
