@@ -83,12 +83,23 @@ export class Perception {
   }
 
   /**
-   * Process and validate multiple sensory data inputs, categorizing them efficiently.
-   * @param {Array<any>} inputs - An array of sensory data inputs.
-   * @returns {Promise<Array<{input: any, category: string}>>} - The categorized results.
+   * Validate nested sensory data inputs and categorize them recursively.
+   * @param {any} nestedData - The nested sensory data inputs.
+   * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async processAndValidateMultiple(inputs) {
-    return this.validateAndCategorize(inputs);
+  async processNested(nestedData) {
+    if (typeof nestedData !== 'object' || nestedData === null) {
+      throw new TypeError('Nested data must be a non-null object');
+    }
+    const results = [];
+    for (const key in nestedData) {
+      if (nestedData.hasOwnProperty(key)) {
+        const input = nestedData[key];
+        const category = await this.process(input);
+        results.push({ input, category });
+      }
+    }
+    return results;
   }
 }
