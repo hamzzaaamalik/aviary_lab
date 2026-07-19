@@ -19,7 +19,7 @@ export class Perception {
         throw new TypeError('Input must be a non-null object with a type property');
       }
       // Simple categorization logic based on input properties.
-      const category = this._determineCategory(input);
+      const category = this._classifyInputType(input);
       return { input, category };
     });
   }
@@ -45,11 +45,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   batchProcess(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
-    const categorized = this.categorizeSensoryInputs(inputs);
-    return this.enhanceContext(categorized);
+    return this.process(inputs);
   }
 
   /**
@@ -75,27 +71,33 @@ export class Perception {
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
    * @returns {string} - The category for the input.
+   * @throws {TypeError} - If the input type is unknown.
    */
-  _determineCategory(input) {
-    if (input.type === 'visual') return 'visual';
-    if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
-    throw new TypeError('Unknown input type');
+  _classifyInputType(input) {
+    const type = input.type.toLowerCase();
+    if (type === 'visual') return 'visual';
+    if (type === 'auditory') return 'auditory';
+    if (type === 'olfactory') return 'olfactory';
+    if (type === 'gustatory') return 'gustatory';
+    throw new TypeError('Unknown input type: ' + input.type);
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category of the input.
-   * @returns {string} - The context for the category.
+   * @param {string} category - The category of the sensory input.
+   * @returns {string} - The context for the input.
+   * @throws {TypeError} - If the category is invalid.
    */
   _determineContext(category) {
+    if (typeof category !== 'string') {
+      throw new TypeError('Category must be a string');
+    }
     switch (category) {
       case 'visual': return 'sight context';
       case 'auditory': return 'sound context';
       case 'olfactory': return 'smell context';
       case 'gustatory': return 'taste context';
-      default: return 'unknown context';
+      default: throw new TypeError('Unknown category: ' + category);
     }
   }
 }
