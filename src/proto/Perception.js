@@ -16,7 +16,7 @@ export class Perception {
     }
     return inputs.map(input => {
       if (typeof input !== 'object' || input === null || !input.type) {
-        throw new TypeError('Input must be a non-null object with a type property');
+        throw new TypeError('Each input must be a non-null object with a type property');
       }
       // Simple categorization logic based on input properties.
       const category = this._determineCategory(input);
@@ -34,6 +34,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
+    if (inputs.length === 0) {
+      return []; // Handle empty input arrays gracefully
+    }
     const categorized = this.categorizeSensoryInputs(inputs);
     return this.enhanceContext(categorized);
   }
@@ -47,9 +50,6 @@ export class Perception {
   enhanceContext(categorizedData) {
     if (!Array.isArray(categorizedData)) {
       throw new TypeError('Categorized data must be an array');
-    }
-    if (categorizedData.length === 0) {
-      return []; // Handle empty input arrays gracefully
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category, item.input);
@@ -84,7 +84,7 @@ export class Perception {
       case 'olfactory': return `context related to olfactory perception of ${input.detail || 'smell'}`;
       case 'gustatory': return `context related to gustatory perception of ${input.detail || 'taste'}`;
       case 'tactile': return `context related to tactile perception of ${input.detail || 'touch'}`;
-      default: return 'unknown context';
+      default: return 'context unknown';
     }
   }
 }
