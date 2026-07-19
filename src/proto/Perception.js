@@ -36,8 +36,12 @@ export class Perception {
       throw new TypeError('Data must be an array');
     }
     const results = await Promise.all(data.map(async (input) => {
-      const category = this.categorizeSensoryInput(input);
-      return { input, category };
+      try {
+        const category = this.categorizeSensoryInput(input);
+        return { input, category };
+      } catch (error) {
+        return { input, error: error.message };
+      }
     }));
     return results;
   }
@@ -78,8 +82,12 @@ export class Perception {
       if (input === null || input === undefined) {
         throw new TypeError('Input cannot be null or undefined');
       }
-      const category = await this.process(input);
-      return { input, category };
+      try {
+        const category = await this.process(input);
+        return { input, category };
+      } catch (error) {
+        return { input, error: error.message };
+      }
     }));
   }
 }  
