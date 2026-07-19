@@ -84,10 +84,10 @@ export class Perception {
 
   /**
    * Filter sensory data based on defined criteria.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @param {string} criteria - The criteria to filter data by.
-   * @returns {Array<any>} - Filtered sensory data.
-   * @throws {TypeError} - If the inputs are invalid.
+   * @param {Array<any>} inputs - An array of sensory data inputs.
+   * @param {string} criteria - The criteria to filter on (e.g., 'visual').
+   * @returns {Array<any>} - An array of inputs that match the criteria.
+   * @throws {TypeError} - If inputs are not an array or criteria is not a string.
    */
   filterInputsByCriteria(inputs, criteria) {
     if (!Array.isArray(inputs)) {
@@ -96,10 +96,6 @@ export class Perception {
     if (typeof criteria !== 'string') {
       throw new TypeError('Criteria must be a string');
     }
-    return inputs.filter(input => {
-      const category = this.categorizeSensoryInput(input);
-      return category === criteria;
-    });
+    return inputs.filter(input => this.categorizeSensoryInput(input) === criteria);
   }
-} 
-
+}
