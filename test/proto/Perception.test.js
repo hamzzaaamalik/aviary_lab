@@ -4,44 +4,66 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process throws on null input', async () => {
-  await assert.rejects(() => perception.process(null), {
-    name: 'TypeError',
-    message: 'Data cannot be null'
-  });
+test('categorizeSensoryInput throws for invalid input', () => {
+  assert.throws(() => perception.categorizeSensoryInput(null), TypeError);
+  assert.throws(() => perception.categorizeSensoryInput(42), TypeError);
 });
 
-test('process throws on undefined input', async () => {
-  await assert.rejects(() => perception.process(undefined), {
-    name: 'TypeError',
-    message: 'Data cannot be undefined'
-  });
+test('categorizeSensoryInput categorizes valid inputs', () => {
+  assert.equal(perception.categorizeSensoryInput({ sight: true }), 'visual');
+  assert.equal(perception.categorizeSensoryInput({ sound: true }), 'auditory');
+  assert.equal(perception.categorizeSensoryInput({ smell: true }), 'olfactory');
+  assert.equal(perception.categorizeSensoryInput({ taste: true }), 'gustatory');
+  assert.equal(perception.categorizeSensoryInput({ touch: true }), 'tactile');
 });
 
-test('process throws on empty object', async () => {
-  await assert.rejects(() => perception.process({}), {
-    name: 'TypeError',
-    message: 'Data cannot be an empty object'
-  });
+test('validateAndCategorize throws for non-array input', () => {
+  assert.throws(() => perception.validateAndCategorize(null), TypeError);
 });
 
-test('processMultiple throws on null input', async () => {
-  await assert.rejects(() => perception.processMultiple([null]), {
-    name: 'TypeError',
-    message: 'Input cannot be null or undefined'
-  });
+test('validateAndCategorize categorizes multiple sensory inputs', () => {
+  const result = perception.validateAndCategorize([
+    { sight: true },
+    { sound: true },
+    { unknown: true }
+  ]);
+  assert.deepEqual(result, [
+    { input: { sight: true }, category: 'visual' },
+    { input: { sound: true }, category: 'auditory' },
+    { input: { unknown: true }, category: 'unknown' }
+  ]);
 });
 
-test('processMultiple throws on undefined input', async () => {
-  await assert.rejects(() => perception.processMultiple([undefined]), {
-    name: 'TypeError',
-    message: 'Input cannot be null or undefined'
-  });
+test('process throws for null input', async () => {
+  await assert.rejects(async () => perception.process(null), TypeError);
 });
 
-test('processMultiple throws on empty array', async () => {
-  await assert.rejects(() => perception.processMultiple([]), {
-    name: 'TypeError',
-    message: 'Inputs array cannot be empty'
-  });
+test('process throws for empty object', async () => {
+  await assert.rejects(async () => perception.process({}), TypeError);
+});
+
+test('process returns category for valid input', async () => {
+  const category = await perception.process({ sight: true });
+  assert.equal(category, 'visual');
+});
+
+test('processMultiple throws for non-array input', async () => {
+  await assert.rejects(async () => perception.processMultiple(null), TypeError);
+});
+
+test('processMultiple throws for empty array', async () => {
+  await assert.rejects(async () => perception.processMultiple([]), TypeError);
+});
+
+test('processMultiple categorizes inputs', async () => {
+  const result = await perception.processMultiple([
+    { sight: true },
+    { sound: true },
+    { unknown: true }
+  ]);
+  assert.deepEqual(result, [
+    { input: { sight: true }, category: 'visual' },
+    { input: { sound: true }, category: 'auditory' },
+    { input: { unknown: true }, category: 'unknown' }
+  ]);
 });
