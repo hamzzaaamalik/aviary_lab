@@ -81,4 +81,13 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
+  /**
+   * Example criteria function for filtering visual inputs.
+   * @param {any} input - The sensory input to evaluate.
+   * @returns {boolean} - True if the input is visual, false otherwise.
+   */
+  isVisualInput(input) {
+    return this.categorizeSensoryInput(input) === 'visual';
+  }
 }
