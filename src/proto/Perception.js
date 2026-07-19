@@ -77,18 +77,20 @@ export class Perception {
       if (input === null || input === undefined) {
         throw new TypeError('Input cannot be null or undefined');
       }
-      const category = await this.process(input);
-      return { input, category };
-    }));
+      return this.process(input);
+    })).then(results => {
+      return results.map((category, index) => ({ input: inputs[index], category }));
+    });
   }
 
   /**
-   * Process and validate multiple sensory data inputs, categorizing them efficiently.
-   * @param {Array<any>} data - An array of sensory data inputs.
+   * Process and validate multiple sensory data inputs, categorizing them efficiently
+   * with enhanced error handling.
+   * @param {Array<any>} inputs - An array of sensory data inputs.
    * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async processAndValidate(data) {
-    return this.validateAndCategorize(data);
+  async processAndValidate(inputs) {
+    return this.processMultiple(inputs);
   }
 }
