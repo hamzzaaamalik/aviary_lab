@@ -48,6 +48,9 @@ export class Perception {
     if (!Array.isArray(categorizedData)) {
       throw new TypeError('Categorized data must be an array');
     }
+    if (categorizedData.length === 0) {
+      return []; // Handle empty input arrays gracefully
+    }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
       return { ...item, context };
@@ -83,7 +86,4 @@ export class Perception {
       default: return 'unknown context';
     }
   }
-
-  // Remaining methods...
-  
 }
