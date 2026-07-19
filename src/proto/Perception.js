@@ -33,7 +33,7 @@ export class Perception {
    */
   validateAndCategorize(data) {
     if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array');
+      throw new TypeError('Data must be an array of sensory inputs');
     }
     return data.map(input => {
       const category = this.categorizeSensoryInput(input);
@@ -68,7 +68,7 @@ export class Perception {
    */
   async processMultiple(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
+      throw new TypeError('Inputs must be an array of sensory data');
     }
     if (inputs.length === 0) {
       throw new TypeError('Inputs array cannot be empty');
@@ -80,18 +80,5 @@ export class Perception {
       const category = await this.process(input);
       return { input, category };
     }));
-  }
-
-  /**
-   * Process and validate multiple sensory data inputs, categorizing them efficiently.
-   * @param {Array<any>} data - An array of sensory data inputs.
-   * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
-   * @throws {TypeError} - If any input is invalid.
-   */
-  async processAndValidate(data) {
-    if (!Array.isArray(data)) {
-      throw new TypeError('Data must be an array');
-    }
-    return this.processMultiple(data);
   }
 }
