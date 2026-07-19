@@ -4,23 +4,41 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('filterByCriteria filters valid inputs', () => {
+test('processMultiple categorizes inputs correctly', async () => {
   const inputs = [
     { sight: true },
     { sound: true },
-    { smell: true },
-    { irrelevant: true }
+    { touch: true }
   ];
-  const criteria = (input) => 'sight' in input;
-  const filtered = perception.filterByCriteria(inputs, criteria);
-  assert.deepEqual(filtered, [{ sight: true }]);
+  const results = await perception.processMultiple(inputs);
+  assert.deepEqual(results, [
+    { input: { sight: true }, category: 'visual' },
+    { input: { sound: true }, category: 'auditory' },
+    { input: { touch: true }, category: 'tactile' }
+  ]);
 });
 
-test('filterByCriteria throws on non-array input', () => {
-  assert.throws(() => perception.filterByCriteria('not an array', () => true), TypeError);
+test('processMultiple throws on empty array', async () => {
+  await assert.rejects(async () => {
+    await perception.processMultiple([]);
+  }, { message: 'Inputs array cannot be empty' });
 });
 
-test('filterByCriteria throws on non-function criteria', () => {
-  assert.throws(() => perception.filterByCriteria([], 'not a function'), TypeError);
+test('processMultiple throws on non-array input', async () => {
+  await assert.rejects(async () => {
+    await perception.processMultiple('not an array');
+  }, { message: 'Inputs must be an array' });
+});
+
+test('processMultiple throws on null input', async () => {
+  await assert.rejects(async () => {
+    await perception.processMultiple(null);
+  }, { message: 'Inputs must be an array' });
+});
+
+test('processMultiple throws on undefined input', async () => {
+  await assert.rejects(async () => {
+    await perception.processMultiple(undefined);
+  }, { message: 'Inputs must be an array' });
 });
 

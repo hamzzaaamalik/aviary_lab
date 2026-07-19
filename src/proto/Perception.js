@@ -64,7 +64,7 @@ export class Perception {
    * Handle multiple sensory data inputs and categorize them asynchronously.
    * @param {Array<any>} inputs - An array of sensory data.
    * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
-   * @throws {TypeError} - If any input is invalid.
+   * @throws {TypeError} - If any input is invalid or if the inputs array is empty.
    */
   async processMultiple(inputs) {
     if (!Array.isArray(inputs)) {
@@ -84,19 +84,6 @@ export class Perception {
 
   /**
    * Filter sensory data based on defined criteria.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @param {Function} criteria - A function that defines the filtering criteria.
-   * @returns {Array<any>} - An array of filtered sensory data.
-   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
    */
-  filterByCriteria(inputs, criteria) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
-    if (typeof criteria !== 'function') {
-      throw new TypeError('Criteria must be a function');
-    }
-    return inputs.filter(criteria);
-  }
+  // Additional methods would go here
 }
-
