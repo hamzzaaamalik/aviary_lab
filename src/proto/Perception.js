@@ -18,7 +18,7 @@ export class Perception {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Input must be a non-null object with a type property');
       }
-      // Corrected categorization logic based on input properties.
+      // Correct categorization logic based on input properties.
       const category = this._determineCategory(input);
       if (!category) {
         throw new TypeError('Unknown input type');
@@ -70,35 +70,41 @@ export class Perception {
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
+      if (!context) {
+        throw new TypeError('Context could not be determined for category: ' + item.category);
+      }
       return { ...item, context };
     });
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category for the input.
+   * Determine the category of the input.
+   * @private
+   * @param {any} input - The input to categorize.
+   * @returns {string} - The determined category.
    */
   _determineCategory(input) {
-    if (input.type === 'visual') return 'visual';
-    if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
-    return undefined;
+    // Example categorization logic based on input.type
+    const typeMap = {
+      sensor: 'sensory',
+      action: 'motor',
+      state: 'internal',
+    };
+    return typeMap[input.type] || null;
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the input.
-   * @returns {string} - The context for the input.
+   * Determine context based on the category.
+   * @private
+   * @param {string} category - The category to determine context for.
+   * @returns {string} - The determined context.
    */
   _determineContext(category) {
-    const contexts = {
-      visual: 'seen',
-      auditory: 'heard',
-      olfactory: 'smelled',
-      gustatory: 'tasted'
+    const contextMap = {
+      sensory: 'environmental context',
+      motor: 'movement context',
+      internal: 'mental state',
     };
-    return contexts[category] || 'unknown';
+    return contextMap[category] || null;
   }
 }
