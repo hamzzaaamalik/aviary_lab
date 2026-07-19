@@ -61,6 +61,23 @@ export class Perception {
   }
 
   /**
+   * Filter sensory data based on defined criteria.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @param {Function} criteria - A function that determines if an input meets the criteria.
+   * @returns {Array<any>} - An array of filtered inputs.
+   * @throws {TypeError} - If criteria is not a function or inputs is not an array.
+   */
+  filterByCriteria(inputs, criteria) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    if (typeof criteria !== 'function') {
+      throw new TypeError('Criteria must be a function');
+    }
+    return inputs.filter(criteria);
+  }
+
+  /**
    * Handle multiple sensory data inputs and categorize them asynchronously.
    * @param {Array<any>} inputs - An array of sensory data.
    * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
@@ -81,22 +98,4 @@ export class Perception {
       return { input, category };
     }));
   }
-
-  /**
-   * Filter sensory data based on defined criteria.
-   * @param {Array<any>} inputs - An array of sensory data.
-   * @param {Function} criteria - A function that defines the filtering criteria.
-   * @returns {Array<any>} - An array of filtered sensory data.
-   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
-   */
-  filterByCriteria(inputs, criteria) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
-    if (typeof criteria !== 'function') {
-      throw new TypeError('Criteria must be a function');
-    }
-    return inputs.filter(criteria);
-  }
 }
-
