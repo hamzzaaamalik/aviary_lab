@@ -81,4 +81,17 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
+  /**
+   * Enhance sensory data with additional context.
+   * @param {Array<any>} data - An array of sensory data inputs.
+   * @returns {Array<{input: any, category: string, timestamp: number}>} - Enhanced sensory data.
+   * @throws {TypeError} - If data is not an array.
+   */
+  enhanceSensoryData(data) {
+    if (!Array.isArray(data)) {
+      throw new TypeError('Data must be an array');
+    }
+    return data.map(input => ({ input, category: this.categorizeSensoryInput(input), timestamp: Date.now() }));
+  }
 }
