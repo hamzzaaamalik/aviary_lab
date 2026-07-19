@@ -71,6 +71,7 @@ export class Perception {
    * @param {Function} criteria - A function that determines if an input meets the criteria.
    * @returns {Array<any>} - An array of filtered inputs.
    * @throws {TypeError} - If criteria is not a function or inputs is not an array.
+   * @throws {Error} - If criteria function throws an error.
    */
   filterByCriteria(inputs, criteria) {
     if (!Array.isArray(inputs)) {
@@ -79,6 +80,10 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function');
     }
-    return inputs.filter(criteria);
+    try {
+      return inputs.filter(input => criteria(input));
+    } catch (error) {
+      throw new Error('Error occurred while filtering inputs: ' + error.message);
+    }
   }
 }
