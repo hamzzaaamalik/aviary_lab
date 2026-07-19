@@ -83,7 +83,7 @@ export class Perception {
   }
 
   /**
-   * Filter sensory data based on defined criteria.
-   */
-  // The rest of the methods remain unchanged
+   * Filter sensory data based on defined criteria
+   * ... (truncated)
+ */
 }
