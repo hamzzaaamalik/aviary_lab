@@ -55,6 +55,21 @@ export class Perception {
   }
 
   /**
+   * Enhance sensory data with additional attributes based on category.
+   * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
+   * @returns {Array<{input: any, category: string, context: string, attributes: object}>} - Enhanced sensory data with attributes.
+   */
+  enhanceAttributes(categorizedData) {
+    if (!Array.isArray(categorizedData)) {
+      throw new TypeError('Categorized data must be an array');
+    }
+    return categorizedData.map(item => {
+      const attributes = this._determineAttributes(item.category);
+      return { ...item, attributes };
+    });
+  }
+
+  /**
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
    * @returns {string} - The category for the input.
@@ -81,6 +96,22 @@ export class Perception {
       case 'gustatory': return 'taste-related context';
       case 'tactile': return 'touch-related context';
       default: return 'unknown context';
+    }
+  }
+
+  /**
+   * Determine additional attributes based on category.
+   * @param {string} category - The category of the sensory input.
+   * @returns {object} - The additional attributes for the category.
+   */
+  _determineAttributes(category) {
+    switch (category) {
+      case 'visual': return { color: 'varies', brightness: 'varies' };
+      case 'auditory': return { volume: 'varies', pitch: 'varies' };
+      case 'olfactory': return { intensity: 'varies' };
+      case 'gustatory': return { sweetness: 'varies' };
+      case 'tactile': return { pressure: 'varies' };
+      default: return {};
     }
   }
 
