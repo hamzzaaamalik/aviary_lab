@@ -48,11 +48,8 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   async process(data) {
-    if (data === null) {
-      throw new TypeError('Data cannot be null');
-    }
-    if (data === undefined) {
-      throw new TypeError('Data cannot be undefined');
+    if (data === null || data === undefined) {
+      throw new TypeError('Data cannot be null or undefined');
     }
     if (typeof data === 'object' && Object.keys(data).length === 0) {
       throw new TypeError('Data cannot be an empty object');
@@ -86,7 +83,8 @@ export class Perception {
    * Filter sensory data based on defined criteria.
    * @param {Array<any>} inputs - An array of sensory data.
    * @param {Function} criteria - A function that defines the filtering criteria.
-   * @returns {Array<any>} - The filtered sensory data.
+   * @returns {Array<any>} - An array of filtered sensory data.
+   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
    */
   filterByCriteria(inputs, criteria) {
     if (!Array.isArray(inputs)) {
@@ -95,6 +93,6 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function');
     }
-    return inputs.filter(input => criteria(input)); // Ensure filtering logic works correctly
+    return inputs.filter(criteria);
   }
 }
