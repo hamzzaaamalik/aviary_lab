@@ -81,4 +81,12 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
+  /**
+   * Log the sensory input for debugging.
+   * @param {any} input - The sensory input to log.
+   */
+  logInput(input) {
+    console.log('Logging sensory input:', input);
+  }
 }
