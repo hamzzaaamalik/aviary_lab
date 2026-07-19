@@ -84,10 +84,10 @@ export class Perception {
 
   /**
    * Filter sensory data based on defined criteria.
-   * @param {Array<any>} inputs - An array of sensory data to filter.
-   * @param {Function} criteria - A function that defines the filtering criteria.
-   * @returns {Array<any>} - Filtered sensory data.
-   * @throws {TypeError} - If inputs are not an array or criteria is not a function.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @param {Function} criteria - A function that returns true for inputs to keep.
+   * @returns {Array<any>} - The filtered sensory data.
+   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
    */
   filterSensoryInputs(inputs, criteria) {
     if (!Array.isArray(inputs)) {
@@ -96,7 +96,6 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function');
     }
-    return inputs.filter(criteria);
+    return inputs.filter((input) => input !== null && input !== undefined && criteria(input));
   }
 }
-
