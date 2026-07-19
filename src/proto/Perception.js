@@ -79,18 +79,22 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function');
     }
-    return inputs.filter(criteria);
+    const filtered = inputs.filter(criteria);
+    if (filtered.length === 0) {
+      console.warn('No inputs matched the criteria.');
+    }
+    return filtered;
   }
 
   /**
    * Categorizes and filters sensory inputs based on criteria.
-   * @param {Array<any>} inputs - An array of sensory data inputs.
+   * @param {Array<any>} inputs - An array of sensory inputs.
    * @param {Function} criteria - A function that determines if an input meets the criteria.
    * @returns {Promise<Array<{input: any, category: string}>>} - Filtered and categorized results.
-   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
+   * @throws {TypeError} - If criteria is not a function or inputs are not valid.
    */
   async categorizeAndFilter(inputs, criteria) {
-    const categorized = await this.validateAndCategorize(inputs);
-    return this.filterByCriteria(categorized, ({ category }) => criteria(category));
+    const filteredInputs = this.filterByCriteria(inputs, criteria);
+    return this.validateAndCategorize(filteredInputs);
   }
-} 
+}
