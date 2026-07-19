@@ -42,7 +42,7 @@ export class Perception {
   }
 
   /**
-   * Process the incoming sensory data and categorize it.
+   * Process the incoming sensory data and categorize it asynchronously.
    * @param {any} data - The sensory data.
    * @returns {Promise<string>} - The category of the sensory input.
    * @throws {TypeError} - If the input data is invalid.
@@ -88,7 +88,10 @@ export class Perception {
    * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async processAndValidate(data) {
-    return this.validateAndCategorize(data);
+  async processAndValidateMultiple(data) {
+    if (!Array.isArray(data)) {
+      throw new TypeError('Data must be an array');
+    }
+    return this.processMultiple(data);
   }
 }
