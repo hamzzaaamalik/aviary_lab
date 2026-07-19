@@ -4,39 +4,23 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process categorizes valid sensory input', async () => {
-  const input = { sight: true };
-  const result = await perception.process(input);
-  assert.deepEqual(result, [{ input, category: 'visual' }]);
+test('categorizeAndFilter categorizes and filters sensory data', async () => {
+  const data = [
+    { sight: true }, 
+    { sound: true }, 
+    { unknown: true }
+  ];
+  const criteria = (item) => item.category !== 'unknown';
+  const result = await perception.categorizeAndFilter(data, criteria);
+  assert.equal(result.length, 2);
+  assert.deepEqual(result[0].input, { sight: true });
+  assert.deepEqual(result[1].input, { sound: true });
 });
 
-test('process throws TypeError for null data', async () => {
-  await assert.rejects(() => perception.process(null), {
+test('categorizeAndFilter throws error on non-array input', async () => {
+  await assert.rejects(() => perception.categorizeAndFilter({}, () => true), {
     name: 'TypeError',
-    message: 'Data cannot be null',
+    message: 'Data must be an array'
   });
-});
-
-test('process throws TypeError for undefined data', async () => {
-  await assert.rejects(() => perception.process(undefined), {
-    name: 'TypeError',
-    message: 'Data cannot be undefined',
-  });
-});
-
-test('process throws TypeError for empty object', async () => {
-  await assert.rejects(() => perception.process({}), {
-    name: 'TypeError',
-    message: 'Data cannot be an empty object',
-  });
-});
-
-test('process categorizes an array of sensory inputs', async () => {
-  const inputs = [{ sight: true }, { sound: true }];
-  const results = await perception.process(inputs);
-  assert.deepEqual(results, [
-    { input: { sight: true }, category: 'visual' },
-    { input: { sound: true }, category: 'auditory' }
-  ]);
 });
 
