@@ -81,4 +81,5 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
 }
