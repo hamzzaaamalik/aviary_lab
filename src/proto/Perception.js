@@ -81,4 +81,17 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
+  /**
+   * Enhance sensory data with additional context.
+   * @param {Array<any>} inputs - An array of sensory data.
+   * @param {Object} context - Additional context to append to each input.
+   * @returns {Array<{input: any, context: Object}>} - Enhanced sensory data.
+   */
+  enhanceWithContext(inputs, context) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return inputs.map(input => ({ input, context }));
+  }
 }
