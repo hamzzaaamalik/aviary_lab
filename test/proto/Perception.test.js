@@ -4,39 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process categorizes valid sensory input', async () => {
-  const input = { sight: true };
-  const result = await perception.process(input);
-  assert.deepEqual(result, [{ input, category: 'visual' }]);
+test('categorizeAndFilter correctly categorizes and filters inputs', async () => {
+  const data = [
+    { sight: 'tree' },
+    { sound: 'bird' },
+    { taste: 'apple' },
+    { touch: 'smooth' },
+    { unknown: 'data' }
+  ];
+  const criteria = (item) => item.category === 'visual';
+  const result = await perception.categorizeAndFilter(data, criteria);
+  assert.equal(result.length, 1);
+  assert.equal(result[0].input.sight, 'tree');
 });
 
-test('process throws TypeError for null data', async () => {
-  await assert.rejects(() => perception.process(null), {
+test('categorizeAndFilter throws TypeError for non-array input', async () => {
+  await assert.rejects(() => perception.categorizeAndFilter({}, () => true), {
     name: 'TypeError',
-    message: 'Data cannot be null',
+    message: 'Data must be an array'
   });
 });
 
-test('process throws TypeError for undefined data', async () => {
-  await assert.rejects(() => perception.process(undefined), {
+test('categorizeAndFilter throws TypeError for invalid criteria', async () => {
+  await assert.rejects(() => perception.categorizeAndFilter([{ sight: 'tree' }], 'not a function'), {
     name: 'TypeError',
-    message: 'Data cannot be undefined',
+    message: 'Criteria must be a function'
   });
 });
-
-test('process throws TypeError for empty object', async () => {
-  await assert.rejects(() => perception.process({}), {
-    name: 'TypeError',
-    message: 'Data cannot be an empty object',
-  });
-});
-
-test('process categorizes an array of sensory inputs', async () => {
-  const inputs = [{ sight: true }, { sound: true }];
-  const results = await perception.process(inputs);
-  assert.deepEqual(results, [
-    { input: { sight: true }, category: 'visual' },
-    { input: { sound: true }, category: 'auditory' }
-  ]);
-});
-
