@@ -81,4 +81,17 @@ export class Perception {
     }
     return inputs.filter(criteria);
   }
+
+  /**
+   * Extract sensory data from a structured input.
+   * @param {object} structuredInput - The structured sensory input.
+   * @returns {Array<any>} - Extracted sensory data.
+   * @throws {TypeError} - If the input is not valid.
+   */
+  extractSensoryData(structuredInput) {
+    if (typeof structuredInput !== 'object' || structuredInput === null) {
+      throw new TypeError('Invalid structured input: must be a non-null object');
+    }
+    return Object.values(structuredInput);
+  }
 }
