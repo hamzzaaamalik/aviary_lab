@@ -4,27 +4,27 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('handleSensoryInput categorizes valid input', async () => {
-  const result = await perception.handleSensoryInput({ sight: true });
-  assert.deepEqual(result, { input: { sight: true }, category: 'visual' });
+test('process categorizes valid input', async () => {
+  const result = await perception.process({ sight: true });
+  assert.deepEqual(result, 'visual');
 });
 
-test('handleSensoryInput throws on null input', async () => {
-  await assert.rejects(() => perception.handleSensoryInput(null), {
+test('process throws on null input', async () => {
+  await assert.rejects(() => perception.process(null), {
     name: 'TypeError',
     message: 'Data cannot be null or undefined'
   });
 });
 
-test('handleSensoryInput throws on undefined input', async () => {
-  await assert.rejects(() => perception.handleSensoryInput(undefined), {
+test('process throws on undefined input', async () => {
+  await assert.rejects(() => perception.process(undefined), {
     name: 'TypeError',
     message: 'Data cannot be null or undefined'
   });
 });
 
-test('handleSensoryInput throws on empty object', async () => {
-  await assert.rejects(() => perception.handleSensoryInput({}), {
+test('process throws on empty object', async () => {
+  await assert.rejects(() => perception.process({}), {
     name: 'TypeError',
     message: 'Data cannot be an empty object'
   });

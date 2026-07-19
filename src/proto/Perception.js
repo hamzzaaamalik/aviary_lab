@@ -82,11 +82,9 @@ export class Perception {
   /**
    * Handle sensory input and categorize it, with
    * @param {any} input - The sensory input to handle.
-   * @returns {Promise<{input: any, category: string}>} - The categorized result.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  async handleSensoryInput(input) {
-    const category = await this.process(input);
-    return { input, category };
-  }
+   * ... (truncated)
+  */
+
+
+  
 }
