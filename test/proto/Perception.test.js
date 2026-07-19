@@ -21,18 +21,18 @@ test('validateAndCategorize throws for invalid input', async () => {
   });
 });
 
-test('processAndValidateMultiple categorizes asynchronously', async () => {
+test('processMultiple categorizes asynchronously', async () => {
   const inputs = [{ taste: true }, { touch: true }];
-  const results = await perception.processAndValidateMultiple(inputs);
+  const results = await perception.processMultiple(inputs);
   assert.deepEqual(results, [
     { input: { taste: true }, category: 'gustatory' },
     { input: { touch: true }, category: 'tactile' }
   ]);
 });
 
-test('processAndValidateMultiple throws for invalid input', async () => {
-  await assert.rejects(() => perception.processAndValidateMultiple(null), {
+test('processMultiple throws for invalid input', async () => {
+  await assert.rejects(() => perception.processMultiple(null), {
     name: 'TypeError',
-    message: 'Data must be an array'
+    message: 'Inputs must be an array'
   });
 });
