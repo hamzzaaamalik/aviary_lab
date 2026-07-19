@@ -5,12 +5,12 @@
  */
 export class Perception {
   /**
-   * Categorizes sensory inputs into known types.
+   * Gets the category of a sensory input.
    * @param {any} sensoryInput - The input to be categorized.
    * @returns {string} - The category of the sensory input.
    * @throws {TypeError} - If the input is not valid.
    */
-  categorizeSensoryInput(sensoryInput) {
+  getCategory(sensoryInput) {
     if (typeof sensoryInput !== 'object' || sensoryInput === null) {
       throw new TypeError('Invalid sensory input: must be a non-null object');
     }
@@ -36,7 +36,7 @@ export class Perception {
       throw new TypeError('Data must be an array');
     }
     return Promise.all(data.map(async (input) => {
-      const category = this.categorizeSensoryInput(input);
+      const category = this.getCategory(input);
       return { input, category };
     }));
   }
@@ -61,7 +61,7 @@ export class Perception {
       return this.validateAndCategorize(data);
     }
     // Handle single input case
-    const category = this.categorizeSensoryInput(data);
+    const category = this.getCategory(data);
     return [{ input: data, category }];
   }
 
