@@ -35,9 +35,16 @@ export class Perception {
     if (!Array.isArray(data)) {
       throw new TypeError('Data must be an array');
     }
+    if (data.length === 0) {
+      throw new TypeError('Data array cannot be empty');
+    }
     return Promise.all(data.map(async (input) => {
-      const category = this.categorizeSensoryInput(input);
-      return { input, category };
+      try {
+        const category = this.categorizeSensoryInput(input);
+        return { input, category };
+      } catch (error) {
+        throw new Error(`Failed to categorize input: ${error.message}`);
+      }
     }));
   }
 
