@@ -83,11 +83,11 @@ export class Perception {
         throw new TypeError('Input cannot be null or undefined');
       }
       try {
-        const category = await this.process(input);
+        const category = this.categorizeSensoryInput(input);
         return { input, category };
       } catch (error) {
         return { input, error: error.message };
       }
     }));
   }
-}  
+}
