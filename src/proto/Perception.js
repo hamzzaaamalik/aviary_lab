@@ -79,6 +79,10 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function');
     }
-    return inputs.filter(criteria);
+    const filtered = inputs.filter(criteria);
+    if (filtered.length === 0) {
+      console.warn('No inputs matched the criteria.');
+    }
+    return filtered;
   }
 }
