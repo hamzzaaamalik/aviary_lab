@@ -72,7 +72,7 @@ export class Perception {
   }
 
   /**
-   * Determine context based on the category.
+   * Determine context based on the input category.
    * @param {string} category - The category of the sensory input.
    * @returns {string} - The context for the category.
    */
@@ -83,7 +83,7 @@ export class Perception {
       case 'olfactory': return 'context related to olfactory perception';
       case 'gustatory': return 'context related to gustatory perception';
       case 'tactile': return 'context related to tactile perception';
-      default: return 'context unknown';
+      default: return 'context related to unknown perception';
     }
   }
 }
