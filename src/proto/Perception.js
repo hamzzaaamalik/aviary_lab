@@ -84,7 +84,7 @@ export class Perception {
       case 'olfactory': return `context related to olfactory perception of ${input.detail || 'smell'}`;
       case 'gustatory': return `context related to gustatory perception of ${input.detail || 'taste'}`;
       case 'tactile': return `context related to tactile perception of ${input.detail || 'touch'}`;
-      default: return 'context unknown';
+      default: return 'no context available';
     }
   }
 }
