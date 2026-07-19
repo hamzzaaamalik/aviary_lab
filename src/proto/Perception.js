@@ -21,7 +21,7 @@ export class Perception {
     if ('taste' in sensoryInput) return 'gustatory';
     if ('touch' in sensoryInput) return 'tactile';
 
-    console.warn('Unknown sensory input received:', sensoryInput);
+    console.error('Unknown sensory input received:', sensoryInput);
     return 'unknown';
   }
 
@@ -34,6 +34,10 @@ export class Perception {
   async validateAndCategorize(data) {
     if (!Array.isArray(data)) {
       throw new TypeError('Data must be an array');
+    }
+    if (data.length === 0) {
+      console.error('Empty array passed to validateAndCategorize');
+      return [];
     }
     return Promise.all(data.map(async (input) => {
       const category = this.categorizeSensoryInput(input);
@@ -71,7 +75,8 @@ export class Perception {
       throw new TypeError('Inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('Inputs array cannot be empty');
+      console.error('Empty inputs array passed to processMultiple');
+      return [];
     }
     return Promise.all(inputs.map(async (input) => {
       if (input === null || input === undefined) {
@@ -81,14 +86,4 @@ export class Perception {
       return { input, category };
     }));
   }
-
-  /**
-   * Process and validate multiple sensory data inputs.
-   * @param {Array<any>} inputs - An array of sensory data inputs to be processed.
-   * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
-   * @throws {TypeError} - If any input is invalid.
-   */
-  async processAndValidate(inputs) {
-    return this.validateAndCategorize(inputs);
-  }
-}
+} 
