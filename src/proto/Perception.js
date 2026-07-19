@@ -84,9 +84,9 @@ export class Perception {
 
   /**
    * Filter sensory data based on specified criteria.
-   * @param {Array<any>} inputs - An array of sensory data inputs.
-   * @param {Function} criteria - A function that defines the filtering criteria.
-   * @returns {Array<any>} - An array of filtered sensory data.
+   * @param {Array<any>} inputs - An array of sensory data to filter.
+   * @param {Function} criteria - A function that tests each input.
+   * @returns {Array<any>} - The filtered sensory inputs.
    * @throws {TypeError} - If inputs is not an array or criteria is not a function.
    */
   filter(inputs, criteria) {
@@ -99,4 +99,3 @@ export class Perception {
     return inputs.filter(criteria);
   }
 }
-
