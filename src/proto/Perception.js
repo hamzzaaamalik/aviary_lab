@@ -48,11 +48,8 @@ export class Perception {
    * @throws {TypeError} - If the input data is invalid.
    */
   async process(data) {
-    if (data === null) {
-      throw new TypeError('Data cannot be null');
-    }
-    if (data === undefined) {
-      throw new TypeError('Data cannot be undefined');
+    if (data === null || data === undefined) {
+      throw new TypeError('Data cannot be null or undefined');
     }
     if (typeof data === 'object' && Object.keys(data).length === 0) {
       throw new TypeError('Data cannot be an empty object');
@@ -83,12 +80,11 @@ export class Perception {
   }
 
   /**
-   * Process and validate multiple sensory data inputs, categorizing them efficiently.
-   * @param {Array<any>} inputs - An array of sensory data inputs.
-   * @returns {Promise<Array<{input: any, category: string}>>} - The categorized results.
-   * @throws {TypeError} - If any input is invalid.
-   */
-  async processAndValidateMultiple(inputs) {
-    return this.validateAndCategorize(inputs);
-  }
+   * Handle sensory input and categorize it, with
+   * @param {any} input - The sensory input to handle.
+   * ... (truncated)
+  */
+
+
+  
 }
