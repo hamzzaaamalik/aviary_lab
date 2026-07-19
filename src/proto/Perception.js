@@ -21,7 +21,7 @@ export class Perception {
     if ('taste' in sensoryInput) return 'gustatory';
     if ('touch' in sensoryInput) return 'tactile';
 
-    return 'unknown'; // Remove dead code after warning
+    return 'unknown';
   }
 
   /**
@@ -53,7 +53,7 @@ export class Perception {
     if (typeof data === 'object' && Object.keys(data).length === 0) {
       throw new TypeError('Data cannot be an empty object');
     }
-    return this.categorizeSensoryInput(data);  // Return only the category
+    return this.categorizeSensoryInput(data);
   }
 
   /**
