@@ -44,3 +44,19 @@ test('enhanceContext correctly enhances data', () => {
 test('enhanceContext throws on invalid categorized data', () => {
   assert.throws(() => perception.enhanceContext('invalid data'), TypeError);
 });
+
+test('categorizeSensoryInputs handles empty array', () => {
+  const result = perception.categorizeSensoryInputs([]);
+  assert.deepEqual(result, []);
+});
+
+test('process handles empty array', () => {
+  const result = perception.process([]);
+  assert.deepEqual(result, []);
+});
+
+test('categorizeSensoryInputs throws on non-object input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([42]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([null]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([true]), TypeError);
+});
