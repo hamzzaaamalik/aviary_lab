@@ -78,12 +78,12 @@ export class Perception {
    */
   _determineContext(category) {
     switch (category) {
-      case 'visual': return 'sight-related context';
-      case 'auditory': return 'sound-related context';
-      case 'olfactory': return 'smell-related context';
-      case 'gustatory': return 'taste-related context';
-      case 'tactile': return 'touch-related context';
-      default: return 'unknown context';
+      case 'visual': return 'context related to visual perception';
+      case 'auditory': return 'context related to auditory perception';
+      case 'olfactory': return 'context related to olfactory perception';
+      case 'gustatory': return 'context related to gustatory perception';
+      case 'tactile': return 'context related to tactile perception';
+      default: return 'context unknown';
     }
   }
 }
