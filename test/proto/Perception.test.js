@@ -38,5 +38,5 @@ test('processMultiple categorizes multiple inputs', async () => {
 test('processMultiple throws on invalid inputs', async () => {
   await assert.rejects(() => perception.processMultiple([null]), TypeError);
   await assert.rejects(() => perception.processMultiple('not an array'), TypeError);
+  await assert.rejects(() => perception.processMultiple([]), TypeError);
 });
-
