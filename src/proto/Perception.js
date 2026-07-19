@@ -84,14 +84,14 @@ export class Perception {
 
   /**
    * Process and validate multiple sensory data inputs, categorizing them efficiently.
-   * @param {Array<any>} inputs - An array of sensory data.
+   * @param {any} data - The sensory data which can be an array or a single item.
    * @returns {Promise<Array<{input: any, category: string}>>} - An array of categorized results.
-   * @throws {TypeError} - If any input is invalid.
+   * @throws {TypeError} - If the input data is invalid.
    */
-  async processAndValidate(inputs) {
-    if (!Array.isArray(inputs) || inputs.length === 0) {
-      throw new TypeError('Inputs must be a non-empty array');
+  async processMixed(data) {
+    if (Array.isArray(data)) {
+      return this.processMultiple(data);
     }
-    return this.processMultiple(inputs);
+    return [{ input: data, category: await this.process(data) }];
   }
 }
