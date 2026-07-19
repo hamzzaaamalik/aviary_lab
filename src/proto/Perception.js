@@ -27,15 +27,18 @@ export class Perception {
 
   /**
    * Validate sensory data and emit categorized results.
-   * @param {Array<any>} data - An array of sensory data inputs.
+   * @param {Array<any>} inputs - An array of sensory data inputs.
    * @returns {Promise<Array<{input: any, category: string}>>} - Categorized results.
    * @throws {TypeError} - If any input is invalid.
    */
-  async validateAndCategorize(data) {
-    if (!Array.isArray(data)) {
+  async validateAndCategorize(inputs) {
+    if (!Array.isArray(inputs)) {
       throw new TypeError('Data must be an array');
     }
-    return Promise.all(data.map(async (input) => {
+    if (inputs.length === 0) {
+      throw new TypeError('Data array cannot be empty');
+    }
+    return Promise.all(inputs.map(async (input) => {
       const category = this.categorizeSensoryInput(input);
       return { input, category };
     }));
@@ -86,8 +89,8 @@ export class Perception {
    * Categorize and filter sensory data based on criteria.
    * @param {Array<any>} inputs - An array of sensory data.
    * @param {Function} criteria - A function that determines if an input meets the criteria.
-   * @returns {Promise<Array<{input: any, category: string}>>} - Array of categorized and filtered results.
-   * @throws {TypeError} - If criteria is not a function or inputs is not an array.
+   * @returns {Promise<Array<{input: any, category: string}>>} - Filtered and categorized results.
+   * @throws {TypeError} - If inputs is not an array or criteria is not a function.
    */
   async categorizeAndFilter(inputs, criteria) {
     const categorized = await this.validateAndCategorize(inputs);
