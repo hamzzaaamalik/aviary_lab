@@ -18,7 +18,7 @@ export class Perception {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Input must be a non-null object with a type property');
       }
-      // Correct categorization logic based on input properties.
+      // Categorization logic based on input type property.
       const category = this._determineCategory(input);
       if (!category) {
         throw new TypeError('Unknown input type');
@@ -84,27 +84,26 @@ export class Perception {
    * @returns {string} - The determined category.
    */
   _determineCategory(input) {
-    // Example categorization logic based on input.type
-    const typeMap = {
-      sensor: 'sensory',
-      action: 'motor',
-      state: 'internal',
-    };
-    return typeMap[input.type] || null;
+    switch (input.type) {
+      case 'sensor': return 'sensory';
+      case 'action': return 'motor';
+      // Add more cases as necessary for future input types.
+      default: return null;
+    }
   }
 
   /**
-   * Determine context based on the category.
+   * Determine the context based on category.
    * @private
    * @param {string} category - The category to determine context for.
    * @returns {string} - The determined context.
    */
   _determineContext(category) {
-    const contextMap = {
-      sensory: 'environmental context',
-      motor: 'movement context',
-      internal: 'mental state',
-    };
-    return contextMap[category] || null;
+    switch (category) {
+      case 'sensory': return 'environmental context';
+      case 'motor': return 'movement context';
+      // Add more cases as necessary for context determination.
+      default: return null;
+    }
   }
 }
