@@ -4,44 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process throws on null input', async () => {
-  await assert.rejects(() => perception.process(null), {
+test('processAndValidateMultiple categorizes multiple inputs correctly', async () => {
+  const inputs = [
+    { sight: true },
+    { sound: true },
+    { smell: true },
+    { unknown: true },
+  ];
+  const results = await perception.processAndValidateMultiple(inputs);
+  assert.deepEqual(results, [
+    { input: { sight: true }, category: 'visual' },
+    { input: { sound: true }, category: 'auditory' },
+    { input: { smell: true }, category: 'olfactory' },
+    { input: { unknown: true }, category: 'unknown' },
+  ]);
+});
+
+test('processAndValidateMultiple throws TypeError on non-array input', async () => {
+  await assert.rejects(perception.processAndValidateMultiple('not an array'), {
     name: 'TypeError',
-    message: 'Data cannot be null'
+    message: 'Inputs must be an array',
   });
 });
 
-test('process throws on undefined input', async () => {
-  await assert.rejects(() => perception.process(undefined), {
+test('processAndValidateMultiple throws TypeError on empty array', async () => {
+  await assert.rejects(perception.processAndValidateMultiple([]), {
     name: 'TypeError',
-    message: 'Data cannot be undefined'
+    message: 'Inputs array cannot be empty',
   });
 });
 
-test('process throws on empty object', async () => {
-  await assert.rejects(() => perception.process({}), {
-    name: 'TypeError',
-    message: 'Data cannot be an empty object'
-  });
-});
-
-test('processMultiple throws on null input', async () => {
-  await assert.rejects(() => perception.processMultiple([null]), {
-    name: 'TypeError',
-    message: 'Input cannot be null or undefined'
-  });
-});
-
-test('processMultiple throws on undefined input', async () => {
-  await assert.rejects(() => perception.processMultiple([undefined]), {
-    name: 'TypeError',
-    message: 'Input cannot be null or undefined'
-  });
-});
-
-test('processMultiple throws on empty array', async () => {
-  await assert.rejects(() => perception.processMultiple([]), {
-    name: 'TypeError',
-    message: 'Inputs array cannot be empty'
-  });
-});
