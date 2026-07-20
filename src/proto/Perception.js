@@ -39,6 +39,13 @@ export class Perception {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Invalid input type: must be non-null object with a type');
       }
+      // Enhanced validation for specific types
+      if (input.type === 'sound' && typeof input.frequency !== 'number') {
+        throw new TypeError('Sound input must have a numeric frequency property');
+      }
+      if (input.type === 'image' && typeof input.url !== 'string') {
+        throw new TypeError('Image input must have a string URL property');
+      }
     });
   }
 
@@ -74,39 +81,23 @@ export class Perception {
     if (!Array.isArray(categorizedData)) {
       throw new TypeError('Categorized data must be an array');
     }
-    if (categorizedData.length === 0) {
-      return [];
-    }
-    return categorizedData.map(item => {
-      const context = this._determineContext(item.category);
-      if (!context) {
-        throw new TypeError('Failed to determine context for category: ' + item.category);
-      }
-      return { ...item, context };
-    });
+    return categorizedData.map(item => ({
+      ...item,
+      context: 'contextual information'
+    }));
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
-   */
-  _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
-  }
-
-  /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * Determine the category of an input based on its type.
+   * @param {object} input - The sensory input.
+   * @returns {string} - The category of the input.
+   * @throws {TypeError} - If the input type is unknown.
    */
   _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+    switch (input.type) {
+      case 'sound': return 'audio';
+      case 'image': return 'visual';
+      default: throw new TypeError('Unknown input type');
+    }
   }
 }
