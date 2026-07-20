@@ -32,6 +32,9 @@ export class Perception {
    * @throws {TypeError} - If an input type is invalid.
    */
   validateSensoryInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
     inputs.forEach(input => {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Invalid input type: must be non-null object with a type');
@@ -87,29 +90,30 @@ export class Perception {
    * @returns {Array<{input: any, category: string, context: string, enhanced: boolean}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
-  enhanceSensoryInputs(inputs) {
-    this.validateSensoryInputs(inputs);
-    const categorized = this.categorizeSensoryInputs(inputs);
-    return categorized.map(item => ({ ...item, enhanced: true }));
+  enhance(inputs) {
+    const processedData = this.process(inputs);
+    return processedData.map(item => ({ ...item, enhanced: true }));
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category for the input.
+   * Determine the category for a given input. This is a placeholder for the actual implementation.
+   * @private
+   * @param {any} input - The input to categorize.
+   * @returns {string|null} - The category name or null if unknown.
    */
   _determineCategory(input) {
-    // Placeholder implementation
-    return input.type;
+    // Placeholder for actual category determination logic.
+    return input.type || null;
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string} - The context for the category.
+   * Determine context based on the category. This is a placeholder for the actual implementation.
+   * @private
+   * @param {string} category - The category to get context for.
+   * @returns {string} - The context string.
    */
   _determineContext(category) {
-    // Placeholder implementation
+    // Placeholder for actual context determination logic.
     return `Context for ${category}`;
   }
 }
