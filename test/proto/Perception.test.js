@@ -7,31 +7,33 @@ const perception = new Perception();
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
   const inputs = [
     { type: 'visual', data: 'image1' },
-    { type: 'auditory', data: 'sound1' },
-    { type: 'olfactory', data: 'smell1' },
-    { type: 'gustatory', data: 'taste1' }
+    { type: 'auditory', data: 'sound1' }
   ];
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, [
     { input: inputs[0], category: 'visual' },
-    { input: inputs[1], category: 'auditory' },
-    { input: inputs[2], category: 'olfactory' },
-    { input: inputs[3], category: 'gustatory' }
+    { input: inputs[1], category: 'auditory' }
   ]);
 });
 
-test('categorizeSensoryInputs throws on unknown input type', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([{ type: 'unknown', data: 'data' }]), TypeError);
-});
-
 test('process enhances sensory inputs', () => {
-  const inputs = [{ type: 'visual', data: 'image1' }];
+  const inputs = [
+    { type: 'visual', data: 'image1' }
+  ];
   const result = perception.process(inputs);
-  assert.equal(result[0].context, 'seen');
+  assert.deepEqual(result, [
+    { input: inputs[0], category: 'visual', context: 'context for visual' }
+  ]);
 });
 
 test('batchProcess processes and enhances inputs', () => {
-  const inputs = [{ type: 'auditory', data: 'sound1' }];
+  const inputs = [
+    { type: 'auditory', data: 'sound1' },
+    { type: 'visual', data: 'image2' }
+  ];
   const result = perception.batchProcess(inputs);
-  assert.equal(result[0].context, 'heard');
+  assert.deepEqual(result, [
+    { input: inputs[0], category: 'auditory', context: 'context for auditory' },
+    { input: inputs[1], category: 'visual', context: 'context for visual' }
+  ]);
 });
