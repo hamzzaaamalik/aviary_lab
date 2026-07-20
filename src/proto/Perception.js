@@ -23,6 +23,17 @@ export class Perception {
   }
 
   /**
+   * Categorizes sensory inputs by type.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Categorized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  categorizeSensoryInputs(sensoryInputs) {
+    this.validateSensoryInputs(sensoryInputs);
+    return this.processSensoryInputs(sensoryInputs);
+  }
+
+  /**
    * Filter sensory inputs based on a provided category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {string} category - The category to filter by.
