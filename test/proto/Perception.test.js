@@ -28,3 +28,12 @@ test('filterSensoryInputs throws on invalid sensory inputs', () => {
   assert.throws(() => perception.filterSensoryInputs([], 'sight'), TypeError);
   assert.throws(() => perception.filterSensoryInputs([{ type: 'sight' }], 'sight'), TypeError);
 });
+
+test('filterSensoryInputs filters correctly with non-string categories', () => {
+  const inputs = [
+    { type: 'sight', data: {} },
+    { type: 'sound', data: {} },
+  ];
+  assert.deepEqual(perception.filterSensoryInputs(inputs, 'sight'), [{ type: 'sight', data: {} }]);
+  assert.deepEqual(perception.filterSensoryInputs(inputs, 'sound'), [{ type: 'sound', data: {} }]);
+});
