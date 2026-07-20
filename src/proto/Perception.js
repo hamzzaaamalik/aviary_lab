@@ -68,6 +68,7 @@ export class Perception {
     }
     sensoryInputs.forEach((input, index) => {
       if (typeof input !== 'object' || input === null ||
+          Object.keys(input).length === 0 ||
           typeof input.type !== 'string' || !input.type.trim() ||
           input.data === undefined) {
         throw new TypeError(`Input at index ${index} must be a non-null object with a valid type and data properties.`);
