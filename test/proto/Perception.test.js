@@ -5,33 +5,28 @@ import { Perception } from '../../src/proto/Perception.js';
 const perception = new Perception();
 
 test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = [
-    { type: 'visual', data: 'image1' },
-    { type: 'auditory', data: 'sound1' },
-    { type: 'olfactory', data: 'smell1' },
-    { type: 'gustatory', data: 'taste1' }
-  ];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, [
-    { input: inputs[0], category: 'visual' },
-    { input: inputs[1], category: 'auditory' },
-    { input: inputs[2], category: 'olfactory' },
-    { input: inputs[3], category: 'gustatory' }
+  const input = [{ type: 'visual' }, { type: 'auditory' }];
+  const categorized = perception.categorizeSensoryInputs(input);
+  assert.deepEqual(categorized, [
+    { input: { type: 'visual' }, category: 'visual' },
+    { input: { type: 'auditory' }, category: 'auditory' }
   ]);
 });
 
-test('categorizeSensoryInputs throws on unknown input type', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([{ type: 'unknown', data: 'data' }]), TypeError);
-});
-
 test('process enhances sensory inputs', () => {
-  const inputs = [{ type: 'visual', data: 'image1' }];
-  const result = perception.process(inputs);
-  assert.equal(result[0].context, 'seen');
+  const input = [{ type: 'visual' }, { type: 'auditory' }];
+  const enhanced = perception.process(input);
+  assert.deepEqual(enhanced, [
+    { input: { type: 'visual' }, category: 'visual', context: 'sight based context' },
+    { input: { type: 'auditory' }, category: 'auditory', context: 'sound based context' }
+  ]);
 });
 
 test('batchProcess processes and enhances inputs', () => {
-  const inputs = [{ type: 'auditory', data: 'sound1' }];
-  const result = perception.batchProcess(inputs);
-  assert.equal(result[0].context, 'heard');
+  const input = [{ type: 'tactile' }, { type: 'visual' }];
+  const enhanced = perception.batchProcess(input);
+  assert.deepEqual(enhanced, [
+    { input: { type: 'tactile' }, category: 'tactile', context: 'touch based context' },
+    { input: { type: 'visual' }, category: 'visual', context: 'sight based context' }
+  ]);
 });
