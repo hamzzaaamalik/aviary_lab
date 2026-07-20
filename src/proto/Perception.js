@@ -86,21 +86,21 @@ export class Perception {
 
   /**
    * Determine the category based on input type.
-   * @param {Object} input - The input object containing the type.
-   * @returns {string|undefined} - The category of the input.
+   * @param {Object} input - The sensory input object.
+   * @returns {string | undefined} - The category of the input.
    */
   _determineCategory(input) {
-    // Implement your logic to determine category based on input
-    return input.type; // Placeholder logic, replace with actual categorization logic
+    // Placeholder implementation for determining the category
+    return input.type;
   }
 
   /**
-   * Determine the context based on category.
+   * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - The context corresponding to the category.
+   * @returns {string} - The context.
    */
   _determineContext(category) {
-    // Implement your logic to determine context based on category
-    return `Context for ${category}`; // Placeholder logic, replace with actual context logic
+    // Placeholder implementation for context determination
+    return `Context for ${category}`;
   }
 }
