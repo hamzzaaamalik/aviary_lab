@@ -81,27 +81,23 @@ export class Perception {
     if (!Array.isArray(categorizedData)) {
       throw new TypeError('Categorized data must be an array');
     }
-    if (categorizedData.length === 0) {
-      return [];
-    }
-    return categorizedData.map(item => {
-      const context = this._determineContext(item.category);
-      if (!context) {
-        throw new TypeError('Failed to determine context for category: ' + item.category);
-      }
-      return { ...item, context };
-    });
+    return categorizedData.map(item => ({
+      ...item,
+      context: 'contextual information'
+    }));
   }
 
-  // Private methods for category and context determination.
+  /**
+   * Determine the category of an input based on its type.
+   * @param {object} input - The sensory input.
+   * @returns {string} - The category of the input.
+   * @throws {TypeError} - If the input type is unknown.
+   */
   _determineCategory(input) {
-    // Example categorization logic
-    return input.type === 'sound' ? 'audio' : input.type === 'image' ? 'visual' : null;
-  }
-
-  _determineContext(category) {
-    // Example context enhancement logic
-    return category === 'audio' ? 'heard' : category === 'visual' ? 'seen' : null;
+    switch (input.type) {
+      case 'sound': return 'audio';
+      case 'image': return 'visual';
+      default: throw new TypeError('Unknown input type');
+    }
   }
 }
-
