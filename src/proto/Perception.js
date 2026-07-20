@@ -39,6 +39,13 @@ export class Perception {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Invalid input type: must be non-null object with a type');
       }
+      // Enhanced validation for specific types
+      if (input.type === 'sound' && typeof input.frequency !== 'number') {
+        throw new TypeError('Sound input must have a numeric frequency property');
+      }
+      if (input.type === 'image' && typeof input.url !== 'string') {
+        throw new TypeError('Image input must have a string URL property');
+      }
     });
   }
 
@@ -86,27 +93,15 @@ export class Perception {
     });
   }
 
-  /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
-   */
-  _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
+  // Private methods for category and context determination.
+  _determineCategory(input) {
+    // Example categorization logic
+    return input.type === 'sound' ? 'audio' : input.type === 'image' ? 'visual' : null;
   }
 
-  /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
-   */
-  _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+  _determineContext(category) {
+    // Example context enhancement logic
+    return category === 'audio' ? 'heard' : category === 'visual' ? 'seen' : null;
   }
 }
+
