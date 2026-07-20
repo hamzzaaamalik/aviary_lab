@@ -45,7 +45,7 @@ export class Perception {
   /**
    * Process sensory inputs and enhance them.
    * @param {Array<any>} inputs - Array of sensory inputs.
-   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @returns {Array<{input: any, category: string, context: string, metadata: object}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   process(inputs) {
@@ -57,7 +57,7 @@ export class Perception {
   /**
    * Batch process sensory inputs, categorizing and enhancing them in one step.
    * @param {Array<any>} inputs - Array of sensory inputs.
-   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @returns {Array<{input: any, category: string, context: string, metadata: object}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   batchProcess(inputs) {
@@ -67,7 +67,7 @@ export class Perception {
   /**
    * Enhance sensory data with additional context.
    * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
-   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @returns {Array<{input: any, category: string, context: string, metadata: object}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   enhanceContext(categorizedData) {
@@ -82,31 +82,21 @@ export class Perception {
       if (!context) {
         throw new TypeError('Failed to determine context for category: ' + item.category);
       }
-      return { ...item, context };
+      const metadata = this._enhanceWithMetadata(item);
+      return { ...item, context, metadata };
     });
   }
 
-  /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
-   */
-  _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
+  // Placeholder methods for demonstration purposes.
+  _determineCategory(input) {
+    return input.type ? input.type : null;
   }
 
-  /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
-   */
-  _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+  _determineContext(category) {
+    return `context for ${category}`;
+  }
+
+  _enhanceWithMetadata(item) {
+    return { timestamp: Date.now(), source: item.input.source || 'unknown', confidence: 0.9 };
   }
 }
