@@ -77,4 +77,16 @@ export class Perception {
     }
     return sensoryInputs.filter(input => input.type === category);
   }
-} 
+
+  /**
+   * Process and filter sensory inputs by category.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {string} category - The category to filter by.
+   * @returns {Map<string, Array<any>>} - Aggregated sensory data by category for the filtered inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  processAndFilter(sensoryInputs, category) {
+    const filteredInputs = this.filterSensoryInputs(sensoryInputs, category);
+    return this.aggregateSensoryInputs(filteredInputs);
+  }
+}
