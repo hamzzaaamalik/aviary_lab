@@ -4,24 +4,34 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('process enhances sensory inputs', () => {
-  const inputs = [
-    { type: 'visual', data: 'image1' },
-    { type: 'auditory', data: 'sound1' }
-  ];
-  const result = perception.process(inputs);
-  assert.equal(result.length, 2);
-  assert.equal(result[0].context, 'sight context');
-  assert.equal(result[1].context, 'sound context');
+test('categorizeSensoryInputs throws for non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
 });
 
-test('batchProcess processes and enhances inputs', () => {
-  const inputs = [
-    { type: 'tactile', data: 'touch1' },
-    { type: 'visual', data: 'image2' }
-  ];
-  const result = perception.batchProcess(inputs);
-  assert.equal(result.length, 2);
-  assert.equal(result[0].context, 'touch context');
-  assert.equal(result[1].context, 'sight context');
+test('categorizeSensoryInputs throws for invalid input object', () => {
+  assert.throws(() => perception.categorizeSensoryInputs([{ type: null }]), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([{ notType: true }]), TypeError);
+});
+
+test('categorizeSensoryInputs categorizes valid inputs', () => {
+  const inputs = [{ type: 'sound' }, { type: 'sight' }];
+  const categorized = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(categorized, [
+    { input: inputs[0], category: 'sound' },
+    { input: inputs[1], category: 'sight' }
+  ]);
+});
+
+test('process throws for invalid input types', () => {
+  assert.throws(() => perception.process('not an array'), TypeError);
+  assert.throws(() => perception.process([{ type: null }]), TypeError);
+});
+
+test('process enhances valid inputs', () => {
+  const inputs = [{ type: 'sound' }, { type: 'sight' }];
+  const enhanced = perception.process(inputs);
+  assert.deepEqual(enhanced, [
+    { input: inputs[0], category: 'sound', context: 'Context for sound' },
+    { input: inputs[1], category: 'sight', context: 'Context for sight' }
+  ]);
 });
