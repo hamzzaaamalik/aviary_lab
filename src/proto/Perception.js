@@ -77,4 +77,23 @@ export class Perception {
     }
     return sensoryInputs.filter(input => input.type === category);
   }
+
+  /**
+   * Enhance sensory input processing with a new method to get uniqueness.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Array<any>} - Unique sensory inputs based on the type.
+   */
+  uniqueSensoryInputs(sensoryInputs) {
+    this.validateSensoryInputs(sensoryInputs);
+    const seen = new Set();
+    return sensoryInputs.filter(input => {
+      const key = input.type + JSON.stringify(input.data);
+      if (!seen.has(key)) {
+        seen.add(key);
+        return true;
+      }
+      return false;
+    });
+  }
 } 
+
