@@ -23,6 +23,16 @@ export class Perception {
   }
 
   /**
+   * Process the sensory input and return categorized data.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Processed sensory data.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  process(sensoryInputs) {
+    return this.processSensoryInputs(sensoryInputs);
+  }
+
+  /**
    * Filter sensory inputs based on a provided category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {string} category - The category to filter by.
