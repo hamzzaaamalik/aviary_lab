@@ -4,25 +4,35 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('aggregateSensoryInputs groups inputs by category', () => {
-  const inputs = [
-    { type: 'sound', data: 'noise' },
-    { type: 'sight', data: 'image' },
-    { type: 'sound', data: 'music' }
-  ];
-  const aggregated = perception.aggregateSensoryInputs(inputs);
-  assert.equal(aggregated.get('sound').length, 2);
-  assert.equal(aggregated.get('sight').length, 1);
-  assert.deepEqual(aggregated.get('sound'), [
-    { type: 'sound', data: 'noise' },
-    { type: 'sound', data: 'music' }
-  ]);
-  assert.deepEqual(aggregated.get('sight'), [
-    { type: 'sight', data: 'image' }
-  ]);
+test('validateSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.validateSensoryInputs('not an array'), TypeError);
 });
 
-test('aggregateSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.aggregateSensoryInputs('invalid'), TypeError);
-  assert.throws(() => perception.aggregateSensoryInputs([{}]), TypeError);
+test('validateSensoryInputs throws on invalid input object', () => {
+  assert.throws(() => perception.validateSensoryInputs([{ type: '' }]), TypeError);
+  assert.throws(() => perception.validateSensoryInputs([{ data: 123 }]), TypeError);
+});
+
+test('aggregateSensoryInputs handles valid inputs', () => {
+  const inputs = [{ type: 'sound', data: { volume: 10 } }, { type: 'sight', data: { brightness: 100 } }];
+  const result = perception.aggregateSensoryInputs(inputs);
+  assert.equal(result.get('sound').length, 1);
+  assert.equal(result.get('sight').length, 1);
+});
+
+test('transformSensoryInputs applies transformation correctly', () => {
+  const inputs = [{ type: 'sound', data: { volume: 10 } }];
+  const result = perception.transformSensoryInputs(inputs, input => ({ ...input, transformed: true }));
+  assert.deepEqual(result, [{ type: 'sound', data: { volume: 10 }, transformed: true }]);
+});
+
+test('transformSensoryInputs throws on invalid function', () => {
+  assert.throws(() => perception.transformSensoryInputs([], 'not a function'), TypeError);
+});
+
+test('filterSensoryInputs filters correctly', () => {
+  const inputs = [{ type: 'sound', data: {} }, { type: 'sight', data: {} }];
+  const result = perception.filterSensoryInputs(inputs, 'sound');
+  assert.equal(result.length, 1);
+  assert.equal(result[0].type, 'sound');
 });

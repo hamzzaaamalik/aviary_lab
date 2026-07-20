@@ -79,22 +79,17 @@ export class Perception {
   }
 
   /**
-   * Transform sensory inputs into a structured format for further processing.
+   * Transform sensory inputs by applying a given transformation function.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @returns {Array<{ input: any, category: string }>} - Transformed sensory inputs.
+   * @param {Function} transformFn - Function to transform each input.
+   * @returns {Array<any>} - Transformed sensory inputs.
+   * @throws {TypeError} - If the input is invalid or the transformation function is not a function.
    */
-  transformSensoryInputs(sensoryInputs) {
+  transformSensoryInputs(sensoryInputs, transformFn) {
     this.validateSensoryInputs(sensoryInputs);
-    return sensoryInputs.map(input => ({ input, category: input.type, transformedData: this._transformData(input.data) }));
+    if (typeof transformFn !== 'function') {
+      throw new TypeError('Transform function must be a valid function.');
+    }
+    return sensoryInputs.map(input => transformFn(input));
   }
-
-  /**
-   * Internal method to perform data transformation.
-   * @param {any} data - The raw data to transform.
-   * @returns {any} - Transformed data.
-   */
-  _transformData(data) {
-    // Placeholder for data transformation logic.
-    return data; // Identity for now.
-  }
-} 
+}
