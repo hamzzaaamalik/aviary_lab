@@ -25,6 +25,18 @@ export class Perception {
   }
 
   /**
+   * Normalize sensory input to ensure consistent structure.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Array<any>} - Normalized sensory inputs.
+   */
+  normalizeSensoryInputs(sensoryInputs) {
+    return sensoryInputs.map(input => ({
+      type: input.type.trim(),
+      data: input.data,
+    }));
+  }
+
+  /**
    * Categorize sensory inputs based on their type.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @returns {Array<{ input: any, category: string }>} - Categorized sensory inputs.
@@ -60,7 +72,8 @@ export class Perception {
    */
   process(sensoryInputs) {
     this.validateSensoryInputs(sensoryInputs);
-    return this.aggregateSensoryInputs(sensoryInputs);
+    const normalized = this.normalizeSensoryInputs(sensoryInputs);
+    return this.aggregateSensoryInputs(normalized);
   }
 
   /**
