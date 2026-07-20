@@ -87,22 +87,37 @@ export class Perception {
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category name.
+   * New method to process and categorize sensory inputs efficiently.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string}>} - Processed sensory data.
+   * @throws {TypeError} - If the input is invalid.
    */
-  _determineCategory(input) {
-    // Implementation of category determination logic
-    return input.type;  // Placeholder implementation
+  processAndCategorize(inputs) {
+    this.validateSensoryInputs(inputs);
+    return inputs.map(input => {
+      const category = this._determineCategory(input);
+      const context = this._determineContext(category);
+      return { input, category, context };
+    });
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category name.
-   * @returns {string | undefined} - The context string.
+   * Mocked method to determine the category of an input.
+   * @param {any} input - The sensory input to categorize.
+   * @returns {string} - The determined category.
+   */
+  _determineCategory(input) {
+    // Mock implementation, replace with actual logic
+    return input.type || 'unknown';
+  }
+
+  /**
+   * Mocked method to determine the context for a given category.
+   * @param {string} category - The category to determine context for.
+   * @returns {string} - The determined context.
    */
   _determineContext(category) {
-    // Implementation of context determination logic
-    return `context for ${category}`;  // Placeholder implementation
+    // Mock implementation, replace with actual logic
+    return 'context for ' + category;
   }
 }
