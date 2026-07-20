@@ -23,7 +23,7 @@ export class Perception {
   }
 
   /**
-   * Categorizes sensory inputs by type. This is now just an alias for clarity.
+   * Categorizes sensory inputs by type. This method is retained for clarity.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
@@ -76,9 +76,6 @@ export class Perception {
           typeof input.type !== 'string' || !input.type.trim() ||
           input.data === undefined) {
         throw new TypeError(`Input at index ${index} must be a non-null object with a valid type and data.`);
-      }
-      if (!input.hasOwnProperty('data')) {
-        throw new TypeError(`Input at index ${index} must have a 'data' property.`);
       }
     });
   }
