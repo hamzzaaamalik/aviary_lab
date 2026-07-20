@@ -69,4 +69,19 @@ export class Perception {
       }
     });
   }
+
+  /**
+   * Process and categorize sensory inputs with enhanced logging.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Categorized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  processAndLogSensoryInputs(sensoryInputs) {
+    try {
+      return this.processSensoryInputs(sensoryInputs);
+    } catch (error) {
+      console.error('Error processing sensory inputs:', error);
+      throw error;
+    }
+  }
 }
