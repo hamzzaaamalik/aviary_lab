@@ -87,26 +87,34 @@ export class Perception {
   }
 
   /**
-   * Determine context based on category.
+   * Determine context based on the category of sensory input.
    * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
+   * @returns {string} - A context string.
+   * @throws {TypeError} - If the category is invalid.
    */
   _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
+    const contextMapping = {
+      'sound': 'auditory context',
+      'image': 'visual context',
+      'touch': 'tactile context',
+      // add more mappings as needed
     };
-    return contextMap[category] || null;
+    const context = contextMapping[category];
+    if (!context) {
+      throw new TypeError('Invalid category: ' + category);
+    }
+    return context;
   }
 
   /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * Private method to determine the category of sensory input.
+   * @param {any} input - The sensory input.
+   * @returns {string} - The determined category.
+   * @private
    */
   _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+    // Placeholder for actual category determination logic.
+    return input.type;
   }
-}
+} 
+
