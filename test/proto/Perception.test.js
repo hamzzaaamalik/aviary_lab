@@ -31,3 +31,13 @@ test('batchProcess processes and enhances inputs', () => {
   const result = perception.batchProcess(inputs);
   assert.equal(result[0].context, 'sound');
 });
+
+test('categorizeSensoryInputs throws on empty array', () => {
+  assert.deepEqual(perception.categorizeSensoryInputs([]), []);
+});
+
+test('categorizeSensoryInputs throws on invalid input type', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(null), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs({}), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([{ type: null }]), TypeError);
+});

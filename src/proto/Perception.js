@@ -82,19 +82,17 @@ export class Perception {
   _determineCategory(input) {
     if (input.type === 'visual') return 'visual';
     if (input.type === 'auditory') return 'auditory';
-    return undefined; // Default to undefined for unrecognized types
+    return undefined;
   }
 
   /**
    * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - Contextual information for the input.
+   * @returns {string} - The context for the category.
    */
   _determineContext(category) {
-    switch (category) {
-      case 'visual': return 'sight';
-      case 'auditory': return 'sound';
-      default: return 'unknown';
-    }
+    if (category === 'visual') return 'sight';
+    if (category === 'auditory') return 'sound';
+    return 'unknown';
   }
 }
