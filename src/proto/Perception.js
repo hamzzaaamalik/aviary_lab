@@ -75,10 +75,10 @@ export class Perception {
     if (!Array.isArray(sensoryInputs) || sensoryInputs.length === 0) {
       throw new TypeError('Sensory inputs must be a non-empty array.');
     }
-    this.validateSensoryInputs(sensoryInputs);
     if (typeof category !== 'string' || !category.trim()) {
       throw new TypeError('Category must be a non-empty string.');
     }
+    this.validateSensoryInputs(sensoryInputs);
     return sensoryInputs.filter(input => input.type === category);
   }
 }
