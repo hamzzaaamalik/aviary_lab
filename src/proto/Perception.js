@@ -78,6 +78,9 @@ export class Perception {
       return [];
     }
     return categorizedData.map(item => {
+      if (!item.category) {
+        throw new TypeError('Categorized item must have a category property');
+      }
       const context = this._determineContext(item.category);
       if (!context) {
         throw new TypeError('Failed to determine context for category: ' + item.category);
@@ -87,22 +90,24 @@ export class Perception {
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category name.
+   * Determine category for a given input.
+   * @param {Object} input - The sensory input object.
+   * @returns {string} - The category of the input.
+   * @private
    */
   _determineCategory(input) {
-    // Implementation of category determination logic
-    return input.type;  // Placeholder implementation
+    // Placeholder for actual category determination logic.
+    return input.type; // Assume type matches category for this example.
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category name.
-   * @returns {string | undefined} - The context string.
+   * Determine context for a given category.
+   * @param {string} category - The input category.
+   * @returns {string} - The context related to the category.
+   * @private
    */
   _determineContext(category) {
-    // Implementation of context determination logic
-    return `context for ${category}`;  // Placeholder implementation
+    // Placeholder for actual context determination logic.
+    return 'context for ' + category; // Example context.
   }
 }
