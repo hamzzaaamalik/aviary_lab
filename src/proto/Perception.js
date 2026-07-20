@@ -87,22 +87,35 @@ export class Perception {
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category name.
+   * Determine category for a given input.
+   * @param {object} input - The input object.
+   * @returns {string} - The determined category.
+   * @private
    */
   _determineCategory(input) {
-    // Implementation of category determination logic
-    return input.type;  // Placeholder implementation
+    // Placeholder for actual category determination logic
+    return input.type;
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category name.
-   * @returns {string | undefined} - The context string.
+   * Determine context for a given category.
+   * @param {string} category - The category string.
+   * @returns {string} - The determined context.
+   * @private
    */
   _determineContext(category) {
-    // Implementation of context determination logic
-    return `context for ${category}`;  // Placeholder implementation
+    // Placeholder for actual context determination logic
+    return 'context for ' + category;
+  }
+
+  /**
+   * Process multiple inputs and return enhanced data in a single method.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  multiProcess(inputs) {
+    const categorized = this.categorizeSensoryInputs(inputs);
+    return this.enhanceContext(categorized);
   }
 }
