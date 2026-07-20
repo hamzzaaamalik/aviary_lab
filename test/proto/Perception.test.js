@@ -44,3 +44,16 @@ test('categorizeSensoryInputs throws for invalid input', () => {
   assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
   assert.throws(() => perception.categorizeSensoryInputs([{}]), TypeError);
 });
+
+test('process throws for empty input', () => {
+  assert.deepEqual(perception.process([]), []);
+});
+
+test('batchProcess throws for empty input', () => {
+  assert.deepEqual(perception.batchProcess([]), []);
+});
+
+test('enhanceContext throws for invalid input', () => {
+  assert.throws(() => perception.enhanceContext('not an array'), TypeError);
+});
+

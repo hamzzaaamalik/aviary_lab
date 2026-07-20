@@ -37,6 +37,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
+    if (inputs.length === 0) {
+      return []; // Handle empty input arrays gracefully
+    }
     const categorized = this.categorizeSensoryInputs(inputs);
     return this.enhanceContext(categorized);
   }
@@ -50,6 +53,9 @@ export class Perception {
   batchProcess(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      return []; // Handle empty input arrays gracefully
     }
     const categorized = this.categorizeSensoryInputs(inputs);
     return this.enhanceContext(categorized);
@@ -89,14 +95,14 @@ export class Perception {
   /**
    * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - The context for the input.
+   * @returns {string} - The context associated with the category.
    */
   _determineContext(category) {
-    const contexts = {
-      visual: 'sight-related context',
-      auditory: 'sound-related context',
-      tactile: 'touch-related context'
-    };
-    return contexts[category] || 'unknown context';
+    switch (category) {
+      case 'visual': return 'sight-related context';
+      case 'auditory': return 'sound-related context';
+      case 'tactile': return 'touch-related context';
+      default: return 'unknown context';
+    }
   }
-} 
+}
