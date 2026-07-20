@@ -62,4 +62,17 @@ export class Perception {
     this.validateSensoryInputs(sensoryInputs);
     return this.aggregateSensoryInputs(sensoryInputs);
   }
+
+  /**
+   * Filter sensory inputs based on a provided category.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {string} category - The category to filter by.
+   * @returns {Array<any>} - Filtered sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  filterSensoryInputs(sensoryInputs, category) {
+    this.validateSensoryInputs(sensoryInputs);
+    return sensoryInputs.filter(input => input.type === category);
+  }
 } 
+
