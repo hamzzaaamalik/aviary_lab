@@ -79,4 +79,17 @@ export class Perception {
       }
     });
   }
+
+  /**
+   * Process and validate a single sensory input object.
+   * @param {any} input - A sensory input object.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  validateSingleInput(input) {
+    if (typeof input !== 'object' || input === null ||
+        typeof input.type !== 'string' || !input.type.trim() ||
+        input.data === undefined) {
+      throw new TypeError('Input must be a non-null object with a valid type and data.');
+    }
+  }
 }
