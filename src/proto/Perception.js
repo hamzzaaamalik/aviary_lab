@@ -47,8 +47,13 @@ export class Perception {
   advancedFilterSensoryInputs(sensoryInputs, categories) {
     this.validateSensoryInputs(sensoryInputs);
     if (!Array.isArray(categories) || categories.length === 0) {
-      throw new TypeError('Categories must be a non-empty array.');
+      throw new TypeError('Categories must be a non-empty array of strings.');
     }
+    categories.forEach(category => {
+      if (typeof category !== 'string' || !category.trim()) {
+        throw new TypeError('Each category must be a non-empty string.');
+      }
+    });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
 
