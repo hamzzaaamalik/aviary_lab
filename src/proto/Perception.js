@@ -28,10 +28,9 @@ export class Perception {
    * Normalize sensory input to ensure consistent structure.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @returns {Array<any>} - Normalized sensory inputs.
-   * @throws {TypeError} - If the input is empty.
    */
   normalizeSensoryInputs(sensoryInputs) {
-    if (sensoryInputs.length === 0) throw new TypeError('Input array must not be empty.');
+    if (sensoryInputs.length === 0) return [];
     return sensoryInputs.map(input => ({
       type: input.type.trim(),
       data: input.data,
@@ -81,12 +80,10 @@ export class Perception {
   /**
    * Filter sensory inputs based on a provided category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {string} category - The category to filter by.
+   * @param {string} category - Category to filter by.
    * @returns {Array<any>} - Filtered sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
    */
-  filterByCategory(sensoryInputs, category) {
-    this.validateSensoryInputs(sensoryInputs);
+  filterSensoryInputsByCategory(sensoryInputs, category) {
     return sensoryInputs.filter(input => input.type === category);
   }
-} 
+}
