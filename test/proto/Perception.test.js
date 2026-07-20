@@ -41,3 +41,21 @@ test('process enhances inputs correctly', () => {
     { input: { type: 'auditory' }, category: 'auditory', context: 'sound' }
   ]);
 });
+
+// Edge case tests
+
+test('enhanceContext throws on unknown category', () => {
+  const categorizedData = [
+    { input: { type: 'unknown' }, category: 'unknown' }
+  ];
+  assert.throws(() => perception.enhanceContext(categorizedData), TypeError);
+});
+
+test('process handles empty input array', () => {
+  const result = perception.process([]);
+  assert.deepEqual(result, []);
+});
+
+test('validateSensoryInputs throws on invalid input', () => {
+  assert.throws(() => perception.validateSensoryInputs([{ type: null }]), TypeError);
+});
