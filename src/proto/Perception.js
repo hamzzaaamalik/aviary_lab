@@ -27,15 +27,26 @@ export class Perception {
   }
 
   /**
+   * Validate sensory input types.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @throws {TypeError} - If an input type is invalid.
+   */
+  validateSensoryInputs(inputs) {
+    inputs.forEach(input => {
+      if (typeof input !== 'object' || input === null || !input.type) {
+        throw new TypeError('Invalid input type: must be non-null object with a type');
+      }
+    });
+  }
+
+  /**
    * Process sensory inputs and enhance them.
    * @param {Array<any>} inputs - Array of sensory inputs.
    * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   process(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
+    this.validateSensoryInputs(inputs);
     const categorized = this.categorizeSensoryInputs(inputs);
     return this.enhanceContext(categorized);
   }
@@ -47,9 +58,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   batchProcess(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
+    this.validateSensoryInputs(inputs);
     return this.process(inputs);
   }
 
@@ -87,7 +96,7 @@ export class Perception {
   /**
    * Determine context based on category.
    * @param {string} category - The category to determine context.
-   * @returns {string} - Context based on category.
+   * @returns {string} - The context for the category.
    */
   _determineContext(category) {
     switch (category) {
@@ -97,4 +106,4 @@ export class Perception {
       default: return 'unknown context';
     }
   }
-}
+} 
