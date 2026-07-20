@@ -83,21 +83,17 @@ export class Perception {
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    // Dummy implementation for categorization logic.
-    return input.type;
+    // Logic to determine the category.
+    return input.type; // Placeholder implementation
   }
 
   /**
-   * Determine context based on category.
+   * Determine context based on the category.
    * @param {string} category - The category of the input.
    * @returns {string | undefined} - The context for the category.
    */
   _determineContext(category) {
-    // Dummy implementation for context determination.
-    const contexts = {
-      visual: 'sight context',
-      auditory: 'sound context'
-    };
-    return contexts[category];
+    // Logic to determine context.
+    return `context for ${category}`; // Placeholder implementation
   }
 }
