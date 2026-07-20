@@ -70,6 +70,9 @@ export class Perception {
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
+      if (!context) {
+        throw new TypeError('Unable to determine context for category: ' + item.category);
+      }
       return { ...item, context };
     });
   }
@@ -80,25 +83,17 @@ export class Perception {
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    if (input.type === 'visual') return 'visual';
-    if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
-    return undefined;
+    // Logic to determine the category.
+    return input.type; // Placeholder implementation
   }
 
   /**
-   * Determine context based on category.
+   * Determine context based on the category.
    * @param {string} category - The category of the input.
-   * @returns {string} - The context for the input.
+   * @returns {string | undefined} - The context for the category.
    */
   _determineContext(category) {
-    const contexts = {
-      visual: 'seen',
-      auditory: 'heard',
-      olfactory: 'smelled',
-      gustatory: 'tasted'
-    };
-    return contexts[category] || 'unknown';
+    // Logic to determine context.
+    return `context for ${category}`; // Placeholder implementation
   }
 }

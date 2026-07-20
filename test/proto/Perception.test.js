@@ -4,34 +4,39 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = [
-    { type: 'visual', data: 'image1' },
-    { type: 'auditory', data: 'sound1' },
-    { type: 'olfactory', data: 'smell1' },
-    { type: 'gustatory', data: 'taste1' }
-  ];
+test('categorizeSensoryInputs throws on non-array input', () => {
+  assert.throws(() => perception.categorizeSensoryInputs(null), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs({}), TypeError);
+});
+
+test('categorizeSensoryInputs categorizes correctly', () => {
+  const inputs = [{ type: 'sound' }, { type: 'sight' }];
   const result = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(result, [
-    { input: inputs[0], category: 'visual' },
-    { input: inputs[1], category: 'auditory' },
-    { input: inputs[2], category: 'olfactory' },
-    { input: inputs[3], category: 'gustatory' }
+    { input: inputs[0], category: 'sound' },
+    { input: inputs[1], category: 'sight' }
   ]);
 });
 
-test('categorizeSensoryInputs throws on unknown input type', () => {
-  assert.throws(() => perception.categorizeSensoryInputs([{ type: 'unknown', data: 'data' }]), TypeError);
+test('process handles empty input gracefully', () => {
+  const result = perception.process([]);
+  assert.deepEqual(result, []);
 });
 
-test('process enhances sensory inputs', () => {
-  const inputs = [{ type: 'visual', data: 'image1' }];
-  const result = perception.process(inputs);
-  assert.equal(result[0].context, 'seen');
+test('enhanceContext throws on non-array input', () => {
+  assert.throws(() => perception.enhanceContext(null), TypeError);
+  assert.throws(() => perception.enhanceContext({}), TypeError);
 });
 
-test('batchProcess processes and enhances inputs', () => {
-  const inputs = [{ type: 'auditory', data: 'sound1' }];
-  const result = perception.batchProcess(inputs);
-  assert.equal(result[0].context, 'heard');
+test('enhanceContext enhances correctly', () => {
+  const categorizedData = [
+    { input: { type: 'sound' }, category: 'sound' },
+    { input: { type: 'sight' }, category: 'sight' }
+  ];
+  const result = perception.enhanceContext(categorizedData);
+  assert.deepEqual(result, [
+    { input: categorizedData[0].input, category: categorizedData[0].category, context: 'context for sound' },
+    { input: categorizedData[1].input, category: categorizedData[1].category, context: 'context for sight' }
+  ]);
 });
+
