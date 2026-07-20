@@ -5,6 +5,40 @@
  */
 export class Perception {
   /**
+   * Process sensory inputs and categorize them.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Categorized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  processSensoryInputs(sensoryInputs) {
+    this.validateSensoryInputs(sensoryInputs);
+    const categorized = {};
+    sensoryInputs.forEach(input => {
+      const type = input.type;
+      if (!categorized[type]) {
+        categorized[type] = [];
+      }
+      categorized[type].push(input);
+    });
+    return categorized;
+  }
+
+  /**
+   * Filter sensory inputs based on a provided category.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {string} category - The category to filter by.
+   * @returns {Array<any>} - Filtered sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  filterSensoryInputs(sensoryInputs, category) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof category !== 'string' || !category.trim()) {
+      throw new TypeError('Category must be a non-empty string.');
+    }
+    return sensoryInputs.filter(input => input.type === category);
+  }
+
+  /**
    * Validate sensory inputs to ensure they meet the required structure.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @throws {TypeError} - If the input is invalid.
@@ -23,59 +57,5 @@ export class Perception {
         throw new TypeError(`Input at index ${index} must have a data property.`);
       }
     });
-  }
-
-  /**
-   * Categorize sensory inputs based on their type.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @returns {Array<{ input: any, category: string }>} - Categorized sensory inputs.
-   */
-  categorizeSensoryInputs(sensoryInputs) {
-    return sensoryInputs.map(input => ({ input, category: input.type }));
-  }
-
-  /**
-   * Aggregate sensory inputs by their categories.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @returns {Map<string, Array<any>>} - Aggregated sensory data by category.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  aggregateSensoryInputs(sensoryInputs) {
-    this.validateSensoryInputs(sensoryInputs);
-    const categorized = this.categorizeSensoryInputs(sensoryInputs);
-    const aggregation = new Map();
-    categorized.forEach(({ input, category }) => {
-      if (!aggregation.has(category)) {
-        aggregation.set(category, []);
-      }
-      aggregation.get(category).push(input);
-    });
-    return aggregation;
-  }
-
-  /**
-   * Process sensory inputs to validate, categorize, and aggregate them.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @returns {Map<string, Array<any>>} - Aggregated sensory data by category.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  process(sensoryInputs) {
-    this.validateSensoryInputs(sensoryInputs);
-    return this.aggregateSensoryInputs(sensoryInputs);
-  }
-
-  /**
-   * Filter sensory inputs based on a provided category.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {string} category - The category to filter by.
-   * @returns {Array<any>} - Filtered sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  filterSensoryInputs(sensoryInputs, category) {
-    this.validateSensoryInputs(sensoryInputs);
-    if (typeof category !== 'string' || !category.trim()) {
-      throw new TypeError('Category must be a non-empty string.');
-    }
-    return sensoryInputs.filter(input => input.type === category);
   }
 }
