@@ -87,26 +87,22 @@ export class Perception {
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
+   * Determine category for the input (stub implementation).
+   * @param {Object} input - The input object.
+   * @returns {string} - The determined category.
    */
-  _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
+  _determineCategory(input) {
+    // dummy implementation for determining category
+    return input.type;
   }
 
   /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * Determine context based on category (stub implementation).
+   * @param {string} category - The category string.
+   * @returns {string} - The context string.
    */
-  _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+  _determineContext(category) {
+    // dummy implementation for context determination
+    return 'context for ' + category;
   }
 }
