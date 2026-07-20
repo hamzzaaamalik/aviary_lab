@@ -77,4 +77,24 @@ export class Perception {
     }
     return sensoryInputs.filter(input => input.type === category);
   }
+
+  /**
+   * Transform sensory inputs into a structured format for further processing.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Array<{ input: any, category: string }>} - Transformed sensory inputs.
+   */
+  transformSensoryInputs(sensoryInputs) {
+    this.validateSensoryInputs(sensoryInputs);
+    return sensoryInputs.map(input => ({ input, category: input.type, transformedData: this._transformData(input.data) }));
+  }
+
+  /**
+   * Internal method to perform data transformation.
+   * @param {any} data - The raw data to transform.
+   * @returns {any} - Transformed data.
+   */
+  _transformData(data) {
+    // Placeholder for data transformation logic.
+    return data; // Identity for now.
+  }
 } 
