@@ -11,9 +11,15 @@ export class Perception {
    */
   validateSensoryInputs(sensoryInputs) {
     if (!Array.isArray(sensoryInputs)) throw new TypeError('Input must be an array.');
-    sensoryInputs.forEach(input => {
-      if (typeof input !== 'object' || !input.type || !input.data) {
-        throw new TypeError('Each input must be an object with type and data properties.');
+    sensoryInputs.forEach((input, index) => {
+      if (typeof input !== 'object' || input === null) {
+        throw new TypeError(`Input at index ${index} must be a non-null object.`);
+      }
+      if (typeof input.type !== 'string' || !input.type.trim()) {
+        throw new TypeError(`Input at index ${index} must have a valid type property.`);
+      }
+      if (input.data === undefined) {
+        throw new TypeError(`Input at index ${index} must have a data property.`);
       }
     });
   }
