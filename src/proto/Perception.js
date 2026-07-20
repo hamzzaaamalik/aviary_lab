@@ -45,4 +45,15 @@ export class Perception {
     });
     return aggregation;
   }
+
+  /**
+   * Process sensory inputs to validate, categorize, and aggregate them.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Map<string, Array<any>>} - Aggregated sensory data by category.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  process(sensoryInputs) {
+    this.validateSensoryInputs(sensoryInputs);
+    return this.aggregateSensoryInputs(sensoryInputs);
+  }
 } 
