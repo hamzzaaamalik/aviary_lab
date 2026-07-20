@@ -79,6 +79,9 @@ export class Perception {
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
+      if (!context) {
+        throw new TypeError('Failed to determine context for category: ' + item.category);
+      }
       return { ...item, context };
     });
   }
@@ -86,20 +89,20 @@ export class Perception {
   /**
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category for the input.
+   * @returns {string | undefined} - The category name.
    */
   _determineCategory(input) {
-    // Placeholder for category determination logic.
-    return input.type; // simplifying for demonstration
+    // Implementation of category determination logic
+    return input.type;  // Placeholder implementation
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category of the input.
-   * @returns {string} - The context for the category.
+   * @param {string} category - The category name.
+   * @returns {string | undefined} - The context string.
    */
   _determineContext(category) {
-    // Placeholder for context determination logic.
-    return `context for ${category}`; // simplifying for demonstration
+    // Implementation of context determination logic
+    return `context for ${category}`;  // Placeholder implementation
   }
 }
