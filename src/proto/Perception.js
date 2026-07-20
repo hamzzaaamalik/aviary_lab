@@ -88,9 +88,11 @@ export class Perception {
   /**
    * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - Context for the given category.
+   * @returns {string} - The context for the input category.
    */
   _determineContext(category) {
-    return `context for ${category}`;
+    if (category === 'visual') return 'context for visual';
+    if (category === 'auditory') return 'context for auditory';
+    return 'unknown context';
   }
 }
