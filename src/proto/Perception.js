@@ -79,22 +79,17 @@ export class Perception {
   }
 
   /**
-   * Filter sensory inputs based on an array of categories.
+   * Filter sensory inputs based on multiple categories.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Array<string>} categories - Array of categories to filter by.
+   * @param {Array<string>} categories - The categories to filter by.
    * @returns {Array<any>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
   filterSensoryInputsByCategories(sensoryInputs, categories) {
     this.validateSensoryInputs(sensoryInputs);
-    if (!Array.isArray(categories) || categories.length === 0) {
-      throw new TypeError('Categories must be a non-empty array.');
+    if (!Array.isArray(categories) || categories.some(cat => typeof cat !== 'string' || !cat.trim())) {
+      throw new TypeError('Categories must be a non-empty array of non-empty strings.');
     }
-    categories.forEach(category => {
-      if (typeof category !== 'string' || !category.trim()) {
-        throw new TypeError('Each category must be a non-empty string.');
-      }
-    });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
 }
