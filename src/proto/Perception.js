@@ -65,8 +65,18 @@ export class Perception {
       if (typeof input !== 'object' || input === null ||
           typeof input.type !== 'string' || !input.type.trim() ||
           input.data === undefined) {
+        console.error(`Invalid input at index ${index}:`, input);
         throw new TypeError(`Input at index ${index} must be a non-null object with a valid type and data properties.`);
       }
     });
   }
+
+  /**
+   * Process and categorize sensory inputs with enhanced logging.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Categorized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  processAndLogSenso
+  // Additional methods can be implemented here.
 }
