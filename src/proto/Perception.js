@@ -22,6 +22,9 @@ export class Perception {
       if (input.data === undefined) {
         throw new TypeError(`Input at index ${index} must have a data property.`);
       }
+      if (input.data === null || (typeof input.data === 'string' && !input.data.trim())) {
+        throw new TypeError(`Input at index ${index} must have non-empty data property.`);
+      }
     });
   }
 
@@ -78,7 +81,6 @@ export class Perception {
     if (typeof category !== 'string' || !category.trim()) {
       throw new TypeError('Category must be a non-empty string.');
     }
-    this.validateSensoryInputs(sensoryInputs);
     return sensoryInputs.filter(input => input.type === category);
   }
 }
