@@ -55,6 +55,21 @@ export class Perception {
   }
 
   /**
+   * Filter sensory inputs based on a predicate function.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @param {Function} predicate - Function that returns true for inputs to keep.
+   * @returns {Array<any>} - Filtered sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  filterSensoryInputs(inputs, predicate) {
+    this.validateSensoryInputs(inputs);
+    if (typeof predicate !== 'function') {
+      throw new TypeError('Predicate must be a function');
+    }
+    return inputs.filter(predicate);
+  }
+
+  /**
    * Batch process sensory inputs, categorizing and enhancing them in one step.
    * @param {Array<any>} inputs - Array of sensory inputs.
    * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
@@ -87,22 +102,22 @@ export class Perception {
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category name.
+   * Private method to determine the category of an input.
+   * @param {any} input - The input to categorize.
+   * @returns {string} - The determined category.
    */
   _determineCategory(input) {
-    // Implementation of category determination logic
-    return input.type;  // Placeholder implementation
+    // Logic to determine category based on input.type
+    return input.type;  // Placeholder logic
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category name.
-   * @returns {string | undefined} - The context string.
+   * Private method to determine context based on category.
+   * @param {string} category - The category to determine context for.
+   * @returns {string} - The determined context.
    */
   _determineContext(category) {
-    // Implementation of context determination logic
-    return `context for ${category}`;  // Placeholder implementation
+    // Logic to determine context based on category
+    return 'context for ' + category;  // Placeholder logic
   }
 }
