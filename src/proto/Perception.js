@@ -86,8 +86,8 @@ export class Perception {
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category to determine context
-   * @returns {string} - The context for the category.
+   * @param {string} category - The category to determine context.
+   * @returns {string} - Context based on category.
    */
   _determineContext(category) {
     switch (category) {
