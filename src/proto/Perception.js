@@ -82,8 +82,7 @@ export class Perception {
   _determineCategory(input) {
     if (input.type === 'visual') return 'visual';
     if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
+    if (input.type === 'tactile') return 'tactile';
     return undefined;
   }
 
@@ -94,11 +93,10 @@ export class Perception {
    */
   _determineContext(category) {
     const contexts = {
-      visual: 'seen',
-      auditory: 'heard',
-      olfactory: 'smelled',
-      gustatory: 'tasted'
+      visual: 'sight-related context',
+      auditory: 'sound-related context',
+      tactile: 'touch-related context'
     };
-    return contexts[category] || 'unknown';
+    return contexts[category] || 'unknown context';
   }
-}
+} 
