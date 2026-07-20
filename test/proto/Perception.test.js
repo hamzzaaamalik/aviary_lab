@@ -4,24 +4,21 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('enhanceContext throws TypeError on invalid categorized data', () => {
-  assert.throws(() => perception.enhanceContext(null), TypeError);
-  assert.throws(() => perception.enhanceContext({}), TypeError);
+test('batchProcess categorizes and enhances sensory inputs', () => {
+  const inputs = [
+    { type: 'sound', data: 'beep' },
+    { type: 'image', data: 'photo.jpg' },
+  ];
+  const result = perception.batchProcess(inputs);
+  assert.equal(result.length, 2);
+  assert.equal(result[0].category, 'sound');
+  assert.equal(result[1].category, 'image');
+  assert.ok(result[0].context.includes('context for sound'));
+  assert.ok(result[1].context.includes('context for image'));
 });
 
-test('enhanceContext handles empty categorized data', () => {
-  const result = perception.enhanceContext([]);
-  assert.deepEqual(result, []);
+test('batchProcess throws on invalid inputs', () => {
+  assert.throws(() => perception.batchProcess('invalid'), TypeError);
+  assert.throws(() => perception.batchProcess([{ type: null }]), TypeError);
 });
 
-test('enhanceContext enriches categorized data with context', () => {
-  const categorizedData = [{ input: { type: 'test' }, category: 'testCategory' }];
-  const result = perception.enhanceContext(categorizedData);
-  assert.deepEqual(result, [{ input: { type: 'test' }, category: 'testCategory', context: 'context for testCategory' }]);
-});
-
-test('enhanceContext throws TypeError for unknown category', () => {
-  perception._determineContext = () => undefined;  // Mocking to force unknown category
-  const categorizedData = [{ input: { type: 'test' }, category: 'unknownCategory' }];
-  assert.throws(() => perception.enhanceContext(categorizedData), TypeError);
-});
