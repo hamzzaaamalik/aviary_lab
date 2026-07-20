@@ -19,7 +19,7 @@ export class Perception {
         throw new TypeError('Input must be a non-null object with a type property');
       }
       const category = this._determineCategory(input);
-      if (!category) {
+      if (typeof category === 'undefined') {
         throw new TypeError('Unknown input type');
       }
       return { input, category };
@@ -32,6 +32,9 @@ export class Perception {
    * @throws {TypeError} - If an input type is invalid.
    */
   validateSensoryInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
     inputs.forEach(input => {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Invalid input type: must be non-null object with a type');
@@ -82,22 +85,22 @@ export class Perception {
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category for the input.
+   * Determine the category based on input type.
+   * @param {Object} input - The input object containing the type.
+   * @returns {string|undefined} - The category of the input.
    */
   _determineCategory(input) {
-    // Dummy implementation for category determination
-    return input.type ? input.type : undefined;
+    // Implement your logic to determine category based on input
+    return input.type; // Placeholder logic, replace with actual categorization logic
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category to determine context for.
-   * @returns {string} - The context for the category.
+   * Determine the context based on category.
+   * @param {string} category - The category of the input.
+   * @returns {string} - The context corresponding to the category.
    */
   _determineContext(category) {
-    // Dummy implementation for context determination
-    return `Context for ${category}`;
+    // Implement your logic to determine context based on category
+    return `Context for ${category}`; // Placeholder logic, replace with actual context logic
   }
 }
