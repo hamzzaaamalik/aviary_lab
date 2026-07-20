@@ -82,22 +82,43 @@ export class Perception {
   }
 
   /**
+   * Filter sensory inputs based on criteria.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @param {Function} criteria - Function to determine inclusion.
+   * @returns {Array<any>} - Filtered sensory inputs.
+   */
+  filterSensoryInputs(inputs, criteria) {
+    if (typeof criteria !== 'function') {
+      throw new TypeError('Criteria must be a function');
+    }
+    return inputs.filter(criteria);
+  }
+
+  /**
+   * Log sensory input for debugging purposes.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   */
+  logSensoryInputs(inputs) {
+    console.log('Logging sensory inputs:', inputs);
+  }
+
+  /**
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    // Dummy implementation for category determination
-    return input.type ? input.type : undefined;
+    // Placeholder implementation. Extend as needed.
+    return input.type;
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category to determine context for.
-   * @returns {string} - The context for the category.
+   * @param {string} category - The category for the input.
+   * @returns {string} - The context for the input.
    */
   _determineContext(category) {
-    // Dummy implementation for context determination
+    // Placeholder implementation. Extend as needed.
     return `Context for ${category}`;
   }
 }
