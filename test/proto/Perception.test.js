@@ -4,25 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('aggregateSensoryInputs groups inputs by category', () => {
+test('filterSensoryInputsByCategories filters inputs correctly', () => {
   const inputs = [
-    { type: 'sound', data: 'noise' },
-    { type: 'sight', data: 'image' },
-    { type: 'sound', data: 'music' }
+    { type: 'sight', data: 'image1' },
+    { type: 'sound', data: 'sound1' },
+    { type: 'sight', data: 'image2' }
   ];
-  const aggregated = perception.aggregateSensoryInputs(inputs);
-  assert.equal(aggregated.get('sound').length, 2);
-  assert.equal(aggregated.get('sight').length, 1);
-  assert.deepEqual(aggregated.get('sound'), [
-    { type: 'sound', data: 'noise' },
-    { type: 'sound', data: 'music' }
-  ]);
-  assert.deepEqual(aggregated.get('sight'), [
-    { type: 'sight', data: 'image' }
+  const filtered = perception.filterSensoryInputsByCategories(inputs, ['sight']);
+  assert.deepEqual(filtered, [
+    { type: 'sight', data: 'image1' },
+    { type: 'sight', data: 'image2' }
   ]);
 });
 
-test('aggregateSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.aggregateSensoryInputs('invalid'), TypeError);
-  assert.throws(() => perception.aggregateSensoryInputs([{}]), TypeError);
+test('filterSensoryInputsByCategories throws on invalid categories', () => {
+  const inputs = [
+    { type: 'sight', data: 'image1' },
+  ];
+  assert.throws(() => perception.filterSensoryInputsByCategories(inputs, ''), TypeError);
+  assert.throws(() => perception.filterSensoryInputsByCategories(inputs, [123]), TypeError);
+  assert.throws(() => perception.filterSensoryInputsByCategories(inputs, ['sight', null]), TypeError);
 });
