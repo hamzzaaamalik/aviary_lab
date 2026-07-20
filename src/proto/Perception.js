@@ -82,31 +82,51 @@ export class Perception {
       if (!context) {
         throw new TypeError('Failed to determine context for category: ' + item.category);
       }
-      return { ...item, context };
+      const metadata = this._enhanceWithMetadata(item);
+      return { ...item, context, metadata };
     });
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
+   * Enhance the sensory input with additional metadata.
+   * @param {{input: any, category: string}} item - Categorized sensory data.
+   * @returns {Object} - Metadata related to the input.
    */
-  _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
+  _enhanceWithMetadata(item) {
+    return {
+      timestamp: Date.now(),
+      source: item.input.source || 'unknown',
+      confidence: this._calculateConfidence(item.category)
     };
-    return contextMap[category] || null;
   }
 
   /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * Calculate confidence level of the category.
+   * @param {string} category - The category to assess.
+   * @returns {number} - Confidence level between 0 and 1.
+   */
+  _calculateConfidence(category) {
+    // Placeholder for real confidence calculation logic.
+    return 0.9; // default confidence
+  }
+
+  /**
+   * Determine context based on category.
+   * @param {string} category - The category to assess.
+   * @returns {string} - Context string.
+   */
+  _determineContext(category) {
+    // Example logic, should be replaced with actual context determination.
+    return `Context for ${category}`;
+  }
+
+  /**
+   * Determine the category of the input.
+   * @param {Object} input - The sensory input.
+   * @returns {string} - The determined category.
    */
   _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+    // Example category determination logic.
+    return input.type;
   }
 }
