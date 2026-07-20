@@ -26,3 +26,17 @@ test('filterSensoryByCategory throws on invalid inputs', () => {
   assert.throws(() => perception.filterSensoryByCategory([null], 'audio'), TypeError);
   assert.throws(() => perception.filterSensoryByCategory([{ type: 'audio' }], 'audio'), TypeError);
 });
+
+test('filterSensoryByCategory returns empty array for empty inputs', () => {
+  const result = perception.filterSensoryByCategory([], 'audio');
+  assert.deepEqual(result, []);
+});
+
+test('filterSensoryByCategory returns empty array for non-matching category', () => {
+  const inputs = [
+    { type: 'video', data: 'video1' },
+    { type: 'video', data: 'video2' }
+  ];
+  const result = perception.filterSensoryByCategory(inputs, 'audio');
+  assert.deepEqual(result, []);
+});
