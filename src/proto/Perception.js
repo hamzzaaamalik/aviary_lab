@@ -23,7 +23,7 @@ export class Perception {
   }
 
   /**
-   * Categorizes sensory inputs by type. This is now just an alias for clarity.
+   * Categorizes sensory inputs by type. This method is retained for clarity.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
