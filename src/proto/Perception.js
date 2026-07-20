@@ -53,6 +53,21 @@ export class Perception {
   }
 
   /**
+   * Get all sensory inputs of a specific type.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {string} type - The type of sensory input to retrieve.
+   * @returns {Array<any>} - Array of sensory inputs of the specified type.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  getSensoryInputsOfType(sensoryInputs, type) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof type !== 'string' || !type.trim()) {
+      throw new TypeError('Type must be a non-empty string.');
+    }
+    return sensoryInputs.filter(input => input.type === type);
+  }
+
+  /**
    * Validate sensory inputs to ensure they meet the required structure.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @throws {TypeError} - If the input is invalid.
@@ -69,19 +84,4 @@ export class Perception {
       }
     });
   }
-
-  /**
-   * Get all sensory inputs of a specific type.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {string} type - The type of sensory input to retrieve.
-   * @returns {Array<any>} - Array of sensory inputs of the specified type.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  getSensoryInputsOfType(sensoryInputs, type) {
-    this.validateSensoryInputs(sensoryInputs);
-    if (typeof type !== 'string' || !type.trim()) {
-      throw new TypeError('Type must be a non-empty string.');
-    }
-    return sensoryInputs.filter(input => input.type === type);
-  }
-}
+} 
