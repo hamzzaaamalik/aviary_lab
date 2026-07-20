@@ -32,6 +32,9 @@ export class Perception {
    * @throws {TypeError} - If an input type is invalid.
    */
   validateSensoryInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
     inputs.forEach(input => {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Invalid input type: must be non-null object with a type');
@@ -84,20 +87,22 @@ export class Perception {
   /**
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category for the input.
+   * @returns {string} - The determined category.
+   * @private
    */
   _determineCategory(input) {
-    // Placeholder implementation for category determination.
-    return input.type;
+    // Placeholder for actual category determination logic.
+    return input.type; // Simplified for example purposes.
   }
 
   /**
    * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - Context for the category.
+   * @returns {string} - The determined context.
+   * @private
    */
   _determineContext(category) {
-    // Placeholder logic to determine context.
-    return `context for ${category}`;
+    // Placeholder for actual context determination logic.
+    return `context for ${category}`; // Simplified for example purposes.
   }
 }
