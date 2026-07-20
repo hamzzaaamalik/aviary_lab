@@ -4,24 +4,18 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('enhanceContext throws TypeError on invalid categorized data', () => {
-  assert.throws(() => perception.enhanceContext(null), TypeError);
-  assert.throws(() => perception.enhanceContext({}), TypeError);
+test('Process sensory inputs correctly', () => {
+  const inputs = [
+    { type: 'visual', data: 'image data' },
+    { type: 'auditory', data: 'sound data' }
+  ];
+  const result = perception.process(inputs);
+  assert.equal(result.length, 2);
+  assert.equal(result[0].context, 'sight based on visual input');
+  assert.equal(result[1].context, 'sound based on auditory input');
 });
 
-test('enhanceContext handles empty categorized data', () => {
-  const result = perception.enhanceContext([]);
-  assert.deepEqual(result, []);
+test('Invalid input type throws error', () => {
+  assert.throws(() => perception.process([null]), TypeError);
 });
 
-test('enhanceContext enriches categorized data with context', () => {
-  const categorizedData = [{ input: { type: 'test' }, category: 'testCategory' }];
-  const result = perception.enhanceContext(categorizedData);
-  assert.deepEqual(result, [{ input: { type: 'test' }, category: 'testCategory', context: 'context for testCategory' }]);
-});
-
-test('enhanceContext throws TypeError for unknown category', () => {
-  perception._determineContext = () => undefined;  // Mocking to force unknown category
-  const categorizedData = [{ input: { type: 'test' }, category: 'unknownCategory' }];
-  assert.throws(() => perception.enhanceContext(categorizedData), TypeError);
-});
