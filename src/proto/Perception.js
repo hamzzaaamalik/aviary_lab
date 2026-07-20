@@ -51,6 +51,9 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
+    if (inputs.length === 0) {
+      return []; // Handle empty input arrays gracefully
+    }
     const categorized = this.categorizeSensoryInputs(inputs);
     return this.enhanceContext(categorized);
   }
@@ -82,23 +85,19 @@ export class Perception {
   _determineCategory(input) {
     if (input.type === 'visual') return 'visual';
     if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
+    if (input.type === 'tactile') return 'tactile';
     return undefined;
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category of the input.
+   * @param {string} category - The category for the input.
    * @returns {string} - The context for the input.
    */
   _determineContext(category) {
-    const contexts = {
-      visual: 'seen',
-      auditory: 'heard',
-      olfactory: 'smelled',
-      gustatory: 'tasted'
-    };
-    return contexts[category] || 'unknown';
+    if (category === 'visual') return 'sight-related context';
+    if (category === 'auditory') return 'sound-related context';
+    if (category === 'tactile') return 'touch-related context';
+    return 'unknown context';
   }
 }
