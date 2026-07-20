@@ -68,6 +68,9 @@ export class Perception {
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
+      if (!context) {
+        throw new TypeError('Unable to determine context for category: ' + item.category);
+      }
       return { ...item, context };
     });
   }
@@ -87,14 +90,13 @@ export class Perception {
   /**
    * Determine context based on category.
    * @param {string} category - The category to determine context.
-   * @returns {string} - Context based on category.
+   * @returns {string} - The context for the category.
    */
   _determineContext(category) {
-    switch (category) {
-      case 'visual': return 'sight context';
-      case 'auditory': return 'sound context';
-      case 'tactile': return 'touch context';
-      default: return 'unknown context';
-    }
+    // Simple context determination logic (to be expanded as needed)
+    if (category === 'visual') return 'sight context';
+    if (category === 'auditory') return 'sound context';
+    if (category === 'tactile') return 'touch context';
+    return undefined;
   }
 }
