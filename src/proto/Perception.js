@@ -77,8 +77,19 @@ export class Perception {
           input.data === undefined) {
         throw new TypeError(`Input at index ${index} must be a non-null object with a valid type and data.`);
       }
-      if (!input.hasOwnProperty('data')) {
-        throw new TypeError(`Input at index ${index} must have a 'data' property.`);
+    });
+  }
+
+  /**
+   * Log invalid sensory inputs for debugging.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   */
+  logInvalidInputs(sensoryInputs) {
+    sensoryInputs.forEach((input, index) => {
+      if (typeof input !== 'object' || input === null ||
+          typeof input.type !== 'string' || !input.type.trim() ||
+          input.data === undefined) {
+        console.warn(`Invalid input at index ${index}:`, input);
       }
     });
   }
