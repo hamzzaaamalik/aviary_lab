@@ -87,26 +87,38 @@ export class Perception {
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
+   * Analyze context of categorized sensory data.
+   * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
+   * @returns {Array<{input: any, category: string, analysis: string}>} - Enhanced data with analysis.
+   * @throws {TypeError} - If the input is invalid.
    */
-  _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
+  analyzeContext(categorizedData) {
+    if (!Array.isArray(categorizedData)) {
+      throw new TypeError('Categorized data must be an array');
+    }
+    return categorizedData.map(item => ({
+      ...item,
+      analysis: 'analyzed'  // Placeholder for analysis logic
+    }));
   }
 
   /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * Placeholder for determining category based on input.
+   * @param {any} input - Sensory input.
+   * @returns {string|null} - Category name or null.
    */
   _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
+    // Logic to determine category
     return input.type || null;
+  }
+
+  /**
+   * Placeholder for determining context based on category.
+   * @param {string} category - Input category.
+   * @returns {string|null} - Context string or null.
+   */
+  _determineContext(category) {
+    // Logic to determine context
+    return 'context for ' + category;
   }
 }
