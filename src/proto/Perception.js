@@ -86,11 +86,10 @@ export class Perception {
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category to determine context for.
-   * @returns {string} - The context for the given category.
+   * @param {string} category - The category to determine context.
+   * @returns {string} - The context for the category.
    */
   _determineContext(category) {
-    // Simple example of context determination based on category
     switch (category) {
       case 'visual': return 'sight based context';
       case 'auditory': return 'sound based context';
