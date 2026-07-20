@@ -77,7 +77,7 @@ export class Perception {
    * @returns {Array<any>} - Array of sensory inputs of the specified type.
    * @throws {TypeError} - If the input is invalid.
    */
-  getSensoryInputsByType(sensoryInputs, type) {
+  getSensoryInputsOfType(sensoryInputs, type) {
     this.validateSensoryInputs(sensoryInputs);
     if (typeof type !== 'string' || !type.trim()) {
       throw new TypeError('Type must be a non-empty string.');
