@@ -83,9 +83,8 @@ export class Perception {
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    if (input.type === 'visual') return 'visual';
-    if (input.type === 'auditory') return 'auditory';
-    return undefined;
+    // Dummy implementation for categorization logic.
+    return input.type;
   }
 
   /**
@@ -94,8 +93,11 @@ export class Perception {
    * @returns {string | undefined} - The context for the category.
    */
   _determineContext(category) {
-    if (category === 'visual') return 'sight context';
-    if (category === 'auditory') return 'sound context';
-    return undefined;
+    // Dummy implementation for context determination.
+    const contexts = {
+      visual: 'sight context',
+      auditory: 'sound context'
+    };
+    return contexts[category];
   }
 }
