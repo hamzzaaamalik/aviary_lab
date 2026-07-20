@@ -54,4 +54,14 @@ export class Perception {
       }
     });
   }
+
+  /**
+   * Process sensory input data and categorize it based on types.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Categorized sensory inputs by type.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  categorizeSensoryInputs(sensoryInputs) {
+    return this.processSensoryInputs(sensoryInputs);
+  }
 }
