@@ -11,6 +11,7 @@ export class Perception {
    */
   validateSensoryInputs(sensoryInputs) {
     if (!Array.isArray(sensoryInputs)) throw new TypeError('Input must be an array.');
+    if (sensoryInputs.length === 0) throw new TypeError('Sensory inputs must be a non-empty array.');
     sensoryInputs.forEach((input, index) => {
       if (typeof input !== 'object' || input === null) {
         throw new TypeError(`Input at index ${index} must be a non-null object.`);

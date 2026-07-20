@@ -33,3 +33,8 @@ test('filterSensoryInputs throws for invalid sensory inputs', () => {
 test('filterSensoryInputs throws for empty sensory inputs array', () => {
   assert.throws(() => perception.filterSensoryInputs([], 'sight'), TypeError);
 });
+
+test('filterSensoryInputs throws for empty input array', () => {
+  assert.throws(() => perception.filterSensoryInputs([], 'sight'), TypeError);
+});
+
