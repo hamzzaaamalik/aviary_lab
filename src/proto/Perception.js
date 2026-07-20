@@ -45,7 +45,7 @@ export class Perception {
   /**
    * Process sensory inputs and enhance them.
    * @param {Array<any>} inputs - Array of sensory inputs.
-   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @returns {Array<{input: any, category: string, context: string, metadata: object}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   process(inputs) {
@@ -57,7 +57,7 @@ export class Perception {
   /**
    * Batch process sensory inputs, categorizing and enhancing them in one step.
    * @param {Array<any>} inputs - Array of sensory inputs.
-   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @returns {Array<{input: any, category: string, context: string, metadata: object}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   batchProcess(inputs) {
@@ -67,7 +67,7 @@ export class Perception {
   /**
    * Enhance sensory data with additional context.
    * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
-   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @returns {Array<{input: any, category: string, context: string, metadata: object}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   enhanceContext(categorizedData) {
@@ -87,46 +87,16 @@ export class Perception {
     });
   }
 
-  /**
-   * Enhance the sensory input with additional metadata.
-   * @param {{input: any, category: string}} item - Categorized sensory data.
-   * @returns {Object} - Metadata related to the input.
-   */
-  _enhanceWithMetadata(item) {
-    return {
-      timestamp: Date.now(),
-      source: item.input.source || 'unknown',
-      confidence: this._calculateConfidence(item.category)
-    };
-  }
-
-  /**
-   * Calculate confidence level of the category.
-   * @param {string} category - The category to assess.
-   * @returns {number} - Confidence level between 0 and 1.
-   */
-  _calculateConfidence(category) {
-    // Placeholder for real confidence calculation logic.
-    return 0.9; // default confidence
-  }
-
-  /**
-   * Determine context based on category.
-   * @param {string} category - The category to assess.
-   * @returns {string} - Context string.
-   */
-  _determineContext(category) {
-    // Example logic, should be replaced with actual context determination.
-    return `Context for ${category}`;
-  }
-
-  /**
-   * Determine the category of the input.
-   * @param {Object} input - The sensory input.
-   * @returns {string} - The determined category.
-   */
+  // Placeholder methods for demonstration purposes.
   _determineCategory(input) {
-    // Example category determination logic.
-    return input.type;
+    return input.type ? input.type : null;
+  }
+
+  _determineContext(category) {
+    return `context for ${category}`;
+  }
+
+  _enhanceWithMetadata(item) {
+    return { timestamp: Date.now(), source: item.input.source || 'unknown', confidence: 0.9 };
   }
 }
