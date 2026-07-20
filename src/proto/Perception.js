@@ -27,18 +27,25 @@ export class Perception {
   }
 
   /**
-   * Validate sensory input types.
+   * Validate sensory input types and enrich with context if valid.
    * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enriched sensory data.
    * @throws {TypeError} - If an input type is invalid.
    */
-  validateSensoryInputs(inputs) {
+  validateAndEnhanceSensoryInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    inputs.forEach(input => {
+    return inputs.map(input => {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Invalid input type: must be non-null object with a type');
       }
+      const category = this._determineCategory(input);
+      if (!category) {
+        throw new TypeError('Unknown input type');
+      }
+      const context = this._determineContext(category);
+      return { input, category, context };
     });
   }
 
@@ -49,9 +56,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   process(inputs) {
-    this.validateSensoryInputs(inputs);
-    const categorized = this.categorizeSensoryInputs(inputs);
-    return this.enhanceContext(categorized);
+    return this.validateAndEnhanceSensoryInputs(inputs);
   }
 
   /**
@@ -74,35 +79,29 @@ export class Perception {
     if (!Array.isArray(categorizedData)) {
       throw new TypeError('Categorized data must be an array');
     }
-    if (categorizedData.length === 0) {
-      return [];
-    }
-    return categorizedData.map(item => {
-      const context = this._determineContext(item.category);
-      if (!context) {
-        throw new TypeError('Failed to determine context for category: ' + item.category);
-      }
-      return { ...item, context };
+    return categorizedData.map(({ input, category }) => {
+      const context = this._determineContext(category);
+      return { input, category, context };
     });
   }
 
   /**
-   * Determine category based on input properties.
-   * @param {object} input - The sensory input.
-   * @returns {string | undefined} - The category name.
+   * Dummy method to determine category (to be implemented).
+   * @param {any} input - The sensory input.
+   * @returns {string|null} - The determined category or null if unknown.
    */
   _determineCategory(input) {
-    // Implementation of category determination logic
-    return input.type;  // Placeholder implementation
+    // Placeholder implementation
+    return input.type || null;
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category name.
-   * @returns {string | undefined} - The context string.
+   * Dummy method to determine context (to be implemented).
+   * @param {string} category - The category of the input.
+   * @returns {string} - The context associated with the category.
    */
   _determineContext(category) {
-    // Implementation of context determination logic
-    return `context for ${category}`;  // Placeholder implementation
+    // Placeholder implementation
+    return `Context for ${category}`;
   }
 }
