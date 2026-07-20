@@ -23,6 +23,24 @@ export class Perception {
   }
 
   /**
+   * Aggregate sensory inputs by category, summing their data values.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Aggregated data by category.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  aggregateSensoryInputs(sensoryInputs) {
+    this.validateSensoryInputs(sensoryInputs);
+    return sensoryInputs.reduce((aggregated, input) => {
+      const type = input.type;
+      if (!aggregated[type]) {
+        aggregated[type] = 0;
+      }
+      aggregated[type] += input.data;
+      return aggregated;
+    }, {});
+  }
+
+  /**
    * Filter sensory inputs based on a provided category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {string} category - The category to filter by.
