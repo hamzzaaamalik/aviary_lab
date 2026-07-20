@@ -79,7 +79,7 @@ export class Perception {
   }
 
   /**
-   * Enhanced filter method that allows filtering by multiple categories.
+   * Filter sensory inputs based on an array of categories.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Array<string>} categories - Array of categories to filter by.
    * @returns {Array<any>} - Filtered sensory inputs.
@@ -87,9 +87,14 @@ export class Perception {
    */
   filterSensoryInputsByCategories(sensoryInputs, categories) {
     this.validateSensoryInputs(sensoryInputs);
-    if (!Array.isArray(categories) || categories.some(cat => typeof cat !== 'string' || !cat.trim())) {
-      throw new TypeError('Categories must be an array of non-empty strings.');
+    if (!Array.isArray(categories) || categories.length === 0) {
+      throw new TypeError('Categories must be a non-empty array.');
     }
+    categories.forEach(category => {
+      if (typeof category !== 'string' || !category.trim()) {
+        throw new TypeError('Each category must be a non-empty string.');
+      }
+    });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
 }
