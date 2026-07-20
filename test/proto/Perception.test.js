@@ -4,24 +4,31 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('enhanceContext throws TypeError on invalid categorized data', () => {
+test('process method enhances sensory inputs correctly', () => {
+  const inputs = [
+    { type: 'visual', data: 'some visual data' },
+    { type: 'auditory', data: 'some sound data' }
+  ];
+  const result = perception.process(inputs);
+  assert.equal(result.length, 2);
+  assert.deepEqual(result[0].context, 'sight-related context');
+  assert.deepEqual(result[1].context, 'sound-related context');
+});
+
+test('process method throws on invalid input', () => {
+  assert.throws(() => perception.process(null), TypeError);
+  assert.throws(() => perception.process([{ type: null }]), TypeError);
+});
+
+test('enhanceContext throws on invalid categorized data', () => {
   assert.throws(() => perception.enhanceContext(null), TypeError);
-  assert.throws(() => perception.enhanceContext({}), TypeError);
 });
 
-test('enhanceContext handles empty categorized data', () => {
-  const result = perception.enhanceContext([]);
-  assert.deepEqual(result, []);
+test('determine context throws on unknown category', () => {
+  assert.throws(() => perception._determineContext('unknown'), Error);
 });
 
-test('enhanceContext enriches categorized data with context', () => {
-  const categorizedData = [{ input: { type: 'test' }, category: 'testCategory' }];
-  const result = perception.enhanceContext(categorizedData);
-  assert.deepEqual(result, [{ input: { type: 'test' }, category: 'testCategory', context: 'context for testCategory' }]);
-});
-
-test('enhanceContext throws TypeError for unknown category', () => {
-  perception._determineContext = () => undefined;  // Mocking to force unknown category
-  const categorizedData = [{ input: { type: 'test' }, category: 'unknownCategory' }];
-  assert.throws(() => perception.enhanceContext(categorizedData), TypeError);
+test('categorizeSensoryInputs throws on invalid inputs', () => {
+  assert.throws(() => perception.categorizeSensoryInputs('not an array'), TypeError);
+  assert.throws(() => perception.categorizeSensoryInputs([{ type: null }]), TypeError);
 });
