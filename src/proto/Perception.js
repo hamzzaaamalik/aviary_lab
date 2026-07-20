@@ -43,14 +43,33 @@ export class Perception {
   }
 
   /**
+   * Normalize sensory inputs to ensure consistency.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<any>} - Normalized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  normalizeInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('Inputs must be an array');
+    }
+    return inputs.map(input => {
+      if (typeof input === 'string') {
+        return { type: 'text', value: input };
+      }
+      return input;
+    });
+  }
+
+  /**
    * Process sensory inputs and enhance them.
    * @param {Array<any>} inputs - Array of sensory inputs.
    * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   process(inputs) {
-    this.validateSensoryInputs(inputs);
-    const categorized = this.categorizeSensoryInputs(inputs);
+    const normalizedInputs = this.normalizeInputs(inputs);
+    this.validateSensoryInputs(normalizedInputs);
+    const categorized = this.categorizeSensoryInputs(normalizedInputs);
     return this.enhanceContext(categorized);
   }
 
@@ -87,26 +106,20 @@ export class Perception {
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
+   * Determine context based on category (placeholder for actual implementation).
+   * @param {string} category - The category of the input.
+   * @returns {string} - The context for the category.
    */
   _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
+    // Placeholder for actual context determination logic
+    return `context for ${category}`;
   }
 
   /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * Placeholder for determining category based on input (to be implemented).
    */
   _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+    // Placeholder for actual category determination logic
+    return input.type;
   }
 }
