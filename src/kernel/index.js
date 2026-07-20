@@ -1,3 +1,4 @@
+// src/kernel/index.js
 import { EventBus } from './EventBus.js';
 import { ModuleRegistry } from './ModuleRegistry.js';
 import { Perception } from '../proto/Perception.js';  // wire the new Perception module
