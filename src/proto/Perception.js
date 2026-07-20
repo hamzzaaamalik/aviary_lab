@@ -63,6 +63,16 @@ export class Perception {
   }
 
   /**
+   * Process a batch of sensory inputs.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  processBatch(inputs) {
+    return this.batchProcess(inputs);
+  }
+
+  /**
    * Enhance sensory data with additional context.
    * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
    * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
@@ -87,17 +97,17 @@ export class Perception {
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    // Placeholder implementation for category determination.
+    // Placeholder logic for category determination
     return input.type;
   }
 
   /**
    * Determine context based on category.
    * @param {string} category - The category of the input.
-   * @returns {string} - Context for the category.
+   * @returns {string} - The context string.
    */
   _determineContext(category) {
-    // Placeholder logic to determine context.
+    // Placeholder logic for context determination
     return `context for ${category}`;
   }
 }
