@@ -87,47 +87,38 @@ export class Perception {
   }
 
   /**
-   * Analyze context based on input properties.
-   * @param {Array<{input: any, category: string}>} categorizedData - Categorized sensory data.
-   * @returns {Array<{input: any, category: string, context: string, analysis: string}>} - Enhanced data with analysis.
+   * Analyze context of categorized sensory data.
+   * @param {Array<{input: any, category: string}>} categorizedData - Array of categorized sensory data.
+   * @returns {Array<{input: any, category: string, analysis: string}>} - Enhanced data with analysis.
+   * @throws {TypeError} - If the input is invalid.
    */
   analyzeContext(categorizedData) {
     if (!Array.isArray(categorizedData)) {
       throw new TypeError('Categorized data must be an array');
     }
-    return categorizedData.map(item => {
-      const analysis = this._analyzeInput(item.input);
-      return { ...item, analysis };
-    });
+    return categorizedData.map(item => ({
+      ...item,
+      analysis: 'analyzed'  // Placeholder for analysis logic
+    }));
   }
 
   /**
-   * Analyze input for deeper insights.
-   * @param {any} input - The sensory input to analyze.
-   * @returns {string} - Analysis result.
-   */
-  _analyzeInput(input) {
-    // Placeholder for real analysis logic
-    return 'analyzed';
-  }
-
-  /**
-   * Determine category based on input properties (stub).
-   * @param {any} input - The sensory input.
-   * @returns {string} - The category of the input.
+   * Placeholder for determining category based on input.
+   * @param {any} input - Sensory input.
+   * @returns {string|null} - Category name or null.
    */
   _determineCategory(input) {
-    // Placeholder for category determination logic
-    return 'default';
+    // Logic to determine category
+    return input.type || null;
   }
 
   /**
-   * Determine context based on category (stub).
-   * @param {string} category - The category to determine context for.
-   * @returns {string} - The context associated with the category.
+   * Placeholder for determining context based on category.
+   * @param {string} category - Input category.
+   * @returns {string|null} - Context string or null.
    */
   _determineContext(category) {
-    // Placeholder for context determination logic
-    return 'generic context';
+    // Logic to determine context
+    return 'context for ' + category;
   }
 }
