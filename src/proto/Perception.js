@@ -77,6 +77,9 @@ export class Perception {
           input.data === undefined) {
         throw new TypeError(`Input at index ${index} must be a non-null object with a valid type and data.`);
       }
+      if (!input.hasOwnProperty('data')) {
+        throw new TypeError(`Input at index ${index} must have a 'data' property.`);
+      }
     });
   }
 }
