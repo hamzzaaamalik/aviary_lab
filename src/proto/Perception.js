@@ -79,7 +79,7 @@ export class Perception {
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
-      if (!context) {
+      if (context === undefined) {
         throw new TypeError('Failed to determine context for category: ' + item.category);
       }
       return { ...item, context };
@@ -87,26 +87,27 @@ export class Perception {
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
+   * Determine context based on the category.
+   * @param {string} category - The category of the input.
+   * @returns {string | undefined} - The context or undefined if the category is unknown.
    */
   _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
+    // Logic to determine context based on category
+    switch (category) {
+      case 'visual': return 'sight';
+      case 'auditory': return 'sound';
+      case 'tactile': return 'touch';
+      default: return undefined; // Changed to return undefined instead of throwing error
+    }
   }
 
   /**
-   * Determine category based on input. This method needs to be implemented.
+   * Determine category of the input.
    * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * @returns {string | undefined} - The determined category.
    */
   _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+    // Placeholder categorization logic, to be defined.
+    return input.type;
   }
 }
