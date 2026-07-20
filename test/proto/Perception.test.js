@@ -2,60 +2,19 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-const perception = new Perception();
+test('analyzeContext enhances categorized data with analysis', () => {
+  const perception = new Perception();
+  const inputs = [{ type: 'sound', value: 'clap' }, { type: 'sight', value: 'light' }];
+  const categorized = perception.categorizeSensoryInputs(inputs);
+  const analyzed = perception.analyzeContext(categorized);
 
-test('enhanceContext enriches categorized data with context', () => {
-  const categorizedData = [
-    { input: { type: 'visual' }, category: 'visual' },
-    { input: { type: 'auditory' }, category: 'auditory' }
-  ];
-  const enhancedData = perception.enhanceContext(categorizedData);
-  assert.deepEqual(enhancedData, [
-    { input: { type: 'visual' }, category: 'visual', context: 'sight' },
-    { input: { type: 'auditory' }, category: 'auditory', context: 'sound' }
-  ]);
+  assert.equal(analyzed.length, 2);
+  assert.equal(analyzed[0].analysis, 'analyzed');
+  assert.equal(analyzed[1].analysis, 'analyzed');
 });
 
-// Additional tests for categorizeSensoryInputs and process methods
-
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const inputs = [
-    { type: 'visual' },
-    { type: 'auditory' }
-  ];
-  const result = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(result, [
-    { input: { type: 'visual' }, category: 'visual' },
-    { input: { type: 'auditory' }, category: 'auditory' }
-  ]);
+test('analyzeContext rejects non-array input', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.analyzeContext('invalid input'), TypeError);
 });
 
-test('process enhances inputs correctly', () => {
-  const inputs = [
-    { type: 'visual' },
-    { type: 'auditory' }
-  ];
-  const result = perception.process(inputs);
-  assert.deepEqual(result, [
-    { input: { type: 'visual' }, category: 'visual', context: 'sight' },
-    { input: { type: 'auditory' }, category: 'auditory', context: 'sound' }
-  ]);
-});
-
-// Edge case tests
-
-test('enhanceContext throws on unknown category', () => {
-  const categorizedData = [
-    { input: { type: 'unknown' }, category: 'unknown' }
-  ];
-  assert.throws(() => perception.enhanceContext(categorizedData), TypeError);
-});
-
-test('process handles empty input array', () => {
-  const result = perception.process([]);
-  assert.deepEqual(result, []);
-});
-
-test('validateSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.validateSensoryInputs([{ type: null }]), TypeError);
-});

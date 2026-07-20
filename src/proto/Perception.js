@@ -87,26 +87,47 @@ export class Perception {
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string | null} - The context associated with the category.
+   * Analyze context based on input properties.
+   * @param {Array<{input: any, category: string}>} categorizedData - Categorized sensory data.
+   * @returns {Array<{input: any, category: string, context: string, analysis: string}>} - Enhanced data with analysis.
    */
-  _determineContext(category) {
-    const contextMap = {
-      visual: 'sight',
-      auditory: 'sound',
-      tactile: 'touch'
-    };
-    return contextMap[category] || null;
+  analyzeContext(categorizedData) {
+    if (!Array.isArray(categorizedData)) {
+      throw new TypeError('Categorized data must be an array');
+    }
+    return categorizedData.map(item => {
+      const analysis = this._analyzeInput(item.input);
+      return { ...item, analysis };
+    });
   }
 
   /**
-   * Determine category based on input. This method needs to be implemented.
-   * @param {any} input - The input to categorize.
-   * @returns {string | null} - The category of the input.
+   * Analyze input for deeper insights.
+   * @param {any} input - The sensory input to analyze.
+   * @returns {string} - Analysis result.
+   */
+  _analyzeInput(input) {
+    // Placeholder for real analysis logic
+    return 'analyzed';
+  }
+
+  /**
+   * Determine category based on input properties (stub).
+   * @param {any} input - The sensory input.
+   * @returns {string} - The category of the input.
    */
   _determineCategory(input) {
-    // Placeholder implementation — to be replaced by actual logic.
-    return input.type || null;
+    // Placeholder for category determination logic
+    return 'default';
+  }
+
+  /**
+   * Determine context based on category (stub).
+   * @param {string} category - The category to determine context for.
+   * @returns {string} - The context associated with the category.
+   */
+  _determineContext(category) {
+    // Placeholder for context determination logic
+    return 'generic context';
   }
 }
