@@ -41,3 +41,19 @@ test('advancedFilterSensoryInputs throws error for invalid categories', () => {
   assert.throws(() => perception.advancedFilterSensoryInputs(inputs, []), TypeError);
 });
 
+test('processSensoryInputs throws error for empty input', () => {
+  assert.throws(() => perception.processSensoryInputs([]), TypeError);
+});
+
+test('processSensoryInputs throws error for invalid object structure', () => {
+  const invalidInputs = [
+    { type: 'sight' },
+    null,
+    { type: '', data: 'data' },
+    { data: 'data' }
+  ];
+  invalidInputs.forEach((input, index) => {
+    assert.throws(() => perception.processSensoryInputs([input]), TypeError,
+      `Input at index ${index} must be a non-null object with a valid type and data properties.`);
+  });
+});
