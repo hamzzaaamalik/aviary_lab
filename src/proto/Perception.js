@@ -64,6 +64,21 @@ export class Perception {
   }
 
   /**
+   * Transform sensory inputs based on a provided transformation function.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} transformFn - Function to transform each input.
+   * @returns {Array<any>} - Transformed sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  transformSensoryInputs(sensoryInputs, transformFn) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof transformFn !== 'function') {
+      throw new TypeError('Transform function must be a valid function.');
+    }
+    return sensoryInputs.map(transformFn);
+  }
+
+  /**
    * Filter sensory inputs based on a provided category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {string} category - The category to filter by.
@@ -77,4 +92,4 @@ export class Perception {
     }
     return sensoryInputs.filter(input => input.type === category);
   }
-} 
+}
