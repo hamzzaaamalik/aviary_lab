@@ -18,7 +18,6 @@ export class Perception {
       if (typeof input !== 'object' || input === null || !input.type) {
         throw new TypeError('Input must be a non-null object with a type property');
       }
-      // Corrected categorization logic based on input properties.
       const category = this._determineCategory(input);
       if (!category) {
         throw new TypeError('Unknown input type');
@@ -51,8 +50,7 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array');
     }
-    const categorized = this.categorizeSensoryInputs(inputs);
-    return this.enhanceContext(categorized);
+    return this.process(inputs);
   }
 
   /**
@@ -66,7 +64,7 @@ export class Perception {
       throw new TypeError('Categorized data must be an array');
     }
     if (categorizedData.length === 0) {
-      return []; // Handle empty input arrays gracefully
+      return [];
     }
     return categorizedData.map(item => {
       const context = this._determineContext(item.category);
@@ -82,23 +80,22 @@ export class Perception {
   _determineCategory(input) {
     if (input.type === 'visual') return 'visual';
     if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'olfactory') return 'olfactory';
-    if (input.type === 'gustatory') return 'gustatory';
+    if (input.type === 'tactile') return 'tactile';
     return undefined;
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category of the input.
-   * @returns {string} - The context for the input.
+   * @param {string} category - The category to determine context for.
+   * @returns {string} - The context for the given category.
    */
   _determineContext(category) {
-    const contexts = {
-      visual: 'seen',
-      auditory: 'heard',
-      olfactory: 'smelled',
-      gustatory: 'tasted'
-    };
-    return contexts[category] || 'unknown';
+    // Simple example of context determination based on category
+    switch (category) {
+      case 'visual': return 'sight based context';
+      case 'auditory': return 'sound based context';
+      case 'tactile': return 'touch based context';
+      default: return 'unknown context';
+    }
   }
 }
