@@ -65,6 +65,7 @@ export class Perception {
       if (typeof input !== 'object' || input === null ||
           typeof input.type !== 'string' || !input.type.trim() ||
           input.data === undefined) {
+        console.error(`Invalid input at index ${index}:`, input);
         throw new TypeError(`Input at index ${index} must be a non-null object with a valid type and data properties.`);
       }
     });
@@ -78,10 +79,12 @@ export class Perception {
    */
   processAndLogSensoryInputs(sensoryInputs) {
     try {
-      return this.processSensoryInputs(sensoryInputs);
-    } catch (error) {
-      console.error('Error processing sensory inputs:', error);
-      throw error;
+      const categorized = this.processSensoryInputs(sensoryInputs);
+      console.log('Successfully processed sensory inputs:', categorized);
+      return categorized;
+    } catch (err) {
+      console.error('Error processing sensory inputs:', err.message);
+      throw err;
     }
   }
 }
