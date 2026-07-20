@@ -77,14 +77,6 @@ export class Perception {
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  processAndLogSensoryInputs(sensoryInputs) {
-    try {
-      const categorized = this.processSensoryInputs(sensoryInputs);
-      console.log('Successfully processed sensory inputs:', categorized);
-      return categorized;
-    } catch (err) {
-      console.error('Error processing sensory inputs:', err.message);
-      throw err;
-    }
-  }
+  processAndLogSenso
+  // Additional methods can be implemented here.
 }

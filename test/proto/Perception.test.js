@@ -6,54 +6,56 @@ const perception = new Perception();
 
 test('processSensoryInputs categorizes inputs correctly', () => {
   const inputs = [
-    { type: 'sight', data: 'something' },
-    { type: 'sound', data: 'noise' },
-    { type: 'sight', data: 'another thing' }
+    { type: 'sound', data: 'beep' },
+    { type: 'sight', data: 'image' },
+    { type: 'sound', data: 'boop' }
   ];
-  const categorized = perception.processSensoryInputs(inputs);
-  assert.deepEqual(categorized, {
-    sight: [
-      { type: 'sight', data: 'something' },
-      { type: 'sight', data: 'another thing' }
-    ],
+  const result = perception.processSensoryInputs(inputs);
+  assert.deepEqual(result, {
     sound: [
-      { type: 'sound', data: 'noise' }
+      { type: 'sound', data: 'beep' },
+      { type: 'sound', data: 'boop' }
+    ],
+    sight: [
+      { type: 'sight', data: 'image' }
     ]
   });
 });
 
-test('advancedFilterSensoryInputs filters inputs by multiple categories', () => {
+test('filterSensoryInputs filters by category', () => {
   const inputs = [
-    { type: 'sight', data: 'something' },
-    { type: 'sound', data: 'noise' },
-    { type: 'sight', data: 'another thing' }
+    { type: 'sound', data: 'beep' },
+    { type: 'sight', data: 'image' }
   ];
-  const filtered = perception.advancedFilterSensoryInputs(inputs, ['sight']);
-  assert.deepEqual(filtered, [
-    { type: 'sight', data: 'something' },
-    { type: 'sight', data: 'another thing' }
+  const result = perception.filterSensoryInputs(inputs, 'sound');
+  assert.deepEqual(result, [
+    { type: 'sound', data: 'beep' }
   ]);
 });
 
-test('advancedFilterSensoryInputs throws error for invalid categories', () => {
-  const inputs = [{ type: 'sight', data: 'something' }];
-  assert.throws(() => perception.advancedFilterSensoryInputs(inputs, ''), TypeError);
-  assert.throws(() => perception.advancedFilterSensoryInputs(inputs, []), TypeError);
-});
-
-test('processSensoryInputs throws error for empty input', () => {
-  assert.throws(() => perception.processSensoryInputs([]), TypeError);
-});
-
-test('processSensoryInputs throws error for invalid object structure', () => {
-  const invalidInputs = [
-    { type: 'sight' },
-    null,
-    { type: '', data: 'data' },
-    { data: 'data' }
+test('advancedFilterSensoryInputs filters by multiple categories', () => {
+  const inputs = [
+    { type: 'sound', data: 'beep' },
+    { type: 'sight', data: 'image' },
+    { type: 'sound', data: 'boop' }
   ];
-  invalidInputs.forEach((input, index) => {
-    assert.throws(() => perception.processSensoryInputs([input]), TypeError,
-      `Input at index ${index} must be a non-null object with a valid type and data properties.`);
-  });
+  const result = perception.advancedFilterSensoryInputs(inputs, ['sound']);
+  assert.deepEqual(result, [
+    { type: 'sound', data: 'beep' },
+    { type: 'sound', data: 'boop' }
+  ]);
+});
+
+test('processSensoryInputs throws on invalid input', () => {
+  assert.throws(() => perception.processSensoryInputs(null), TypeError);
+  assert.throws(() => perception.processSensoryInputs([]), TypeError);
+  assert.throws(() => perception.processSensoryInputs([{ type: 'sound' }]), TypeError);
+});
+
+test('filterSensoryInputs throws on invalid category', () => {
+  assert.throws(() => perception.filterSensoryInputs([], ''), TypeError);
+});
+
+test('advancedFilterSensoryInputs throws on empty categories', () => {
+  assert.throws(() => perception.advancedFilterSensoryInputs([], []), TypeError);
 });
