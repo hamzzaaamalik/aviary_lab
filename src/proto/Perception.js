@@ -88,29 +88,28 @@ export class Perception {
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
+   * @param {string} category - The category of the input.
    * @returns {string} - The determined context.
-   * @throws {Error} - If category is unknown.
+   * @throws {Error} - If the category is unknown.
    */
   _determineContext(category) {
-    const contextMap = {
-      'visual': 'sight-related context',
-      'auditory': 'sound-related context',
-      // Add more context mappings as needed
+    const contexts = {
+      visual: 'sight-related context',
+      auditory: 'sound-related context',
+      // add more categories as necessary
     };
-    if (!(category in contextMap)) {
+    if (!(category in contexts)) {
       throw new Error('Unknown category: ' + category);
     }
-    return contextMap[category];
+    return contexts[category];
   }
 
   /**
-   * Determine category of an input.
-   * @param {object} input - The sensory input.
-   * @returns {string|null} - The determined category or null if unknown.
+   * Determine category based on input structure.
+   * @param {Object} input - The sensory input.
+   * @returns {string} - The determined category.
    */
   _determineCategory(input) {
-    // Logic to determine category based on input.
-    return input.type || null;
+    return input.type; // For simplicity, assume type directly maps to category.
   }
 }
