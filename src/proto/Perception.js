@@ -82,22 +82,34 @@ export class Perception {
   }
 
   /**
+   * Enhance sensory inputs with additional information.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @returns {Array<{input: any, category: string, context: string, enhanced: boolean}>} - Enhanced sensory data.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  enhanceSensoryInputs(inputs) {
+    this.validateSensoryInputs(inputs);
+    const categorized = this.categorizeSensoryInputs(inputs);
+    return categorized.map(item => ({ ...item, enhanced: true }));
+  }
+
+  /**
    * Determine category based on input properties.
    * @param {object} input - The sensory input.
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    // Dummy implementation for category determination
-    return input.type ? input.type : undefined;
+    // Placeholder implementation
+    return input.type;
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category to determine context for.
+   * @param {string} category - The category of the sensory input.
    * @returns {string} - The context for the category.
    */
   _determineContext(category) {
-    // Dummy implementation for context determination
+    // Placeholder implementation
     return `Context for ${category}`;
   }
 }
