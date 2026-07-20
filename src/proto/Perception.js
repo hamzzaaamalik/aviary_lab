@@ -77,9 +77,19 @@ export class Perception {
           input.data === undefined) {
         throw new TypeError(`Input at index ${index} must be a non-null object with a valid type and data.`);
       }
-      if (!input.hasOwnProperty('data')) {
-        throw new TypeError(`Input at index ${index} must have a 'data' property.`);
-      }
     });
+  }
+
+  /**
+   * Validate individual sensory input for additional checks.
+   * @param {Object} input - The sensory input to validate.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  validateSingleInput(input) {
+    if (typeof input !== 'object' || input === null ||
+        typeof input.type !== 'string' || !input.type.trim() ||
+        input.data === undefined) {
+      throw new TypeError('Input must be a non-null object with a valid type and data.');
+    }
   }
 }
