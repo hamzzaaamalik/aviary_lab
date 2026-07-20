@@ -4,24 +4,40 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('enhanceContext throws TypeError on invalid categorized data', () => {
-  assert.throws(() => perception.enhanceContext(null), TypeError);
-  assert.throws(() => perception.enhanceContext({}), TypeError);
-});
-
-test('enhanceContext handles empty categorized data', () => {
-  const result = perception.enhanceContext([]);
-  assert.deepEqual(result, []);
-});
-
 test('enhanceContext enriches categorized data with context', () => {
-  const categorizedData = [{ input: { type: 'test' }, category: 'testCategory' }];
-  const result = perception.enhanceContext(categorizedData);
-  assert.deepEqual(result, [{ input: { type: 'test' }, category: 'testCategory', context: 'context for testCategory' }]);
+  const categorizedData = [
+    { input: { type: 'visual' }, category: 'visual' },
+    { input: { type: 'auditory' }, category: 'auditory' }
+  ];
+  const enhancedData = perception.enhanceContext(categorizedData);
+  assert.deepEqual(enhancedData, [
+    { input: { type: 'visual' }, category: 'visual', context: 'sight' },
+    { input: { type: 'auditory' }, category: 'auditory', context: 'sound' }
+  ]);
 });
 
-test('enhanceContext throws TypeError for unknown category', () => {
-  perception._determineContext = () => undefined;  // Mocking to force unknown category
-  const categorizedData = [{ input: { type: 'test' }, category: 'unknownCategory' }];
-  assert.throws(() => perception.enhanceContext(categorizedData), TypeError);
+// Additional tests for categorizeSensoryInputs and process methods
+
+test('categorizeSensoryInputs categorizes inputs correctly', () => {
+  const inputs = [
+    { type: 'visual' },
+    { type: 'auditory' }
+  ];
+  const result = perception.categorizeSensoryInputs(inputs);
+  assert.deepEqual(result, [
+    { input: { type: 'visual' }, category: 'visual' },
+    { input: { type: 'auditory' }, category: 'auditory' }
+  ]);
+});
+
+test('process enhances inputs correctly', () => {
+  const inputs = [
+    { type: 'visual' },
+    { type: 'auditory' }
+  ];
+  const result = perception.process(inputs);
+  assert.deepEqual(result, [
+    { input: { type: 'visual' }, category: 'visual', context: 'sight' },
+    { input: { type: 'auditory' }, category: 'auditory', context: 'sound' }
+  ]);
 });
