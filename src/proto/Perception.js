@@ -27,15 +27,26 @@ export class Perception {
   }
 
   /**
+   * Validate sensory input types.
+   * @param {Array<any>} inputs - Array of sensory inputs.
+   * @throws {TypeError} - If an input type is invalid.
+   */
+  validateSensoryInputs(inputs) {
+    inputs.forEach(input => {
+      if (typeof input !== 'object' || input === null || !input.type) {
+        throw new TypeError('Invalid input type: must be non-null object with a type');
+      }
+    });
+  }
+
+  /**
    * Process sensory inputs and enhance them.
    * @param {Array<any>} inputs - Array of sensory inputs.
    * @returns {Array<{input: any, category: string, context: string}>} - Enhanced sensory data.
    * @throws {TypeError} - If the input is invalid.
    */
   process(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
+    this.validateSensoryInputs(inputs);
     const categorized = this.categorizeSensoryInputs(inputs);
     return this.enhanceContext(categorized);
   }
@@ -47,9 +58,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   batchProcess(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('Inputs must be an array');
-    }
+    this.validateSensoryInputs(inputs);
     return this.process(inputs);
   }
 
@@ -78,23 +87,17 @@ export class Perception {
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    if (input.type === 'visual') return 'visual';
-    if (input.type === 'auditory') return 'auditory';
-    if (input.type === 'tactile') return 'tactile';
-    return undefined;
+    // Dummy implementation for category determination
+    return input.type ? input.type : undefined;
   }
 
   /**
    * Determine context based on category.
-   * @param {string} category - The category to determine context.
-   * @returns {string} - Context based on category.
+   * @param {string} category - The category to determine context for.
+   * @returns {string} - The context for the category.
    */
   _determineContext(category) {
-    switch (category) {
-      case 'visual': return 'sight context';
-      case 'auditory': return 'sound context';
-      case 'tactile': return 'touch context';
-      default: return 'unknown context';
-    }
+    // Dummy implementation for context determination
+    return `Context for ${category}`;
   }
 }
