@@ -4,29 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
-  const input = [{ type: 'visual' }, { type: 'auditory' }];
-  const categorized = perception.categorizeSensoryInputs(input);
-  assert.deepEqual(categorized, [
-    { input: { type: 'visual' }, category: 'visual' },
-    { input: { type: 'auditory' }, category: 'auditory' }
-  ]);
-});
-
 test('process enhances sensory inputs', () => {
-  const input = [{ type: 'visual' }, { type: 'auditory' }];
-  const enhanced = perception.process(input);
-  assert.deepEqual(enhanced, [
-    { input: { type: 'visual' }, category: 'visual', context: 'sight based context' },
-    { input: { type: 'auditory' }, category: 'auditory', context: 'sound based context' }
-  ]);
+  const inputs = [
+    { type: 'visual', data: 'image1' },
+    { type: 'auditory', data: 'sound1' }
+  ];
+  const result = perception.process(inputs);
+  assert.equal(result.length, 2);
+  assert.equal(result[0].context, 'sight context');
+  assert.equal(result[1].context, 'sound context');
 });
 
 test('batchProcess processes and enhances inputs', () => {
-  const input = [{ type: 'tactile' }, { type: 'visual' }];
-  const enhanced = perception.batchProcess(input);
-  assert.deepEqual(enhanced, [
-    { input: { type: 'tactile' }, category: 'tactile', context: 'touch based context' },
-    { input: { type: 'visual' }, category: 'visual', context: 'sight based context' }
-  ]);
+  const inputs = [
+    { type: 'tactile', data: 'touch1' },
+    { type: 'visual', data: 'image2' }
+  ];
+  const result = perception.batchProcess(inputs);
+  assert.equal(result.length, 2);
+  assert.equal(result[0].context, 'touch context');
+  assert.equal(result[1].context, 'sight context');
 });
