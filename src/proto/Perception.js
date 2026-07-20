@@ -80,28 +80,31 @@ export class Perception {
       throw new TypeError('Categorized data must be an array');
     }
     return categorizedData.map(({ input, category }) => {
+      if (typeof category !== 'string') {
+        throw new TypeError('Category must be a string');
+      }
       const context = this._determineContext(category);
       return { input, category, context };
     });
   }
 
   /**
-   * Dummy method to determine category (to be implemented).
-   * @param {any} input - The sensory input.
-   * @returns {string|null} - The determined category or null if unknown.
+   * Dummy method for determining category.
+   * @param {any} input - The input to categorize.
+   * @returns {string} - The category name.
    */
   _determineCategory(input) {
-    // Placeholder implementation
-    return input.type || null;
+    // Placeholder logic for determining category
+    return input.type === 'sound' ? 'audio' : input.type === 'image' ? 'visual' : null;
   }
 
   /**
-   * Dummy method to determine context (to be implemented).
-   * @param {string} category - The category of the input.
-   * @returns {string} - The context associated with the category.
+   * Dummy method for determining context based on category.
+   * @param {string} category - The category to get context for.
+   * @returns {string} - The context string.
    */
   _determineContext(category) {
-    // Placeholder implementation
+    // Placeholder logic for context
     return `Context for ${category}`;
   }
 }
