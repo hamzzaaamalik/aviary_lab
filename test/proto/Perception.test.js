@@ -22,3 +22,7 @@ test('processAndFilter throws for invalid category', () => {
   assert.throws(() => perception.processAndFilter([], ''), TypeError);
 });
 
+test('processAndFilter handles invalid sensory inputs', () => {
+  assert.throws(() => perception.processAndFilter([{ type: 'sound' }], 'sound'), TypeError);
+});
+

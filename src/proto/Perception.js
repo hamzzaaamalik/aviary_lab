@@ -79,10 +79,10 @@ export class Perception {
   }
 
   /**
-   * Process and filter sensory inputs based on a given category.
+   * Process and filter sensory inputs by category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {string} category - The category to filter by.
-   * @returns {Map<string, Array<any>>} - Aggregated sensory data by category for filtered inputs.
+   * @returns {Map<string, Array<any>>} - Aggregated sensory data by category for the filtered inputs.
    * @throws {TypeError} - If the input is invalid.
    */
   processAndFilter(sensoryInputs, category) {
