@@ -25,6 +25,19 @@ export class Perception {
   }
 
   /**
+   * Normalize sensory input to ensure consistent structure.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Array<any>} - Normalized sensory inputs.
+   */
+  normalizeSensoryInputs(sensoryInputs) {
+    if (sensoryInputs.length === 0) return [];
+    return sensoryInputs.map(input => ({
+      type: input.type.trim(),
+      data: input.data,
+    }));
+  }
+
+  /**
    * Categorize sensory inputs based on their type.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @returns {Array<{ input: any, category: string }>} - Categorized sensory inputs.
@@ -60,21 +73,17 @@ export class Perception {
    */
   process(sensoryInputs) {
     this.validateSensoryInputs(sensoryInputs);
-    return this.aggregateSensoryInputs(sensoryInputs);
+    const normalized = this.normalizeSensoryInputs(sensoryInputs);
+    return this.aggregateSensoryInputs(normalized);
   }
 
   /**
    * Filter sensory inputs based on a provided category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {string} category - The category to filter by.
+   * @param {string} category - Category to filter by.
    * @returns {Array<any>} - Filtered sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
    */
-  filterSensoryInputs(sensoryInputs, category) {
-    this.validateSensoryInputs(sensoryInputs);
-    if (typeof category !== 'string' || !category.trim()) {
-      throw new TypeError('Category must be a non-empty string.');
-    }
+  filterSensoryInputsByCategory(sensoryInputs, category) {
     return sensoryInputs.filter(input => input.type === category);
   }
-} 
+}
