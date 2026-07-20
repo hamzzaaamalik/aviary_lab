@@ -4,25 +4,39 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('aggregateSensoryInputs groups inputs by category', () => {
+test('filterSensoryByCategory filters correctly', () => {
   const inputs = [
-    { type: 'sound', data: 'noise' },
-    { type: 'sight', data: 'image' },
-    { type: 'sound', data: 'music' }
+    { type: 'audio', data: 'sound1' },
+    { type: 'video', data: 'video1' },
+    { type: 'audio', data: 'sound2' }
   ];
-  const aggregated = perception.aggregateSensoryInputs(inputs);
-  assert.equal(aggregated.get('sound').length, 2);
-  assert.equal(aggregated.get('sight').length, 1);
-  assert.deepEqual(aggregated.get('sound'), [
-    { type: 'sound', data: 'noise' },
-    { type: 'sound', data: 'music' }
-  ]);
-  assert.deepEqual(aggregated.get('sight'), [
-    { type: 'sight', data: 'image' }
+  const result = perception.filterSensoryByCategory(inputs, 'audio');
+  assert.deepEqual(result, [
+    { type: 'audio', data: 'sound1' },
+    { type: 'audio', data: 'sound2' }
   ]);
 });
 
-test('aggregateSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.aggregateSensoryInputs('invalid'), TypeError);
-  assert.throws(() => perception.aggregateSensoryInputs([{}]), TypeError);
+test('filterSensoryByCategory throws on invalid category', () => {
+  assert.throws(() => perception.filterSensoryByCategory([], ''), TypeError);
+  assert.throws(() => perception.filterSensoryByCategory([], 123), TypeError);
+});
+
+test('filterSensoryByCategory throws on invalid inputs', () => {
+  assert.throws(() => perception.filterSensoryByCategory([null], 'audio'), TypeError);
+  assert.throws(() => perception.filterSensoryByCategory([{ type: 'audio' }], 'audio'), TypeError);
+});
+
+test('filterSensoryByCategory returns empty array for empty inputs', () => {
+  const result = perception.filterSensoryByCategory([], 'audio');
+  assert.deepEqual(result, []);
+});
+
+test('filterSensoryByCategory returns empty array for non-matching category', () => {
+  const inputs = [
+    { type: 'video', data: 'video1' },
+    { type: 'video', data: 'video2' }
+  ];
+  const result = perception.filterSensoryByCategory(inputs, 'audio');
+  assert.deepEqual(result, []);
 });
