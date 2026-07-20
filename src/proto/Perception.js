@@ -87,8 +87,8 @@ export class Perception {
    * @returns {string | undefined} - The category for the input.
    */
   _determineCategory(input) {
-    // Placeholder implementation for category determination.
-    return input.type;
+    // Implementation for category determination
+    return input.type; // Example, replace with actual logic
   }
 
   /**
@@ -97,7 +97,7 @@ export class Perception {
    * @returns {string} - Context for the category.
    */
   _determineContext(category) {
-    // Placeholder logic to determine context.
-    return `context for ${category}`;
+    // Implementation for context determination
+    return `context for ${category}`; // Example, replace with actual logic
   }
 }
