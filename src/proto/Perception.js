@@ -87,25 +87,25 @@ export class Perception {
   }
 
   /**
-   * Determine context based on category.
-   * @param {string} category - The category of the sensory input.
-   * @returns {string} - The determined context.
+   * Determine category context based on the category name.
+   * @param {string} category - The category name.
+   * @returns {string} - The context string.
    */
   _determineContext(category) {
-    // Placeholder for context determination logic based on the category.
-    // Actual implementation will depend on specific context rules.
-    return `context for ${category}`;
+    const contexts = {
+      sound: 'context for sound',
+      sight: 'context for sight',
+      // add more categories as needed
+    };
+    return contexts[category];
   }
 
   /**
-   * Determine category based on input.
-   * @param {Object} input - The sensory input to categorize.
+   * Determine the category of the input.
+   * @param {object} input - The sensory input.
    * @returns {string} - The determined category.
-   * @throws {TypeError} - If input type is invalid.
    */
   _determineCategory(input) {
-    // Placeholder for category determination logic.
-    // Actual implementation will need specific rules for categorization.
-    return input.type;
+    return input.type; // simplistic categorization based on type property
   }
 }
