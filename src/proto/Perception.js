@@ -73,5 +73,41 @@ export class Perception {
       return acc;
     }, {});
   }
-}
 
+  /**
+   * Extended method to handle classification with validation.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @param {Function} validator - Function to validate each input before classification.
+   * @returns {Object} - An object containing classified inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithValidation(sensoryInputs, classifier, validator) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    if (typeof validator !== 'function') {
+      throw new TypeError('Validator must be a function.');
+    }
+    return sensoryInputs.reduce((acc, input) => {
+      if (!validator(input)) {
+        console.warn('Input failed validation:', input);
+        return acc;
+      }
+      const key = classifier(input);
+      if (key === undefined || key === null) {
+        console.warn('Classifier returned undefined or null for input:', input);
+        return acc;
+      }
+      if (typeof key !== 'string') {
+        throw new TypeError('Classifier must return a string key.');
+      }
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(input);
+      return acc;
+    }, {});
+  }
+}
