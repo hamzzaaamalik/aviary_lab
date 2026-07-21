@@ -84,10 +84,10 @@ export class Perception {
   }
 
   /**
-   * Detect specific sensory inputs based on criteria.
+   * Detect sensory inputs based on a provided criteria function.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Function} criteria - A function that defines the criteria for detection.
-   * @returns {Array<any>} - Detected sensory inputs.
+   * @param {Function} criteria - Function to test each input.
+   * @returns {Array<any>} - Filtered sensory inputs that match criteria.
    * @throws {TypeError} - If the input is invalid.
    */
   detect(sensoryInputs, criteria) {

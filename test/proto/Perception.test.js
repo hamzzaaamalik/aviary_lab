@@ -22,4 +22,17 @@ test('detect throws error for invalid inputs', () => {
   assert.throws(() => perception.detect([], 'not a function'), TypeError);
 });
 
-// Include additional tests as necessary for edge cases
+test('detect throws error for invalid criteria', () => {
+  const inputs = [
+    { type: 'sound', value: 'bang' }
+  ];
+  assert.throws(() => perception.detect(inputs, 'not a function'), TypeError);
+});
+
+test('detect returns empty array for no matches', () => {
+  const inputs = [
+    { type: 'sound', value: 'bang' }
+  ];
+  const detected = perception.detect(inputs, input => input.type === 'sight');
+  assert.deepEqual(detected, []);
+});
