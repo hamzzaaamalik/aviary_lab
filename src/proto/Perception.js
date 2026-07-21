@@ -31,7 +31,7 @@ export class Perception {
   }
 
   /**
-   * Filter sensory inputs by a specific criteria.
+   * Filter sensory inputs by specific criteria.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} criteria - Function to filter inputs.
    * @returns {Array<any>} - Filtered sensory inputs.
@@ -43,5 +43,30 @@ export class Perception {
       throw new TypeError('Criteria must be a function.');
     }
     return sensoryInputs.filter(criteria);
+  }
+
+  /**
+   * Classify sensory inputs based on a provided classifier function.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @returns {Object} - An object containing classified inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classify(sensoryInputs, classifier) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    return sensoryInputs.reduce((acc, input) => {
+      const key = classifier(input);
+      if (key === undefined) { // Handle undefined classifier return values
+        return acc;
+      }
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(input);
+      return acc;
+    }, {});
   }
 }
