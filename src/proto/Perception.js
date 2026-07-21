@@ -79,7 +79,7 @@ export class Perception {
     }
     sensoryInputs.forEach((input, index) => {
       if (typeof input !== 'object' || input === null || !input.hasOwnProperty('type')) {
-        throw new TypeError(`Sensory input at index ${index} is invalid.`);
+        throw new TypeError(`Input at index ${index} must be an object with a type property.`);
       }
     });
   }
