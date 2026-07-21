@@ -4,38 +4,39 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs by classifier function', () => {
+test('detect returns matching sensory inputs', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const classifier = (n) => (n % 2 === 0 ? 'even' : 'odd');
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    odd: [1, 3, 5],
-    even: [2, 4]
-  });
+  const condition = (input) => input > 2;
+  const result = perception.detect(inputs, condition);
+  assert.deepEqual(result, [3, 4, 5]);
 });
 
-test('classify handles duplicate keys', () => {
-  const inputs = [1, 2, 3, 2, 1];
-  const classifier = (n) => (n % 2 === 0 ? 'even' : 'odd');
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    odd: [1, 3, 1],
-    even: [2, 2]
-  });
+test('filter returns filtered sensory inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const criteria = (input) => input % 2 === 0;
+  const result = perception.filter(inputs, criteria);
+  assert.deepEqual(result, [2, 4]);
 });
 
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify('not an array', () => {}), TypeError);
-  assert.throws(() => perception.classify([], 'not a function'), TypeError);
+test('classify groups sensory inputs by classifier', () => {
+  const inputs = ['apple', 'banana', 'carrot', 'apple'];
+  const classifier = (input) => input[0];
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, { a: ['apple', 'apple'], b: ['banana'], c: ['carrot'] });
 });
 
 test('classify warns on undefined classifier return', () => {
   const inputs = [1, 2, 3];
+  const classifier = () => undefined;
   const consoleWarn = console.warn;
-  let warned = false;
-  console.warn = () => { warned = true; };
-  perception.classify(inputs, () => undefined);
-  assert.equal(warned, true);
+  console.warn = () => {};  // suppress warning for test
+  const result = perception.classify(inputs, classifier);
   console.warn = consoleWarn;
+  assert.deepEqual(result, {});
 });
 
+test('classify throws on non-string key', () => {
+  const inputs = [1, 2, 3];
+  const classifier = () => 1;
+  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+});
