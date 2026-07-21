@@ -75,7 +75,7 @@ export class Perception {
   }
 
   /**
-   * Extended method to handle classification with validation.
+   * Classify sensory inputs with validation of each input before classification.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} classifier - Function to classify each input.
    * @param {Function} validator - Function to validate each input before classification.
@@ -92,7 +92,7 @@ export class Perception {
     }
     return sensoryInputs.reduce((acc, input) => {
       if (!validator(input)) {
-        console.warn('Input failed validation:', input);
+        console.warn('Validator rejected input:', input);
         return acc;
       }
       const key = classifier(input);
