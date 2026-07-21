@@ -6,7 +6,7 @@
 export class Perception {
   /**
    * Process sensory inputs and categorize them.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Array<{ type: string, [key: string]: any }>} sensoryInputs - Array of sensory inputs.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
@@ -24,7 +24,7 @@ export class Perception {
 
   /**
    * Categorize sensory inputs based on their type.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Array<{ type: string, [key: string]: any }>} sensoryInputs - Array of sensory inputs.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
@@ -34,9 +34,9 @@ export class Perception {
 
   /**
    * Filter sensory inputs based on a provided category.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Array<{ type: string, [key: string]: any }>} sensoryInputs - Array of sensory inputs.
    * @param {string} category - The category to filter by.
-   * @returns {Array<any>} - Filtered sensory inputs.
+   * @returns {Array<{ type: string, [key: string]: any }>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
   filterSensoryInputs(sensoryInputs, category) {
@@ -49,9 +49,9 @@ export class Perception {
 
   /**
    * Advanced filter sensory inputs based on multiple categories.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Array<{ type: string, [key: string]: any }>} sensoryInputs - Array of sensory inputs.
    * @param {Array<string>} categories - Array of categories to filter by.
-   * @returns {Array<any>} - Filtered sensory inputs.
+   * @returns {Array<{ type: string, [key: string]: any }>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
   advancedFilterSensoryInputs(sensoryInputs, categories) {
@@ -69,7 +69,7 @@ export class Perception {
 
   /**
    * Validate sensory inputs to ensure they meet the required structure.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Array<{ type: string, [key: string]: any }>} sensoryInputs - Array of sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
   validateSensoryInputs(sensoryInputs) {
@@ -77,12 +77,9 @@ export class Perception {
       throw new TypeError('Sensory inputs must be a non-empty array.');
     }
     sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null) {
-        throw new TypeError(`Input at index ${index} must be a non-null object.`);
-      }
-      if (typeof input.type !== 'string') {
-        throw new TypeError(`Input at index ${index} must have a string 'type' property.`);
+      if (typeof input !== 'object' || input === null || typeof input.type !== 'string') {
+        throw new TypeError(`Input at index ${index} must be an object with a valid 'type' property.`);
       }
     });
   }
-} 
+}
