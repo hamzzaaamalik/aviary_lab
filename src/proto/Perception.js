@@ -9,7 +9,7 @@ export class Perception {
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  validateSensoryInputs(sensoryInputs) {
+  validateInputs(sensoryInputs) {
     if (!Array.isArray(sensoryInputs)) {
       throw new TypeError('Input must be an array.');
     }
@@ -23,12 +23,25 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   detect(sensoryInputs, condition) {
-    this.validateSensoryInputs(sensoryInputs);
+    this.validateInputs(sensoryInputs);
     if (typeof condition !== 'function') {
       throw new TypeError('Condition must be a function.');
     }
     return sensoryInputs.filter(condition);
   }
 
-  // Add other methods here as needed
+  /**
+   * Filter sensory inputs by a specific criteria.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} criteria - Function to filter inputs.
+   * @returns {Array<any>} - Filtered sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  filterByCriteria(sensoryInputs, criteria) {
+    this.validateInputs(sensoryInputs);
+    if (typeof criteria !== 'function') {
+      throw new TypeError('Criteria must be a function.');
+    }
+    return sensoryInputs.filter(criteria);
+  }
 }
