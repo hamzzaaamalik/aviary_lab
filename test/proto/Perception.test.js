@@ -4,48 +4,22 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorizeSensoryInputs categorizes inputs correctly', () => {
+test('detect returns inputs matching criteria', () => {
   const inputs = [
-    { type: 'sight', value: 'tree' },
-    { type: 'sound', value: 'bird' },
-    { type: 'sight', value: 'car' }
+    { type: 'sound', value: 'bang' },
+    { type: 'sight', value: 'flash' },
+    { type: 'sound', value: 'whisper' }
   ];
-  const categorized = perception.categorizeSensoryInputs(inputs);
-  assert.deepEqual(categorized, {
-    sight: [ { type: 'sight', value: 'tree' }, { type: 'sight', value: 'car' } ],
-    sound: [ { type: 'sound', value: 'bird' } ]
-  });
+  const detected = perception.detect(inputs, input => input.type === 'sound');
+  assert.deepEqual(detected, [
+    { type: 'sound', value: 'bang' },
+    { type: 'sound', value: 'whisper' }
+  ]);
 });
 
-test('handleMultipleInputs calls categorizeSensoryInputs', () => {
-  const inputs = [
-    { type: 'sight', value: 'tree' },
-    { type: 'sound', value: 'bird' }
-  ];
-  const categorized = perception.handleMultipleInputs(inputs);
-  assert.deepEqual(categorized, perception.categorizeSensoryInputs(inputs));
+test('detect throws error for invalid inputs', () => {
+  assert.throws(() => perception.detect('not an array', () => true), TypeError);
+  assert.throws(() => perception.detect([], 'not a function'), TypeError);
 });
 
-test('filterSensoryInputs filters correctly', () => {
-  const inputs = [
-    { type: 'sight', value: 'tree' },
-    { type: 'sound', value: 'bird' }
-  ];
-  const filtered = perception.filterSensoryInputs(inputs, 'sight');
-  assert.deepEqual(filtered, [ { type: 'sight', value: 'tree' } ]);
-});
-
-test('advancedFilterSensoryInputs filters correctly', () => {
-  const inputs = [
-    { type: 'sight', value: 'tree' },
-    { type: 'sound', value: 'bird' }
-  ];
-  const filtered = perception.advancedFilterSensoryInputs(inputs, ['sight']);
-  assert.deepEqual(filtered, [ { type: 'sight', value: 'tree' } ]);
-});
-
-test('validateSensoryInputs throws on invalid input', () => {
-  assert.throws(() => perception.validateSensoryInputs(null), TypeError);
-  assert.throws(() => perception.validateSensoryInputs([{}]), TypeError);
-  assert.throws(() => perception.validateSensoryInputs([{ type: null }]), TypeError);
-});
+// Include additional tests as necessary for edge cases

@@ -82,4 +82,19 @@ export class Perception {
     });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
+
+  /**
+   * Detect specific sensory inputs based on criteria.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} criteria - A function that defines the criteria for detection.
+   * @returns {Array<any>} - Detected sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  detect(sensoryInputs, criteria) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof criteria !== 'function') {
+      throw new TypeError('Criteria must be a function.');
+    }
+    return sensoryInputs.filter(criteria);
+  }
 }
