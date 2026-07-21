@@ -2,53 +2,50 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('categorize sensory inputs', () => {
-  const perception = new Perception();
+const perception = new Perception();
+
+test('categorizeSensoryInputs categorizes inputs correctly', () => {
   const inputs = [
-    { type: 'sight', data: 'light' },
-    { type: 'sound', data: 'wave' },
-    { type: 'sight', data: 'color' }
+    { type: 'sight', value: 'tree' },
+    { type: 'sound', value: 'bird' },
+    { type: 'sight', value: 'car' }
   ];
   const categorized = perception.categorizeSensoryInputs(inputs);
   assert.deepEqual(categorized, {
-    sight: [
-      { type: 'sight', data: 'light' },
-      { type: 'sight', data: 'color' }
-    ],
-    sound: [{ type: 'sound', data: 'wave' }]
+    sight: [ { type: 'sight', value: 'tree' }, { type: 'sight', value: 'car' } ],
+    sound: [ { type: 'sound', value: 'bird' } ]
   });
 });
 
-
-test('filter sensory inputs by category', () => {
-  const perception = new Perception();
+test('handleMultipleInputs calls categorizeSensoryInputs', () => {
   const inputs = [
-    { type: 'sight', data: 'light' },
-    { type: 'sound', data: 'wave' }
+    { type: 'sight', value: 'tree' },
+    { type: 'sound', value: 'bird' }
+  ];
+  const categorized = perception.handleMultipleInputs(inputs);
+  assert.deepEqual(categorized, perception.categorizeSensoryInputs(inputs));
+});
+
+test('filterSensoryInputs filters correctly', () => {
+  const inputs = [
+    { type: 'sight', value: 'tree' },
+    { type: 'sound', value: 'bird' }
   ];
   const filtered = perception.filterSensoryInputs(inputs, 'sight');
-  assert.deepEqual(filtered, [{ type: 'sight', data: 'light' }]);
+  assert.deepEqual(filtered, [ { type: 'sight', value: 'tree' } ]);
 });
 
-
-test('advanced filter sensory inputs by categories', () => {
-  const perception = new Perception();
+test('advancedFilterSensoryInputs filters correctly', () => {
   const inputs = [
-    { type: 'sight', data: 'light' },
-    { type: 'sound', data: 'wave' },
-    { type: 'sound', data: 'echo' }
+    { type: 'sight', value: 'tree' },
+    { type: 'sound', value: 'bird' }
   ];
-  const filtered = perception.advancedFilterSensoryInputs(inputs, ['sound']);
-  assert.deepEqual(filtered, [
-    { type: 'sound', data: 'wave' },
-    { type: 'sound', data: 'echo' }
-  ]);
+  const filtered = perception.advancedFilterSensoryInputs(inputs, ['sight']);
+  assert.deepEqual(filtered, [ { type: 'sight', value: 'tree' } ]);
 });
 
-
-test('validate sensory inputs', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.validateSensoryInputs([]), TypeError);
-  assert.throws(() => perception.validateSensoryInputs([{ type: 'sight' }, null]), TypeError);
-  assert.throws(() => perception.validateSensoryInputs([{ data: 'light' }]), TypeError);
+test('validateSensoryInputs throws on invalid input', () => {
+  assert.throws(() => perception.validateSensoryInputs(null), TypeError);
+  assert.throws(() => perception.validateSensoryInputs([{}]), TypeError);
+  assert.throws(() => perception.validateSensoryInputs([{ type: null }]), TypeError);
 });
