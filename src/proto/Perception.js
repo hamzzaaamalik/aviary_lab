@@ -79,7 +79,7 @@ export class Perception {
     }
     sensoryInputs.forEach((input, index) => {
       if (typeof input !== 'object' || input === null || !('type' in input)) {
-        throw new TypeError(`Input at index ${index} must be a non-null object with a type property.`);
+        throw new TypeError(`Input at index ${index} must be a non-null object with a 'type' property.`);
       }
     });
   }
