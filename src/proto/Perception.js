@@ -30,5 +30,18 @@ export class Perception {
     return sensoryInputs.filter(condition);
   }
 
-  // Add other methods here as needed
+  /**
+   * Filter sensory inputs by a specific criteria.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} criteria - Function to filter inputs.
+   * @returns {Array<any>} - Filtered sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  filter(sensoryInputs, criteria) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof criteria !== 'function') {
+      throw new TypeError('Criteria must be a function.');
+    }
+    return sensoryInputs.filter(criteria);
+  }
 }
