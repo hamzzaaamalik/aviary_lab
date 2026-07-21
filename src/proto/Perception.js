@@ -82,4 +82,40 @@ export class Perception {
     });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
-}
+
+  /**
+   * Detect sensory inputs based on a condition function.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} condition - A function that defines the condition for detection.
+   * @returns {Array<any>} - Detected sensory inputs.
+   * @throws {TypeError} - If the condition is not a function.
+   */
+  detect(sensoryInputs, condition) {
+    if (typeof condition !== 'function') {
+      throw new TypeError('Condition must be a function.');
+    }
+    this.validateSensoryInputs(sensoryInputs);
+    return sensoryInputs.filter(condition);
+  }
+
+  /**
+   * Classify sensory inputs into categories based on provided rules.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Object} categories - An object where keys are category names and values are condition functions.
+   * @returns {Object} - Classified sensory inputs grouped by category.
+   * @throws {TypeError} - If the categories are not valid.
+   */
+  classify(sensoryInputs, categories) {
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be an object.');
+    }
+    this.validateSensoryInputs(sensoryInputs);
+    return Object.keys(categories).reduce((classified, category) => {
+      if (typeof categories[category] !== 'function') {
+        throw new TypeError(`Category ${category} must be a function.`);
+      }
+      classified[category] = sensoryInputs.filter(categories[category]);
+      return classified;
+    }, {});
+  }
+}  
