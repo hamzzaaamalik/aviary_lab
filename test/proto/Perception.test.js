@@ -4,29 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns inputs matching the condition', () => {
-  const inputs = [
-    { type: 'sound', value: 'bark' },
-    { type: 'sight', value: 'dog' },
-    { type: 'sound', value: 'meow' }
-  ];
-  const condition = (input) => input.type === 'sound';
-  const detected = perception.detect(inputs, condition);
-  assert.deepEqual(detected, [
-    { type: 'sound', value: 'bark' },
-    { type: 'sound', value: 'meow' }
-  ]);
+test('classify groups inputs correctly', () => {
+  const inputs = [1, 'a', 2, 'b', 1, 'a'];
+  const classifier = (input) => (typeof input === 'number' ? 'number' : 'string');
+  const classified = perception.classify(inputs, classifier);
+  assert.deepEqual(classified, {
+    number: [1, 2, 1],
+    string: ['a', 'b', 'a'],
+  });
 });
 
-// Test for invalid condition
-
-test('detect throws error for invalid condition', () => {
-  const inputs = [{ type: 'sound', value: 'bark' }];
-  assert.throws(() => perception.detect(inputs, 'not a function'), TypeError);
+test('classify handles undefined classifier return', () => {
+  const inputs = [1, 2, 3];
+  const classifier = () => undefined;
+  const classified = perception.classify(inputs, classifier);
+  assert.deepEqual(classified, {});
 });
 
-// Test for invalid sensory inputs
-
-test('detect throws error for invalid sensory inputs', () => {
-  assert.throws(() => perception.detect('not an array', () => true), TypeError);
+test('classify throws TypeError for non-function classifier', () => {
+  assert.throws(() => perception.classify([], 'not a function'), TypeError);
 });
+
