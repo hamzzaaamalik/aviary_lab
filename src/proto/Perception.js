@@ -70,4 +70,34 @@ export class Perception {
       return acc;
     }, {});
   }
+
+  /**
+   * Enhanced classify method to include support for nested classifications.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @returns {Object} - An object containing classified inputs with nested keys.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyNested(sensoryInputs, classifier) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    return sensoryInputs.reduce((acc, input) => {
+      const key = classifier(input);
+      if (key === undefined) {
+        console.warn('Classifier returned undefined for input:', input);
+        return acc;
+      }
+      const [primaryKey, secondaryKey] = key.split('/'); // Expecting keys to be in "primary/secondary" format
+      if (!acc[primaryKey]) {
+        acc[primaryKey] = {};
+      }
+      if (!acc[primaryKey][secondaryKey]) {
+        acc[primaryKey][secondaryKey] = [];
+      }
+      acc[primaryKey][secondaryKey].push(input);
+      return acc;
+    }, {});
+  }
 }
