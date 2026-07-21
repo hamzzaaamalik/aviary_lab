@@ -78,11 +78,11 @@ export class Perception {
       throw new TypeError('Sensory inputs must be a non-empty array.');
     }
     sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null || !('type' in input)) {
-        throw new TypeError(`Input at index ${index} must be a non-null object with a 'type' property.`);
+      if (typeof input !== 'object' || input === null) {
+        throw new TypeError(`Input at index ${index} must be a non-null object.`);
       }
-      if (typeof input.type !== 'string' || !input.type.trim()) {
-        throw new TypeError(`Input at index ${index} must have a 'type' property that is a non-empty string.`);
+      if (!input.hasOwnProperty('type') || typeof input.type !== 'string') {
+        throw new TypeError(`Input at index ${index} must have a 'type' property of type string.`);
       }
     });
   }
