@@ -81,8 +81,11 @@ export class Perception {
       if (typeof input !== 'object' || input === null) {
         throw new TypeError(`Input at index ${index} must be a non-null object.`);
       }
+      if (!('type' in input)) {
+        throw new TypeError(`Input at index ${index} must have a 'type' property.`);
+      }
       if (typeof input.type !== 'string' || !input.type.trim()) {
-        throw new TypeError(`Input at index ${index} must have a non-empty string type.`);
+        throw new TypeError(`'type' property of input at index ${index} must be a non-empty string.`);
       }
     });
   }
