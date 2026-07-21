@@ -63,11 +63,15 @@ export class Perception {
       throw new TypeError('Classifier must be a function.');
     }
     return sensoryInputs.reduce((acc, input) => {
-      const key = classifier(input);
-      if (key === undefined) { // Handle undefined classifier return values
+      let key;
+      try {
+        key = classifier(input);
+      } catch (err) {
+        console.error('Classifier error for input:', input, 'Error:', err.message);
+        return acc;
+      }
+      if (key === undefined) {
         console.warn('Classifier returned undefined for input:', input);
-        // Structured logging could be implemented here
-        // For example: logStructuredWarning(input);
         return acc;
       }
       if (!acc[key]) {
