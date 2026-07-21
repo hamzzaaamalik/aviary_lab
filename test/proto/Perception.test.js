@@ -40,3 +40,20 @@ test('classify throws on non-string key', () => {
   const classifier = () => 1;
   assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
+
+// New edge case tests
+
+test('classify handles empty input array', () => {
+  const inputs = [];
+  const classifier = (input) => input[0];
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {});
+});
+
+
+test('classify throws on non-array input', () => {
+  const inputs = 'not an array';
+  const classifier = (input) => input;
+  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+});
+
