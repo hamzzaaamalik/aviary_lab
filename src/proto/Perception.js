@@ -82,13 +82,16 @@ export class Perception {
       if (typeof key !== 'string') { // Ensure key is a string
         throw new TypeError('Classifier must return a string key.');
       }
-      if (!acc[key]) {
-        acc[key] = [];
-      }
+      if (!acc[key]) acc[key] = [];
       acc[key].push(input);
       return acc;
     }, {});
+    // Handle case when no valid classifications were made
+    if (Object.keys(result).length === 0) {
+      console.warn('No valid classifications made.');
+      return {};
+    }
     this.validateReturnType(result, 'classify');
     return result;
   }
-} 
+}
