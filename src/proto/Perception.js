@@ -13,6 +13,11 @@ export class Perception {
     if (!Array.isArray(sensoryInputs)) {
       throw new TypeError('Input must be an array.');
     }
+    sensoryInputs.forEach((input, index) => {
+      if (input === null || input === undefined) {
+        console.warn(`Invalid input at index ${index}: ${input}`);
+      }
+    });
   }
 
   /**
