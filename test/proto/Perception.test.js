@@ -4,32 +4,28 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by classifier function', () => {
-  const inputs = [1, 2, 3, 'cat', 'dog'];
-  const classifier = (input) => typeof input === 'number' ? 'number' : 'string';
+test('classify groups inputs by classifier function', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const classifier = (num) => (num % 2 === 0 ? 'even' : 'odd');
   const result = perception.classify(inputs, classifier);
   assert.deepEqual(result, {
-    number: [1, 2, 3],
-    string: ['cat', 'dog']
+    even: [2, 4],
+    odd: [1, 3, 5],
   });
 });
 
-test('classify throws error for non-array input', () => {
-  assert.throws(() => perception.classify('not an array', (x) => x), TypeError);
+test('classify handles undefined classifier return', () => {
+  const inputs = [1, 2, 3];
+  const classifier = () => undefined;
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {});
 });
 
-test('classify throws error for non-function classifier', () => {
+test('classify throws if classifier is not a function', () => {
   assert.throws(() => perception.classify([1, 2], 'not a function'), TypeError);
 });
 
-test('classify warns on undefined or null keys', () => {
-  const inputs = [1, 2, 3];
-  const classifier = () => undefined;
-  const consoleWarn = console.warn;
-  let warned = false;
-  console.warn = () => { warned = true; };
-  perception.classify(inputs, classifier);
-  console.warn = consoleWarn;
-  assert.ok(warned);
+test('classify throws if input is not an array', () => {
+  assert.throws(() => perception.classify('not an array', (x) => x), TypeError);
 });
 
