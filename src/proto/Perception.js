@@ -47,6 +47,7 @@ export class Perception {
 
   /**
    * Classify sensory inputs based on a provided classifier function.
+   * Ensures that keys are unique and warnings are logged for duplicates.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} classifier - Function to classify each input.
    * @returns {Object} - An object containing classified inputs.
@@ -57,6 +58,7 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
+    const seenKeys = new Set();
     return sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
       if (key === undefined || key === null) {
@@ -66,7 +68,10 @@ export class Perception {
       if (typeof key !== 'string') {
         throw new TypeError('Classifier must return a string key.');
       }
-      if (!acc[key]) {
+      if (seenKeys.has(key)) {
+        console.warn('Duplicate key detected:', key);
+      } else {
+        seenKeys.add(key);
         acc[key] = [];
       }
       acc[key].push(input);
@@ -74,4 +79,3 @@ export class Perception {
     }, {});
   }
 }
-
