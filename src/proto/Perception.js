@@ -29,7 +29,6 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   categorizeSensoryInputs(sensoryInputs) {
-    this.validateSensoryInputs(sensoryInputs);
     return this.processSensoryInputs(sensoryInputs);
   }
 
@@ -79,11 +78,6 @@ export class Perception {
     if (!Array.isArray(categories) || categories.length === 0) {
       throw new TypeError('Categories must be a non-empty array.');
     }
-    categories.forEach((category, index) => {
-      if (typeof category !== 'string' || !category.trim()) {
-        throw new TypeError(`Category at index ${index} must be a non-empty string.`);
-      }
-    });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
 }
