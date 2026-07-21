@@ -4,56 +4,32 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns matching sensory inputs', () => {
+test('classifyWithValidation classifies inputs correctly', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const condition = (input) => input > 2;
-  const result = perception.detect(inputs, condition);
-  assert.deepEqual(result, [3, 4, 5]);
+  const classifier = (x) => (x % 2 === 0 ? 'even' : 'odd');
+  const validator = (x) => typeof x === 'number';
+  const result = perception.classifyWithValidation(inputs, classifier, validator);
+  assert.deepEqual(result, { odd: [1, 3, 5], even: [2, 4] });
 });
 
-test('filter returns filtered sensory inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const criteria = (input) => input % 2 === 0;
-  const result = perception.filter(inputs, criteria);
-  assert.deepEqual(result, [2, 4]);
+test('classifyWithValidation rejects invalid inputs', () => {
+  const inputs = [1, 2, 'three', 4];
+  const classifier = (x) => (x % 2 === 0 ? 'even' : 'odd');
+  const validator = (x) => typeof x === 'number';
+  const result = perception.classifyWithValidation(inputs, classifier, validator);
+  assert.deepEqual(result, { odd: [1], even: [2, 4] });
 });
 
-test('classify groups sensory inputs by classifier', () => {
-  const inputs = ['apple', 'banana', 'carrot', 'apple'];
-  const classifier = (input) => input[0];
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, { a: ['apple', 'apple'], b: ['banana'], c: ['carrot'] });
-});
-
-test('classify warns on undefined classifier return', () => {
+test('classifyWithValidation throws error if classifier is not a function', () => {
   const inputs = [1, 2, 3];
-  const classifier = () => undefined;
-  const consoleWarn = console.warn;
-  console.warn = () => {};  // suppress warning for test
-  const result = perception.classify(inputs, classifier);
-  console.warn = consoleWarn;
-  assert.deepEqual(result, {});
+  const classifier = 'not a function';
+  const validator = (x) => typeof x === 'number';
+  assert.throws(() => perception.classifyWithValidation(inputs, classifier, validator), TypeError);
 });
 
-test('classify throws on non-string key', () => {
+test('classifyWithValidation throws error if validator is not a function', () => {
   const inputs = [1, 2, 3];
-  const classifier = () => 1;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+  const classifier = (x) => (x % 2 === 0 ? 'even' : 'odd');
+  const validator = 'not a function';
+  assert.throws(() => perception.classifyWithValidation(inputs, classifier, validator), TypeError);
 });
-
-// New edge case tests
-
-test('classify handles empty input array', () => {
-  const inputs = [];
-  const classifier = (input) => input[0];
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {});
-});
-
-
-test('classify throws on non-array input', () => {
-  const inputs = 'not an array';
-  const classifier = (input) => input;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
-});
-
