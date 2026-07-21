@@ -12,7 +12,7 @@ export class Perception {
    */
   processSensoryInputs(sensoryInputs) {
     this.validateSensoryInputs(sensoryInputs);
-    console.log('Processing sensory inputs:', sensoryInputs);
+    console.log('Processing sensory inputs:', JSON.stringify(sensoryInputs, null, 2));
     return sensoryInputs.reduce((categorized, input) => {
       const type = input.type;
       if (!categorized[type]) {
@@ -78,7 +78,7 @@ export class Perception {
       throw new TypeError('Sensory inputs must be a non-empty array.');
     }
     sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null || !input.type) {
+      if (typeof input !== 'object' || input === null || !input.hasOwnProperty('type')) {
         throw new TypeError(`Input at index ${index} must be an object with a type property.`);
       }
     });
