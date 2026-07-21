@@ -92,7 +92,7 @@ export class Perception {
     }
     return sensoryInputs.reduce((acc, input) => {
       if (!validator(input)) {
-        console.warn('Validator rejected input:', input);
+        console.warn('Input failed validation:', input);
         return acc;
       }
       const key = classifier(input);
