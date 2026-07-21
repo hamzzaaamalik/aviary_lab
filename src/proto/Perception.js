@@ -23,6 +23,17 @@ export class Perception {
   }
 
   /**
+   * Categorize sensory inputs based on their type.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @returns {Object} - Categorized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  categorizeSensoryInputs(sensoryInputs) {
+    this.validateSensoryInputs(sensoryInputs);
+    return this.processSensoryInputs(sensoryInputs);
+  }
+
+  /**
    * Filter sensory inputs based on a provided category.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {string} category - The category to filter by.
@@ -67,8 +78,8 @@ export class Perception {
       throw new TypeError('Sensory inputs must be a non-empty array.');
     }
     sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null || !('type' in input)) {
-        throw new TypeError(`Input at index ${index} must be a non-null object with a type property.`);
+      if (typeof input !== 'object' || input === null || !input.hasOwnProperty('type')) {
+        throw new TypeError(`Input at index ${index} must be a non-null object with a 'type' property.`);
       }
     });
   }
