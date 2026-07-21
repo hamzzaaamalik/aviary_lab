@@ -29,7 +29,6 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   categorizeSensoryInputs(sensoryInputs) {
-    this.validateSensoryInputs(sensoryInputs);
     return this.processSensoryInputs(sensoryInputs);
   }
 
@@ -78,9 +77,12 @@ export class Perception {
       throw new TypeError('Sensory inputs must be a non-empty array.');
     }
     sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null || !input.hasOwnProperty('type')) {
-        throw new TypeError(`Sensory input at index ${index} is invalid.`);
+      if (typeof input !== 'object' || input === null) {
+        throw new TypeError(`Input at index ${index} must be a non-null object.`);
+      }
+      if (typeof input.type !== 'string') {
+        throw new TypeError(`Input at index ${index} must have a string 'type' property.`);
       }
     });
   }
-}
+} 
