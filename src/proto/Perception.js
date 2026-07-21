@@ -5,20 +5,20 @@
  */
 export class Perception {
   /**
-   * Process sensory inputs and categorize them.
+   * Process sensory inputs and categorize them into groups.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @returns {Object} - Categorized sensory inputs.
+   * @returns {Object} - Grouped sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  processSensoryInputs(sensoryInputs) {
+  groupSensoryInputs(sensoryInputs) {
     this.validateSensoryInputs(sensoryInputs);
-    return sensoryInputs.reduce((categorized, input) => {
+    return sensoryInputs.reduce((grouped, input) => {
       const type = input.type;
-      if (!categorized[type]) {
-        categorized[type] = [];
+      if (!grouped[type]) {
+        grouped[type] = [];
       }
-      categorized[type].push(input);
-      return categorized;
+      grouped[type].push(input);
+      return grouped;
     }, {});
   }
 
@@ -30,7 +30,7 @@ export class Perception {
    */
   categorizeSensoryInputs(sensoryInputs) {
     this.validateSensoryInputs(sensoryInputs);
-    return this.processSensoryInputs(sensoryInputs);
+    return this.groupSensoryInputs(sensoryInputs);
   }
 
   /**
@@ -78,8 +78,8 @@ export class Perception {
       throw new TypeError('Sensory inputs must be a non-empty array.');
     }
     sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null || !input.hasOwnProperty('type')) {
-        throw new TypeError(`Sensory input at index ${index} is invalid.`);
+      if (typeof input !== 'object' || input === null || !input.type) {
+        throw new TypeError(`Input at index ${index} must be a non-null object with a type property.`);
       }
     });
   }
