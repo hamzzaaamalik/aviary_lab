@@ -5,12 +5,28 @@
  */
 export class Perception {
   /**
-   * Process sensory inputs and categorize them.
+   * Process sensory inputs and validate them.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  validateSensoryInputs(sensoryInputs) {
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('Sensory inputs must be an array.');
+    }
+    sensoryInputs.forEach((input, index) => {
+      if (typeof input !== 'object' || input === null || !input.type) {
+        throw new TypeError(`Input at index ${index} must be an object with a type.`);
+      }
+    });
+  }
+
+  /**
+   * Categorize sensory inputs based on their type.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  processSensoryInputs(sensoryInputs) {
+  categorizeSensoryInputs(sensoryInputs) {
     this.validateSensoryInputs(sensoryInputs);
     return sensoryInputs.reduce((categorized, input) => {
       const type = input.type;
@@ -23,13 +39,13 @@ export class Perception {
   }
 
   /**
-   * Categorize sensory inputs based on their type.
+   * Handle multiple sensory inputs by processing them and returning categorized results.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  categorizeSensoryInputs(sensoryInputs) {
-    return this.processSensoryInputs(sensoryInputs);
+  handleMultipleInputs(sensoryInputs) {
+    return this.categorizeSensoryInputs(sensoryInputs);
   }
 
   /**
@@ -65,21 +81,5 @@ export class Perception {
       }
     });
     return sensoryInputs.filter(input => categories.includes(input.type));
-  }
-
-  /**
-   * Validate sensory inputs to ensure they meet the required structure.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  validateSensoryInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) || sensoryInputs.length === 0) {
-      throw new TypeError('Sensory inputs must be a non-empty array.');
-    }
-    sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null || !('type' in input)) {
-        throw new TypeError(`Sensory input at index ${index} must be a non-null object with a type property.`);
-      }
-    });
   }
 }
