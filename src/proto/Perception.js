@@ -82,4 +82,4 @@ export class Perception {
     });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
-}  
+}
