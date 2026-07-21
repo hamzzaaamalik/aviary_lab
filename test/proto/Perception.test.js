@@ -30,3 +30,26 @@ test('classify classifies inputs into categories', () => {
   });
 });
 
+// Edge case tests for classify method
+
+test('classify handles duplicate keys correctly', () => {
+  const inputs = ['apple', 'apricot', 'banana', 'blueberry', 'carrot'];
+  const classifier = (input) => input[0];
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {
+    a: ['apple', 'apricot'],
+    b: ['banana', 'blueberry'],
+    c: ['carrot'],
+  });
+});
+
+test('classify handles undefined classifier return values gracefully', () => {
+  const inputs = ['apple', 'banana', 'carrot'];
+  const classifier = (input) => input === 'banana' ? undefined : input[0];
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {
+    a: ['apple'],
+    c: ['carrot'],
+  });
+});
+
