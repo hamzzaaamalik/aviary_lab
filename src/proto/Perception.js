@@ -59,6 +59,9 @@ export class Perception {
     }
     return sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
+      if (key === undefined) { // Handle undefined classifier return values
+        return acc;
+      }
       if (!acc[key]) {
         acc[key] = [];
       }
