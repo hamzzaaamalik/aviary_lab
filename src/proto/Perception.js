@@ -59,14 +59,13 @@ export class Perception {
     }
     return sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
-      if (key === undefined || key === null) { // Handle undefined and null classifier return values
+      if (key === undefined || key === null) {
         console.warn('Classifier returned undefined or null for input:', input);
         return acc;
       }
-      if (typeof key !== 'string') { // Ensure key is a string
+      if (typeof key !== 'string') {
         throw new TypeError('Classifier must return a string key.');
       }
-      // Handle duplicates by appending to existing array
       if (!acc[key]) {
         acc[key] = [];
       }
