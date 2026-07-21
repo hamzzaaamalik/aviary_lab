@@ -13,6 +13,12 @@ export class Perception {
     if (!Array.isArray(sensoryInputs)) {
       throw new TypeError('Input must be an array.');
     }
+    if (sensoryInputs.length === 0) {
+      throw new TypeError('Input array cannot be empty.');
+    }
+    if (!sensoryInputs.every(input => input !== undefined && input !== null)) {
+      throw new TypeError('Input array cannot contain null or undefined elements.');
+    }
   }
 
   /**
