@@ -64,6 +64,21 @@ export class Perception {
   }
 
   /**
+   * Detect sensory inputs that match the provided criteria function.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} criteria - Function to test each input.
+   * @returns {Array<any>} - Detected sensory inputs that match the criteria.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  detect(sensoryInputs, criteria) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof criteria !== 'function') {
+      throw new TypeError('Criteria must be a function.');
+    }
+    return sensoryInputs.filter(criteria);
+  }
+
+  /**
    * Advanced filter sensory inputs based on multiple categories.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Array<string>} categories - Array of categories to filter by.
@@ -81,20 +96,5 @@ export class Perception {
       }
     });
     return sensoryInputs.filter(input => categories.includes(input.type));
-  }
-
-  /**
-   * Detect sensory inputs based on a provided criteria function.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Function} criteria - Function to test each input.
-   * @returns {Array<any>} - Filtered sensory inputs that match criteria.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  detect(sensoryInputs, criteria) {
-    this.validateSensoryInputs(sensoryInputs);
-    if (typeof criteria !== 'function') {
-      throw new TypeError('Criteria must be a function.');
-    }
-    return sensoryInputs.filter(criteria);
   }
 }
