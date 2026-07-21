@@ -16,6 +16,18 @@ export class Perception {
   }
 
   /**
+   * Validate return value types of methods.
+   * @param {any} returnValue - The return value to validate.
+   * @param {string} methodName - The name of the method for error context.
+   * @throws {TypeError} - If the return value is invalid.
+   */
+  validateReturnType(returnValue, methodName) {
+    if (typeof returnValue === 'undefined') {
+      throw new TypeError(`${methodName} must return a value.`);
+    }
+  }
+
+  /**
    * Detect specific sensory inputs based on a provided condition.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} condition - Function to test each input.
@@ -27,7 +39,9 @@ export class Perception {
     if (typeof condition !== 'function') {
       throw new TypeError('Condition must be a function.');
     }
-    return sensoryInputs.filter(condition);
+    const result = sensoryInputs.filter(condition);
+    this.validateReturnType(result, 'detect');
+    return result;
   }
 
   /**
@@ -42,7 +56,9 @@ export class Perception {
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function.');
     }
-    return sensoryInputs.filter(criteria);
+    const result = sensoryInputs.filter(criteria);
+    this.validateReturnType(result, 'filter');
+    return result;
   }
 
   /**
@@ -57,7 +73,7 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    return sensoryInputs.reduce((acc, input) => {
+    const result = sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
       if (key === undefined || key === null) { // Handle undefined and null classifier return values
         console.warn('Classifier returned undefined or null for input:', input);
@@ -72,5 +88,7 @@ export class Perception {
       acc[key].push(input);
       return acc;
     }, {});
+    this.validateReturnType(result, 'classify');
+    return result;
   }
 } 
