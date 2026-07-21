@@ -60,6 +60,7 @@ export class Perception {
     return sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
       if (key === undefined) { // Handle undefined classifier return values
+        console.warn('Classifier returned undefined for input:', input);
         return acc;
       }
       if (!acc[key]) {
