@@ -37,7 +37,7 @@ export class Perception {
    * @returns {Array<any>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  filterByCriteria(sensoryInputs, criteria) {
+  filter(sensoryInputs, criteria) {
     this.validateInputs(sensoryInputs);
     if (typeof criteria !== 'function') {
       throw new TypeError('Criteria must be a function.');
