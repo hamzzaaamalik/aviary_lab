@@ -16,18 +16,18 @@ export class Perception {
   }
 
   /**
-   * Detect specific sensory inputs based on a provided condition.
+   * Detect specific sensory inputs based on a provided predicate.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Function} condition - Function to test each input.
+   * @param {Function} predicate - Function to test each input.
    * @returns {Array<any>} - Detected sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  detect(sensoryInputs, condition) {
+  detect(sensoryInputs, predicate) {
     this.validateInputs(sensoryInputs);
-    if (typeof condition !== 'function') {
-      throw new TypeError('Condition must be a function.');
+    if (typeof predicate !== 'function') {
+      throw new TypeError('Predicate must be a function.');
     }
-    return sensoryInputs.filter(condition);
+    return sensoryInputs.filter(predicate);
   }
 
   /**
@@ -74,4 +74,3 @@ export class Perception {
     }, {});
   }
 }
-
