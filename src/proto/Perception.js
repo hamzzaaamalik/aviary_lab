@@ -4,6 +4,9 @@
  * Perception module for handling sensory inputs.
  */
 export class Perception {
+  // Supported sensory input types
+  static SUPPORTED_TYPES = ['visual', 'auditory', 'tactile', 'olfactory', 'gustatory'];
+
   /**
    * Process sensory inputs and categorize them.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
@@ -29,8 +32,23 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   categorizeSensoryInputs(sensoryInputs) {
-    this.validateSensoryInputs(sensoryInputs);
     return this.processSensoryInputs(sensoryInputs);
+  }
+
+  /**
+   * Validate sensory inputs to ensure they meet the required structure.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  validateSensoryInputs(sensoryInputs) {
+    if (!Array.isArray(sensoryInputs) || sensoryInputs.length === 0) {
+      throw new TypeError('Sensory inputs must be a non-empty array.');
+    }
+    sensoryInputs.forEach((input, index) => {
+      if (typeof input !== 'object' || input === null || !input.type || !Perception.SUPPORTED_TYPES.includes(input.type)) {
+        throw new TypeError(`Input at index ${index} must be an object with a valid type. Supported types: ${Perception.SUPPORTED_TYPES.join(', ')}.`);
+      }
+    });
   }
 
   /**
@@ -60,27 +78,6 @@ export class Perception {
     if (!Array.isArray(categories) || categories.length === 0) {
       throw new TypeError('Categories must be a non-empty array.');
     }
-    categories.forEach((category, index) => {
-      if (typeof category !== 'string' || !category.trim()) {
-        throw new TypeError(`Category at index ${index} must be a non-empty string.`);
-      }
-    });
     return sensoryInputs.filter(input => categories.includes(input.type));
-  }
-
-  /**
-   * Validate sensory inputs to ensure they meet the required structure.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  validateSensoryInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) || sensoryInputs.length === 0) {
-      throw new TypeError('Sensory inputs must be a non-empty array.');
-    }
-    sensoryInputs.forEach((input, index) => {
-      if (typeof input !== 'object' || input === null || !input.hasOwnProperty('type')) {
-        throw new TypeError(`Sensory input at index ${index} is invalid.`);
-      }
-    });
   }
 }
