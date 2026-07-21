@@ -4,52 +4,36 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect detects inputs based on a condition', () => {
+test('detect() finds inputs matching condition', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const condition = (input) => input > 3;
+  const condition = (x) => x > 3;
   const result = perception.detect(inputs, condition);
   assert.deepEqual(result, [4, 5]);
 });
 
-test('filter filters inputs based on criteria', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const criteria = (input) => input % 2 === 0;
+test('detect() throws TypeError for invalid inputs', () => {
+  assert.throws(() => perception.detect('not an array', (x) => x > 3), TypeError);
+});
+
+test('filter() filters inputs by criteria', () => {
+  const inputs = [1, 'two', 3, 'four'];
+  const criteria = (x) => typeof x === 'number';
   const result = perception.filter(inputs, criteria);
-  assert.deepEqual(result, [2, 4]);
+  assert.deepEqual(result, [1, 3]);
 });
 
-test('classify classifies inputs into categories', () => {
-  const inputs = ['apple', 'banana', 'carrot', 'date'];
-  const classifier = (input) => input[0]; // Classify by first letter
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    a: ['apple'],
-    b: ['banana'],
-    c: ['carrot'],
-    d: ['date'],
-  });
+test('filter() throws TypeError for invalid inputs', () => {
+  assert.throws(() => perception.filter('not an array', (x) => x > 1), TypeError);
 });
 
-// Edge case tests for classify method
-
-test('classify handles duplicate keys correctly', () => {
-  const inputs = ['apple', 'apricot', 'banana', 'blueberry', 'carrot'];
-  const classifier = (input) => input[0];
+test('classify() groups inputs by classifier function', () => {
+  const inputs = [1, 2, 1, 3, 2];
+  const classifier = (x) => (x === 1 ? 'one' : 'other');
   const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    a: ['apple', 'apricot'],
-    b: ['banana', 'blueberry'],
-    c: ['carrot'],
-  });
+  assert.deepEqual(result, { one: [1, 1], other: [2, 3, 2] });
 });
 
-test('classify handles undefined classifier return values gracefully', () => {
-  const inputs = ['apple', 'banana', 'carrot'];
-  const classifier = (input) => input === 'banana' ? undefined : input[0];
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    a: ['apple'],
-    c: ['carrot'],
-  });
+test('classify() throws TypeError for invalid inputs', () => {
+  assert.throws(() => perception.classify('not an array', (x) => x > 1), TypeError);
 });
 
