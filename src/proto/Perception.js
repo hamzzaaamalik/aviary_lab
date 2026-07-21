@@ -66,6 +66,7 @@ export class Perception {
       if (typeof key !== 'string') { // Ensure key is a string
         throw new TypeError('Classifier must return a string key.');
       }
+      // Handle duplicates by appending to existing array
       if (!acc[key]) {
         acc[key] = [];
       }
@@ -74,4 +75,3 @@ export class Perception {
     }, {});
   }
 }
-

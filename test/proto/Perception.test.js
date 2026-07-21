@@ -14,6 +14,16 @@ test('classify groups inputs by classifier function', () => {
   });
 });
 
+test('classify handles duplicate keys', () => {
+  const inputs = [1, 2, 3, 2, 1];
+  const classifier = (n) => (n % 2 === 0 ? 'even' : 'odd');
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {
+    odd: [1, 3, 1],
+    even: [2, 2]
+  });
+});
+
 test('classify throws on invalid inputs', () => {
   assert.throws(() => perception.classify('not an array', () => {}), TypeError);
   assert.throws(() => perception.classify([], 'not a function'), TypeError);
