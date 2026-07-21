@@ -82,4 +82,41 @@ export class Perception {
     });
     return sensoryInputs.filter(input => categories.includes(input.type));
   }
+
+  /**
+   * Detect sensory inputs based on a condition function.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} condition - A function that returns true for inputs to keep.
+   * @returns {Array<any>} - Filtered sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  detect(sensoryInputs, condition) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof condition !== 'function') {
+      throw new TypeError('Condition must be a function.');
+    }
+    return sensoryInputs.filter(condition);
+  }
+
+  /**
+   * Classify sensory inputs into predefined categories.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Object} categories - An object mapping category names to condition functions.
+   * @returns {Object} - Classified sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classify(sensoryInputs, categories) {
+    this.validateSensoryInputs(sensoryInputs);
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be an object.');
+    }
+    const classified = {};
+    Object.keys(categories).forEach(category => {
+      if (typeof categories[category] !== 'function') {
+        throw new TypeError(`Condition for category ${category} must be a function.`);
+      }
+      classified[category] = sensoryInputs.filter(categories[category]);
+    });
+    return classified;
+  }
 }
