@@ -4,26 +4,26 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs by classifier', () => {
+test('detect returns matching sensory inputs', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const classifier = (n) => (n % 2 === 0 ? 'even' : 'odd');
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    even: [2, 4],
-    odd: [1, 3, 5]
-  });
+  const predicate = (x) => x > 2;
+  const result = perception.detect(inputs, predicate);
+  assert.deepEqual(result, [3, 4, 5]);
 });
 
-test('classify handles undefined classifier return', () => {
-  const inputs = [1, 2, 3];
-  const classifier = () => undefined;
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {});
+test('detect throws on invalid inputs', () => {
+  assert.throws(() => perception.detect('not an array', () => true), TypeError);
+  assert.throws(() => perception.detect([], 'not a function'), TypeError);
 });
 
-test('classify throws for non-string key', () => {
-  const inputs = [1, 2, 3];
-  const classifier = () => 1;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+test('filter returns filtered sensory inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const criteria = (x) => x % 2 === 0;
+  const result = perception.filter(inputs, criteria);
+  assert.deepEqual(result, [2, 4]);
 });
 
+test('filter throws on invalid inputs', () => {
+  assert.throws(() => perception.filter('not an array', () => true), TypeError);
+  assert.throws(() => perception.filter([], 'not a function'), TypeError);
+});
