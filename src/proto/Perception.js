@@ -66,6 +66,8 @@ export class Perception {
       const key = classifier(input);
       if (key === undefined) { // Handle undefined classifier return values
         console.warn('Classifier returned undefined for input:', input);
+        // Structured logging could be implemented here
+        // For example: logStructuredWarning(input);
         return acc;
       }
       if (!acc[key]) {
