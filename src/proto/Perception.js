@@ -74,4 +74,21 @@ export class Perception {
       return acc;
     }, {});
   }
+
+  /**
+   * Enhanced classify method with additional logging.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @returns {Object} - An object containing classified inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyEnhanced(sensoryInputs, classifier) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    const result = this.classify(sensoryInputs, classifier);
+    console.log('Classification result:', result);
+    return result;
+  }
 }
