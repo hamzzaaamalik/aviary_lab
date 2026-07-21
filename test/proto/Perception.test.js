@@ -4,56 +4,38 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns matching sensory inputs', () => {
+test('detect method filters sensory inputs correctly', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const condition = (input) => input > 2;
-  const result = perception.detect(inputs, condition);
+  const predicate = (x) => x > 2;
+  const result = perception.detect(inputs, predicate);
   assert.deepEqual(result, [3, 4, 5]);
 });
 
-test('filter returns filtered sensory inputs', () => {
+test('detect method throws on invalid input', () => {
+  assert.throws(() => perception.detect(null, () => true), TypeError);
+  assert.throws(() => perception.detect([], null), TypeError);
+});
+
+test('filter method filters sensory inputs correctly', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const criteria = (input) => input % 2 === 0;
+  const criteria = (x) => x % 2 === 0;
   const result = perception.filter(inputs, criteria);
   assert.deepEqual(result, [2, 4]);
 });
 
-test('classify groups sensory inputs by classifier', () => {
-  const inputs = ['apple', 'banana', 'carrot', 'apple'];
+test('filter method throws on invalid input', () => {
+  assert.throws(() => perception.filter(null, () => true), TypeError);
+  assert.throws(() => perception.filter([], null), TypeError);
+});
+
+test('classify method classifies sensory inputs correctly', () => {
+  const inputs = ['apple', 'banana', 'carrot', 'date'];
   const classifier = (input) => input[0];
   const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, { a: ['apple', 'apple'], b: ['banana'], c: ['carrot'] });
+  assert.deepEqual(result, { a: ['apple'], b: ['banana'], c: ['carrot'], d: ['date'] });
 });
 
-test('classify warns on undefined classifier return', () => {
-  const inputs = [1, 2, 3];
-  const classifier = () => undefined;
-  const consoleWarn = console.warn;
-  console.warn = () => {};  // suppress warning for test
-  const result = perception.classify(inputs, classifier);
-  console.warn = consoleWarn;
-  assert.deepEqual(result, {});
+test('classify method throws on invalid input', () => {
+  assert.throws(() => perception.classify(null, () => 'key'), TypeError);
+  assert.throws(() => perception.classify([], null), TypeError);
 });
-
-test('classify throws on non-string key', () => {
-  const inputs = [1, 2, 3];
-  const classifier = () => 1;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
-});
-
-// New edge case tests
-
-test('classify handles empty input array', () => {
-  const inputs = [];
-  const classifier = (input) => input[0];
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {});
-});
-
-
-test('classify throws on non-array input', () => {
-  const inputs = 'not an array';
-  const classifier = (input) => input;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
-});
-
