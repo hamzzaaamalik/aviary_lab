@@ -4,26 +4,16 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns matching sensory inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const predicate = (x) => x > 2;
-  const result = perception.detect(inputs, predicate);
-  assert.deepEqual(result, [3, 4, 5]);
+test('classify handles empty input', () => {
+  const result = perception.classify([], input => input);
+  assert.deepEqual(result, {});
 });
 
-test('detect throws on invalid inputs', () => {
-  assert.throws(() => perception.detect('not an array', () => true), TypeError);
-  assert.throws(() => perception.detect([], 'not a function'), TypeError);
+test('classify throws on non-function classifier', () => {
+  assert.throws(() => perception.classify([1, 2, 3], 'not-a-function'), TypeError);
 });
 
-test('filter returns filtered sensory inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const criteria = (x) => x % 2 === 0;
-  const result = perception.filter(inputs, criteria);
-  assert.deepEqual(result, [2, 4]);
-});
-
-test('filter throws on invalid inputs', () => {
-  assert.throws(() => perception.filter('not an array', () => true), TypeError);
-  assert.throws(() => perception.filter([], 'not a function'), TypeError);
+test('classify works with valid inputs', () => {
+  const result = perception.classify([1, 2, 3, 1], input => input.toString());
+  assert.deepEqual(result, { '1': [1, 1], '2': [2], '3': [3] });
 });
