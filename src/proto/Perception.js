@@ -33,16 +33,16 @@ export class Perception {
   /**
    * Filter sensory inputs by specific criteria.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Function} classifier - Function to classify inputs.
+   * @param {Function} criterion - Function to classify inputs.
    * @returns {Array<any>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  filter(sensoryInputs, classifier) {
+  filter(sensoryInputs, criterion) {
     this.validateInputs(sensoryInputs);
-    if (typeof classifier !== 'function') {
+    if (typeof criterion !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    return sensoryInputs.filter(classifier);
+    return sensoryInputs.filter(criterion);
   }
 
   /**
@@ -60,7 +60,7 @@ export class Perception {
     if (sensoryInputs.length === 0) {
       return {};
     }
-    const acc = {};
+    const classifiedInputs = {};
     sensoryInputs.forEach(input => {
       if (typeof input !== 'object' || input === null) {
         throw new TypeError('Input must be a non-null object: ' + JSON.stringify(input));
@@ -70,11 +70,11 @@ export class Perception {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
-      if (acc[keyString]) {
+      if (classifiedInputs[keyString]) {
         throw new TypeError('Duplicate key found: ' + keyString);
       }
-      acc[keyString] = [input];
+      classifiedInputs[keyString] = [input];
     });
-    return acc;
+    return classifiedInputs;
   }
 }
