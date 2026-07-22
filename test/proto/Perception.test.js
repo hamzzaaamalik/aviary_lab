@@ -4,25 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by classifier', () => {
-  const inputs = ['apple', 'banana', 'carrot', 'apricot'];
-  const classifier = (input) => input[0]; // classify by first letter
-  const classified = perception.classify(inputs, classifier);
-  assert.deepEqual(classified, {
-    a: ['apple', 'apricot'],
-    b: ['banana'],
-    c: ['carrot'],
+test('classify groups inputs by classifier', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const classifier = (num) => (num % 2 === 0 ? 'even' : 'odd');
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {
+    even: [2, 4],
+    odd: [1, 3, 5]
   });
 });
 
-test('classify throws on invalid input', () => {
-  assert.throws(() => perception.classify(null, (x) => x), TypeError);
-  assert.throws(() => perception.classify(['x'], null), TypeError);
+test('classify throws on invalid inputs', () => {
+  assert.throws(() => perception.classify(null, () => {}), TypeError);
+  assert.throws(() => perception.classify([], 'not-a-function'), TypeError);
 });
 
-test('classify throws on undefined classifier return', () => {
-  const inputs = ['apple', 'banana'];
-  const classifier = () => undefined;
+test('classify throws on invalid classifier return', () => {
+  const inputs = [1, 2, 3];
+  const classifier = () => null;
   assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
 
