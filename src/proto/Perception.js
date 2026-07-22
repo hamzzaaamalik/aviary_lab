@@ -50,7 +50,7 @@ export class Perception {
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} classifier - Function to classify each input.
    * @returns {Object} - An object containing classified inputs.
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If the input is invalid or keys are duplicated.
    */
   classify(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
@@ -60,7 +60,8 @@ export class Perception {
     if (sensoryInputs.length === 0) {
       return {};
     }
-    return sensoryInputs.reduce((acc, input) => {
+    const acc = {};
+    sensoryInputs.forEach(input => {
       if (typeof input !== 'object' || input === null) {
         throw new TypeError('Input must be a non-null object: ' + JSON.stringify(input));
       }
@@ -69,9 +70,11 @@ export class Perception {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
-      acc[keyString] = acc[keyString] || [];
-      acc[keyString].push(input);
-      return acc;
-    }, {});
+      if (acc[keyString]) {
+        throw new TypeError('Duplicate key found: ' + keyString);
+      }
+      acc[keyString] = [input];
+    });
+    return acc;
   }
 }
