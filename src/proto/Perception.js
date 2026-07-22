@@ -63,7 +63,7 @@ export class Perception {
         throw new TypeError('Classifier returned undefined or null for input: ' + JSON.stringify(input));
       }
       if (typeof key !== 'string') {
-        throw new TypeError('Classifier must return a string key.');
+        throw new TypeError('Classifier must return a string key. Received: ' + JSON.stringify(key));
       }
       // Ensure unique keys and initialize array if not present
       if (!acc[key]) {
