@@ -71,9 +71,9 @@ export class Perception {
       }
       const keyString = String(key);
       if (acc[keyString]) {
-        throw new TypeError('Duplicate key found: ' + keyString);
+        throw new TypeError(`Duplicate key found: ${keyString}. Conflict with input: ${JSON.stringify(input)}`);
       }
-      acc[keyString] = [input];
+      acc[keyString] = acc[keyString] ? [...acc[keyString], input] : [input];
     });
     return acc;
   }
