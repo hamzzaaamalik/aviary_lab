@@ -85,7 +85,7 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    const keySet = new Set();
+    const seenKeys = new Set();
     return sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
       if (key === undefined || key === null) {
@@ -94,10 +94,10 @@ export class Perception {
       if (typeof key !== 'string') {
         throw new TypeError('Classifier must return a string key.');
       }
-      if (keySet.has(key)) {
+      if (seenKeys.has(key)) {
         throw new TypeError('Duplicate key detected: ' + key);
       }
-      keySet.add(key);
+      seenKeys.add(key);
       if (!acc[key]) {
         acc[key] = [];
       }
@@ -105,4 +105,5 @@ export class Perception {
       return acc;
     }, {});
   }
-}
+} 
+
