@@ -65,7 +65,6 @@ export class Perception {
       if (key === undefined || key === null) {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
-      // Allow non-string keys but ensure uniqueness
       const keyString = String(key);
       if (!acc[keyString]) {
         acc[keyString] = [];
@@ -74,4 +73,5 @@ export class Perception {
       return acc;
     }, {});
   }
-}
+}  
+

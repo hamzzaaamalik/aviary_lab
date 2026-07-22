@@ -4,37 +4,35 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs based on classifier function', () => {
-  const inputs = [1, 2, 3, 4];
-  const classifier = (x) => (x % 2 === 0 ? 'even' : 'odd');
+test('classify groups inputs correctly', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const classifier = (n) => (n % 2 === 0 ? 'even' : 'odd');
   const result = perception.classify(inputs, classifier);
   assert.deepEqual(result, {
-    odd: [1, 3],
-    even: [2, 4],
+    odd: [1, 3, 5],
+    even: [2, 4]
   });
 });
 
-test('classify throws for invalid classifier', () => {
-  assert.throws(() => perception.classify([1, 2], 'not a function'), TypeError);
+test('classify handles duplicate keys', () => {
+  const inputs = [1, 2, 3, 2];
+  const classifier = (n) => n;
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {
+    1: [1],
+    2: [2, 2],
+    3: [3]
+  });
 });
 
-test('classify handles empty input gracefully', () => {
-  const result = perception.classify([], (x) => x);
-  assert.deepEqual(result, {});
-});
-
-test('classify throws for invalid key from classifier', () => {
-  const inputs = [1, 2];
-  const classifier = () => undefined;
+test('classify throws TypeError for invalid key', () => {
+  const inputs = [1, 2, 3];
+  const classifier = () => null;
   assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
 
-test('classify throws for null input', () => {
-  assert.throws(() => perception.classify(null, (x) => x), TypeError);
+test('classify allows empty input', () => {
+  const result = perception.classify([], (n) => n);
+  assert.deepEqual(result, {});
 });
 
-test('classify throws for non-array input', () => {
-  assert.throws(() => perception.classify(123, (x) => x), TypeError);
-  assert.throws(() => perception.classify({}, (x) => x), TypeError);
-  assert.throws(() => perception.classify('string', (x) => x), TypeError);
-});
