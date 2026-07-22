@@ -30,7 +30,14 @@ export class Perception {
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
     }
-    return sensoryInputs.filter(predicate);
+    const results = sensoryInputs.filter(input => {
+      try {
+        return predicate(input);
+      } catch (error) {
+        throw new TypeError('Error during predicate execution: ' + error.message);
+      }
+    });
+    return results;
   }
 
   /**
@@ -48,7 +55,14 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    return sensoryInputs.filter(classifier);
+    const results = sensoryInputs.filter(input => {
+      try {
+        return classifier(input);
+      } catch (error) {
+        throw new TypeError('Error during classifier execution: ' + error.message);
+      }
+    });
+    return results;
   }
 
   /**
