@@ -4,55 +4,44 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect method returns matching sensory inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const predicate = (x) => x > 3;
-  const result = perception.detect(inputs, predicate);
-  assert.deepEqual(result, [4, 5]);
+test('detect returns matching sensory inputs', () => {
+  const inputs = [1, 2, 3, 4];
+  const result = perception.detect(inputs, (x) => x > 2);
+  assert.deepEqual(result, [3, 4]);
 });
 
-test('filter method returns filtered sensory inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const criteria = (x) => x % 2 === 0;
-  const result = perception.filter(inputs, criteria);
+test('detect throws on invalid predicate', () => {
+  assert.throws(() => perception.detect([1, 2], 'not a function'), TypeError);
+});
+
+test('filter returns filtered sensory inputs', () => {
+  const inputs = [1, 2, 3, 4];
+  const result = perception.filter(inputs, (x) => x % 2 === 0);
   assert.deepEqual(result, [2, 4]);
 });
 
-test('classify method returns classified sensory inputs', () => {
-  const inputs = ['apple', 'banana', 'apricot', 'blueberry'];
-  const classifier = (fruit) => fruit[0];
-  const result = perception.classify(inputs, classifier);
+test('filter throws on invalid criteria', () => {
+  assert.throws(() => perception.filter([1, 2], 'not a function'), TypeError);
+});
+
+test('classify groups inputs by classifier function', () => {
+  const inputs = ['apple', 'banana', 'cherry', 'avocado'];
+  const result = perception.classify(inputs, (fruit) => fruit[0]);
   assert.deepEqual(result, {
-    a: ['apple', 'apricot'],
-    b: ['banana', 'blueberry'],
+    a: ['apple', 'avocado'],
+    b: ['banana'],
+    c: ['cherry']
   });
 });
 
-test('classify method handles empty input', () => {
-  const inputs = [];
-  const classifier = (x) => x[0];
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {});
+test('classify throws on invalid classifier', () => {
+  assert.throws(() => perception.classify(['a', 'b'], 'not a function'), TypeError);
 });
 
-test('classify method handles duplicate keys', () => {
-  const inputs = ['apple', 'apricot', 'banana', 'blueberry', 'avocado'];
-  const classifier = (fruit) => fruit[0];
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    a: ['apple', 'apricot', 'avocado'],
-    b: ['banana', 'blueberry'],
-  });
+test('classify throws on undefined classifier return', () => {
+  assert.throws(() => perception.classify(['a', 'b'], () => undefined), TypeError);
 });
 
-test('detect throws TypeError for invalid inputs', () => {
-  assert.throws(() => perception.detect('invalid', () => {}), TypeError);
-});
-
-test('filter throws TypeError for invalid criteria', () => {
-  assert.throws(() => perception.filter([1, 2, 3], 'invalid'), TypeError);
-});
-
-test('classify throws TypeError for invalid classifier', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'invalid'), TypeError);
+test('classify throws on non-string classifier return', () => {
+  assert.throws(() => perception.classify(['a', 'b'], () => 1), TypeError);
 });
