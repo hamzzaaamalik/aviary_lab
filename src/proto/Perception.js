@@ -24,6 +24,9 @@ export class Perception {
    */
   detect(sensoryInputs, predicate) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) {
+      return [];
+    }
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
     }
@@ -39,6 +42,9 @@ export class Perception {
    */
   filter(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) {
+      return [];
+    }
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
