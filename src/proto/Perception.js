@@ -77,4 +77,24 @@ export class Perception {
     });
     return acc;
   }
+
+  /**
+   * Structured detection of sensory inputs based on criteria.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} predicate - Function to test each input.
+   * @returns {Object} - An object with detected and non-detected inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  structuredDetect(sensoryInputs, predicate) {
+    this.validateInputs(sensoryInputs);
+    if (typeof predicate !== 'function') {
+      throw new TypeError('Predicate must be a function.');
+    }
+    const detected = [];
+    const nonDetected = [];
+    sensoryInputs.forEach(input => {
+      (predicate(input) ? detected : nonDetected).push(input);
+    });
+    return { detected, nonDetected };
+  }
 }
