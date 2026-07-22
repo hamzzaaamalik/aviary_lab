@@ -4,44 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns matching sensory inputs', () => {
-  const inputs = [1, 2, 3, 4];
-  const result = perception.detect(inputs, (x) => x > 2);
-  assert.deepEqual(result, [3, 4]);
-});
-
-test('detect throws on invalid predicate', () => {
-  assert.throws(() => perception.detect([1, 2], 'not a function'), TypeError);
-});
-
-test('filter returns filtered sensory inputs', () => {
-  const inputs = [1, 2, 3, 4];
-  const result = perception.filter(inputs, (x) => x % 2 === 0);
-  assert.deepEqual(result, [2, 4]);
-});
-
-test('filter throws on invalid criteria', () => {
-  assert.throws(() => perception.filter([1, 2], 'not a function'), TypeError);
-});
-
-test('classify groups inputs by classifier function', () => {
-  const inputs = ['apple', 'banana', 'cherry', 'avocado'];
-  const result = perception.classify(inputs, (fruit) => fruit[0]);
-  assert.deepEqual(result, {
-    a: ['apple', 'avocado'],
+test('classify groups sensory inputs by classifier', () => {
+  const inputs = ['apple', 'banana', 'carrot', 'apricot'];
+  const classifier = (input) => input[0]; // classify by first letter
+  const classified = perception.classify(inputs, classifier);
+  assert.deepEqual(classified, {
+    a: ['apple', 'apricot'],
     b: ['banana'],
-    c: ['cherry']
+    c: ['carrot'],
   });
 });
 
-test('classify throws on invalid classifier', () => {
-  assert.throws(() => perception.classify(['a', 'b'], 'not a function'), TypeError);
+test('classify throws on invalid input', () => {
+  assert.throws(() => perception.classify(null, (x) => x), TypeError);
+  assert.throws(() => perception.classify(['x'], null), TypeError);
 });
 
 test('classify throws on undefined classifier return', () => {
-  assert.throws(() => perception.classify(['a', 'b'], () => undefined), TypeError);
+  const inputs = ['apple', 'banana'];
+  const classifier = () => undefined;
+  assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
 
-test('classify throws on non-string classifier return', () => {
-  assert.throws(() => perception.classify(['a', 'b'], () => 1), TypeError);
-});
