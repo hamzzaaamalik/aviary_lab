@@ -66,10 +66,13 @@ export class Perception {
         throw new TypeError('Input must be a non-null object: ' + JSON.stringify(input));
       }
       const key = classifier(input);
-      if (key === undefined || key === null) {
+      if (key === undefined) {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
+      if (!keyString) {
+        throw new TypeError('Classifier returned a falsy key for input: ' + JSON.stringify(input));
+      }
       if (acc[keyString]) {
         throw new TypeError('Duplicate key found for input: ' + JSON.stringify(input));
       }
