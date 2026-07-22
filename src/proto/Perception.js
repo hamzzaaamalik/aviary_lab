@@ -77,9 +77,10 @@ export class Perception {
       }
       const keyString = String(key);
       if (acc[keyString]) {
-        throw new TypeError('Duplicate key found: ' + keyString);
+        acc[keyString].push(input);
+      } else {
+        acc[keyString] = [input];
       }
-      acc[keyString] = [input];
     });
     return acc;
   }
