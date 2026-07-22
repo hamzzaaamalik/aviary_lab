@@ -59,8 +59,11 @@ export class Perception {
     }
     return sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
-      if (key === undefined || key === null) {
-        throw new TypeError('Classifier returned undefined or null for input: ' + JSON.stringify(input));
+      if (key === undefined) {
+        throw new TypeError('Classifier returned undefined for input: ' + JSON.stringify(input));
+      }
+      if (key === null) {
+        return acc; // skip null keys
       }
       if (typeof key !== 'string') {
         throw new TypeError('Classifier must return a string key.');
@@ -73,4 +76,5 @@ export class Perception {
       return acc;
     }, {});
   }
-}
+} 
+
