@@ -57,9 +57,7 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    if (sensoryInputs.length === 0) {
-      return {};
-    }
+
     const acc = {};
     sensoryInputs.forEach(input => {
       if (typeof input !== 'object' || input === null) {
