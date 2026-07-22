@@ -83,4 +83,19 @@ export class Perception {
     });
     return acc;
   }
+
+  /**
+   * Enhance sensory input processing by applying a transformation function to each input.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} transform - Function to transform each input.
+   * @returns {Array<any>} - Transformed sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  enhance(sensoryInputs, transform) {
+    this.validateInputs(sensoryInputs);
+    if (typeof transform !== 'function') {
+      throw new TypeError('Transform must be a function.');
+    }
+    return sensoryInputs.map(transform);
+  }
 }
