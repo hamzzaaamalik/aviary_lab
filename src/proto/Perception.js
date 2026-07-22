@@ -13,6 +13,12 @@ export class Perception {
     if (!Array.isArray(sensoryInputs)) {
       throw new TypeError('Input must be an array.');
     }
+    // Check for nested arrays
+    for (const input of sensoryInputs) {
+      if (Array.isArray(input)) {
+        this.validateInputs(input); // recursive validation for nested arrays
+      }
+    }
   }
 
   /**
