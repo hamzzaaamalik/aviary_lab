@@ -71,4 +71,32 @@ export class Perception {
       return acc;
     }, {});
   }
+
+  /**
+   * Classify sensory inputs ensuring unique keys.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @returns {Object} - An object containing classified inputs with unique keys.
+   * @throws {TypeError} - If the input is invalid or keys are duplicates.
+   */
+  classifyUnique(sensoryInputs, classifier) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    const seenKeys = new Set();
+    return sensoryInputs.reduce((acc, input) => {
+      const key = classifier(input);
+      if (key === undefined || key === null) {
+        throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
+      }
+      const keyString = String(key);
+      if (seenKeys.has(keyString)) {
+        throw new TypeError('Duplicate key detected: ' + keyString);
+      }
+      seenKeys.add(keyString);
+      acc[keyString] = input;
+      return acc;
+    }, {});
+  }
 }
