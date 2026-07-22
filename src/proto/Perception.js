@@ -27,7 +27,14 @@ export class Perception {
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
     }
-    const results = await Promise.all(sensoryInputs.map(async (input) => await predicate(input)));
+    const results = await Promise.all(sensoryInputs.map(async (input) => {
+      try {
+        return await predicate(input);
+      } catch (error) {
+        this.kernel.bus.emit('proto:error', { message: `Error in predicate: ${error.message}` });
+        return false;
+      }
+    }));
     return sensoryInputs.filter((_, index) => results[index]);
   }
 
@@ -43,7 +50,14 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    const results = await Promise.all(sensoryInputs.map(async (input) => await classifier(input)));
+    const results = await Promise.all(sensoryInputs.map(async (input) => {
+      try {
+        return await classifier(input);
+      } catch (error) {
+        this.kernel.bus.emit('proto:error', { message: `Error in classifier: ${error.message}` });
+        return false;
+      }
+    }));
     return sensoryInputs.filter((_, index) => results[index]);
   }
 
