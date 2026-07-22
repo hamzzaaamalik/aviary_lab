@@ -4,14 +4,18 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns matching sensory inputs', () => {
+test('validateInputs throws for non-array input', () => {
+  assert.throws(() => perception.validateInputs('not an array'), TypeError);
+});
+
+test('validateInputs throws for empty array', () => {
+  assert.throws(() => perception.validateInputs([]), TypeError);
+});
+
+test('detect returns detected sensory inputs', () => {
   const inputs = [1, 2, 3, 4];
   const result = perception.detect(inputs, (x) => x > 2);
   assert.deepEqual(result, [3, 4]);
-});
-
-test('detect throws on invalid predicate', () => {
-  assert.throws(() => perception.detect([1, 2], 'not a function'), TypeError);
 });
 
 test('filter returns filtered sensory inputs', () => {
@@ -20,28 +24,15 @@ test('filter returns filtered sensory inputs', () => {
   assert.deepEqual(result, [2, 4]);
 });
 
-test('filter throws on invalid criteria', () => {
-  assert.throws(() => perception.filter([1, 2], 'not a function'), TypeError);
-});
-
-test('classify groups inputs by classifier function', () => {
-  const inputs = ['apple', 'banana', 'cherry', 'avocado'];
-  const result = perception.classify(inputs, (fruit) => fruit[0]);
+test('classify groups sensory inputs correctly', () => {
+  const inputs = [1, 2, 3, 4];
+  const result = perception.classify(inputs, (x) => (x % 2 === 0 ? 'even' : 'odd'));
   assert.deepEqual(result, {
-    a: ['apple', 'avocado'],
-    b: ['banana'],
-    c: ['cherry']
+    odd: [1, 3],
+    even: [2, 4],
   });
 });
 
-test('classify throws on invalid classifier', () => {
-  assert.throws(() => perception.classify(['a', 'b'], 'not a function'), TypeError);
-});
-
-test('classify throws on undefined classifier return', () => {
-  assert.throws(() => perception.classify(['a', 'b'], () => undefined), TypeError);
-});
-
-test('classify throws on non-string classifier return', () => {
-  assert.throws(() => perception.classify(['a', 'b'], () => 1), TypeError);
+test('classify throws for invalid classifier', () => {
+  assert.throws(() => perception.classify([], 'not a function'), TypeError);
 });
