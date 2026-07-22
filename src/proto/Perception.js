@@ -62,14 +62,12 @@ export class Perception {
       if (key === undefined || key === null) {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
-      if (typeof key !== 'string') {
-        throw new TypeError('Classifier must return a string key. Received: ' + JSON.stringify(key));
+      // Allow non-string keys but ensure uniqueness
+      const keyString = String(key);
+      if (!acc[keyString]) {
+        acc[keyString] = [];
       }
-      // Ensure unique keys and initialize array if not present
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(input);
+      acc[keyString].push(input);
       return acc;
     }, {});
   }
