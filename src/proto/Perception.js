@@ -61,6 +61,7 @@ export class Perception {
       return {};
     }
     const acc = {};
+    const seenKeys = new Set();
     sensoryInputs.forEach(input => {
       if (typeof input !== 'object' || input === null) {
         throw new TypeError('Input must be a non-null object: ' + JSON.stringify(input));
@@ -70,10 +71,15 @@ export class Perception {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
-      if (acc[keyString]) {
+      if (seenKeys.has(keyString)) {
         throw new TypeError('Duplicate key found: ' + keyString);
       }
-      acc[keyString] = [input];
+      seenKeys.add(keyString);
+      if (acc[keyString]) {
+        acc[keyString].push(input);
+      } else {
+        acc[keyString] = [input];
+      }
     });
     return acc;
   }
