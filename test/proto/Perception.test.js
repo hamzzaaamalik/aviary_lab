@@ -30,20 +30,27 @@ test('classify throws for invalid classifier', () => {
   assert.throws(() => perception.classify([], 'not a function'), TypeError);
 });
 
-test('classify handles duplicate keys', () => {
+// New test for handling duplicate keys
+
+test('classify merges inputs with duplicate keys', () => {
   const inputs = [
     { type: 'fruit', name: 'apple' },
-    { type: 'fruit', name: 'banana' }
+    { type: 'fruit', name: 'banana' },
+    { type: 'fruit', name: 'kiwi' }
   ];
   const result = perception.classify(inputs, input => input.type);
   assert.deepEqual(result, {
     fruit: [
       { type: 'fruit', name: 'apple' },
-      { type: 'fruit', name: 'banana' }
+      { type: 'fruit', name: 'banana' },
+      { type: 'fruit', name: 'kiwi' }
     ]
   });
 });
 
+// New test for handling edge cases
+
 test('classify throws for null input', () => {
   assert.throws(() => perception.classify(null, () => {}), TypeError);
 });
+

@@ -77,6 +77,7 @@ export class Perception {
       }
       const keyString = String(key);
       if (acc[keyString]) {
+        // Merge instead of overwrite for duplicate keys
         acc[keyString].push(input);
       } else {
         acc[keyString] = [input];
