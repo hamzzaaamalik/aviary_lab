@@ -70,11 +70,10 @@ export class Perception {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
-      if (!acc[keyString]) {
-        acc[keyString] = [input];
-      } else {
+      if (acc[keyString]) {
         throw new TypeError('Duplicate key found: ' + keyString);
       }
+      acc[keyString] = [input];
     });
     return acc;
   }
