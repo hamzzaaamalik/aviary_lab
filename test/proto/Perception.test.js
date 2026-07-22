@@ -28,3 +28,13 @@ test('classify throws for invalid key from classifier', () => {
   const classifier = () => undefined;
   assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
+
+test('classify throws for null input', () => {
+  assert.throws(() => perception.classify(null, (x) => x), TypeError);
+});
+
+test('classify throws for non-array input', () => {
+  assert.throws(() => perception.classify(123, (x) => x), TypeError);
+  assert.throws(() => perception.classify({}, (x) => x), TypeError);
+  assert.throws(() => perception.classify('string', (x) => x), TypeError);
+});
