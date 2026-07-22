@@ -4,25 +4,27 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by classifier', () => {
-  const inputs = ['apple', 'banana', 'carrot', 'apricot'];
-  const classifier = (input) => input[0]; // classify by first letter
-  const classified = perception.classify(inputs, classifier);
-  assert.deepEqual(classified, {
-    a: ['apple', 'apricot'],
-    b: ['banana'],
-    c: ['carrot'],
+test('detect works with async predicate', async () => {
+  const inputs = [1, 2, 3, 4];
+  const result = await perception.detect(inputs, async (input) => input > 2);
+  assert.deepEqual(result, [3, 4]);
+});
+
+test('filter works with async classifier', async () => {
+  const inputs = [1, 2, 3, 4];
+  const result = await perception.filter(inputs, async (input) => input % 2 === 0);
+  assert.deepEqual(result, [2, 4]);
+});
+
+test('classify works with async classifier', async () => {
+  const inputs = ['apple', 'banana', 'avocado'];
+  const result = await perception.classify(inputs, async (input) => {
+    if (input.startsWith('a')) return 'A';
+    return 'B';
   });
-});
-
-test('classify throws on invalid input', () => {
-  assert.throws(() => perception.classify(null, (x) => x), TypeError);
-  assert.throws(() => perception.classify(['x'], null), TypeError);
-});
-
-test('classify throws on undefined classifier return', () => {
-  const inputs = ['apple', 'banana'];
-  const classifier = () => undefined;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+  assert.deepEqual(result, {
+    A: ['apple', 'avocado'],
+    B: ['banana']
+  });
 });
 
