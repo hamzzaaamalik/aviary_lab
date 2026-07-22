@@ -61,6 +61,9 @@ export class Perception {
       return {};
     }
     return sensoryInputs.reduce((acc, input) => {
+      if (typeof input !== 'object' || input === null) {
+        throw new TypeError('Input must be a non-null object: ' + JSON.stringify(input));
+      }
       const key = classifier(input);
       if (key === undefined || key === null) {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
