@@ -57,6 +57,9 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
+    if (sensoryInputs.length === 0) {
+      return {};
+    }
     return sensoryInputs.reduce((acc, input) => {
       const key = classifier(input);
       if (key === undefined || key === null) {
@@ -74,3 +77,4 @@ export class Perception {
     }, {});
   }
 } 
+
