@@ -72,4 +72,38 @@ export class Perception {
       return acc;
     }, {});
   }
-}
+
+  /**
+   * Classify sensory inputs with additional error handling for duplicate keys.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @returns {Object} - An object containing classified inputs.
+   * @throws {TypeError} - If the input is invalid or keys are duplicated.
+   */
+  classifyWithUniqueKeys(sensoryInputs, classifier) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    const seenKeys = new Set();
+    return sensoryInputs.reduce((acc, input) => {
+      const key = classifier(input);
+      if (key === undefined || key === null) {
+        throw new TypeError('Classifier returned undefined or null for input: ' + JSON.stringify(input));
+      }
+      if (typeof key !== 'string') {
+        throw new TypeError('Classifier must return a string key.');
+      }
+      if (seenKeys.has(key)) {
+        throw new TypeError('Duplicate key detected: ' + key);
+      }
+      seenKeys.add(key);
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(input);
+      return acc;
+    }, {});
+  }
+} 
+
