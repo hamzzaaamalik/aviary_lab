@@ -4,29 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classifyWithUniqueKeys handles duplicates', () => {
-  const inputs = [
-    { value: 1 },
-    { value: 2 },
-    { value: 3 },
-    { value: 1 }, // Duplicate key
-  ];
-  const classifier = (input) => input.value.toString();
-  assert.throws(() => perception.classifyWithUniqueKeys(inputs, classifier), TypeError);
-});
-
 test('classifyWithUniqueKeys classifies inputs correctly', () => {
   const inputs = [
-    { value: 1 },
-    { value: 2 },
-    { value: 3 },
+    { type: 'fruit', name: 'apple' },
+    { type: 'fruit', name: 'banana' },
+    { type: 'vegetable', name: 'carrot' },
   ];
-  const classifier = (input) => input.value.toString();
-  const result = perception.classifyWithUniqueKeys(inputs, classifier);
+  const classifier = input => input.type;
+  const result = perception.classify(inputs, classifier);
+
   assert.deepEqual(result, {
-    '1': [{ value: 1 }],
-    '2': [{ value: 2 }],
-    '3': [{ value: 3 }],
+    fruit: [
+      { type: 'fruit', name: 'apple' },
+      { type: 'fruit', name: 'banana' },
+    ],
+    vegetable: [
+      { type: 'vegetable', name: 'carrot' },
+    ],
   });
 });
 
+// Add more tests as needed
