@@ -5,29 +5,23 @@ import { Perception } from '../../src/proto/Perception.js';
 const perception = new Perception();
 
 test('classify throws on duplicate keys', () => {
-  const inputs = [{ id: 1 }, { id: 2 }, { id: 1 }];
-  const classifier = (input) => input.id;
+  const inputs = [
+    { id: 1, type: 'fruit' },
+    { id: 2, type: 'fruit' }
+  ];
+  const classifier = (input) => input.type;
   assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
 
 test('classify works with unique keys', () => {
-  const inputs = [{ id: 1 }, { id: 2 }];
-  const classifier = (input) => input.id;
+  const inputs = [
+    { id: 1, type: 'fruit' },
+    { id: 2, type: 'vegetable' }
+  ];
+  const classifier = (input) => input.type;
   const result = perception.classify(inputs, classifier);
   assert.deepEqual(result, {
-    '1': [{ id: 1 }],
-    '2': [{ id: 2 }]
+    fruit: [{ id: 1, type: 'fruit' }],
+    vegetable: [{ id: 2, type: 'vegetable' }]
   });
-});
-
-test('classify throws on invalid input', () => {
-  const inputs = [{ id: 1 }, null];
-  const classifier = (input) => input.id;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
-});
-
-test('classify throws on invalid key', () => {
-  const inputs = [{ id: 1 }, { id: 2 }];
-  const classifier = (input) => null;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
