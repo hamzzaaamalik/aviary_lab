@@ -22,7 +22,7 @@ export class Perception {
    * @returns {Array<any>} - Detected sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  detect(sensoryInputs, predicate) {
+  detectInputs(sensoryInputs, predicate) {
     this.validateInputs(sensoryInputs);
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
@@ -37,7 +37,7 @@ export class Perception {
    * @returns {Array<any>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  filter(sensoryInputs, classifier) {
+  filterInputs(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
@@ -52,7 +52,7 @@ export class Perception {
    * @returns {Object} - An object containing classified inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  classify(sensoryInputs, classifier) {
+  classifyInputs(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
