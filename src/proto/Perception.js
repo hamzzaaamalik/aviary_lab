@@ -57,9 +57,6 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    if (sensoryInputs.length === 0) {
-      return {};
-    }
     const acc = {};
     sensoryInputs.forEach(input => {
       if (typeof input !== 'object' || input === null) {
@@ -71,7 +68,7 @@ export class Perception {
       }
       const keyString = String(key);
       if (acc[keyString]) {
-        throw new TypeError('Duplicate key found: ' + keyString);
+        throw new TypeError('Duplicate key detected: ' + keyString + '. Existing input: ' + JSON.stringify(acc[keyString]) + ', new input: ' + JSON.stringify(input));
       }
       acc[keyString] = [input];
     });
