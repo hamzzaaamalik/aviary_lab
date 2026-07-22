@@ -66,6 +66,9 @@ export class Perception {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
+      if (acc[keyString] && acc[keyString].some(existing => JSON.stringify(existing) === JSON.stringify(input))) {
+        throw new TypeError('Duplicate key detected: ' + keyString);
+      }
       acc[keyString] = acc[keyString] || [];
       acc[keyString].push(input);
       return acc;
@@ -84,19 +87,6 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    const seenKeys = new Set();
-    return sensoryInputs.reduce((acc, input) => {
-      const key = classifier(input);
-      if (key === undefined || key === null) {
-        throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
-      }
-      const keyString = String(key);
-      if (seenKeys.has(keyString)) {
-        throw new TypeError('Duplicate key detected: ' + keyString);
-      }
-      seenKeys.add(keyString);
-      acc[keyString] = input;
-      return acc;
-    }, {});
+    return this.classify(sensoryInputs, classifier);
   }
 }
