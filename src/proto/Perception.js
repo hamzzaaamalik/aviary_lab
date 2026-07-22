@@ -70,11 +70,15 @@ export class Perception {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
-      if (acc[keyString]) {
-        throw new TypeError('Duplicate key found: ' + keyString);
+      if (Object.prototype.hasOwnProperty.call(acc, keyString)) {
+        acc[keyString].push(input);
+      } else {
+        acc[keyString] = [input];
       }
-      acc[keyString] = [input];
     });
     return acc;
   }
-}
+}  
+
+
+
