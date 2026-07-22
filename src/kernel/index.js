@@ -12,5 +12,4 @@ export function createKernel() {
   context.registry = new ModuleRegistry(context);
   bus.onError((err, type) => console.error(`[kernel] event error: ${err.message}`));
   return context;
-}
-
+}  

@@ -71,24 +71,14 @@ export class Perception {
       }
       const keyString = String(key);
       if (Object.prototype.hasOwnProperty.call(acc, keyString)) {
-        throw new TypeError('Duplicate key found: ' + keyString);
+        acc[keyString].push(input);
+      } else {
+        acc[keyString] = [input];
       }
-      acc[keyString] = acc[keyString] ? [...acc[keyString], input] : [input];
     });
     return acc;
   }
+}  
 
-  /**
-   * Structured detection of sensory inputs based on criteria.
-   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Function} predicate - Function to test each input.
-   * @returns {Object} - An object with detected and non-detected inputs.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  structuredDetect(sensoryInputs, predicate) {
-    this.validateInputs(sensoryInputs);
-    const detected = this.detect(sensoryInputs, predicate);
-    const nonDetected = sensoryInputs.filter(input => !predicate(input));
-    return { detected, nonDetected };
-  }
-}
+
+
