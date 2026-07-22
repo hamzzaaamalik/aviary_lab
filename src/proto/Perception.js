@@ -74,4 +74,5 @@ export class Perception {
       return acc;
     }, {});
   }
-}
+}  
+
