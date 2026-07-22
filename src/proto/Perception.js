@@ -70,10 +70,10 @@ export class Perception {
         throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
       }
       const keyString = String(key);
-      if (acc[keyString]) {
+      if (Object.prototype.hasOwnProperty.call(acc, keyString)) {
         throw new TypeError('Duplicate key found: ' + keyString);
       }
-      acc[keyString] = [input];
+      acc[keyString] = acc[keyString] ? [...acc[keyString], input] : [input];
     });
     return acc;
   }
@@ -87,14 +87,8 @@ export class Perception {
    */
   structuredDetect(sensoryInputs, predicate) {
     this.validateInputs(sensoryInputs);
-    if (typeof predicate !== 'function') {
-      throw new TypeError('Predicate must be a function.');
-    }
-    const detected = [];
-    const nonDetected = [];
-    sensoryInputs.forEach(input => {
-      (predicate(input) ? detected : nonDetected).push(input);
-    });
+    const detected = this.detect(sensoryInputs, predicate);
+    const nonDetected = sensoryInputs.filter(input => !predicate(input));
     return { detected, nonDetected };
   }
 }
