@@ -46,7 +46,7 @@ export class Perception {
   }
 
   /**
-   * Classify sensory inputs based on a provided classifier function.
+   * Classify sensory inputs based on a provided classifier function with unique key enforcement.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} classifier - Function to classify each input.
    * @returns {Object} - An object containing classified inputs.
