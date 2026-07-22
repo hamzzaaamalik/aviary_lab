@@ -16,10 +16,10 @@ export class Perception {
   }
 
   /**
-   * Detect specific sensory inputs based on a provided predicate.
+   * Detect specific sensory inputs based on a provided predicate, ensuring unique keys.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} predicate - Function to test each input.
-   * @returns {Array<any>} - Detected sensory inputs.
+   * @returns {Array<any>} - Detected sensory inputs with unique keys.
    * @throws {TypeError} - If the input is invalid.
    */
   detect(sensoryInputs, predicate) {
@@ -27,7 +27,16 @@ export class Perception {
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
     }
-    return sensoryInputs.filter(predicate);
+    const detected = sensoryInputs.filter(predicate);
+    const keys = new Set();
+    detected.forEach(input => {
+      const key = JSON.stringify(input);
+      if (keys.has(key)) {
+        throw new TypeError('Duplicate key detected: ' + key);
+      }
+      keys.add(key);
+    });
+    return detected;
   }
 
   /**
