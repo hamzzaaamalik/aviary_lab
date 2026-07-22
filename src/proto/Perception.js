@@ -42,7 +42,11 @@ export class Perception {
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
-    return sensoryInputs.filter(classifier);
+    const result = sensoryInputs.filter(classifier);
+    if (!Array.isArray(result)) {
+      throw new TypeError('Filter predicate must return an array.');
+    }
+    return result;
   }
 
   /**
