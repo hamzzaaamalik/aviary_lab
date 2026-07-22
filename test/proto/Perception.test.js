@@ -39,3 +39,14 @@ test('classify returns empty object for empty input', () => {
   assert.deepEqual(result, {});
 });
 
+test('classify throws on non-object inputs', () => {
+  const inputs = [
+    'string',
+    42,
+    null,
+    undefined
+  ];
+  const classifier = (input) => input;
+  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+});
+
