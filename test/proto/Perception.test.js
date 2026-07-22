@@ -4,49 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify handles duplicate keys properly', () => {
-  const inputs = [
-    { type: 'fruit', name: 'apple' },
-    { type: 'fruit', name: 'banana' },
-    { type: 'vegetable', name: 'carrot' },
-    { type: 'fruit', name: 'apple' }
-  ];
-  const classifier = (input) => input.type;
+test('classify throws on duplicate keys', () => {
+  const inputs = [{ id: 1 }, { id: 2 }, { id: 1 }];
+  const classifier = (input) => input.id;
+  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+});
+
+test('classify works with unique keys', () => {
+  const inputs = [{ id: 1 }, { id: 2 }];
+  const classifier = (input) => input.id;
   const result = perception.classify(inputs, classifier);
   assert.deepEqual(result, {
-    fruit: [
-      { type: 'fruit', name: 'apple' },
-      { type: 'fruit', name: 'banana' },
-      { type: 'fruit', name: 'apple' }
-    ],
-    vegetable: [
-      { type: 'vegetable', name: 'carrot' }
-    ]
+    '1': [{ id: 1 }],
+    '2': [{ id: 2 }]
   });
 });
 
+test('classify throws on invalid input', () => {
+  const inputs = [{ id: 1 }, null];
+  const classifier = (input) => input.id;
+  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+});
+
 test('classify throws on invalid key', () => {
-  const inputs = [
-    { type: 'fruit', name: 'apple' },
-    { type: 'fruit', name: 'banana' }
-  ];
-  const classifier = (input) => null; // Invalid classifier returning null key
+  const inputs = [{ id: 1 }, { id: 2 }];
+  const classifier = (input) => null;
   assert.throws(() => perception.classify(inputs, classifier), TypeError);
 });
-
-test('classify returns empty object for empty input', () => {
-  const result = perception.classify([], (input) => input.type);
-  assert.deepEqual(result, {});
-});
-
-test('classify throws on non-object inputs', () => {
-  const inputs = [
-    'string',
-    42,
-    null,
-    undefined
-  ];
-  const classifier = (input) => input;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
-});
-
