@@ -18,31 +18,31 @@ export class Perception {
   /**
    * Detect specific sensory inputs based on a provided predicate.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Function} predicate - Function to test each input.
+   * @param {Function} testFunction - Function to test each input.
    * @returns {Array<any>} - Detected sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  detect(sensoryInputs, predicate) {
+  detect(sensoryInputs, testFunction) {
     this.validateInputs(sensoryInputs);
-    if (typeof predicate !== 'function') {
-      throw new TypeError('Predicate must be a function.');
+    if (typeof testFunction !== 'function') {
+      throw new TypeError('Test function must be a function.');
     }
-    return sensoryInputs.filter(predicate);
+    return sensoryInputs.filter(testFunction);
   }
 
   /**
    * Filter sensory inputs by specific criteria.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
-   * @param {Function} criteria - Function to filter inputs.
+   * @param {Function} filterFunction - Function to filter inputs.
    * @returns {Array<any>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  filter(sensoryInputs, criteria) {
+  filter(sensoryInputs, filterFunction) {
     this.validateInputs(sensoryInputs);
-    if (typeof criteria !== 'function') {
-      throw new TypeError('Criteria must be a function.');
+    if (typeof filterFunction !== 'function') {
+      throw new TypeError('Filter function must be a function.');
     }
-    return sensoryInputs.filter(criteria);
+    return sensoryInputs.filter(filterFunction);
   }
 
   /**
@@ -74,4 +74,3 @@ export class Perception {
     }, {});
   }
 }
-
