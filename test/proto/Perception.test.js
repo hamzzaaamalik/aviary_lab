@@ -28,6 +28,23 @@ test('classify method returns classified sensory inputs', () => {
   });
 });
 
+test('classify method handles empty input', () => {
+  const inputs = [];
+  const classifier = (x) => x[0];
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {});
+});
+
+test('classify method handles duplicate keys', () => {
+  const inputs = ['apple', 'apricot', 'banana', 'blueberry', 'avocado'];
+  const classifier = (fruit) => fruit[0];
+  const result = perception.classify(inputs, classifier);
+  assert.deepEqual(result, {
+    a: ['apple', 'apricot', 'avocado'],
+    b: ['banana', 'blueberry'],
+  });
+});
+
 test('detect throws TypeError for invalid inputs', () => {
   assert.throws(() => perception.detect('invalid', () => {}), TypeError);
 });
