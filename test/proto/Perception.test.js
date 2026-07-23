@@ -19,4 +19,15 @@ test('classify throws on duplicate keys', () => {
   assert.throws(() => perception.classify(inputs, input => input.id), TypeError);
 });
 
+test('classify returns empty object for empty inputs', () => {
+  const result = perception.classify([], input => input.id);
+  assert.deepEqual(result, {});
+});
+
+test('classify handles single valid input', () => {
+  const inputs = [{ id: 1 }];
+  const result = perception.classify(inputs, input => input.id);
+  assert.deepEqual(result, { '1': [{ id: 1 }] });
+});
+
 // Additional tests for valid scenarios if needed.
