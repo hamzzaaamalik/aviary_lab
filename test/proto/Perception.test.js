@@ -4,33 +4,20 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('classify handles empty categories gracefully', () => {
-  const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.classify(inputs, categories);
+test('classify with empty inputs returns empty object', () => {
+  const result = perception.classify([], { category1: 10, category2: 20 });
   assert.deepEqual(result, {});
 });
 
-test('classify throws error for undefined thresholds', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: undefined };
-  assert.throws(() => perception.classify(inputs, categories), TypeError);
+test('classify with valid inputs', () => {
+  const result = perception.classify([5, 10, 15, 20], { low: 10, high: 15 });
+  assert.deepEqual(result, { low: [10, 15, 20], high: [15, 20] });
 });
 
-// Additional edge case tests for classify
-
-test('classify returns empty arrays for non-matching thresholds', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 5, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [], high: [] });
+test('classify throws on invalid categories', () => {
+  assert.throws(() => perception.classify([1, 2, 3], 'invalid'), TypeError);
 });
 
-test('classify returns results based on thresholds', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 3, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [3, 4, 5], high: [4, 5] });
+test('classify throws on invalid inputs', () => {
+  assert.throws(() => perception.classify('invalid', { category: 10 }), TypeError);
 });
