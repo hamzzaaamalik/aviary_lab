@@ -16,6 +16,17 @@ export class Perception {
   }
 
   /**
+   * Validate classifier function.
+   * @param {Function} classifier - Function to classify inputs.
+   * @throws {TypeError} - If the classifier is not a function.
+   */
+  validateClassifier(classifier) {
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+  }
+
+  /**
    * Detect specific sensory inputs based on a provided predicate.
    * @param {Array<any>} sensoryInputs - Array of sensory inputs.
    * @param {Function} predicate - Function to test each input.
@@ -45,9 +56,7 @@ export class Perception {
     if (sensoryInputs.length === 0) {
       return [];
     }
-    if (typeof classifier !== 'function') {
-      throw new TypeError('Classifier must be a function.');
-    }
+    this.validateClassifier(classifier);
     return sensoryInputs.filter(classifier);
   }
 
@@ -60,9 +69,7 @@ export class Perception {
    */
   classify(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
-    if (typeof classifier !== 'function') {
-      throw new TypeError('Classifier must be a function.');
-    }
+    this.validateClassifier(classifier);
     if (sensoryInputs.length === 0) {
       return {};
     }
