@@ -52,6 +52,7 @@ export class Perception {
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @returns {Object} - Classified sensory inputs.
    * @throws {TypeError} - If the input is invalid.
+   * @throws {Error} - If duplicate category keys are detected.
    */
   classify(sensoryInputs, categories) {
     this.validateInputs(sensoryInputs);
