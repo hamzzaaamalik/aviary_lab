@@ -42,7 +42,7 @@ export class Perception {
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
     }
-    return sensoryInputs.filter(predicate);
+    return sensoryInputs.length > 0 ? sensoryInputs.filter(predicate) : [];
   }
 
   /**
@@ -63,4 +63,4 @@ export class Perception {
     }
     return classified;
   }
-}
+}  
