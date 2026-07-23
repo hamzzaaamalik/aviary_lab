@@ -73,5 +73,19 @@ export class Perception {
     }
     return classified;
   }
-} 
 
+  /**
+   * Classify sensory inputs, handling edge cases for empty inputs and invalid categories.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {boolean} [includeEmpty=false] - Include empty categories in the result.
+   * @returns {Object} - Classified sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithEdgeCases(sensoryInputs, categories, includeEmpty = false) {
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories object cannot be empty.');
+    }
+    return this.classify(sensoryInputs, categories, includeEmpty);
+  }
+}
