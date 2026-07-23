@@ -58,6 +58,12 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories must not be empty.');
+    }
+    if (typeof noiseThreshold !== 'number') {
+      throw new TypeError('Noise threshold must be a number.');
+    }
     const classified = {};
     const noise = this.detectNoise(sensoryInputs, noiseThreshold);
     for (const [category, threshold] of Object.entries(categories)) {
