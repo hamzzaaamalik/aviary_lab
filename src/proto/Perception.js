@@ -52,10 +52,11 @@ export class Perception {
    * Classify sensory inputs based on a set of predefined categories.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {boolean} [includeEmpty=false] - Include empty categories in the result.
    * @returns {Object} - Classified sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  classify(sensoryInputs, categories) {
+  classify(sensoryInputs, categories, includeEmpty = false) {
     this.validateInputs(sensoryInputs);
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
@@ -66,6 +67,9 @@ export class Perception {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
       classified[category] = sensoryInputs.filter(input => input >= threshold);
+      if (!includeEmpty && classified[category].length === 0) {
+        delete classified[category];
+      }
     }
     return classified;
   }
