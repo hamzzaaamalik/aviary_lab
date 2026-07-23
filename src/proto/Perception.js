@@ -13,6 +13,9 @@ export class Perception {
     if (!Array.isArray(sensoryInputs)) {
       throw new TypeError('Input must be an array.');
     }
+    if (sensoryInputs.length === 0) {
+      return; // allow empty input case
+    }
   }
 
   /**
@@ -24,9 +27,6 @@ export class Perception {
    */
   detect(sensoryInputs, predicate) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      return [];
-    }
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
     }
@@ -42,9 +42,6 @@ export class Perception {
    */
   filter(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      return [];
-    }
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
     }
@@ -60,11 +57,9 @@ export class Perception {
    */
   classify(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) return {}; // handle empty input case
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
-    }
-    if (sensoryInputs.length === 0) {
-      return {};
     }
     const acc = {};
     sensoryInputs.forEach(input => {
