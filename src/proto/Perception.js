@@ -47,6 +47,7 @@ export class Perception {
 
   /**
    * Classify sensory inputs based on a set of predefined categories.
+   * Ensures unique keys in the classification result.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @returns {Object} - Classified sensory inputs.
@@ -58,10 +59,15 @@ export class Perception {
       throw new TypeError('Categories must be an object.');
     }
     const classified = {};
+    const keys = new Set();
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
+      if (keys.has(category)) {
+        throw new Error(`Duplicate category key detected: ${category}`);
+      }
+      keys.add(category);
       classified[category] = sensoryInputs.filter(input => input >= threshold);
     }
     return classified;
