@@ -24,6 +24,9 @@ export class Perception {
    */
   detect(sensoryInputs, threshold) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) {
+      return [];
+    }
     if (typeof threshold !== 'number') {
       throw new TypeError('Threshold must be a number.');
     }
