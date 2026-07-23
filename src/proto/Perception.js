@@ -84,4 +84,35 @@ export class Perception {
     });
     return acc;
   }
+
+  /**
+   * Classify sensory inputs with enhanced error handling.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @returns {Object} - An object containing classified inputs.
+   * @throws {TypeError} - If the input is invalid or keys are duplicated.
+   */
+  classifyEnhanced(sensoryInputs, classifier) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    const acc = {};
+    sensoryInputs.forEach(input => {
+      if (typeof input !== 'object' || input === null) {
+        throw new TypeError('Input must be a non-null object: ' + JSON.stringify(input));
+      }
+      const key = classifier(input);
+      if (key === undefined || key === null) {
+        throw new TypeError('Classifier returned invalid key for input: ' + JSON.stringify(input));
+      }
+      const keyString = String(key);
+      if (acc[keyString]) {
+        throw new TypeError('Duplicate key found: ' + keyString);
+      }
+      acc[keyString] = acc[keyString] || [];
+      acc[keyString].push(input);
+    });
+    return acc;
+  }
 }
