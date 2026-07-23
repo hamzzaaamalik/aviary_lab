@@ -62,6 +62,15 @@ export class Perception {
       throw new TypeError('Categories must be an object.');
     }
     const classified = {};
+    if (sensoryInputs.length === 0) {
+      if (includeEmpty) {
+        for (const category of Object.keys(categories)) {
+          classified[category] = [];
+        }
+      }
+      return classified;
+    }
+
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
@@ -73,4 +82,4 @@ export class Perception {
     }
     return classified;
   }
-}
+} 
