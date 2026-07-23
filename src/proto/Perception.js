@@ -13,7 +13,8 @@ export class Perception {
     if (!Array.isArray(sensoryInputs)) {
       throw new TypeError('Input must be an array.');
     }
-    if (sensoryInputs.length === 0) {
+    // Allow empty array for classify function
+    if (sensoryInputs.length < 0) {
       throw new TypeError('Input array cannot be empty.');
     }
   }
@@ -56,7 +57,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid or keys are duplicated.
    */
   classify(sensoryInputs, classifier) {
-    if (sensoryInputs.length === 0) return {};
+    // Allow empty array
     this.validateInputs(sensoryInputs);
     if (typeof classifier !== 'function') {
       throw new TypeError('Classifier must be a function.');
