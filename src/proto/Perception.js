@@ -49,6 +49,28 @@ export class Perception {
   }
 
   /**
+   * Classify sensory inputs based on predefined categories.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @returns {Object} - Classified sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classify(sensoryInputs, categories) {
+    this.validateInputs(sensoryInputs);
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be an object.');
+    }
+    const classified = {};
+    for (const [category, threshold] of Object.entries(categories)) {
+      if (typeof threshold !== 'number') {
+        throw new TypeError(`Threshold for ${category} must be a number.`);
+      }
+      classified[category] = sensoryInputs.filter(input => input >= threshold);
+    }
+    return classified;
+  }
+
+  /**
    * Categorize sensory inputs based on a set of predefined categories.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
@@ -62,15 +84,12 @@ export class Perception {
       throw new TypeError('Categories must be an object.');
     }
     const categorized = {};
-    for (const [category, threshold] of Object.entries(categories)) {
-      if (typeof threshold !== 'number') {
-        throw new TypeError(`Threshold for ${category} must be a number.`);
+    for (const category of Object.keys(categories)) {
+      if (categories[category] === undefined) {
+        throw new TypeError(`Threshold for ${category} cannot be undefined.`);
       }
-      const categorizedInputs = sensoryInputs.filter(input => input >= threshold);
-      if (categorizedInputs.length > 0 || includeEmpty) {
-        categorized[category] = categorizedInputs;
-      }
+      categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
     }
-    return categorized;
+    return includeEmpty ? categorized : Object.fromEntries(Object.entries(categorized).filter(([_, value]) => value.length > 0));
   }
 }
