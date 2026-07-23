@@ -49,6 +49,28 @@ export class Perception {
   }
 
   /**
+   * Classify sensory inputs based on ranges defined in the categories object.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and threshold values.
+   * @returns {Object} - An object with category names as keys and classified inputs as values.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classify(sensoryInputs, categories) {
+    this.validateInputs(sensoryInputs);
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be an object.');
+    }
+    const classified = {};
+    for (const [category, threshold] of Object.entries(categories)) {
+      if (typeof threshold !== 'number') {
+        throw new TypeError(`Threshold for ${category} must be a number.`);
+      }
+      classified[category] = sensoryInputs.filter(input => input >= threshold);
+    }
+    return classified;
+  }
+
+  /**
    * Categorize sensory inputs based on a set of predefined categories.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
