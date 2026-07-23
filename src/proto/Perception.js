@@ -57,6 +57,9 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   classify(sensoryInputs, categories, includeEmpty = false) {
+    if (sensoryInputs === undefined || sensoryInputs === null) {
+      throw new TypeError('sensoryInputs cannot be undefined or null.');
+    }
     this.validateInputs(sensoryInputs);
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
