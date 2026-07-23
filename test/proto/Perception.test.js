@@ -4,30 +4,22 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify handles invalid input', () => {
-  assert.throws(() => perception.classify(null, () => 'key'), TypeError);
-  assert.throws(() => perception.classify({}, () => 'key'), TypeError);
+test('detectNoise detects values above the threshold', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const threshold = 3;
+  const result = perception.detectNoise(inputs, threshold);
+  assert.deepEqual(result, [3, 4, 5]);
 });
 
-test('classify throws on invalid keys', () => {
-  const inputs = [{ id: 1 }, { id: 2 }];
-  assert.throws(() => perception.classify(inputs, () => undefined), TypeError);
+test('detectNoise throws error on invalid input type', () => {
+  assert.throws(() => perception.detectNoise('not an array', 2), TypeError);
 });
 
-test('classify throws on duplicate keys', () => {
-  const inputs = [{ id: 1 }, { id: 1 }];
-  assert.throws(() => perception.classify(inputs, input => input.id), TypeError);
+test('detectNoise throws error on non-number threshold', () => {
+  assert.throws(() => perception.detectNoise([1, 2, 3], 'not a number'), TypeError);
 });
 
-test('classify returns empty object for empty inputs', () => {
-  const result = perception.classify([], input => input.id);
-  assert.deepEqual(result, {});
+test('detectNoise handles empty input', () => {
+  const result = perception.detectNoise([], 0);
+  assert.deepEqual(result, []);
 });
-
-test('classify handles single valid input', () => {
-  const inputs = [{ id: 1 }];
-  const result = perception.classify(inputs, input => input.id);
-  assert.deepEqual(result, { '1': [{ id: 1 }] });
-});
-
-// Additional tests for valid scenarios if needed.
