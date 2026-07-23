@@ -66,4 +66,13 @@ export class Perception {
     }
     return classified;
   }
+  
+  /**
+   * Analyzes sensory inputs for edge cases, like empty arrays or all values below thresholds.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @returns {boolean} - True if no significant input detected.
+   */
+  analyzeEdgeCases(sensoryInputs) {
+    return sensoryInputs.length === 0 || sensoryInputs.every(input => input < 0);
+  }
 }
