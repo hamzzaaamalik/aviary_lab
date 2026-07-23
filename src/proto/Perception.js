@@ -54,6 +54,7 @@ export class Perception {
    * @param {Function} classifier - Function to classify each input.
    * @returns {Object} - An object containing classified inputs.
    * @throws {TypeError} - If the input is invalid or keys are duplicated.
+   * @throws {Error} - If the classifier returns an unexpected value.
    */
   classify(sensoryInputs, classifier) {
     this.validateInputs(sensoryInputs);
