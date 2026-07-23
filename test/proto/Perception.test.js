@@ -34,3 +34,17 @@ test('classify: throws on invalid threshold', () => {
   const categories = { low: 'invalid' };
   assert.throws(() => perception.classify([1, 2], categories), TypeError);
 });
+
+test('classify: handles empty input', () => {
+  const inputs = [];
+  const categories = { low: 0, high: 1 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {});
+});
+
+test('classify: handles non-numeric values', () => {
+  const inputs = [1, 'a', 2];
+  const categories = { low: 1 };
+  assert.throws(() => perception.classify(inputs, categories), TypeError);
+});
+
