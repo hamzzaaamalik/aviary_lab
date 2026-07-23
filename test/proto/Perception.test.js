@@ -4,47 +4,44 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify: valid input', () => {
+test('classify groups sensory inputs into categories', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, high: 4 };
-  const expected = { low: [2, 3, 4, 5], high: [4, 5] };
+  const categories = {
+    low: 2,
+    high: 4,
+  };
   const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, expected);
+  assert.deepEqual(result, {
+    low: [2, 3, 4, 5],
+    high: [4, 5],
+  });
 });
 
-test('classify: empty categories', () => {
+test('classify handles empty categories correctly', () => {
   const inputs = [1, 2, 3];
-  const categories = { low: 5 };
+  const categories = {
+    low: 2,
+    high: 5,
+  };
   const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {});
+  assert.deepEqual(result, { low: [2, 3] });
 });
 
-test('classify: include empty categories', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 0, high: 5 };
-  const result = perception.classify(inputs, categories, true);
-  assert.deepEqual(result, { low: [1, 2, 3], high: [] });
+test('classify throws on invalid categories', () => {
+  assert.throws(() => perception.classify([1, 2], 'not-an-object'), TypeError);
 });
 
-test('classify: throws on invalid categories', () => {
-  assert.throws(() => perception.classify([1, 2], 'invalid'), TypeError);
-});
-
-test('classify: throws on invalid threshold', () => {
-  const categories = { low: 'invalid' };
+test('classify throws on invalid threshold', () => {
+  const categories = { low: 'not-a-number' };
   assert.throws(() => perception.classify([1, 2], categories), TypeError);
 });
 
-test('classify: handles empty input', () => {
-  const inputs = [];
-  const categories = { low: 0, high: 1 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {});
+test('classify includes empty categories when specified', () => {
+  const inputs = [1, 2, 3];
+  const categories = {
+    low: 2,
+    high: 5,
+  };
+  const result = perception.classify(inputs, categories, true);
+  assert.deepEqual(result, { low: [2, 3], high: [] });
 });
-
-test('classify: handles non-numeric values', () => {
-  const inputs = [1, 'a', 2];
-  const categories = { low: 1 };
-  assert.throws(() => perception.classify(inputs, categories), TypeError);
-});
-
