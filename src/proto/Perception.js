@@ -59,6 +59,9 @@ export class Perception {
     }
     const classified = {};
     for (const [category, threshold] of Object.entries(categories)) {
+      if (typeof threshold !== 'number') {
+        throw new TypeError(`Threshold for ${category} must be a number.`);
+      }
       classified[category] = sensoryInputs.filter(input => input >= threshold);
     }
     return classified;
