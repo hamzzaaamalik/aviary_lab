@@ -22,7 +22,7 @@ export class Perception {
    * @returns {Array<number>} - Detected noise inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  detectNoise(sensoryInputs, threshold) {
+  detect(sensoryInputs, threshold) {
     this.validateInputs(sensoryInputs);
     if (typeof threshold !== 'number') {
       throw new TypeError('Threshold must be a number.');
@@ -63,4 +63,4 @@ export class Perception {
     }
     return classified;
   }
-}  
+}
