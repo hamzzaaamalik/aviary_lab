@@ -46,21 +46,24 @@ export class Perception {
   }
 
   /**
-   * Classify sensory inputs based on a set of predefined categories.
+   * Classify sensory inputs based on a set of predefined categories, integrating noise detection.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {number} noiseThreshold - The threshold for noise detection.
    * @returns {Object} - Classified sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  classify(sensoryInputs, categories) {
+  classify(sensoryInputs, categories, noiseThreshold) {
     this.validateInputs(sensoryInputs);
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
     const classified = {};
+    const noise = this.detectNoise(sensoryInputs, noiseThreshold);
     for (const [category, threshold] of Object.entries(categories)) {
       classified[category] = sensoryInputs.filter(input => input >= threshold);
     }
+    classified.noise = noise;
     return classified;
   }
 }  
