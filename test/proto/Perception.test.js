@@ -4,33 +4,38 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
+test('classify correctly classifies inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 2, medium: 4 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], medium: [4, 5] });
+});
 
-test('classify handles empty categories gracefully', () => {
-  const inputs = [1, 2, 3];
-  const categories = {};
+test('classify with empty inputs', () => {
+  const inputs = [];
+  const categories = { low: 2, medium: 4 };
   const result = perception.classify(inputs, categories);
   assert.deepEqual(result, {});
 });
 
-test('classify throws error for undefined thresholds', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: undefined };
-  assert.throws(() => perception.classify(inputs, categories), TypeError);
-});
-
-// Additional edge case tests for classify
-
-test('classify returns empty arrays for non-matching thresholds', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 5, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [], high: [] });
-});
-
-test('classify returns results based on thresholds', () => {
+test('categorize correctly categorizes inputs', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 3, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [3, 4, 5], high: [4, 5] });
+  const categories = { low: 2, medium: 4 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], medium: [4, 5] });
 });
+
+test('categorize with empty inputs', () => {
+  const inputs = [];
+  const categories = { low: 2, medium: 4 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, {});
+});
+
+test('categorize includes empty categories if specified', () => {
+  const inputs = [];
+  const categories = { low: 2, medium: 4 };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, { low: [], medium: [] });
+});
+

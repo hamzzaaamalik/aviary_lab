@@ -84,7 +84,7 @@ export class Perception {
   categorize(sensoryInputs, categories, includeEmpty = false) {
     this.validateInputs(sensoryInputs);
     if (sensoryInputs.length === 0) {
-      return includeEmpty ? Object.fromEntries(Object.keys(categories).map(category => [category, []])) : {};
+      return includeEmpty ? Object.fromEntries(Object.keys(categories).map(key => [key, []])) : {};
     }
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
@@ -92,6 +92,9 @@ export class Perception {
     const categorized = {};
     for (const category of Object.keys(categories)) {
       categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
+      if (!includeEmpty && categorized[category].length === 0) {
+        delete categorized[category];
+      }
     }
     return categorized;
   }
