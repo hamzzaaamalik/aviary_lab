@@ -68,9 +68,6 @@ export class Perception {
       }
       classified[category] = sensoryInputs.filter(input => input >= threshold);
       if (!includeEmpty && classified[category].length === 0) {
-        throw new Error(`Category ${category} is empty and includesEmpty is false.`);
-      }
-      if (!includeEmpty && classified[category].length === 0) {
         delete classified[category];
       }
     }
