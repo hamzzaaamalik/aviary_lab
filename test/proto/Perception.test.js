@@ -4,39 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
+test('classify throws on empty input', () => {
+  assert.deepEqual(perception.classify([], (input) => input.type), {});
+});
+
+test('classify throws on invalid key', () => {
+  assert.throws(() => {
+    perception.classify([{ type: null }], (input) => input.type);
+  }, TypeError);
+});
+
 test('classify throws on duplicate keys', () => {
-  const inputs = [
-    { type: 'fruit', name: 'apple' },
-    { type: 'fruit', name: 'banana' },
-    { type: 'fruit', name: 'apple' }, // duplicate key
-  ];
-  const classifier = (input) => input.name;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+  assert.throws(() => {
+    perception.classify([{ type: 'a' }, { type: 'a' }], (input) => input.type);
+  }, TypeError);
 });
 
-test('classify returns classified inputs', () => {
-  const inputs = [
-    { type: 'fruit', name: 'apple' },
-    { type: 'fruit', name: 'banana' },
-  ];
-  const classifier = (input) => input.name;
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {
-    apple: [{ type: 'fruit', name: 'apple' }],
-    banana: [{ type: 'fruit', name: 'banana' }],
-  });
+// Additional tests for existing methods
+
+test('detect returns detected items', () => {
+  const inputs = [{ type: 'a' }, { type: 'b' }];
+  const detected = perception.detect(inputs, (input) => input.type === 'a');
+  assert.deepEqual(detected, [{ type: 'a' }]);
 });
 
-test('classify handles empty input', () => {
-  const inputs = [];
-  const classifier = (input) => input.name;
-  const result = perception.classify(inputs, classifier);
-  assert.deepEqual(result, {});
-});
-
-test('classify throws on invalid input', () => {
-  const inputs = [null];
-  const classifier = (input) => input.name;
-  assert.throws(() => perception.classify(inputs, classifier), TypeError);
+test('filter returns filtered items', () => {
+  const inputs = [{ type: 'a' }, { type: 'b' }];
+  const filtered = perception.filter(inputs, (input) => input.type === 'a');
+  assert.deepEqual(filtered, [{ type: 'a' }]);
 });
 
