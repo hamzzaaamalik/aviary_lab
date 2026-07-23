@@ -48,6 +48,24 @@ test('classify throws on invalid categories', () => {
   assert.throws(() => perception.classify(inputs, null), TypeError);
 });
 
+// additional edge case tests
+
+test('classify returns empty object for no categories', () => {
+  const inputs = [1, 2, 3];
+  const categories = {};
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {});
+});
+
+test('classify handles inputs with no matches', () => {
+  const inputs = [1, 2, 3];
+  const categories = {
+    low: 4
+  };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {});
+});
+
 test('classify throws on invalid inputs', () => {
   assert.throws(() => perception.classify('not an array', {}), TypeError);
 });
