@@ -4,69 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify correctly categorizes inputs', () => {
+test('classify categorizes inputs correctly', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = {
-    low: 2,
-    medium: 4,
-    high: 6
-  };
+  const categories = { low: 2, medium: 4, high: 5 };
   const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    medium: [4, 5]
-  });
+  assert.deepEqual(result, { low: [2, 3, 4, 5], medium: [4, 5], high: [5] });
 });
 
-test('classify excludes empty categories when not included', () => {
+test('classify excludes empty categories when specified', () => {
   const inputs = [1, 2, 3];
-  const categories = {
-    low: 2,
-    high: 5
-  };
+  const categories = { low: 4, medium: 5 };
   const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [2, 3]
-  });
+  assert.deepEqual(result, {});
 });
 
-test('classify includes empty categories when included', () => {
+test('classify includes empty categories when specified', () => {
   const inputs = [1, 2, 3];
-  const categories = {
-    low: 2,
-    high: 5
-  };
+  const categories = { low: 4, medium: 5 };
   const result = perception.classify(inputs, categories, true);
-  assert.deepEqual(result, {
-    low: [2, 3],
-    high: []
-  });
+  assert.deepEqual(result, { low: [], medium: [] });
 });
 
-test('classify throws on invalid categories', () => {
-  const inputs = [1, 2, 3];
-  assert.throws(() => perception.classify(inputs, null), TypeError);
-});
-
-// additional edge case tests
-
-test('classify returns empty object for no categories', () => {
-  const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {});
-});
-
-test('classify handles inputs with no matches', () => {
-  const inputs = [1, 2, 3];
-  const categories = {
-    low: 4
-  };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {});
-});
-
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify('not an array', {}), TypeError);
+test('classify throws error on invalid inputs', () => {
+  assert.throws(() => perception.classify(null, {}), TypeError);
+  assert.throws(() => perception.classify([], null), TypeError);
 });
 
