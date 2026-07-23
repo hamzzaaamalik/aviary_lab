@@ -4,26 +4,37 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect method identifies noise above threshold', () => {
-  const inputs = [1, 2, 3, 4, 5, 0];
-  const threshold = 3;
-  const result = perception.detect(inputs, threshold);
-  assert.deepEqual(result, [3, 4, 5]);
-});
-
-test('detect method throws error for invalid inputs', () => {
-  assert.throws(() => perception.detect('invalid', 3), TypeError);
-  assert.throws(() => perception.detect([1, 2, 3], 'not-a-number'), TypeError);
-});
-
-test('filter method applies predicate correctly', () => {
+test('classify with valid inputs', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const predicate = (x) => x > 2;
-  const result = perception.filter(inputs, predicate);
-  assert.deepEqual(result, [3, 4, 5]);
+  const categories = { low: 2, high: 4 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
-test('filter method throws error for invalid predicate', () => {
-  assert.throws(() => perception.filter([1, 2, 3], 'not-a-function'), TypeError);
+test('classify includes empty categories if specified', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 10, high: 2 };
+  const result = perception.classify(inputs, categories, true);
+  assert.deepEqual(result, { low: [], high: [2, 3] });
 });
 
+test('classify excludes empty categories if not specified', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 10, high: 2 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { high: [2, 3] });
+});
+
+test('classify throws on invalid categories input', () => {
+  assert.throws(() => perception.classify([1, 2], 'invalid'), TypeError);
+});
+
+test('classify throws on invalid threshold', () => {
+  const categories = { low: 'invalid' };
+  assert.throws(() => perception.classify([1, 2], categories), TypeError);
+});
+
+test('classify throws on invalid sensory inputs', () => {
+  const categories = { low: 1 };
+  assert.throws(() => perception.classify('invalid', categories), TypeError);
+});
