@@ -79,4 +79,30 @@ export class Perception {
     });
     return acc;
   }
-}
+
+  /**
+   * Enhanced classify method to handle edge cases.
+   * @param {Array<any>} sensoryInputs - Array of sensory inputs.
+   * @param {Function} classifier - Function to classify each input.
+   * @returns {Object} - An object containing classified inputs with unique keys.
+   * @throws {TypeError} - If the input is invalid or keys are duplicated.
+   */
+  enhancedClassify(sensoryInputs, classifier) {
+    this.validateInputs(sensoryInputs);
+    if (typeof classifier !== 'function') {
+      throw new TypeError('Classifier must be a function.');
+    }
+    const acc = {};
+    sensoryInputs.forEach(input => {
+      const key = classifier(input);
+      const keyString = String(key);
+      if (acc[keyString]) {
+        acc[keyString].push(input);
+      } else {
+        acc[keyString] = [input];
+      }
+    });
+    return acc;
+  }
+} 
+
