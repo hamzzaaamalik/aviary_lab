@@ -59,6 +59,9 @@ export class Perception {
     }
     const classified = {};
     for (const [category, threshold] of Object.entries(categories)) {
+      if (typeof category !== 'string') {
+        throw new TypeError('Category names must be strings.');
+      }
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
