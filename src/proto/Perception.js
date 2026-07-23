@@ -63,4 +63,28 @@ export class Perception {
     }
     return classified;
   }
+
+  /**
+   * Classify sensory inputs with unique keys handling.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @returns {Object} - Classified sensory inputs with unique keys.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithUniqueKeys(sensoryInputs, categories) {
+    this.validateInputs(sensoryInputs);
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be an object.');
+    }
+    const classified = {};
+    const seenKeys = new Set();
+    for (const [category, threshold] of Object.entries(categories)) {
+      if (seenKeys.has(category)) {
+        throw new Error(`Duplicate category key: ${category}`);
+      }
+      seenKeys.add(category);
+      classified[category] = sensoryInputs.filter(input => input >= threshold);
+    }
+    return classified;
+  }
 }  
