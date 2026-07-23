@@ -36,3 +36,12 @@ test('classify throws on invalid threshold', () => {
   assert.throws(() => perception.classify([1, 2], categories), TypeError);
 });
 
+test('classify includes empty categories when specified', () => {
+  const inputs = [1, 2, 3];
+  const categories = {
+    low: 2,
+    high: 5,
+  };
+  const result = perception.classify(inputs, categories, true);
+  assert.deepEqual(result, { low: [2, 3], high: [] });
+});
