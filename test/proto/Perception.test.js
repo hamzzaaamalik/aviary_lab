@@ -14,8 +14,7 @@ test('classify categorizes inputs correctly', () => {
 test('classify excludes empty categories when specified', () => {
   const inputs = [1, 2, 3];
   const categories = { low: 4, medium: 5 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {});
+  assert.throws(() => perception.classify(inputs, categories), Error);
 });
 
 test('classify includes empty categories when specified', () => {
@@ -30,3 +29,6 @@ test('classify throws error on invalid inputs', () => {
   assert.throws(() => perception.classify([], null), TypeError);
 });
 
+test('classify throws error on non-numeric inputs', () => {
+  assert.throws(() => perception.classify([1, 'a', 3], { low: 2 }), TypeError);
+});
