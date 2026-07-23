@@ -83,9 +83,8 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   classifyWithEdgeCases(sensoryInputs, categories, includeEmpty = false) {
-    this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      return {};
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories object cannot be empty.');
     }
     return this.classify(sensoryInputs, categories, includeEmpty);
   }

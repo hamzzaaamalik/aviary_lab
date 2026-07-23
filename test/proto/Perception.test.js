@@ -15,10 +15,15 @@ test('classify handles invalid categories', () => {
   }, TypeError);
 });
 
+test('classify throws error for empty categories', () => {
+  assert.throws(() => {
+    perception.classifyWithEdgeCases([10, 20, 30], {});
+  }, TypeError);
+});
+
 test('classify returns expected categories', () => {
   const inputs = [10, 20, 30, 5];
   const categories = { categoryA: 10, categoryB: 25 };
   const result = perception.classifyWithEdgeCases(inputs, categories);
   assert.deepEqual(result, { categoryA: [10, 20, 30], categoryB: [30] });
 });
-
