@@ -25,4 +25,21 @@ test('classify excludes empty categories when not specified', () => {
   });
 });
 
-// Additional tests for detect and filter can go here.
+test('classify throws TypeError for invalid categories input', () => {
+  const inputs = [10, 20, 30];
+  assert.throws(() => perception.classify(inputs, 'invalid'), TypeError);
+});
+
+test('classify throws TypeError for non-numeric thresholds', () => {
+  const inputs = [10, 20, 30];
+  const categories = { high: 'invalid', low: 5 };
+  assert.throws(() => perception.classify(inputs, categories), TypeError);
+});
+
+test('detect throws TypeError for invalid inputs', () => {
+  assert.throws(() => perception.detect('invalid', 10), TypeError);
+});
+
+test('filter throws TypeError for invalid predicate', () => {
+  assert.throws(() => perception.filter([1, 2, 3], 'invalid'), TypeError);
+});
