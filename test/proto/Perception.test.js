@@ -4,33 +4,37 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
+test('categorize sensory inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 1, medium: 3, high: 5 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { low: [1, 2, 3, 4, 5], medium: [3, 4, 5], high: [5] });
+});
 
-test('classify handles empty categories gracefully', () => {
+test('categorize with empty categories', () => {
   const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.classify(inputs, categories);
+  const categories = { low: 1, medium: 5 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { low: [1, 2, 3] });
+});
+
+test('categorize with includeEmpty flag', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 1, medium: 5 };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, { low: [1, 2, 3], medium: [] });
+});
+
+// Edge case tests
+
+test('categorize with no inputs', () => {
+  const inputs = [];
+  const categories = { low: 1, medium: 3 };
+  const result = perception.categorize(inputs, categories);
   assert.deepEqual(result, {});
 });
 
-test('classify throws error for undefined thresholds', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: undefined };
-  assert.throws(() => perception.classify(inputs, categories), TypeError);
-});
-
-// Additional edge case tests for classify
-
-test('classify returns empty arrays for non-matching thresholds', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 5, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [], high: [] });
-});
-
-test('classify returns results based on thresholds', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 3, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [3, 4, 5], high: [4, 5] });
+test('categorize with invalid categories', () => {
+  assert.throws(() => perception.categorize([1, 2], null), TypeError);
+  assert.throws(() => perception.categorize([1, 2], { low: 'not a number' }), TypeError);
 });
