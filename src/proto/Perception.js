@@ -57,6 +57,9 @@ export class Perception {
    */
   classify(sensoryInputs, categories) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) {
+      return {};
+    }
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
@@ -80,18 +83,15 @@ export class Perception {
    */
   categorize(sensoryInputs, categories, includeEmpty = false) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) {
+      return includeEmpty ? Object.fromEntries(Object.keys(categories).map(category => [category, []])) : {};
+    }
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
     const categorized = {};
-    for (const [category, threshold] of Object.entries(categories)) {
-      if (typeof threshold !== 'number') {
-        throw new TypeError(`Threshold for ${category} must be a number.`);
-      }
-      const filtered = sensoryInputs.filter(input => input >= threshold);
-      if (filtered.length > 0 || includeEmpty) {
-        categorized[category] = filtered;
-      }
+    for (const category of Object.keys(categories)) {
+      categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
     }
     return categorized;
   }
