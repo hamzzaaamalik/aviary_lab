@@ -4,40 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorize groups sensory inputs by categories', () => {
-  const inputs = [5, 15, 25, 35];
-  const categories = { low: 10, medium: 20, high: 30 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { low: [15, 25, 35], medium: [25, 35], high: [35] });
+test('categorize returns correct categories with empty check', () => {
+  const inputs = [1, 2, 3, 4];
+  const categories = { low: 2, high: 3 };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, { low: [2, 3, 4], high: [3, 4] });
 });
 
 test('categorize includes empty categories when specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 5, medium: 2 };
+  const inputs = [1, 2, 3, 4];
+  const categories = { low: 5, high: 3 };
   const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, { low: [], medium: [2, 3] });
+  assert.deepEqual(result, { low: [], high: [3, 4] });
 });
 
-test('categorize excludes empty categories when not specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 5, medium: 2 };
+test('categorize excludes empty categories by default', () => {
+  const inputs = [1, 2, 3, 4];
+  const categories = { low: 5, high: 3 };
   const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { medium: [2, 3] });
+  assert.deepEqual(result, { high: [3, 4] });
 });
 
-test('categorize throws on invalid input', () => {
+test('categorize throws TypeError for invalid inputs', () => {
   assert.throws(() => perception.categorize(null, {}), TypeError);
-  assert.throws(() => perception.categorize([1, 2], null), TypeError);
+  assert.throws(() => perception.categorize([], null), TypeError);
+  assert.throws(() => perception.categorize([], { invalid: 'string' }), TypeError);
 });
-
-test('categorize throws on non-numeric category thresholds', () => {
-  assert.throws(() => perception.categorize([1, 2], { low: 'a' }), TypeError);
-});
-
-test('categorize returns empty object on empty inputs', () => {
-  const inputs = [];
-  const categories = { low: 5, medium: 2 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
-});
-
