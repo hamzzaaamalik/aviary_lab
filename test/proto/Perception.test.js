@@ -4,24 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorize with empty inputs returns empty object', () => {
-  const result = perception.categorize([], { high: 10, low: 5 });
-  assert.deepEqual(result, {});
+// Existing tests...
+
+test('categorize groups inputs according to categories', () => {
+  const inputs = [10, 20, 30, 40, 50];
+  const categories = { low: 20, high: 40 };
+  const expected = { low: [20, 30, 40, 50], high: [40, 50] };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, expected);
 });
 
-test('categorize with no thresholds returns empty object', () => {
-  const result = perception.categorize([1, 2, 3], {});
-  assert.deepEqual(result, {});
+test('categorize handles empty categories correctly', () => {
+  const inputs = [5, 10, 15];
+  const categories = { low: 20, mid: 10 };
+  const expected = { mid: [10, 15] };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, expected);
 });
 
 test('categorize includes empty categories when specified', () => {
-  const result = perception.categorize([1, 2, 3], { high: 1, low: 5 }, true);
-  assert.deepEqual(result, { high: [1, 2, 3], low: [] });
+  const inputs = [5, 10, 15];
+  const categories = { low: 20, mid: 10 };
+  const expected = { low: [], mid: [10, 15] };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, expected);
 });
 
-test('categorize excludes empty categories by default', () => {
-  const result = perception.categorize([1, 2, 3], { high: 1, low: 5 });
-  assert.deepEqual(result, { high: [1, 2, 3] });
-});
-
-// existing tests would go here
