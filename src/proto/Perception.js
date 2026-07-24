@@ -85,18 +85,22 @@ export class Perception {
     }
     const categorized = {};
     for (const category of Object.keys(categories)) {
-      const threshold = categories[category];
-      if (typeof threshold !== 'number') {
-        throw new TypeError(`Threshold for ${category} must be a number.`);
-      }
-      categorized[category] = sensoryInputs.filter(input => input >= threshold);
+      categorized[category] = [];
     }
-    if (!includeEmpty) {
-      Object.keys(categorized).forEach(cat => {
-        if (categorized[cat].length === 0) {
-          delete categorized[cat];
+    for (const input of sensoryInputs) {
+      for (const [category, threshold] of Object.entries(categories)) {
+        if (input >= threshold) {
+          categorized[category].push(input);
         }
-      });
+      }
+    }
+    // Include empty categories if requested
+    if (!includeEmpty) {
+      for (const category of Object.keys(categorized)) {
+        if (categorized[category].length === 0) {
+          delete categorized[category];
+        }
+      }
     }
     return categorized;
   }
