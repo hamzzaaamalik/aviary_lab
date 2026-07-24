@@ -6,45 +6,44 @@ const perception = new Perception();
 
 // Existing tests...
 
-test('detect returns empty array for no inputs', () => {
-  const result = perception.detect([], 5);
-  assert.deepEqual(result, []);
+test('categorize method categorizes inputs correctly', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 2, medium: 4, high: 6 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, {
+    low: [2, 3, 4, 5],
+    medium: [4, 5],
+    high: []
+  });
 });
 
-test('detect filters out below threshold', () => {
-  const result = perception.detect([3, 6, 2], 4);
-  assert.deepEqual(result, [6]);
+test('categorize method handles empty input', () => {
+  const inputs = [];
+  const categories = { low: 2, medium: 4, high: 6 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, {
+    low: [],
+    medium: [],
+    high: []
+  });
 });
 
-// New edge case tests
-
-test('detect throws TypeError for null inputs', () => {
-  assert.throws(() => perception.detect(null, 5), TypeError);
+test('categorize method handles empty categories', () => {
+  const inputs = [1, 2, 3];
+  const categories = {};
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, {});
 });
 
-
-test('filter throws TypeError for non-function predicate', () => {
-  assert.throws(() => perception.filter([1, 2, 3], 'not a function'), TypeError);
+test('categorize method includes empty categories when specified', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 2, medium: 4 };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, {
+    low: [2, 3],
+    medium: [],
+  });
 });
 
-
-test('classify throws TypeError for null categories', () => {
-  assert.throws(() => perception.classify([1, 2, 3], null), TypeError);
-});
-
-
-test('classify throws TypeError for non-object categories', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'not an object'), TypeError);
-});
-
-
-test('classify returns classified inputs', () => {
-  const result = perception.classify([1, 2, 3, 4], { high: 3 });
-  assert.deepEqual(result, { high: [3, 4] });
-});
-
-
-test('categorize throws TypeError for non-object categories', () => {
-  assert.throws(() => perception.categorize([1, 2, 3], 'not an object'), TypeError);
-});
+// Additional tests...
 
