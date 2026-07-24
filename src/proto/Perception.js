@@ -84,30 +84,11 @@ export class Perception {
       throw new TypeError('Categories must be an object.');
     }
     const categorized = {};
-    for (const category of Object.keys(categories)) {
+    for (const category in categories) {
       categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
       if (includeEmpty && categorized[category].length === 0) {
         categorized[category] = [];
       }
-    }
-    return categorized;
-  }
-
-  /**
-   * Categorize sensory inputs based on a set of predefined categories.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Categorized sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  categorize(sensoryInputs, categories) {
-    this.validateInputs(sensoryInputs);
-    if (typeof categories !== 'object' || categories === null) {
-      throw new TypeError('Categories must be an object.');
-    }
-    const categorized = {};
-    for (const category of Object.keys(categories)) {
-      categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
     }
     return categorized;
   }
