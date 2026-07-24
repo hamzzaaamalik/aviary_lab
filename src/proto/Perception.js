@@ -88,11 +88,12 @@ export class Perception {
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
-      const filtered = sensoryInputs.filter(input => input >= threshold);
-      if (filtered.length > 0 || includeEmpty) {
-        categorized[category] = filtered;
+      const filteredInputs = sensoryInputs.filter(input => input >= threshold);
+      if (filteredInputs.length > 0 || includeEmpty) {
+        categorized[category] = filteredInputs;
       }
     }
     return categorized;
   }
 } 
+
