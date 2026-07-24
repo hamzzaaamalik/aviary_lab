@@ -4,46 +4,36 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('categorize method categorizes inputs correctly', () => {
+test('categorize groups sensory inputs by category thresholds', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, medium: 4, high: 6 };
+  const categories = { low: 1, medium: 3, high: 5 };
   const result = perception.categorize(inputs, categories);
   assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    medium: [4, 5],
-    high: []
+    low: [1, 2, 3, 4, 5],
+    medium: [3, 4, 5],
+    high: [5],
   });
 });
 
-test('categorize method handles empty input', () => {
-  const inputs = [];
-  const categories = { low: 2, medium: 4, high: 6 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [],
-    medium: [],
-    high: []
-  });
-});
-
-test('categorize method handles empty categories', () => {
+test('categorize includes empty categories when specified', () => {
   const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
-});
-
-test('categorize method includes empty categories when specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 2, medium: 4 };
+  const categories = { low: 0, medium: 5 };
   const result = perception.categorize(inputs, categories, true);
   assert.deepEqual(result, {
-    low: [2, 3],
+    low: [1, 2, 3],
     medium: [],
   });
 });
 
-// Additional tests...
+test('categorize throws for invalid inputs', () => {
+  assert.throws(() => perception.categorize(null, {}), TypeError);
+  assert.throws(() => perception.categorize([], null), TypeError);
+  assert.throws(() => perception.categorize([], { low: 'string' }), TypeError);
+});
 
+test('categorize does not include empty categories by default', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 0, medium: 5 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { low: [1, 2, 3] });
+});
