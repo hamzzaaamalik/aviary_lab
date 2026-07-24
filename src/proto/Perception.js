@@ -60,6 +60,9 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories must not be empty.');
+    }
     const classified = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number') {
@@ -89,14 +92,10 @@ export class Perception {
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
-      categorized[category] = sensoryInputs.filter(input => input >= threshold);
-    }
-    if (!includeEmpty) {
-      Object.keys(categorized).forEach(cat => {
-        if (categorized[cat].length === 0) {
-          delete categorized[cat];
-        }
-      });
+      const filtered = sensoryInputs.filter(input => input >= threshold);
+      if (filtered.length > 0 || includeEmpty) {
+        categorized[category] = filtered;
+      }
     }
     return categorized;
   }
