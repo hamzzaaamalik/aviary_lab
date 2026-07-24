@@ -14,4 +14,17 @@ test('categorize includes empty categories when specified', () => {
   assert.deepEqual(result, { noise: [] });
 });
 
+test('categorize correctly classifies inputs based on categories', () => {
+  const result = perception.categorize([1, 2, 3], { low: 1, high: 2 });
+  assert.deepEqual(result, { low: [1, 2, 3], high: [2, 3] });
+});
+
+test('categorize throws TypeError for invalid categories', () => {
+  assert.throws(() => perception.categorize([1, 2, 3], 'invalid'), TypeError);
+});
+
+test('categorize throws TypeError for non-number threshold', () => {
+  assert.throws(() => perception.categorize([1, 2, 3], { low: 'invalid' }), TypeError);
+});
+
 // Add other existing tests for detect, filter, classify methods...
