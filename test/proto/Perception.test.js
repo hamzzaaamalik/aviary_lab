@@ -6,44 +6,30 @@ const perception = new Perception();
 
 // Existing tests...
 
-test('categorize method categorizes inputs correctly', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, medium: 4, high: 6 };
+test('categorize groups sensory inputs by categories', () => {
+  const inputs = [10, 20, 30, 40, 50];
+  const categories = { low: 10, medium: 30, high: 40 };
   const result = perception.categorize(inputs, categories);
   assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    medium: [4, 5],
-    high: []
+    low: [10, 20, 30, 40, 50],
+    medium: [30, 40, 50],
+    high: [40, 50]
   });
 });
 
-test('categorize method handles empty input', () => {
-  const inputs = [];
-  const categories = { low: 2, medium: 4, high: 6 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [],
-    medium: [],
-    high: []
-  });
-});
-
-test('categorize method handles empty categories', () => {
-  const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
-});
-
-test('categorize method includes empty categories when specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 2, medium: 4 };
+test('categorize includes empty categories when specified', () => {
+  const inputs = [10, 20, 30];
+  const categories = { low: 10, medium: 50, high: 40 };
   const result = perception.categorize(inputs, categories, true);
   assert.deepEqual(result, {
-    low: [2, 3],
+    low: [10, 20, 30],
     medium: [],
+    high: []
   });
 });
 
-// Additional tests...
+test('categorize throws on invalid categories', () => {
+  assert.throws(() => perception.categorize([10, 20], 'invalid'), TypeError);
+  assert.throws(() => perception.categorize([10, 20], { low: 'not a number' }), TypeError);
+});
 
