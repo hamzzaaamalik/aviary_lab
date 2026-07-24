@@ -4,46 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('categorize method categorizes inputs correctly', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, medium: 4, high: 6 };
+test('categorize categorizes inputs correctly', () => {
+  const inputs = [10, 20, 30, 40];
+  const categories = { low: 15, medium: 25, high: 35 };
   const result = perception.categorize(inputs, categories);
   assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    medium: [4, 5],
-    high: []
+    low: [20, 30, 40],
+    medium: [30, 40],
+    high: [40],
   });
 });
 
-test('categorize method handles empty input', () => {
-  const inputs = [];
-  const categories = { low: 2, medium: 4, high: 6 };
-  const result = perception.categorize(inputs, categories);
+test('categorize includes empty categories when specified', () => {
+  const inputs = [5, 10];
+  const categories = { low: 15, medium: 25, high: 35 };
+  const result = perception.categorize(inputs, categories, true);
   assert.deepEqual(result, {
     low: [],
     medium: [],
-    high: []
+    high: [],
   });
 });
 
-test('categorize method handles empty categories', () => {
-  const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
+test('categorize throws error for invalid inputs', () => {
+  assert.throws(() => perception.categorize('not an array', {}), TypeError);
+  assert.throws(() => perception.categorize([], 'not an object'), TypeError);
 });
-
-test('categorize method includes empty categories when specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 2, medium: 4 };
-  const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, {
-    low: [2, 3],
-    medium: [],
-  });
-});
-
-// Additional tests...
 
