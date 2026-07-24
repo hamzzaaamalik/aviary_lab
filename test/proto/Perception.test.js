@@ -28,3 +28,19 @@ test('classify method handles empty inputs', () => {
   assert.deepEqual(result, { low: [] });
 });
 
+// Edge case tests
+
+test('classify method handles empty categories', () => {
+  const inputs = [10, 20, 30];
+  const categories = {};
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {});
+});
+
+
+test('classify method throws TypeError for non-numeric thresholds', () => {
+  const inputs = [10, 20, 30];
+  const categories = { low: 'string', medium: 15 };
+  assert.throws(() => perception.classify(inputs, categories), TypeError);
+});
+
