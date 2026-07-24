@@ -4,22 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorize groups inputs into categories', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 1, medium: 3, high: 5 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { low: [1, 2, 3, 4, 5], medium: [3, 4, 5], high: [5] });
+test('categorize returns correct categories with empty check', () => {
+  const inputs = [1, 2, 3, 4];
+  const categories = { low: 2, high: 3 };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, { low: [2, 3, 4], high: [3, 4] });
 });
 
 test('categorize includes empty categories when specified', () => {
-  const inputs = [1, 2];
-  const categories = { low: 1, medium: 3, high: 5 };
+  const inputs = [1, 2, 3, 4];
+  const categories = { low: 5, high: 3 };
   const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, { low: [1, 2], medium: [], high: [] });
+  assert.deepEqual(result, { low: [], high: [3, 4] });
 });
 
-test('categorize throws on invalid inputs', () => {
-  assert.throws(() => perception.categorize('not an array', {}), TypeError);
-  assert.throws(() => perception.categorize([1, 2], 'not an object'), TypeError);
+test('categorize excludes empty categories by default', () => {
+  const inputs = [1, 2, 3, 4];
+  const categories = { low: 5, high: 3 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { high: [3, 4] });
 });
 
+test('categorize throws TypeError for invalid inputs', () => {
+  assert.throws(() => perception.categorize(null, {}), TypeError);
+  assert.throws(() => perception.categorize([], null), TypeError);
+  assert.throws(() => perception.categorize([], { invalid: 'string' }), TypeError);
+});
