@@ -91,6 +91,6 @@ export class Perception {
       }
       categorized[category] = sensoryInputs.filter(input => input >= threshold);
     }
-    return includeEmpty ? categorized : Object.fromEntries(Object.entries(categorized).filter(([, value]) => value.length > 0));
+    return includeEmpty ? categorized : Object.fromEntries(Object.entries(categorized).filter(([_, v]) => v.length > 0));
   }
 }
