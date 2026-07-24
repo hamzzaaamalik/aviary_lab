@@ -4,46 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('categorize method categorizes inputs correctly', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, medium: 4, high: 6 };
+test('categorize inputs by thresholds', () => {
+  const inputs = [5, 10, 15, 20];
+  const categories = { low: 5, medium: 15, high: 20 };
   const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    medium: [4, 5],
-    high: []
-  });
+  assert.deepEqual(result, { low: [5, 10, 15, 20], medium: [15, 20], high: [20] });
 });
 
-test('categorize method handles empty input', () => {
-  const inputs = [];
-  const categories = { low: 2, medium: 4, high: 6 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [],
-    medium: [],
-    high: []
-  });
-});
-
-test('categorize method handles empty categories', () => {
+test('categorize inputs with empty categories', () => {
   const inputs = [1, 2, 3];
-  const categories = {};
+  const categories = { low: 5, medium: 10 };
   const result = perception.categorize(inputs, categories);
   assert.deepEqual(result, {});
 });
 
-test('categorize method includes empty categories when specified', () => {
+test('categorize inputs with includeEmpty flag', () => {
   const inputs = [1, 2, 3];
-  const categories = { low: 2, medium: 4 };
+  const categories = { low: 5, medium: 10 };
   const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, {
-    low: [2, 3],
-    medium: [],
-  });
+  assert.deepEqual(result, { low: [], medium: [] });
 });
 
-// Additional tests...
-
+test('categorize throws on invalid inputs', () => {
+  assert.throws(() => perception.categorize('invalid', {}), TypeError);
+  assert.throws(() => perception.categorize([], 'invalid'), TypeError);
+  assert.throws(() => perception.categorize([], null), TypeError);
+});
