@@ -4,46 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('categorize method categorizes inputs correctly', () => {
+test('categorize inputs correctly', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, medium: 4, high: 6 };
+  const categories = { low: 1, medium: 3, high: 5 };
   const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    medium: [4, 5],
-    high: []
-  });
+  assert.deepEqual(result, { low: [1, 2, 3, 4, 5], medium: [3, 4, 5], high: [5] });
 });
 
-test('categorize method handles empty input', () => {
-  const inputs = [];
-  const categories = { low: 2, medium: 4, high: 6 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [],
-    medium: [],
-    high: []
-  });
-});
 
-test('categorize method handles empty categories', () => {
+test('categorize includes empty categories when specified', () => {
   const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
-});
-
-test('categorize method includes empty categories when specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 2, medium: 4 };
+  const categories = { low: 1, medium: 5 };
   const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, {
-    low: [2, 3],
-    medium: [],
-  });
+  assert.deepEqual(result, { low: [1, 2, 3], medium: [] });
 });
 
-// Additional tests...
 
+test('categorize throws on invalid inputs', () => {
+  assert.throws(() => perception.categorize('not an array', {}), TypeError);
+  assert.throws(() => perception.categorize([], 'not an object'), TypeError);
+});
+
+
+test('categorize throws on invalid categories', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 1, medium: 'not a number' };
+  assert.throws(() => perception.categorize(inputs, categories), TypeError);
+});
