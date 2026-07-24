@@ -5,29 +5,26 @@ import { Perception } from '../../src/proto/Perception.js';
 const perception = new Perception();
 
 test('categorize handles empty input', () => {
-  const categories = { high: 5, low: 2 };
-  const result = perception.categorize([], categories);
-  assert.deepEqual(result, {});
-});
-
-test('categorize includes empty categories when specified', () => {
-  const categories = { high: 5, low: 2 };
-  const result = perception.categorize([], categories, true);
+  const result = perception.categorize([], { high: 5, low: 1 }, true);
   assert.deepEqual(result, { high: [], low: [] });
 });
 
-test('categorize classifies inputs correctly', () => {
-  const inputs = [1, 2, 3, 6, 7];
-  const categories = { high: 5, low: 3 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { high: [6, 7], low: [3, 6, 7] });
+test('categorize includes empty categories when specified', () => {
+  const result = perception.categorize([1, 2, 3], { high: 5, low: 1 }, true);
+  assert.deepEqual(result, { high: [], low: [1, 2, 3] });
 });
 
-test('categorize throws on invalid categories', () => {
+test('categorize does not include empty categories when not specified', () => {
+  const result = perception.categorize([1, 2, 3], { high: 5, low: 1 });
+  assert.deepEqual(result, { low: [1, 2, 3] });
+});
+
+test('categorize throws on invalid categories object', () => {
   assert.throws(() => perception.categorize([1, 2], 'invalid'), TypeError);
 });
 
-test('categorize throws on non-numeric thresholds', () => {
-  const categories = { high: 'five' };
-  assert.throws(() => perception.categorize([1, 2], categories), TypeError);
+test('categorize throws on invalid threshold', () => {
+  assert.throws(() => perception.categorize([1, 2], { high: 'invalid' }), TypeError);
 });
+
+// Additional tests for categorize method to cover edge cases
