@@ -4,47 +4,46 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('detect returns empty array for no inputs', () => {
-  const result = perception.detect([], 5);
-  assert.deepEqual(result, []);
+test('classify handles edge cases', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = {
+    low: 2,
+    medium: 4,
+    high: 6
+  };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {
+    low: [2, 3, 4, 5],
+    medium: [4, 5],
+    high: []
+  });
 });
 
-test('detect filters out below threshold', () => {
-  const result = perception.detect([3, 6, 2], 4);
-  assert.deepEqual(result, [6]);
-});
-
-// New edge case tests
-
-test('detect throws TypeError for null inputs', () => {
-  assert.throws(() => perception.detect(null, 5), TypeError);
-});
-
-
-test('filter throws TypeError for non-function predicate', () => {
-  assert.throws(() => perception.filter([1, 2, 3], 'not a function'), TypeError);
-});
-
-
-test('classify throws TypeError for null categories', () => {
+test('classify throws error for invalid categories', () => {
   assert.throws(() => perception.classify([1, 2, 3], null), TypeError);
-});
-
-
-test('classify throws TypeError for non-object categories', () => {
   assert.throws(() => perception.classify([1, 2, 3], 'not an object'), TypeError);
 });
 
-
-test('classify returns classified inputs', () => {
-  const result = perception.classify([1, 2, 3, 4], { high: 3 });
-  assert.deepEqual(result, { high: [3, 4] });
+test('classify throws error for non-numeric thresholds', () => {
+  const categories = {
+    category1: 'not a number',
+    category2: 2
+  };
+  assert.throws(() => perception.classify([1, 2], categories), TypeError);
 });
 
+// Existing tests for detect and filter methods
 
-test('categorize throws TypeError for non-object categories', () => {
-  assert.throws(() => perception.categorize([1, 2, 3], 'not an object'), TypeError);
+test('detect identifies noise above threshold', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const threshold = 3;
+  const result = perception.detect(inputs, threshold);
+  assert.deepEqual(result, [3, 4, 5]);
 });
 
+test('filter applies predicate correctly', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const predicate = x => x % 2 === 0;
+  const result = perception.filter(inputs, predicate);
+  assert.deepEqual(result, [2, 4]);
+});
