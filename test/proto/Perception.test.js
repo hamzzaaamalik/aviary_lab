@@ -4,24 +4,22 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorize with empty inputs returns empty object', () => {
-  const result = perception.categorize([], { high: 10, low: 5 });
-  assert.deepEqual(result, {});
-});
-
-test('categorize with no thresholds returns empty object', () => {
-  const result = perception.categorize([1, 2, 3], {});
-  assert.deepEqual(result, {});
+test('categorize groups sensory inputs into categories', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 2, high: 4 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
 test('categorize includes empty categories when specified', () => {
-  const result = perception.categorize([1, 2, 3], { high: 1, low: 5 }, true);
-  assert.deepEqual(result, { high: [1, 2, 3], low: [] });
+  const inputs = [1, 2];
+  const categories = { low: 3, high: 0 };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, { low: [], high: [1, 2] });
 });
 
-test('categorize excludes empty categories by default', () => {
-  const result = perception.categorize([1, 2, 3], { high: 1, low: 5 });
-  assert.deepEqual(result, { high: [1, 2, 3] });
+test('categorize throws on invalid inputs', () => {
+  assert.throws(() => perception.categorize('not an array', {}), TypeError);
+  assert.throws(() => perception.categorize([], 'not an object'), TypeError);
+  assert.throws(() => perception.categorize([], { valid: 'not a number' }), TypeError);
 });
-
-// existing tests would go here
