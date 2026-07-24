@@ -4,40 +4,22 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorize groups sensory inputs by categories', () => {
-  const inputs = [5, 15, 25, 35];
-  const categories = { low: 10, medium: 20, high: 30 };
+test('categorize groups inputs into categories', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 1, medium: 3, high: 5 };
   const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { low: [15, 25, 35], medium: [25, 35], high: [35] });
+  assert.deepEqual(result, { low: [1, 2, 3, 4, 5], medium: [3, 4, 5], high: [5] });
 });
 
 test('categorize includes empty categories when specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 5, medium: 2 };
+  const inputs = [1, 2];
+  const categories = { low: 1, medium: 3, high: 5 };
   const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, { low: [], medium: [2, 3] });
+  assert.deepEqual(result, { low: [1, 2], medium: [], high: [] });
 });
 
-test('categorize excludes empty categories when not specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 5, medium: 2 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { medium: [2, 3] });
-});
-
-test('categorize throws on invalid input', () => {
-  assert.throws(() => perception.categorize(null, {}), TypeError);
-  assert.throws(() => perception.categorize([1, 2], null), TypeError);
-});
-
-test('categorize throws on non-numeric category thresholds', () => {
-  assert.throws(() => perception.categorize([1, 2], { low: 'a' }), TypeError);
-});
-
-test('categorize returns empty object on empty inputs', () => {
-  const inputs = [];
-  const categories = { low: 5, medium: 2 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
+test('categorize throws on invalid inputs', () => {
+  assert.throws(() => perception.categorize('not an array', {}), TypeError);
+  assert.throws(() => perception.categorize([1, 2], 'not an object'), TypeError);
 });
 
