@@ -31,3 +31,14 @@ test('categorize throws error for invalid inputs', () => {
   assert.throws(() => perception.categorize([], 'not an object'), TypeError);
 });
 
+test('categorize handles empty input gracefully', () => {
+  const inputs = [];
+  const categories = { low: 15, medium: 25, high: 35 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, {
+    low: [],
+    medium: [],
+    high: [],
+  });
+});
+
