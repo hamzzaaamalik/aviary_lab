@@ -4,46 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('categorize method categorizes inputs correctly', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, medium: 4, high: 6 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    medium: [4, 5],
-    high: []
-  });
+test('categorize correctly categorizes sensory inputs', () => {
+  const sensoryInputs = [10, 20, 30, 40, 50];
+  const categories = { low: 15, medium: 35, high: 45 };
+  const result = perception.categorize(sensoryInputs, categories);
+  assert.deepEqual(result, { low: [20, 30, 40, 50], medium: [40, 50], high: [50] });
 });
 
-test('categorize method handles empty input', () => {
-  const inputs = [];
-  const categories = { low: 2, medium: 4, high: 6 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [],
-    medium: [],
-    high: []
-  });
+test('categorize includes empty categories when specified', () => {
+  const sensoryInputs = [10, 20, 30];
+  const categories = { low: 15, medium: 35, high: 45 };
+  const result = perception.categorize(sensoryInputs, categories, true);
+  assert.deepEqual(result, { low: [20, 30], medium: [], high: [] });
 });
 
-test('categorize method handles empty categories', () => {
-  const inputs = [1, 2, 3];
-  const categories = {};
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
+test('categorize throws on invalid categories', () => {
+  assert.throws(() => perception.categorize([10, 20], 'not an object'), TypeError);
 });
 
-test('categorize method includes empty categories when specified', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 2, medium: 4 };
-  const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, {
-    low: [2, 3],
-    medium: [],
-  });
+test('categorize throws on invalid sensory inputs', () => {
+  assert.throws(() => perception.categorize('not an array', { low: 15 }), TypeError);
 });
-
-// Additional tests...
-
