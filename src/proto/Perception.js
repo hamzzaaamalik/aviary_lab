@@ -89,7 +89,7 @@ export class Perception {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
       categorized[category] = sensoryInputs.filter(input => input >= threshold);
-      if (!categorized[category].length && includeEmpty) {
+      if (includeEmpty && categorized[category].length === 0) {
         categorized[category] = [];
       }
     }
