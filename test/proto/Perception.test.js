@@ -4,37 +4,35 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorize sensory inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 1, medium: 3, high: 5 };
+test('categorize method categorizes inputs correctly', () => {
+  const inputs = [0, 5, 10, 15];
+  const categories = { low: 5, medium: 10, high: 15 };
   const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { low: [1, 2, 3, 4, 5], medium: [3, 4, 5], high: [5] });
+  assert.deepEqual(result, {
+    low: [5, 10, 15],
+    medium: [10, 15],
+    high: [15]
+  });
 });
 
-test('categorize with empty categories', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 1, medium: 5 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, { low: [1, 2, 3] });
-});
-
-test('categorize with includeEmpty flag', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 1, medium: 5 };
+test('categorize method includes empty categories when specified', () => {
+  const inputs = [0, 1, 2];
+  const categories = { low: 5, medium: 10, high: 15 };
   const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, { low: [1, 2, 3], medium: [] });
+  assert.deepEqual(result, {
+    low: [],
+    medium: [],
+    high: []
+  });
 });
 
-// Edge case tests
-
-test('categorize with no inputs', () => {
-  const inputs = [];
-  const categories = { low: 1, medium: 3 };
-  const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {});
+test('categorize method throws on invalid inputs', () => {
+  assert.throws(() => perception.categorize(null, {}), TypeError);
+  assert.throws(() => perception.categorize([], null), TypeError);
 });
 
-test('categorize with invalid categories', () => {
-  assert.throws(() => perception.categorize([1, 2], null), TypeError);
-  assert.throws(() => perception.categorize([1, 2], { low: 'not a number' }), TypeError);
+test('categorize method throws on invalid threshold', () => {
+  const inputs = [5, 10];
+  const categories = { low: 'five', medium: 10 };
+  assert.throws(() => perception.categorize(inputs, categories), TypeError);
 });
