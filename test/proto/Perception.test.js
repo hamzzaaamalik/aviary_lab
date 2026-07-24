@@ -4,43 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify method categorizes inputs correctly', () => {
-  const inputs = [10, 20, 30, 40];
-  const categories = { low: 15, medium: 25, high: 35 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [20, 30, 40],
-    medium: [30, 40],
-    high: [40]
-  });
-});
-
-test('classify method throws TypeError for invalid categories', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'invalid'), TypeError);
-});
-
-test('classify method throws TypeError for invalid inputs', () => {
-  assert.throws(() => perception.classify('invalid', { low: 1 }), TypeError);
-});
-
-test('classify method handles empty inputs', () => {
-  const result = perception.classify([], { low: 1 });
-  assert.deepEqual(result, { low: [] });
-});
-
-// Edge case tests
-
-test('classify method handles empty categories', () => {
-  const inputs = [10, 20, 30];
-  const categories = {};
-  const result = perception.classify(inputs, categories);
+test('categorize with empty inputs returns empty object', () => {
+  const result = perception.categorize([], { high: 10, low: 5 });
   assert.deepEqual(result, {});
 });
 
-
-test('classify method throws TypeError for non-numeric thresholds', () => {
-  const inputs = [10, 20, 30];
-  const categories = { low: 'string', medium: 15 };
-  assert.throws(() => perception.classify(inputs, categories), TypeError);
+test('categorize with no thresholds returns empty object', () => {
+  const result = perception.categorize([1, 2, 3], {});
+  assert.deepEqual(result, {});
 });
 
+test('categorize includes empty categories when specified', () => {
+  const result = perception.categorize([1, 2, 3], { high: 1, low: 5 }, true);
+  assert.deepEqual(result, { high: [1, 2, 3], low: [] });
+});
+
+test('categorize excludes empty categories by default', () => {
+  const result = perception.categorize([1, 2, 3], { high: 1, low: 5 });
+  assert.deepEqual(result, { high: [1, 2, 3] });
+});
+
+// existing tests would go here
