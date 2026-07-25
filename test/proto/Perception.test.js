@@ -27,3 +27,14 @@ test('classify throws error for non-finite threshold', () => {
   assert.throws(() => perception.classify([1], { low: NaN }), TypeError);
   assert.throws(() => perception.classify([1], { low: Infinity }), TypeError);
 });
+
+test('classify handles multiple categories', () => {
+  const inputs = [1, 2, 3, 4, 5, 6];
+  const categories = { low: 3, medium: 5 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {
+    low: { inputs: [3, 4, 5, 6], count: 4 },
+    medium: { inputs: [5, 6], count: 2 }
+  });
+});
+
