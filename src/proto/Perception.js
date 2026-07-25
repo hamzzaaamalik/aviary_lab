@@ -75,5 +75,23 @@ export class Perception {
     }
     return classified;
   }
-}
 
+  /**
+   * Classify sensory inputs with additional granularity using ranges.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @returns {Object} - Classified sensory inputs with ranges.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithRanges(sensoryInputs, categories) {
+    this.validateInputs(sensoryInputs);
+    const classified = {};
+    for (const [category, { min, max }] of Object.entries(categories)) {
+      if (typeof min !== 'number' || typeof max !== 'number' || !Number.isFinite(min) || !Number.isFinite(max)) {
+        throw new TypeError(`Thresholds for ${category} must be finite numbers.`);
+      }
+      classified[category] = sensoryInputs.filter(input => input >= min && input <= max);
+    }
+    return classified;
+  }
+}
