@@ -79,15 +79,5 @@ export class Perception {
     }
     return classified;
   }
-
-  /**
-   * Classify sensory inputs with counts based on predefined categories.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Classified sensory inputs with counts.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  classifyWithCounts(sensoryInputs, categories) {
-    return this.classify(sensoryInputs, categories);
-  }
 }
+
