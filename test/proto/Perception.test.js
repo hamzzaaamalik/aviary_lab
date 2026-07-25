@@ -4,24 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('categorize throws TypeError for empty inputs', () => {
-  assert.throws(() => {
-    perception.categorize([], { high: 5 });
-  }, { message: 'Sensory inputs cannot be empty.' });
+test('classify handles empty categories', () => {
+  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError, 'Categories cannot be an empty object.');
 });
 
-test('categorize throws TypeError for invalid categories input', () => {
-  assert.throws(() => {
-    perception.categorize([1, 2, 3], null);
-  }, { message: 'Categories must be an object.' });
+test('classify throws on non-number thresholds', () => {
+  assert.throws(() => perception.classify([1, 2, 3], { low: 'not-a-number' }), TypeError, 'Threshold for low must be a number.');
 });
 
-test('categorize returns categorized inputs', () => {
-  const result = perception.categorize([1, 2, 3, 4, 5], { low: 1, medium: 3, high: 5 });
-  assert.deepEqual(result, { low: [1, 2, 3, 4, 5], medium: [3, 4, 5], high: [5] });
+test('classify works with valid inputs', () => {
+  const result = perception.classify([1, 2, 3, 4], { low: 2, high: 3 });
+  assert.deepEqual(result, { low: [2, 3, 4], high: [3, 4] });
 });
 
-test('categorize includes empty categories when specified', () => {
-  const result = perception.categorize([1, 2, 3], { low: 1, medium: 5 }, true);
-  assert.deepEqual(result, { low: [1, 2, 3], medium: [] });
+test('classify throws on empty sensory inputs', () => {
+  assert.throws(() => perception.classify([], { low: 1 }), TypeError, 'Sensory inputs cannot be empty.');
+});
+
+test('detect noise', () => {
+  const noise = perception.detect([0.5, 1.5, 2.5], 1);
+  assert.deepEqual(noise, [1.5, 2.5]);
+});
+
+test('filter inputs', () => {
+  const filtered = perception.filter([1, 2, 3], x => x > 1);
+  assert.deepEqual(filtered, [2, 3]);
 });
