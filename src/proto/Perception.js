@@ -66,14 +66,14 @@ export class Perception {
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
+
     const classified = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
         throw new TypeError(`Threshold for ${category} must be a finite number.`);
       }
-      classified[category] = sensoryInputs.filter(input => input >= threshold);
+      classified[category] = this.detect(sensoryInputs, threshold);
     }
     return classified;
   }
-
 }
