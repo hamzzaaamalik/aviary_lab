@@ -4,28 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classifyWithCounts classifies inputs with counts', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, high: 4 };
+test('classifyWithCounts handles valid input', () => {
+  const inputs = [10, 20, 30, 40];
+  const categories = { high: 20, low: 10 };
   const result = perception.classifyWithCounts(inputs, categories);
-  assert.deepEqual(result, {
-    low: { inputs: [2, 3, 4, 5], count: 4 },
-    high: { inputs: [4, 5], count: 2 }
+  assert.deepEqual(result, { 
+    high: { count: 3, inputs: [20, 30, 40] },
+    low: { count: 4, inputs: [10, 20, 30, 40] }
   });
 });
 
 test('classifyWithCounts throws on empty inputs', () => {
-  assert.throws(() => perception.classifyWithCounts([], { low: 1 }), TypeError);
+  assert.throws(() => perception.classifyWithCounts([], { high: 10 }), TypeError);
 });
 
-test('classifyWithCounts throws on invalid categories', () => {
-  assert.throws(() => perception.classifyWithCounts([1], 'invalid'), TypeError);
+test('classifyWithCounts throws on non-object categories', () => {
+  assert.throws(() => perception.classifyWithCounts([1, 2, 3], null), TypeError);
+  assert.throws(() => perception.classifyWithCounts([1, 2, 3], 'string'), TypeError);
 });
 
 test('classifyWithCounts throws on empty categories', () => {
-  assert.throws(() => perception.classifyWithCounts([1], {}), TypeError);
+  assert.throws(() => perception.classifyWithCounts([1, 2, 3], {}), TypeError);
 });
 
 test('classifyWithCounts throws on invalid threshold', () => {
-  assert.throws(() => perception.classifyWithCounts([1], { low: 'invalid' }), TypeError);
+  const categories = { valid: 10, invalid: NaN };
+  assert.throws(() => perception.classifyWithCounts([1, 2, 3], categories), TypeError);
 });
