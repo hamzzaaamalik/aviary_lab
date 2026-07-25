@@ -32,3 +32,9 @@ test('classifyWithCounts correctly categorizes inputs with counts', () => {
   assert.deepEqual(perception.classifyWithCounts(inputs, categories), expected);
 });
 
+test('classifyWithCounts throws for invalid thresholds', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 1, invalid: NaN };
+  assert.throws(() => perception.classifyWithCounts(inputs, categories), TypeError);
+});
+
