@@ -75,5 +75,23 @@ export class Perception {
     }
     return classified;
   }
-}
 
+  /**
+   * Enhanced classify method with additional logic for categorization and info.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @returns {Object} - Classified sensory inputs with additional info.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  enhancedClassify(sensoryInputs, categories) {
+    const classified = this.classify(sensoryInputs, categories);
+    const additionalInfo = {};
+    for (const [category, inputs] of Object.entries(classified)) {
+      additionalInfo[category] = {
+        count: inputs.length,
+        average: inputs.length > 0 ? inputs.reduce((sum, val) => sum + val, 0) / inputs.length : 0
+      };
+    }
+    return { classified, additionalInfo };
+  }
+}
