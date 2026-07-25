@@ -69,7 +69,7 @@ export class Perception {
     const classified = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError(`Threshold for ${category} must be a finite number.`);
+        throw new TypeError(`Threshold for '${category}' must be a finite number.`);
       }
       classified[category] = sensoryInputs.filter(input => input >= threshold);
     }
