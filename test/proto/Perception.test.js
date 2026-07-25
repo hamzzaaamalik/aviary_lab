@@ -15,7 +15,7 @@ test('categorize includes empty categories when specified', () => {
   const inputs = [10, 20];
   const categories = { low: 0, medium: 30 };
   const expected = { low: [10, 20], medium: [] };
-  assert.deepEqual(perception.categorize(inputs, categories, true), expected);
+  assert.deepEqual(perception.categorize(inputs, categories), expected);
 });
 
 test('categorize throws for invalid input', () => {
@@ -29,3 +29,9 @@ test('categorize throws for non-numeric thresholds', () => {
   assert.throws(() => perception.categorize(inputs, categories), TypeError);
 });
 
+test('categorize handles empty inputs gracefully', () => {
+  const inputs = [];
+  const categories = { low: 0, medium: 25 };
+  const expected = { low: [], medium: [] };
+  assert.deepEqual(perception.categorize(inputs, categories), expected);
+});
