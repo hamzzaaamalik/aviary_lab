@@ -91,17 +91,18 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
-    if (Object.keys(categories).length === 0) {
-      throw new TypeError('Categories cannot be an empty object.');
-    }
     const classified = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
         throw new TypeError(`Threshold for ${category} must be a finite number.`);
       }
-      const filtered = sensoryInputs.filter(input => input >= threshold);
-      classified[category] = { count: filtered.length, inputs: filtered };
+      classified[category] = {
+        inputs: sensoryInputs.filter(input => input >= threshold),
+        count: sensoryInputs.filter(input => input >= threshold).length
+      };
     }
     return classified;
   }
 }
+
+
