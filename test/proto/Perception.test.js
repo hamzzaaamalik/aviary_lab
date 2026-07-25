@@ -26,3 +26,4 @@ test('classify throws on empty categories', () => {
 test('classify throws on invalid threshold', () => {
   assert.throws(() => perception.classify([1], { invalid: 'not a number' }), TypeError);
 });
+
