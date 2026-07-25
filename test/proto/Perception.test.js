@@ -29,3 +29,25 @@ test('classify throws on non-finite thresholds', () => {
   assert.throws(() => perception.classify([10], categories), TypeError, 'Threshold for invalid must be a finite number.');
 });
 
+// Additional edge case tests for classify method
+
+test('classify handles threshold equal to input', () => {
+  const inputs = [10, 20, 30];
+  const categories = { equal: 20 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { equal: [20, 30] });
+});
+
+test('classify handles negative thresholds', () => {
+  const inputs = [10, -5, 15];
+  const categories = { negative: -10 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { negative: [10, -5, 15] });
+});
+
+test('classify handles all inputs below threshold', () => {
+  const inputs = [1, 2, 3];
+  const categories = { high: 5 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { high: [] });
+});
