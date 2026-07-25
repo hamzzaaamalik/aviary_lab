@@ -25,3 +25,15 @@ test('Perception.categorize throws on invalid inputs', () => {
   assert.throws(() => perception.categorize([1, 2, 3], { low: 'not-a-number' }), TypeError);
 });
 
+// New edge case tests for empty categories
+
+test('Perception.categorize throws on empty categories', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorize([1, 2, 3], {}), TypeError);
+});
+
+test('Perception.categorize throws on null categories', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.categorize([1, 2, 3], null), TypeError);
+});
+

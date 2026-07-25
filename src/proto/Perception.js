@@ -81,7 +81,7 @@ export class Perception {
   }
 
   /**
-   * Categorize sensory inputs based on dynamic categories and thresholds.
+   * Categorize sensory inputs based on provided categories.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @returns {Object} - Categorized sensory inputs.
@@ -95,14 +95,17 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories cannot be an empty object.');
+    }
     const categorized = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
         throw new TypeError(`Threshold for ${category} must be a finite number.`);
       }
-      const categorizedInputs = sensoryInputs.filter(input => input >= threshold);
-      categorized[category] = categorizedInputs;
+      categorized[category] = sensoryInputs.filter(input => input >= threshold);
     }
     return categorized;
   }
-}
+} 
+
