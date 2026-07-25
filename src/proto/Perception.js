@@ -79,22 +79,22 @@ export class Perception {
   /**
    * Categorize sensory inputs based on dynamic criteria.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Array<Object>} criteria - Array of category criteria objects.
+   * @param {function} categorizeFunc - Function to categorize inputs.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  categorize(sensoryInputs, criteria) {
+  categorize(sensoryInputs, categorizeFunc) {
     this.validateInputs(sensoryInputs);
-    if (!Array.isArray(criteria) || criteria.length === 0) {
-      throw new TypeError('Criteria must be a non-empty array.');
+    if (typeof categorizeFunc !== 'function') {
+      throw new TypeError('Categorize function must be a function.');
     }
-    const categories = {};
-    criteria.forEach(({ name, threshold }) => {
-      if (typeof name !== 'string' || typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError('Each criterion must have a valid name and threshold.');
+    return sensoryInputs.reduce((acc, input) => {
+      const category = categorizeFunc(input);
+      if (!acc[category]) {
+        acc[category] = [];
       }
-      categories[name] = sensoryInputs.filter(input => input >= threshold);
-    });
-    return categories;
+      acc[category].push(input);
+      return acc;
+    }, {});
   }
 }
