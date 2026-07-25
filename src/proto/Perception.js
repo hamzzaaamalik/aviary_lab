@@ -86,8 +86,8 @@ export class Perception {
     const categorized = {};
     for (const category of Object.keys(categories)) {
       categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
-      if (!includeEmpty && categorized[category].length === 0) {
-        delete categorized[category];
+      if (categorized[category].length === 0 && includeEmpty) {
+        categorized[category] = [];
       }
     }
     return categorized;
