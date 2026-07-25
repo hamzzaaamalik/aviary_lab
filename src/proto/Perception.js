@@ -75,4 +75,27 @@ export class Perception {
     }
     return classified;
   }
+
+  /**
+   * Classify sensory inputs with extended validation for categories.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {function} customValidator - Optional custom validation function.
+   * @returns {Object} - Classified sensory inputs with validation applied.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithValidation(sensoryInputs, categories, customValidator) {
+    this.validateInputs(sensoryInputs);
+    if (customValidator && typeof customValidator !== 'function') {
+      throw new TypeError('Custom validator must be a function.');
+    }
+    if (customValidator) {
+      sensoryInputs.forEach(input => {
+        if (!customValidator(input)) {
+          throw new TypeError('Input failed custom validation.');
+        }
+      });
+    }
+    return this.classify(sensoryInputs, categories);
+  }
 }
