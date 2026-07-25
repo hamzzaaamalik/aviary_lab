@@ -18,6 +18,8 @@ test('classify throws on invalid categories', () => {
   assert.throws(() => perception.classify(inputs, null), TypeError);
   assert.throws(() => perception.classify(inputs, {}), TypeError);
   assert.throws(() => perception.classify(inputs, { low: 'not-a-number' }), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: Infinity }), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: NaN }), TypeError);
 });
 
 test('classify throws on empty inputs', () => {
