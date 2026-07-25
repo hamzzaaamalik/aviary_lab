@@ -75,4 +75,26 @@ export class Perception {
     }
     return classified;
   }
+
+  /**
+   * Categorize sensory inputs based on dynamic criteria.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Array<Object>} criteria - Array of category criteria objects.
+   * @returns {Object} - Categorized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  categorize(sensoryInputs, criteria) {
+    this.validateInputs(sensoryInputs);
+    if (!Array.isArray(criteria) || criteria.length === 0) {
+      throw new TypeError('Criteria must be a non-empty array.');
+    }
+    const categories = {};
+    criteria.forEach(({ name, threshold }) => {
+      if (typeof name !== 'string' || typeof threshold !== 'number' || !Number.isFinite(threshold)) {
+        throw new TypeError('Each criterion must have a valid name and threshold.');
+      }
+      categories[name] = sensoryInputs.filter(input => input >= threshold);
+    });
+    return categories;
+  }
 }
