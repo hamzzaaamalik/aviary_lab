@@ -22,6 +22,10 @@ test('classifyWithCounts throws on invalid categories', () => {
   assert.throws(() => perception.classifyWithCounts([1], 'invalid'), TypeError);
 });
 
+test('classifyWithCounts throws on empty categories', () => {
+  assert.throws(() => perception.classifyWithCounts([1], {}), TypeError);
+});
+
 test('classifyWithCounts throws on invalid threshold', () => {
   assert.throws(() => perception.classifyWithCounts([1], { low: 'invalid' }), TypeError);
 });

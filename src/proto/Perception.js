@@ -77,7 +77,7 @@ export class Perception {
   }
 
   /**
-   * Enhanced classify method that counts inputs in each category.
+   * Classify sensory inputs with counts based on predefined categories.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @returns {Object} - Classified sensory inputs with counts.
@@ -94,14 +94,17 @@ export class Perception {
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
-    const classified = {};
+    const classifiedWithCounts = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
         throw new TypeError(`Threshold for ${category} must be a finite number.`);
       }
-      const filtered = sensoryInputs.filter(input => input >= threshold);
-      classified[category] = { inputs: filtered, count: filtered.length };
+      const inputs = sensoryInputs.filter(input => input >= threshold);
+      classifiedWithCounts[category] = {
+        inputs,
+        count: inputs.length
+      };
     }
-    return classified;
+    return classifiedWithCounts;
   }
 }
