@@ -82,7 +82,7 @@ export class Perception {
   }
 
   /**
-   * Categorize sensory inputs based on dynamic thresholds provided as functions.
+   * Categorize sensory inputs based on specific criteria.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and threshold functions.
    * @returns {Object} - Categorized sensory inputs.
@@ -91,7 +91,7 @@ export class Perception {
   categorize(sensoryInputs, categories) {
     this.validateInputs(sensoryInputs);
     if (sensoryInputs.length === 0) {
-      throw new TypeError('Sensory inputs cannot be empty.');
+      return {};
     }
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
@@ -109,4 +109,5 @@ export class Perception {
     }
     return categorized;
   }
-}
+} 
+
