@@ -79,17 +79,24 @@ export class Perception {
   /**
    * Classify sensory inputs with additional granularity using ranges.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Classified sensory inputs with ranges.
+   * @param {Object} ranges - Key-value pairs of category names and ranges.
+   * @returns {Object} - Classified sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  classifyWithRanges(sensoryInputs, categories) {
+  classifyWithRanges(sensoryInputs, ranges) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) {
+      throw new TypeError('Sensory inputs cannot be empty.');
+    }
+    if (typeof ranges !== 'object' || ranges === null) {
+      throw new TypeError('Ranges must be an object.');
+    }
     const classified = {};
-    for (const [category, { min, max }] of Object.entries(categories)) {
-      if (typeof min !== 'number' || typeof max !== 'number' || !Number.isFinite(min) || !Number.isFinite(max)) {
-        throw new TypeError(`Thresholds for ${category} must be finite numbers.`);
+    for (const [category, range] of Object.entries(ranges)) {
+      if (!Array.isArray(range) || range.length !== 2 || !range.every(Number.isFinite)) {
+        throw new TypeError(`Range for ${category} must be an array of two finite numbers.`);
       }
+      const [min, max] = range;
       classified[category] = sensoryInputs.filter(input => input >= min && input <= max);
     }
     return classified;
