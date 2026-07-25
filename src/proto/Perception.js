@@ -51,7 +51,7 @@ export class Perception {
   /**
    * Classify sensory inputs based on predefined categories.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {Object} categories - Key-value pairs of category names and threshold functions.
    * @returns {Object} - Classified sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
@@ -67,10 +67,11 @@ export class Perception {
       throw new TypeError('Categories cannot be an empty object.');
     }
     const classified = {};
-    for (const [category, threshold] of Object.entries(categories)) {
-      if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError(`Threshold for ${category} must be a finite number.`);
+    for (const [category, thresholdFunc] of Object.entries(categories)) {
+      if (typeof thresholdFunc !== 'function') {
+        throw new TypeError(`Threshold for ${category} must be a function.`);
       }
+      const threshold = thresholdFunc();
       const classifiedInputs = sensoryInputs.filter(input => input >= threshold);
       classified[category] = {
         inputs: classifiedInputs,
@@ -81,9 +82,9 @@ export class Perception {
   }
 
   /**
-   * Categorize sensory inputs based on dynamic thresholds.
+   * Categorize sensory inputs based on dynamic thresholds provided as functions.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and functions determining thresholds.
+   * @param {Object} categories - Key-value pairs of category names and threshold functions.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
@@ -95,13 +96,16 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories cannot be an empty object.');
+    }
     const categorized = {};
-    for (const [category, getThreshold] of Object.entries(categories)) {
-      if (typeof getThreshold !== 'function') {
-        throw new TypeError(`Threshold function for ${category} must be a function.`);
+    for (const [category, thresholdFunc] of Object.entries(categories)) {
+      if (typeof thresholdFunc !== 'function') {
+        throw new TypeError(`Threshold for ${category} must be a function.`);
       }
-      const threshold = getThreshold();
-      categorized[category] = this.detect(sensoryInputs, threshold);
+      const threshold = thresholdFunc();
+      categorized[category] = sensoryInputs.filter(input => input >= threshold);
     }
     return categorized;
   }
