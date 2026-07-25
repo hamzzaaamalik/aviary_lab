@@ -32,3 +32,8 @@ test('classify throws for non-finite thresholds', () => {
   assert.throws(() => perception.classify([1, 2, 3], categories), TypeError);
 });
 
+test('classify throws for invalid thresholds', () => {
+  const categories = { low: 5, medium: Infinity };
+  assert.throws(() => perception.classify([1, 2, 3], categories), TypeError);
+});
+
