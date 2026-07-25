@@ -81,31 +81,25 @@ export class Perception {
   }
 
   /**
-   * Categorize sensory inputs based on provided categories.
+   * Categorize sensory inputs based on a category function.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {function} categoryFn - Function to determine the category of each input.
    * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  categorize(sensoryInputs, categories) {
+  categorize(sensoryInputs, categoryFn) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      throw new TypeError('Sensory inputs cannot be empty.');
-    }
-    if (typeof categories !== 'object' || categories === null) {
-      throw new TypeError('Categories must be an object.');
-    }
-    if (Object.keys(categories).length === 0) {
-      throw new TypeError('Categories cannot be an empty object.');
+    if (typeof categoryFn !== 'function') {
+      throw new TypeError('Category function must be a function.');
     }
     const categorized = {};
-    for (const [category, threshold] of Object.entries(categories)) {
-      if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError(`Threshold for ${category} must be a finite number.`);
+    for (const input of sensoryInputs) {
+      const category = categoryFn(input);
+      if (!categorized[category]) {
+        categorized[category] = [];
       }
-      categorized[category] = sensoryInputs.filter(input => input >= threshold);
+      categorized[category].push(input);
     }
     return categorized;
   }
-} 
-
+}
