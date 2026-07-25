@@ -79,5 +79,30 @@ export class Perception {
     }
     return classified;
   }
-}
 
+  /**
+   * Categorize sensory inputs based on dynamic thresholds.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and functions determining thresholds.
+   * @returns {Object} - Categorized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  categorize(sensoryInputs, categories) {
+    this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) {
+      throw new TypeError('Sensory inputs cannot be empty.');
+    }
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be an object.');
+    }
+    const categorized = {};
+    for (const [category, getThreshold] of Object.entries(categories)) {
+      if (typeof getThreshold !== 'function') {
+        throw new TypeError(`Threshold function for ${category} must be a function.`);
+      }
+      const threshold = getThreshold();
+      categorized[category] = this.detect(sensoryInputs, threshold);
+    }
+    return categorized;
+  }
+}
