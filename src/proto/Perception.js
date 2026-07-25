@@ -71,7 +71,7 @@ export class Perception {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
         throw new TypeError(`Threshold for ${category} must be a finite number.`);
       }
-      classified[category] = sensoryInputs.filter(input => input >= threshold);
+      classified[category] = sensoryInputs.filter(input => input >= threshold).length;
     }
     return classified;
   }
@@ -94,14 +94,13 @@ export class Perception {
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
-    const classified = {};
+    const classifiedCounts = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
         throw new TypeError(`Threshold for ${category} must be a finite number.`);
       }
-      const filtered = sensoryInputs.filter(input => input >= threshold);
-      classified[category] = { count: filtered.length, inputs: filtered };
+      classifiedCounts[category] = sensoryInputs.filter(input => input >= threshold).length;
     }
-    return classified;
+    return classifiedCounts;
   }
 }
