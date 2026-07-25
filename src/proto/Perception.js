@@ -65,7 +65,7 @@ export class Perception {
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
-      classified[category] = sensoryInputs.filter(input => input >= threshold);
+      classified[category] = sensoryInputs.length > 0 ? sensoryInputs.filter(input => input >= threshold) : [];
     }
     return classified;
   }
@@ -88,9 +88,9 @@ export class Perception {
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
-      const filtered = sensoryInputs.filter(input => input >= threshold);
-      if (filtered.length > 0 || includeEmpty) {
-        categorized[category] = filtered;
+      categorized[category] = sensoryInputs.length > 0 ? sensoryInputs.filter(input => input >= threshold) : [];
+      if (categorized[category].length === 0 && !includeEmpty) {
+        delete categorized[category];
       }
     }
     return categorized;
