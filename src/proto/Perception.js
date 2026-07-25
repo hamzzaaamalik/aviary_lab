@@ -49,7 +49,7 @@ export class Perception {
   }
 
   /**
-   * Classify sensory inputs based on predefined categories.
+   * Categorize sensory inputs based on predefined thresholds.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @returns {Object} - Classified sensory inputs.
