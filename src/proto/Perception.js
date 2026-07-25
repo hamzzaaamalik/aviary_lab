@@ -76,7 +76,7 @@ export class Perception {
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @param {boolean} [includeEmpty=false] - Include empty categories in the result.
    * @returns {Object} - Categorized sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If the input
    */
   categorize(sensoryInputs, categories, includeEmpty = false) {
     this.validateInputs(sensoryInputs);
@@ -84,16 +84,12 @@ export class Perception {
       throw new TypeError('Categories must be an object.');
     }
     const categorized = {};
-    for (const category in categories) {
-      const threshold = categories[category];
+    for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
-      categorized[category] = sensoryInputs.length > 0 ? sensoryInputs.filter(input => input >= threshold) : [];
-      if (!includeEmpty && categorized[category].length === 0) {
-        delete categorized[category];
-      }
+      categorized[category] = sensoryInputs.filter(input => input >= threshold);
     }
-    return categorized;
+    return includeEmpty ? categorized : Object.fromEntries(Object.entries(categorized).filter(([_, value]) => value.length > 0));
   }
 }
