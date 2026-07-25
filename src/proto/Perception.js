@@ -73,6 +73,6 @@ export class Perception {
       }
       classified[category] = sensoryInputs.filter(input => input >= threshold);
     }
-    return classified; // Added return statement for classified results
+    return classified;
   }
 }
