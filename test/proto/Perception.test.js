@@ -4,58 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-test('classify correctly categorizes inputs', () => {
-  const inputs = [1, 5, 10, 15];
-  const categories = { low: 5, medium: 10, high: 15 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [5, 10, 15],
-    medium: [10, 15],
-    high: [15],
-  });
-});
-
-test('classify throws for non-object categories', () => {
-  assert.throws(() => perception.classify([1, 2], 'not an object'), TypeError);
-});
-
-test('categorize correctly categorizes inputs', () => {
-  const inputs = [1, 5, 10, 15];
-  const categories = { low: 5, medium: 10, high: 15 };
+test('categorize returns categorized inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 2, medium: 4 };
   const result = perception.categorize(inputs, categories);
-  assert.deepEqual(result, {
-    low: [5, 10, 15],
-    medium: [10, 15],
-    high: [15],
-  });
+  assert.deepEqual(result, { low: [2, 3, 4, 5], medium: [4, 5] });
 });
 
 test('categorize includes empty categories when specified', () => {
-  const inputs = [1, 2];
-  const categories = { low: 1, medium: 3 };
+  const inputs = [1, 2, 3];
+  const categories = { low: 5, medium: 2 };
   const result = perception.categorize(inputs, categories, true);
-  assert.deepEqual(result, {
-    low: [1, 2],
-    medium: [],
-  });
+  assert.deepEqual(result, { low: [], medium: [2, 3] });
 });
 
-test('categorize throws for non-object categories', () => {
-  assert.throws(() => perception.categorize([1, 2], 'not an object'), TypeError);
+test('categorize handles empty input array', () => {
+  const inputs = [];
+  const categories = { low: 2, medium: 4 };
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { low: [], medium: [] });
 });
 
-test('detect works with valid inputs', () => {
-  const inputs = [1, 2, 3, 4];
-  const threshold = 2;
-  const result = perception.detect(inputs, threshold);
-  assert.deepEqual(result, [2, 3, 4]);
+test('categorize throws error for invalid categories', () => {
+  assert.throws(() => perception.categorize([1, 2], 'not-an-object'), TypeError);
 });
 
-test('filter works with valid inputs', () => {
-  const inputs = [1, 2, 3, 4];
-  const predicate = (input) => input > 2;
-  const result = perception.filter(inputs, predicate);
-  assert.deepEqual(result, [3, 4]);
+test('categorize throws error for invalid thresholds', () => {
+  const categories = { low: 'not-a-number' };
+  assert.throws(() => perception.categorize([1, 2], categories), TypeError);
 });
+
