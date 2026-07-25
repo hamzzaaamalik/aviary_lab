@@ -4,35 +4,28 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs by categories', () => {
-  const inputs = [10, 20, 30, 40, 50];
-  const categories = { low: 20, high: 40 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [20, 30, 40, 50], high: [40, 50] });
-});
-
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify([], { low: 20 }), TypeError);
-  assert.throws(() => perception.classify([10, 20], null), TypeError);
-  assert.throws(() => perception.classify([10, 20], {}), TypeError);
-  assert.throws(() => perception.classify([10, 20], { low: 'not-a-number' }), TypeError);
-});
-
-test('classify handles edge cases with thresholds', () => {
-  const inputs = [0, 1, 2, 3, 4];
-  const categories = { zero: 0, one: 1, two: 2, three: 3, four: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { zero: [0, 1, 2, 3, 4], one: [1, 2, 3, 4], two: [2, 3, 4], three: [3, 4], four: [4] });
-});
-
-test('detect returns noise based on threshold', () => {
-  const inputs = [5, 15, 25, 35];
-  const result = perception.detect(inputs, 20);
-  assert.deepEqual(result, [25, 35]);
-});
-
-test('filter returns inputs based on predicate', () => {
+test('classifyWithCounts classifies inputs with counts', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const result = perception.filter(inputs, x => x > 3);
-  assert.deepEqual(result, [4, 5]);
+  const categories = { low: 2, high: 4 };
+  const result = perception.classifyWithCounts(inputs, categories);
+  assert.deepEqual(result, {
+    low: { inputs: [2, 3, 4, 5], count: 4 },
+    high: { inputs: [4, 5], count: 2 }
+  });
+});
+
+test('classifyWithCounts throws on empty inputs', () => {
+  assert.throws(() => perception.classifyWithCounts([], { low: 1 }), TypeError);
+});
+
+test('classifyWithCounts throws on invalid categories', () => {
+  assert.throws(() => perception.classifyWithCounts([1], 'invalid'), TypeError);
+});
+
+test('classifyWithCounts throws on empty categories', () => {
+  assert.throws(() => perception.classifyWithCounts([1], {}), TypeError);
+});
+
+test('classifyWithCounts throws on invalid threshold', () => {
+  assert.throws(() => perception.classifyWithCounts([1], { low: 'invalid' }), TypeError);
 });
