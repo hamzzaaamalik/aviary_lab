@@ -16,6 +16,19 @@ export class Perception {
   }
 
   /**
+   * Validate categories and their thresholds.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @throws {TypeError} - If any threshold is invalid.
+   */
+  validateCategories(categories) {
+    for (const [category, threshold] of Object.entries(categories)) {
+      if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
+        throw new TypeError(`Threshold for ${category} must be a finite number.`);
+      }
+    }
+  }
+
+  /**
    * Detect noise in sensory inputs based on a threshold.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {number} threshold - The minimum value to consider as noise.
@@ -66,14 +79,19 @@ export class Perception {
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
+    this.validateCategories(categories);
+
     const classified = {};
-    for (const [category, threshold] of Object.entries(categories)) {
-      if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError(`Threshold for ${category} must be a finite number.`);
+    for (const input of sensoryInputs) {
+      for (const [category, threshold] of Object.entries(categories)) {
+        if (input >= threshold) {
+          if (!classified[category]) {
+            classified[category] = [];
+          }
+          classified[category].push(input);
+        }
       }
-      classified[category] = sensoryInputs.filter(input => input >= threshold);
     }
     return classified;
   }
 }
-
