@@ -81,10 +81,10 @@ export class Perception {
   }
 
   /**
-   * Categorize sensory inputs based on dynamic categories.
+   * Categorize sensory inputs based on a category function.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {function} categoryFn - Function that returns the category for an input.
-   * @returns {Object} - Classified sensory inputs.
+   * @param {function} categoryFn - Function to determine the category of each input.
+   * @returns {Object} - Categorized sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
   categorize(sensoryInputs, categoryFn) {
@@ -92,13 +92,14 @@ export class Perception {
     if (typeof categoryFn !== 'function') {
       throw new TypeError('Category function must be a function.');
     }
-    return sensoryInputs.reduce((acc, input) => {
+    const categorized = {};
+    for (const input of sensoryInputs) {
       const category = categoryFn(input);
-      if (!acc[category]) {
-        acc[category] = [];
+      if (!categorized[category]) {
+        categorized[category] = [];
       }
-      acc[category].push(input);
-      return acc;
-    }, {});
+      categorized[category].push(input);
+    }
+    return categorized;
   }
 }
