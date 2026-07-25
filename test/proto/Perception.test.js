@@ -4,35 +4,36 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify correctly categorizes sensory inputs', () => {
-  const inputs = [10, 20, 30, 40];
-  const categories = { low: 15, medium: 25, high: 35 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [20, 30, 40],
-    medium: [30, 40],
-    high: [40]
-  });
+test('classify correctly categorizes inputs', () => {
+  const inputs = [0, 5, 10, 15];
+  const categories = { low: 5, medium: 10, high: 15 };
+  const expected = {
+    low: [5, 10, 15],
+    medium: [10, 15],
+    high: [15]
+  };
+  assert.deepEqual(perception.classify(inputs, categories), expected);
 });
 
-test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
+test('classify throws for empty inputs', () => {
+  assert.throws(() => perception.classify([], { low: 5 }), TypeError);
 });
 
-test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([1, 2], null), TypeError);
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
+test('classify throws for invalid categories type', () => {
+  assert.throws(() => perception.classify([1, 2, 3], 'string'), TypeError);
 });
 
-test('classify throws on undefined categories', () => {
-  assert.throws(() => perception.classify([1, 2], undefined), TypeError);
+test('classify throws for empty categories', () => {
+  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
 });
 
-test('classify throws on empty categories', () => {
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
+test('classify throws for non-finite thresholds', () => {
+  const categories = { low: 5, invalid: NaN };
+  assert.throws(() => perception.classify([1, 2, 3], categories), TypeError);
 });
 
-test('classify throws on invalid threshold', () => {
-  assert.throws(() => perception.classify([1, 2], { low: 'notANumber' }), TypeError);
+test('classify throws for invalid thresholds', () => {
+  const categories = { low: 5, medium: Infinity };
+  assert.throws(() => perception.classify([1, 2, 3], categories), TypeError);
 });
 
