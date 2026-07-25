@@ -22,6 +22,16 @@ test('categorize excludes empty categories when specified', () => {
   assert.deepEqual(result, { low: [1, 2, 3] });
 });
 
+test('categorize includes empty categories when specified', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 1, medium: 5 };
+  const result = perception.categorize(inputs, categories, true);
+  assert.deepEqual(result, { 
+    low: [1, 2, 3],
+    medium: [],
+  });
+});
+
 test('categorize throws error for invalid categories', () => {
   assert.throws(() => perception.categorize([1, 2], 'not-an-object'), TypeError);
 });
@@ -29,4 +39,3 @@ test('categorize throws error for invalid categories', () => {
 test('categorize throws error for invalid inputs', () => {
   assert.throws(() => perception.categorize('not-an-array', {}), TypeError);
 });
-
