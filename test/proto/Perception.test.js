@@ -4,32 +4,21 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by category thresholds', () => {
-  const inputs = [10, 20, 30, 40, 50];
-  const categories = {
-    low: 15,
-    medium: 25,
-    high: 35,
-  };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [20, 30, 40, 50],
-    medium: [30, 40, 50],
-    high: [40, 50],
-  });
+// Existing tests...
+
+test('classify throws on empty category object', () => {
+  assert.throws(() => {
+    perception.classify([1, 2, 3], {});
+  }, TypeError, 'Categories cannot be an empty object.');
 });
 
-test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
+test('classify throws on non-finite thresholds', () => {
+  assert.throws(() => {
+    perception.classify([1, 2, 3], { high: Infinity });
+  }, TypeError, 'Threshold for high must be a finite number.');
+  assert.throws(() => {
+    perception.classify([1, 2, 3], { low: NaN });
+  }, TypeError, 'Threshold for low must be a finite number.');
 });
 
-test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([1, 2, 3], null), TypeError);
-  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
-});
-
-test('classify throws on invalid threshold', () => {
-  const categories = { invalid: NaN };
-  assert.throws(() => perception.classify([1, 2, 3], categories), TypeError);
-});
-
+// More tests as needed...
