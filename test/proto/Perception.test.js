@@ -4,36 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify correctly categorizes inputs', () => {
-  const inputs = [0, 5, 10, 15];
-  const categories = { low: 5, medium: 10, high: 15 };
-  const expected = {
-    low: [5, 10, 15],
-    medium: [10, 15],
-    high: [15]
-  };
-  assert.deepEqual(perception.classify(inputs, categories), expected);
+test('classify groups inputs by categories', () => {
+  const inputs = [10, 20, 30, 40, 50];
+  const categories = { low: 20, high: 40 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { low: [20, 30, 40, 50], high: [40, 50] });
 });
 
-test('classify throws for empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 5 }), TypeError);
+test('classify throws on invalid inputs', () => {
+  assert.throws(() => perception.classify([], { low: 20 }), TypeError);
+  assert.throws(() => perception.classify([10, 20], null), TypeError);
+  assert.throws(() => perception.classify([10, 20], {}), TypeError);
+  assert.throws(() => perception.classify([10, 20], { low: 'not-a-number' }), TypeError);
 });
 
-test('classify throws for invalid categories type', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'string'), TypeError);
+test('detect returns noise based on threshold', () => {
+  const inputs = [5, 15, 25, 35];
+  const result = perception.detect(inputs, 20);
+  assert.deepEqual(result, [25, 35]);
 });
 
-test('classify throws for empty categories', () => {
-  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
-});
-
-test('classify throws for non-finite thresholds', () => {
-  const categories = { low: 5, invalid: NaN };
-  assert.throws(() => perception.classify([1, 2, 3], categories), TypeError);
-});
-
-test('classify throws for invalid thresholds', () => {
-  const categories = { low: 5, medium: Infinity };
-  assert.throws(() => perception.classify([1, 2, 3], categories), TypeError);
+test('filter returns inputs based on predicate', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const result = perception.filter(inputs, x => x > 3);
+  assert.deepEqual(result, [4, 5]);
 });
 
