@@ -75,5 +75,23 @@ export class Perception {
     }
     return classified;
   }
-}
 
+  /**
+   * Classify with additional options for custom thresholds.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {Object} options - Additional options for classification.
+   * @returns {Object} - Classified sensory inputs with options applied.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithOptions(sensoryInputs, categories, options = {}) {
+    this.validateInputs(sensoryInputs);
+    if (typeof options !== 'object') {
+      throw new TypeError('Options must be an object.');
+    }
+    const classified = this.classify(sensoryInputs, categories);
+    // Apply additional options if necessary.
+    // Example: modifying classified outputs based on options can be implemented here.
+    return classified;
+  }
+}
