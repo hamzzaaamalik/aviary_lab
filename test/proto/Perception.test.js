@@ -4,30 +4,31 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classifyWithCounts handles valid input', () => {
-  const inputs = [10, 20, 30, 40];
-  const categories = { high: 20, low: 10 };
+test('classifyWithCounts classifies inputs by categories and counts them', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 1, medium: 3, high: 5 };
   const result = perception.classifyWithCounts(inputs, categories);
-  assert.deepEqual(result, { 
-    high: { count: 3, inputs: [20, 30, 40] },
-    low: { count: 4, inputs: [10, 20, 30, 40] }
-  });
+  assert.deepEqual(result, { low: 5, medium: 3, high: 1 });
 });
 
-test('classifyWithCounts throws on empty inputs', () => {
-  assert.throws(() => perception.classifyWithCounts([], { high: 10 }), TypeError);
+test('classifyWithCounts throws on invalid inputs', () => {
+  const categories = { low: 1 };
+  assert.throws(() => perception.classifyWithCounts([], categories), TypeError);
+  assert.throws(() => perception.classifyWithCounts([1, 2], null), TypeError);
+  assert.throws(() => perception.classifyWithCounts([1, 2], {}), TypeError);
+  assert.throws(() => perception.classifyWithCounts([1, 2], { low: 'a' }), TypeError);
 });
 
-test('classifyWithCounts throws on non-object categories', () => {
-  assert.throws(() => perception.classifyWithCounts([1, 2, 3], null), TypeError);
-  assert.throws(() => perception.classifyWithCounts([1, 2, 3], 'string'), TypeError);
+test('detect filters sensory inputs based on threshold', () => {
+  const inputs = [0, 1, 2, 3];
+  const threshold = 2;
+  const result = perception.detect(inputs, threshold);
+  assert.deepEqual(result, [2, 3]);
 });
 
-test('classifyWithCounts throws on empty categories', () => {
-  assert.throws(() => perception.classifyWithCounts([1, 2, 3], {}), TypeError);
-});
-
-test('classifyWithCounts throws on invalid threshold', () => {
-  const categories = { valid: 10, invalid: NaN };
-  assert.throws(() => perception.classifyWithCounts([1, 2, 3], categories), TypeError);
+test('filter applies predicate function to sensory inputs', () => {
+  const inputs = [1, 2, 3, 4];
+  const predicate = input => input > 2;
+  const result = perception.filter(inputs, predicate);
+  assert.deepEqual(result, [3, 4]);
 });
