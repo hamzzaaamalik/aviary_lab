@@ -2,38 +2,41 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-test('Perception.categorize categorizes inputs correctly', () => {
-  const perception = new Perception();
-  const inputs = [5, 10, 15, 20];
-  const categories = {
-    low: 10,
-    medium: 15,
-    high: 20
-  };
-  const result = perception.categorize(inputs, categories);
+const perception = new Perception();
+
+test('classify returns correct categories', () => {
+  const inputs = [10, 20, 30, 40];
+  const categories = { low: 15, medium: 25, high: 35 };
+  const result = perception.classify(inputs, categories);
   assert.deepEqual(result, {
-    low: [10, 15, 20],
-    medium: [15, 20],
-    high: [20]
+    low: { inputs: [20, 30, 40], count: 3 },
+    medium: { inputs: [30, 40], count: 2 },
+    high: { inputs: [40], count: 1 }
   });
 });
 
-test('Perception.categorize throws on invalid inputs', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.categorize([], {}), TypeError);
-  assert.throws(() => perception.categorize([1, 2, 3], null), TypeError);
-  assert.throws(() => perception.categorize([1, 2, 3], { low: 'not-a-number' }), TypeError);
+test('classify throws on invalid thresholds', () => {
+  const inputs = [10, 20, 30];
+  const categories = { low: 'high', medium: 25 };
+  assert.throws(() => perception.classify(inputs, categories), TypeError);
 });
 
-// New edge case tests for empty categories
-
-test('Perception.categorize throws on empty categories', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.categorize([1, 2, 3], {}), TypeError);
+test('categorize groups inputs by category function', () => {
+  const inputs = [10, 20, 30, 40];
+  const categoryFn = (input) => {
+    if (input < 20) return 'low';
+    if (input < 30) return 'medium';
+    return 'high';
+  };
+  const result = perception.categorize(inputs, categoryFn);
+  assert.deepEqual(result, {
+    low: [10],
+    medium: [20],
+    high: [30, 40]
+  });
 });
 
-test('Perception.categorize throws on null categories', () => {
-  const perception = new Perception();
-  assert.throws(() => perception.categorize([1, 2, 3], null), TypeError);
+test('categorize throws on invalid category function', () => {
+  const inputs = [10, 20, 30];
+  assert.throws(() => perception.categorize(inputs, 'not-a-function'), TypeError);
 });
-
