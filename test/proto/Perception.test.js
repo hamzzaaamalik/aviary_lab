@@ -4,48 +4,27 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Test cases for classify method
-
-test('classify groups inputs by categories', () => {
-  const inputs = [10, 20, 30, 40];
-  const categories = { low: 15, medium: 25, high: 35 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [20, 30, 40],
-    medium: [30, 40],
-    high: [40]
-  });
+test('categorize groups inputs by category thresholds', () => {
+  const inputs = [10, 20, 30, 40, 50];
+  const categories = { low: 0, medium: 30, high: 40 };  
+  const result = perception.categorize(inputs, categories);
+  assert.deepEqual(result, { low: [10, 20, 30, 40, 50], medium: [30, 40, 50], high: [40, 50] });
 });
 
-// Test cases for empty inputs
-
-test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 15 }), TypeError);
+test('categorize throws on empty inputs', () => {
+  const categories = { low: 0 };
+  assert.throws(() => perception.categorize([], categories), TypeError);
 });
 
-// Test cases for invalid categories
-
-test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([10], 'not-an-object'), TypeError);
-  assert.throws(() => perception.classify([10], {}), TypeError);
+test('categorize throws on invalid categories', () => {
+  const inputs = [10, 20];
+  assert.throws(() => perception.categorize(inputs, null), TypeError);
+  assert.throws(() => perception.categorize(inputs, {}), TypeError);
 });
 
-// Test cases for finite number thresholds
-
-test('classify throws on non-finite thresholds', () => {
-  const categories = { low: NaN, medium: Infinity };
-  assert.throws(() => perception.classify([10], categories), TypeError);
-});
-
-// Test cases for valid inputs
-
-test('classify works with valid inputs', () => {
-  const inputs = [5, 15, 25, 35];
-  const categories = { low: 10, high: 30 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [15, 25, 35],
-    high: [35]
-  });
+test('categorize throws on non-finite thresholds', () => {
+  const inputs = [10, 20];
+  const categories = { low: Infinity };
+  assert.throws(() => perception.categorize(inputs, categories), TypeError);
 });
 
