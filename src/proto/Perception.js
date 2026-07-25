@@ -56,12 +56,13 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   classify(sensoryInputs, categories) {
+    // Validate inputs
     this.validateInputs(sensoryInputs);
     if (sensoryInputs.length === 0) {
       throw new TypeError('Sensory inputs cannot be empty.');
     }
-    if (typeof categories !== 'object' || categories === null) {
-      throw new TypeError('Categories must be an object.');
+    if (typeof categories !== 'object' || categories === null || Array.isArray(categories)) {
+      throw new TypeError('Categories must be a non-null object.');
     }
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
@@ -76,4 +77,3 @@ export class Perception {
     return classified;
   }
 }
-
