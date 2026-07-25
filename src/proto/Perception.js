@@ -60,7 +60,7 @@ export class Perception {
     if (sensoryInputs.length === 0) {
       throw new TypeError('Sensory inputs cannot be empty.');
     }
-    if (typeof categories !== 'object' || categories === null) {
+    if (categories == null || typeof categories !== 'object') {
       throw new TypeError('Categories must be an object.');
     }
     if (Object.keys(categories).length === 0) {
@@ -75,5 +75,26 @@ export class Perception {
     }
     return classified;
   }
-}
 
+  /**
+   * Classify sensory inputs with additional granularity using ranges.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} ranges - Key-value pairs of category names and ranges.
+   * @returns {Object} - Classified sensory inputs based on ranges.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithRanges(sensoryInputs, ranges) {
+    this.validateInputs(sensoryInputs);
+    if (ranges == null || typeof ranges !== 'object') {
+      throw new TypeError('Ranges must be an object.');
+    }
+    const classified = {};
+    for (const [category, range] of Object.entries(ranges)) {
+      if (!Array.isArray(range) || range.length !== 2 || !range.every(Number.isFinite)) {
+        throw new TypeError(`Range for ${category} must be an array of two finite numbers.`);
+      }
+      classified[category] = sensoryInputs.filter(input => input >= range[0] && input <= range[1]);
+    }
+    return classified;
+  }
+}
