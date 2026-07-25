@@ -63,6 +63,9 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories cannot be an empty object.');
+    }
     const classified = {};
     for (const [category, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number') {
@@ -78,26 +81,22 @@ export class Perception {
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @param {boolean} [includeEmpty=false] - Include empty categories in the result.
-   * @returns {Object} - Categorized sensory inputs.
+   * @returns {Object} - Categorized inputs.
    */
   categorize(sensoryInputs, categories, includeEmpty = false) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      throw new TypeError('Sensory inputs cannot be empty.');
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories cannot be an empty object.');
     }
-    if (typeof categories !== 'object' || categories === null) {
-      throw new TypeError('Categories must be an object.');
-    }
-    const categorized = {};
-    for (const category of Object.keys(categories)) {
-      if (typeof categories[category] !== 'number') {
+    return Object.entries(categories).reduce((acc, [category, threshold]) => {
+      if (typeof threshold !== 'number') {
         throw new TypeError(`Threshold for ${category} must be a number.`);
       }
-      categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
-      if (!includeEmpty && categorized[category].length === 0) {
-        delete categorized[category];
+      const results = sensoryInputs.filter(input => input >= threshold);
+      if (results.length > 0 || includeEmpty) {
+        acc[category] = results;
       }
-    }
-    return categorized;
+      return acc;
+    }, {});
   }
-}
+} 
