@@ -33,3 +33,21 @@ test('classify throws on invalid thresholds', () => {
   assert.throws(() => perception.classify([1, 2], categories), TypeError);
 });
 
+test('classify handles negative thresholds', () => {
+  const inputs = [-1, 0, 1, 2];
+  const categories = {
+    nonNegative: 0,
+    negative: -1
+  };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {
+    nonNegative: { inputs: [0, 1, 2], count: 3 },
+    negative: { inputs: [-1, 0, 1, 2], count: 4 }
+  });
+});
+
+test('classify throws on invalid input types', () => {
+  assert.throws(() => perception.classify([1, 2, 'three'], { low: 1 }), TypeError);
+  assert.throws(() => perception.classify([1, 2, null], { low: 1 }), TypeError);
+});
+
