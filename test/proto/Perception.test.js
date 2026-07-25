@@ -32,8 +32,9 @@ test('classify throws on invalid categories', () => {
 
 // Test cases for finite number thresholds
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([10], { low: 'string' }), TypeError);
+test('classify throws on non-finite thresholds', () => {
+  const categories = { low: NaN, medium: Infinity };
+  assert.throws(() => perception.classify([10], categories), TypeError);
 });
 
 // Test cases for valid inputs
