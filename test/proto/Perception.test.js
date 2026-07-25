@@ -24,6 +24,10 @@ test('classify throws on invalid categories', () => {
   assert.throws(() => perception.classify([1, 2], {}), TypeError);
 });
 
+test('classify throws on undefined categories', () => {
+  assert.throws(() => perception.classify([1, 2], undefined), TypeError);
+});
+
 test('classify throws on empty categories', () => {
   assert.throws(() => perception.classify([1, 2], {}), TypeError);
 });
