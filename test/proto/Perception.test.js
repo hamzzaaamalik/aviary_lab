@@ -14,21 +14,25 @@ test('detect method handles empty input', () => {
   assert.deepEqual(result, []);
 });
 
+
 test('filter method works with valid predicate', () => {
   const result = perception.filter([1, 2, 3, 4], n => n > 2);
   assert.deepEqual(result, [3, 4]);
 });
+
 
 test('filter method handles empty input', () => {
   const result = perception.filter([], n => n > 2);
   assert.deepEqual(result, []);
 });
 
+
 test('classify method classifies inputs correctly', () => {
   const categories = { high: 10, low: 5 };
   const result = perception.classify([0, 5, 10, 15], categories);
   assert.deepEqual(result, { high: [10, 15], low: [5, 10, 15] });
 });
+
 
 test('classify method throws on invalid categories', () => {
   assert.throws(() => perception.classify([1, 2], 'not an object'), TypeError);
