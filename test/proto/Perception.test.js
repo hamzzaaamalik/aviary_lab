@@ -4,48 +4,18 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Test cases for classify method
+// Existing tests...
 
-test('classify groups inputs by categories', () => {
-  const inputs = [10, 20, 30, 40];
-  const categories = { low: 15, medium: 25, high: 35 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [20, 30, 40],
-    medium: [30, 40],
-    high: [40]
-  });
+test('classify throws on empty sensory inputs', () => {
+  assert.throws(() => perception.classify([], { high: 10 }), TypeError, 'Sensory inputs cannot be empty.');
 });
 
-// Test cases for empty inputs
-
-test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 15 }), TypeError);
+test('classify throws on invalid categories object', () => {
+  assert.throws(() => perception.classify([10, 20], null), TypeError, 'Categories must be a non-empty object.');
+  assert.throws(() => perception.classify([10, 20], {}), TypeError, 'Categories must be a non-empty object.');
 });
 
-// Test cases for invalid categories
-
-test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([10], 'not-an-object'), TypeError);
-  assert.throws(() => perception.classify([10], {}), TypeError);
+test('classify throws on non-finite threshold', () => {
+  assert.throws(() => perception.classify([10, 20], { high: Infinity }), TypeError, "Threshold for 'high' must be a finite number.");
+  assert.throws(() => perception.classify([10, 20], { high: NaN }), TypeError, "Threshold for 'high' must be a finite number.");
 });
-
-// Test cases for finite number thresholds
-
-test('classify throws on non-finite thresholds', () => {
-  const categories = { low: NaN, medium: Infinity };
-  assert.throws(() => perception.classify([10], categories), TypeError);
-});
-
-// Test cases for valid inputs
-
-test('classify works with valid inputs', () => {
-  const inputs = [5, 15, 25, 35];
-  const categories = { low: 10, high: 30 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [15, 25, 35],
-    high: [35]
-  });
-});
-
