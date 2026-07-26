@@ -4,63 +4,26 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('validateInputs should throw on non-array input', () => {
-  assert.throws(() => perception.validateInputs('not an array'), TypeError);
+test('classify categorizes inputs correctly', () => {
+  const inputs = [10, 20, 30, 40];
+  const categories = { low: 15, medium: 25, high: 35 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {
+    low: [20, 30, 40],
+    medium: [30, 40],
+    high: [40]
+  });
 });
 
-test('validateInputs should throw on array with non-finite numbers', () => {
-  assert.throws(() => perception.validateInputs([1, 2, NaN]), TypeError);
+test('classify throws on empty inputs', () => {
+  assert.throws(() => perception.classify([], { low: 10 }), TypeError);
 });
 
-test('validateInputs should not throw on valid input', () => {
-  perception.validateInputs([1, 2, 3]); // should not throw
+test('classify throws on invalid categories', () => {
+  assert.throws(() => perception.classify([10], null), TypeError);
+  assert.throws(() => perception.classify([10], {}), TypeError);
 });
 
-
-test('validateThresholds should throw on empty object', () => {
-  assert.throws(() => perception.validateThresholds({}), TypeError);
-});
-
-
-test('validateThresholds should throw on invalid threshold', () => {
-  assert.throws(() => perception.validateThresholds({ high: 'not a number' }), TypeError);
-});
-
-
-test('validateThresholds should not throw on valid thresholds', () => {
-  perception.validateThresholds({ low: 1, high: 5 }); // should not throw
-});
-
-
-test('detect should find inputs above threshold', () => {
-  const result = perception.detect([1, 2, 3, 4, 5], 3);
-  assert.deepEqual(result, [3, 4, 5]);
-});
-
-
-test('detect throws on invalid input', () => {
-  assert.throws(() => perception.detect('not an array', 3), TypeError);
-});
-
-
-test('detect returns empty array if no inputs above threshold', () => {
-  const result = perception.detect([1, 2], 5);
-  assert.deepEqual(result, []);
-});
-
-
-test('filter should return inputs matching predicate', () => {
-  const result = perception.filter([1, 2, 3, 4, 5], x => x % 2 === 0);
-  assert.deepEqual(result, [2, 4]);
-});
-
-
-test('filter throws on invalid predicate', () => {
-  assert.throws(() => perception.filter([1, 2, 3], 'not a function'), TypeError);
-});
-
-
-test('filter returns empty array if no matches', () => {
-  const result = perception.filter([1, 3, 5], x => x % 2 === 0);
-  assert.deepEqual(result, []);
+test('classify throws on invalid input', () => {
+  assert.throws(() => perception.classify([Infinity], { low: 10 }), TypeError);
 });
