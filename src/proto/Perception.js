@@ -79,5 +79,17 @@ export class Perception {
     }
     return classified;
   }
-}
 
+  /**
+   * Classify sensory inputs with optional additional metadata.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} categories - Key-value pairs of category names and thresholds.
+   * @param {Object} [metadata={}] - Optional metadata to include in classification.
+   * @returns {Object} - Classified sensory inputs with metadata.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classifyWithMetadata(sensoryInputs, categories, metadata = {}) {
+    const classified = this.classify(sensoryInputs, categories);
+    return { classified, metadata };
+  }
+} 
