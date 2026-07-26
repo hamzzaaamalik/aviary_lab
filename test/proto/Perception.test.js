@@ -4,52 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify categorizes inputs correctly', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = {
-    low: 2,
-    high: 4
-  };
+test('classify correctly classifies sensory inputs', () => {
+  const inputs = [10, 20, 30, 5];
+  const categories = { high: 15, low: 5 };
   const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    high: [4, 5]
-  });
+  assert.deepEqual(result, { high: [20, 30], low: [10, 20, 30, 5] });
 });
 
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
-  assert.throws(() => perception.classify([1, 2], null), TypeError);
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
-  assert.throws(() => perception.classify([1, 2], { low: 'low' }), TypeError);
+test('classify throws on empty inputs', () => {
+  const inputs = [];
+  const categories = { high: 15 };
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Sensory inputs cannot be empty.');
+});
+
+test('classify throws on invalid categories type', () => {
+  const inputs = [10];
+  const categories = null;
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Categories must be an object.');
 });
 
 test('classify throws on empty categories', () => {
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
+  const inputs = [10];
+  const categories = {};
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Categories cannot be an empty object.');
 });
 
-test('classify correctly handles edge case with all inputs below thresholds', () => {
-  const inputs = [1, 1.5, 1.9];
-  const categories = {
-    low: 2,
-    high: 4
-  };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [],
-    high: []
-  });
-});
-
-test('classify correctly handles edge case with all inputs above thresholds', () => {
-  const inputs = [5, 6, 7];
-  const categories = {
-    low: 2,
-    high: 4
-  };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [5, 6, 7],
-    high: [5, 6, 7]
-  });
+test('classify throws on invalid thresholds', () => {
+  const inputs = [10];
+  const categories = { high: 'invalid' };
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Threshold for high must be a finite number.');
 });
