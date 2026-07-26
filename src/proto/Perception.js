@@ -80,10 +80,17 @@ export class Perception {
       throw new TypeError('Categories must be an object.');
     }
     this.validateThresholds(categories);
-
     const classified = {};
-    for (const [category, threshold] of Object.entries(categories)) {
-      classified[category] = sensoryInputs.filter(input => input >= threshold);
+
+    for (const input of sensoryInputs) {
+      for (const [category, threshold] of Object.entries(categories)) {
+        if (input >= threshold) {
+          if (!classified[category]) {
+            classified[category] = [];
+          }
+          classified[category].push(input);
+        }
+      }
     }
     return classified;
   }
