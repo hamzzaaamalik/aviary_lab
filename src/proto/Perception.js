@@ -38,7 +38,7 @@ export class Perception {
    * @returns {Array<number>} - Detected noise inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  detect(sensoryInputs, threshold) {
+  detectNoise(sensoryInputs, threshold) {
     this.validateInputs(sensoryInputs);
     if (sensoryInputs.length === 0) {
       return [];
@@ -56,7 +56,7 @@ export class Perception {
    * @returns {Array<number>} - Filtered sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  filter(sensoryInputs, predicate) {
+  filterInputs(sensoryInputs, predicate) {
     this.validateInputs(sensoryInputs);
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');

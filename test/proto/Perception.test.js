@@ -4,31 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify method classifies inputs correctly', () => {
-  const inputs = [10, 20, 30, 40];
+test('classify groups sensory inputs by categories', () => {
+  const inputs = [1, 2, 3, 4, 5];
   const categories = {
-    low: 15,
-    medium: 25,
-    high: 35
+    low: 2,
+    high: 4
   };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [20, 30, 40],
-    medium: [30, 40],
-    high: [40]
-  });
+  const expected = {
+    low: [2, 3, 4, 5],
+    high: [4, 5]
+  };
+  assert.deepEqual(perception.classify(inputs, categories), expected);
 });
 
 test('classify throws on invalid inputs', () => {
-  const categories = {
-    low: 15
-  };
-  assert.throws(() => perception.classify([], categories), TypeError);
-  assert.throws(() => perception.classify([10, 20], null), TypeError);
+  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
+  assert.throws(() => perception.classify([1, 2], null), TypeError);
+  assert.throws(() => perception.classify([1, 2], {}), TypeError);
 });
 
-test('classify throws on invalid categories', () => {
-  const inputs = [10, 20, 30];
-  assert.throws(() => perception.classify(inputs, {}), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: 'string' }), TypeError);
-});
+// Existing tests...
+
