@@ -33,3 +33,12 @@ test('classify throws for invalid categories', () => {
   assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
+test('classify throws for invalid thresholds', () => {
+  const inputs = [1, 2, 3];
+  const categories = {
+    low: 1,
+    high: Infinity // Invalid threshold
+  };
+  assert.throws(() => perception.classify(inputs, categories), TypeError);
+});
+
