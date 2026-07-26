@@ -27,3 +27,8 @@ test('classify throws on invalid thresholds', () => {
   assert.throws(() => perception.classify([1, 2], { low: 'string' }), TypeError, 'Threshold for low must be a finite number.');
 });
 
+// New test for handling empty categories
+ test('classify throws on empty categories', () => {
+   assert.throws(() => perception.classify([1, 2], {}), TypeError, 'Categories cannot be an empty object.');
+ });
+
