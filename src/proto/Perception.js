@@ -82,14 +82,10 @@ export class Perception {
     this.validateThresholds(categories);
 
     const classified = {};
-    for (const input of sensoryInputs) {
-      for (const [category, threshold] of Object.entries(categories)) {
-        if (input >= threshold) {
-          if (!classified[category]) classified[category] = [];
-          classified[category].push(input);
-        }
-      }
+    for (const category in categories) {
+      classified[category] = sensoryInputs.filter(input => input >= categories[category]);
     }
+
     return classified;
   }
 }
