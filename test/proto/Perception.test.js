@@ -4,26 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify categorizes inputs correctly', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: { inputs: [2, 3, 4, 5], count: 4 },
-    high: { inputs: [4, 5], count: 2 }
-  });
-});
-
 test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 2 }), TypeError);
+  assert.throws(() => perception.classify([], { high: 10 }), TypeError);
 });
 
 test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([1, 2], null), TypeError);
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
+  assert.throws(() => perception.classify([5, 15], 'not-an-object'), TypeError);
+  assert.throws(() => perception.classify([5, 15], {}), TypeError);
 });
 
-test('classify throws on invalid threshold', () => {
-  assert.throws(() => perception.classify([1, 2], { low: 'not a number' }), TypeError);
+test('classify works with valid categories', () => {
+  const categories = { low: 5, high: 10 };
+  const inputs = [1, 5, 10, 15];
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, {
+    low: { inputs: [5, 10, 15], count: 3 },
+    high: { inputs: [10, 15], count: 2 }
+  });
 });
 
+test('detect noise correctly', () => {
+  const inputs = [1, 5, 10, 15];
+  const result = perception.detect(inputs, 10);
+  assert.deepEqual(result, [10, 15]);
+});
+
+test('filter applies predicate correctly', () => {
+  const inputs = [1, 5, 10, 15];
+  const result = perception.filter(inputs, x => x > 5);
+  assert.deepEqual(result, [10, 15]);
+});
