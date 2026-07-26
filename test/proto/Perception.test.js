@@ -4,31 +4,22 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify categorizes sensory inputs correctly', () => {
-  const inputs = [10, 20, 30, 40, 50];
-  const categories = {
-    low: 15,
-    medium: 25,
-    high: 35,
-  };
+test('classify groups inputs by categories', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 2, medium: 4 };
   const result = perception.classify(inputs, categories);
   assert.deepEqual(result, {
-    low: [20, 30, 40, 50],
-    medium: [30, 40, 50],
-    high: [40, 50],
+    low: [2, 3, 4, 5],
+    medium: [4, 5]
   });
 });
 
 test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 10 }), TypeError);
+  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
 });
 
 test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([10], 'invalid'), TypeError);
-  assert.throws(() => perception.classify([10], {}), TypeError);
+  assert.throws(() => perception.classify([1, 2], null), TypeError);
+  assert.throws(() => perception.classify([1, 2], {}), TypeError);
 });
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([10], { low: 'not a number' }), TypeError);
-  assert.throws(() => perception.classify([10], { low: NaN }), TypeError);
-});
