@@ -21,6 +21,9 @@ export class Perception {
    * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(categories) {
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be a non-null object.');
+    }
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
@@ -78,8 +81,13 @@ export class Perception {
     this.validateThresholds(categories);
 
     const classified = {};
-    for (const [key, threshold] of Object.entries(categories)) {
-      classified[key] = this.detect(sensoryInputs, threshold);
+    for (const input of sensoryInputs) {
+      for (const [category, threshold] of Object.entries(categories)) {
+        if (input >= threshold) {
+          if (!classified[category]) classified[category] = [];
+          classified[category].push(input);
+        }
+      }
     }
     return classified;
   }
