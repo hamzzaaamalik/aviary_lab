@@ -85,6 +85,7 @@ export class Perception {
     for (const [category, threshold] of Object.entries(categories)) {
       classified[category] = sensoryInputs.filter(input => input >= threshold);
     }
+
     return classified;
   }
 }
