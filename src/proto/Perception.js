@@ -69,7 +69,7 @@ export class Perception {
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @returns {Object} - Classified sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If the input is invalid or if no valid classifications can be made.
    */
   classify(sensoryInputs, categories) {
     this.validateInputs(sensoryInputs);
@@ -82,12 +82,10 @@ export class Perception {
     this.validateThresholds(categories);
 
     const classified = {};
-    for (const input of sensoryInputs) {
-      for (const [category, threshold] of Object.entries(categories)) {
-        if (input >= threshold) {
-          if (!classified[category]) classified[category] = [];
-          classified[category].push(input);
-        }
+    for (const [category, threshold] of Object.entries(categories)) {
+      classified[category] = sensoryInputs.filter(input => input >= threshold);
+      if (classified[category].length === 0) {
+        throw new TypeError(`No inputs classified under ${category}.`);
       }
     }
     return classified;

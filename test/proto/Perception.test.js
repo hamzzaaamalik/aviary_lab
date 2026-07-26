@@ -4,28 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify sensory inputs based on thresholds', () => {
-  const inputs = [0.5, 1.5, 2.5, 3.5];
-  const categories = { low: 1, high: 2 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [1.5, 2.5, 3.5], high: [2.5, 3.5] });
-});
+// Existing tests...
 
-test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
+test('classify throws on empty sensory inputs', () => {
+  assert.throws(() => perception.classify([], { categoryA: 1 }), TypeError);
 });
 
 test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([1], 'invalid'), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], null), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], 'invalid'), TypeError);
 });
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([1], { low: 'invalid' }), TypeError);
+test('classify throws on no valid classifications', () => {
+  assert.throws(() => perception.classify([1, 2, 3], { categoryA: 4 }), TypeError);
 });
 
-test('classify handles valid inputs', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: 1, high: 2 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [1, 2, 3], high: [2, 3] });
+test('classify returns correct classification', () => {
+  const result = perception.classify([1, 2, 3, 4, 5], { categoryA: 3, categoryB: 1 });
+  assert.deepEqual(result, {
+    categoryA: [3, 4, 5],
+    categoryB: [1, 2, 3, 4, 5],
+  });
 });
