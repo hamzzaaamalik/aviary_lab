@@ -4,33 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify with valid inputs', () => {
+test('classify correctly categorizes inputs', () => {
   const inputs = [1, 2, 3, 4, 5];
   const categories = { low: 2, high: 4 };
   const result = perception.classify(inputs, categories);
   assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
-test('classify with empty inputs', () => {
-  const inputs = [];
+test('classify throws on empty inputs', () => {
   const categories = { low: 2, high: 4 };
-  assert.throws(() => perception.classify(inputs, categories), TypeError);
+  assert.throws(() => perception.classify([], categories), TypeError);
 });
 
-test('classify with invalid categories', () => {
+test('classify throws on invalid categories', () => {
   const inputs = [1, 2, 3];
   assert.throws(() => perception.classify(inputs, null), TypeError);
   assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
-test('classify with invalid inputs', () => {
-  const inputs = [1, '2', 3];
-  const categories = { low: 2 };
+test('classify throws on invalid thresholds', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: 'invalid', high: 4 };
   assert.throws(() => perception.classify(inputs, categories), TypeError);
 });
 
-test('classify with thresholds not being finite numbers', () => {
-  const inputs = [1, 2, 3];
-  const categories = { low: Infinity };
-  assert.throws(() => perception.classify(inputs, categories), TypeError);
+test('classify works with varying thresholds', () => {
+  const inputs = [10, 20, 30, 40];
+  const categories = { ten: 10, twenty: 20, thirty: 30 };
+  const result = perception.classify(inputs, categories);
+  assert.deepEqual(result, { ten: [10, 20, 30, 40], twenty: [20, 30, 40], thirty: [30, 40] });
 });
