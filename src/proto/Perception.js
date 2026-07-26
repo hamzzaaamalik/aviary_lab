@@ -40,7 +40,6 @@ export class Perception {
    */
   detect(sensoryInputs, threshold) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return [];
     if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
       throw new TypeError('Threshold must be a finite number.');
     }
@@ -59,7 +58,7 @@ export class Perception {
     if (typeof predicate !== 'function') {
       throw new TypeError('Predicate must be a function.');
     }
-    return sensoryInputs.length > 0 ? sensoryInputs.filter(predicate) : [];
+    return sensoryInputs.filter(predicate);
   }
 
   /**
@@ -81,7 +80,8 @@ export class Perception {
     for (const input of sensoryInputs) {
       for (const [category, threshold] of Object.entries(categories)) {
         if (input >= threshold) {
-          classified[category] = (classified[category] || []).concat(input);
+          classified[category] = classified[category] || [];
+          classified[category].push(input);
         }
       }
     }
