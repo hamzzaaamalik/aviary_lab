@@ -24,9 +24,9 @@ export class Perception {
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
-    for (const threshold of Object.values(categories)) {
+    for (const [key, threshold] of Object.entries(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError('All thresholds must be finite numbers.');
+        throw new TypeError(`Threshold for category '${key}' must be a finite number.`);
       }
     }
   }
@@ -81,7 +81,7 @@ export class Perception {
     for (const input of sensoryInputs) {
       for (const [category, threshold] of Object.entries(categories)) {
         if (input >= threshold) {
-          if (!classified[category]) classified[category] = [];
+          classified[category] = classified[category] || [];
           classified[category].push(input);
         }
       }
