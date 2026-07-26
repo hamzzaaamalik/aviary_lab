@@ -79,6 +79,9 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
+    if (Object.keys(categories).length === 0) {
+      throw new TypeError('Categories cannot be an empty object.');
+    }
     this.validateThresholds(categories);
 
     const classified = {};
