@@ -16,11 +16,11 @@ export class Perception {
   }
 
   /**
-   * Validate thresholds for classification.
+   * Enforce thresholds for classification.
    * @param {Object} categories - Key-value pairs of category names and thresholds.
    * @throws {TypeError} - If any threshold is invalid.
    */
-  validateThresholds(categories) {
+  enforceThresholds(categories) {
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
@@ -75,7 +75,7 @@ export class Perception {
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
-    this.validateThresholds(categories);
+    this.enforceThresholds(categories);
 
     const classified = {};
     for (const input of sensoryInputs) {
