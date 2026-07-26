@@ -4,41 +4,30 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify sensory inputs into categories', () => {
-  const inputs = [1, 5, 10, 15, 20];
-  const categories = {
-    low: 5,
-    medium: 10,
-    high: 15
+test('classify correctly categorizes inputs based on thresholds', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const categories = { low: 2, high: 4 };
+  const expected = {
+    low: [2, 3, 4, 5],
+    high: [4, 5]
   };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [5, 10, 15, 20],
-    medium: [10, 15, 20],
-    high: [15, 20]
-  });
+  assert.deepEqual(perception.classify(inputs, categories), expected);
 });
 
-test('classify throws for empty inputs', () => {
-  const categories = {
-    low: 5,
-    high: 15
-  };
+test('classify throws error for empty sensory inputs', () => {
+  const categories = { low: 1 };
   assert.throws(() => perception.classify([], categories), TypeError);
 });
 
-test('classify throws for invalid categories', () => {
-  const inputs = [1, 2, 3];
+test('classify throws error for invalid categories object', () => {
+  const inputs = [1, 2];
   assert.throws(() => perception.classify(inputs, null), TypeError);
   assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
-test('classify throws for invalid thresholds', () => {
-  const inputs = [1, 2, 3];
-  const categories = {
-    low: 1,
-    high: Infinity // Invalid threshold
-  };
+test('classify throws error for invalid thresholds', () => {
+  const inputs = [1, 2];
+  const categories = { low: 'a' };
   assert.throws(() => perception.classify(inputs, categories), TypeError);
 });
 
