@@ -80,10 +80,9 @@ export class Perception {
       throw new TypeError('Categories cannot be an empty object.');
     }
     this.validateThresholds(categories);
-
     const classified = {};
-    for (const category of Object.keys(categories)) {
-      classified[category] = sensoryInputs.filter(input => input >= categories[category]);
+    for (const [category, threshold] of Object.entries(categories)) {
+      classified[category] = this.detect(sensoryInputs, threshold);
     }
     return classified;
   }
