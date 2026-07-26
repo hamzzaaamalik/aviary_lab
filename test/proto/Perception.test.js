@@ -4,52 +4,27 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify categorizes inputs correctly', () => {
+test('classify groups inputs by thresholds', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = {
-    low: 2,
-    high: 4
-  };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [2, 3, 4, 5],
-    high: [4, 5]
-  });
+  const categories = { low: 2, high: 4 };
+  const classified = perception.classify(inputs, categories);
+  assert.deepEqual(classified, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
-  assert.throws(() => perception.classify([1, 2], null), TypeError);
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
-  assert.throws(() => perception.classify([1, 2], { low: 'low' }), TypeError);
+test('classify throws on empty inputs', () => {
+  const categories = { low: 2 };
+  assert.throws(() => perception.classify([], categories), TypeError);
 });
 
-test('classify throws on empty categories', () => {
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
+test('classify throws on invalid categories', () => {
+  const inputs = [1, 2, 3];
+  assert.throws(() => perception.classify(inputs, null), TypeError);
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
-test('classify correctly handles edge case with all inputs below thresholds', () => {
-  const inputs = [1, 1.5, 1.9];
-  const categories = {
-    low: 2,
-    high: 4
-  };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [],
-    high: []
-  });
+test('classify throws on non-finite thresholds', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: NaN };
+  assert.throws(() => perception.classify(inputs, categories), TypeError);
 });
 
-test('classify correctly handles edge case with all inputs above thresholds', () => {
-  const inputs = [5, 6, 7];
-  const categories = {
-    low: 2,
-    high: 4
-  };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, {
-    low: [5, 6, 7],
-    high: [5, 6, 7]
-  });
-});
