@@ -75,19 +75,11 @@ export class Perception {
   classify(sensoryInputs, categories) {
     this.validateInputs(sensoryInputs);
     if (sensoryInputs.length === 0) throw new TypeError('Sensory inputs cannot be empty.');
-    if (typeof categories !== 'object' || categories === null) {
-      throw new TypeError('Categories must be a non-null object.');
-    }
     this.validateThresholds(categories);
 
     const classified = {};
-    for (const input of sensoryInputs) {
-      for (const [category, threshold] of Object.entries(categories)) {
-        if (input >= threshold) {
-          if (!classified[category]) classified[category] = [];
-          classified[category].push(input);
-        }
-      }
+    for (const category in categories) {
+      classified[category] = sensoryInputs.filter(input => input >= categories[category]);
     }
     return classified;
   }
