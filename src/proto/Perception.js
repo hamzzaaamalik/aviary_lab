@@ -24,9 +24,9 @@ export class Perception {
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
-    for (const [category, threshold] of Object.entries(categories)) {
+    for (const threshold of Object.values(categories)) {
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError(`Threshold for ${category} must be a finite number.`);
+        throw new TypeError('All thresholds must be finite numbers.');
       }
     }
   }
@@ -40,9 +40,7 @@ export class Perception {
    */
   detect(sensoryInputs, threshold) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      return [];
-    }
+    if (sensoryInputs.length === 0) return [];
     if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
       throw new TypeError('Threshold must be a finite number.');
     }
@@ -73,17 +71,20 @@ export class Perception {
    */
   classify(sensoryInputs, categories) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      throw new TypeError('Sensory inputs cannot be empty.');
-    }
+    if (sensoryInputs.length === 0) throw new TypeError('Sensory inputs cannot be empty.');
     if (typeof categories !== 'object' || categories === null) {
       throw new TypeError('Categories must be an object.');
     }
     this.validateThresholds(categories);
 
     const classified = {};
-    for (const category of Object.keys(categories)) {
-      classified[category] = sensoryInputs.filter(input => input >= categories[category]);
+    for (const input of sensoryInputs) {
+      for (const [category, threshold] of Object.entries(categories)) {
+        if (input >= threshold) {
+          if (!classified[category]) classified[category] = [];
+          classified[category].push(input);
+        }
+      }
     }
     return classified;
   }
