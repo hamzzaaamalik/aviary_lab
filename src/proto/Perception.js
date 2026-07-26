@@ -80,8 +80,8 @@ export class Perception {
     const classified = {};
     for (const input of sensoryInputs) {
       for (const [category, threshold] of Object.entries(categories)) {
+        if (!classified[category]) classified[category] = [];
         if (input >= threshold) {
-          if (!classified[category]) classified[category] = [];
           classified[category].push(input);
         }
       }
