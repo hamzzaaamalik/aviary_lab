@@ -21,10 +21,16 @@ export class Perception {
    * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(categories) {
+    if (typeof categories !== 'object' || categories === null) {
+      throw new TypeError('Categories must be an object.');
+    }
     if (Object.keys(categories).length === 0) {
       throw new TypeError('Categories cannot be an empty object.');
     }
-    for (const threshold of Object.values(categories)) {
+    for (const [key, threshold] of Object.entries(categories)) {
+      if (typeof key !== 'string' || key.trim() === '') {
+        throw new TypeError('Category names must be non-empty strings.');
+      }
       if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
         throw new TypeError('All thresholds must be finite numbers.');
       }
@@ -76,7 +82,6 @@ export class Perception {
       throw new TypeError('Categories must be an object.');
     }
     this.validateThresholds(categories);
-
     const classified = {};
     for (const input of sensoryInputs) {
       for (const [category, threshold] of Object.entries(categories)) {
