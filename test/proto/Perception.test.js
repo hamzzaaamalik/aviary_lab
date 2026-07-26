@@ -4,31 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by category thresholds', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const categories = {
-    low: 2,
-    medium: 4,
-    high: 5
-  };
-  const expected = {
-    low: [2, 3, 4, 5],
-    medium: [4, 5],
-    high: [5]
-  };
+test('classify correctly classifies sensory inputs', () => {
+  const inputs = [10, 20, 30, 5];
+  const categories = { high: 15, low: 5 };
   const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, expected);
+  assert.deepEqual(result, { high: [20, 30], low: [10, 20, 30, 5] });
 });
 
 test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
+  const inputs = [];
+  const categories = { high: 15 };
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Sensory inputs cannot be empty.');
 });
 
-test('classify throws on invalid categories', () => {
-  assert.throws(() => perception.classify([1, 2], null), TypeError);
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
+test('classify throws on invalid categories type', () => {
+  const inputs = [10];
+  const categories = null;
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Categories must be an object.');
+});
+
+test('classify throws on empty categories', () => {
+  const inputs = [10];
+  const categories = {};
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Categories cannot be an empty object.');
 });
 
 test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([1, 2], { low: 'invalid' }), TypeError);
+  const inputs = [10];
+  const categories = { high: 'invalid' };
+  assert.throws(() => perception.classify(inputs, categories), TypeError, 'Threshold for high must be a finite number.');
 });
