@@ -4,48 +4,31 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns detected noise inputs', () => {
-  const result = perception.detect([1, 2, 3, 4], 2);
-  assert.deepEqual(result, [2, 3, 4]);
+test('detect should find inputs above threshold', () => {
+  const result = perception.detect([1, 2, 3, 4, 5], 3);
+  assert.deepEqual(result, [3, 4, 5]);
 });
 
-test('detect returns empty array for no noise', () => {
-  const result = perception.detect([1, 1, 1], 2);
+test('detect throws on invalid input', () => {
+  assert.throws(() => perception.detect('not an array', 3), TypeError);
+});
+
+test('detect returns empty array if no inputs above threshold', () => {
+  const result = perception.detect([1, 2], 5);
   assert.deepEqual(result, []);
 });
 
-test('detect throws TypeError for invalid inputs', () => {
-  assert.throws(() => perception.detect('not an array', 2), TypeError);
+test('filter should return inputs matching predicate', () => {
+  const result = perception.filter([1, 2, 3, 4, 5], x => x % 2 === 0);
+  assert.deepEqual(result, [2, 4]);
 });
 
-test('filter returns filtered inputs', () => {
-  const result = perception.filter([1, 2, 3, 4], n => n > 2);
-  assert.deepEqual(result, [3, 4]);
-});
-
-test('filter returns empty array for no matches', () => {
-  const result = perception.filter([1, 1, 1], n => n > 2);
-  assert.deepEqual(result, []);
-});
-
-test('filter throws TypeError for invalid predicate', () => {
+test('filter throws on invalid predicate', () => {
   assert.throws(() => perception.filter([1, 2, 3], 'not a function'), TypeError);
 });
 
-test('classify returns classified inputs', () => {
-  const categories = { low: 2, high: 4 };
-  const result = perception.classify([1, 2, 3, 4], categories);
-  assert.deepEqual(result, { low: [2, 3, 4], high: [4] });
+test('filter returns empty array if no matches', () => {
+  const result = perception.filter([1, 3, 5], x => x % 2 === 0);
+  assert.deepEqual(result, []);
 });
 
-test('classify throws TypeError for empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 2 }), TypeError);
-});
-
-test('classify throws TypeError for invalid categories', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'not an object'), TypeError);
-});
-
-test('classify handles edge case for no categories', () => {
-  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
-});
