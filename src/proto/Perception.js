@@ -66,7 +66,7 @@ export class Perception {
   }
 
   /**
-   * Advanced filter sensory inputs based on multiple predicates.
+   * Filter sensory inputs based on multiple predicates.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Array<function>} predicates - Array of functions to test each element.
    * @returns {Array<number>} - Filtered sensory inputs.
@@ -77,23 +77,6 @@ export class Perception {
     if (!Array.isArray(predicates) || !predicates.every(fn => typeof fn === 'function')) {
       throw new TypeError('Predicates must be an array of functions.');
     }
-    return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(predicate => predicate(input))) : [];
-  }
-
-  /**
-   * Classify sensory inputs based on predefined thresholds.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Classified inputs with categories as keys.
-   * @throws {TypeError} - If inputs or categories are invalid.
-   */
-  classify(sensoryInputs, categories) {
-    this.validateInputs(sensoryInputs);
-    this.validateThresholds(categories);
-    const classified = {};
-    for (const category in categories) {
-      classified[category] = sensoryInputs.filter(input => input >= categories[category]);
-    }
-    return classified;
+    return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
   }
 }
