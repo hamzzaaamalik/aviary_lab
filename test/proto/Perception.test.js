@@ -29,3 +29,11 @@ test('normalize throws on invalid input', () => {
   assert.throws(() => perception.normalize([1, 'two', 3]), TypeError);
   assert.throws(() => perception.normalize(null), TypeError);
 });
+
+test('detect throws on non-array input', () => {
+  assert.throws(() => perception.detect('not an array', 0), TypeError);
+});
+
+test('filter throws on non-function predicate', () => {
+  assert.throws(() => perception.filter([1, 2, 3], 'not a function'), TypeError);
+});

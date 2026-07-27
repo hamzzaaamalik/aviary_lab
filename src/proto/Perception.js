@@ -12,7 +12,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   detect(sensoryInputs, threshold) {
-    this.validateInputs(sensoryInputs);
+    this.checkInputs(sensoryInputs);
     if (typeof threshold !== 'number') {
       throw new TypeError('threshold must be a number');
     }
@@ -28,7 +28,7 @@ export class Perception {
    * @throws {TypeError} - If the input or predicate is invalid.
    */
   filter(sensoryInputs, predicate) {
-    this.validateInputs(sensoryInputs);
+    this.checkInputs(sensoryInputs);
     if (typeof predicate !== 'function') {
       throw new TypeError('predicate must be a function');
     }
@@ -44,7 +44,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   classify(sensoryInputs, thresholds) {
-    this.validateInputs(sensoryInputs);
+    this.checkInputs(sensoryInputs);
     if (typeof thresholds !== 'object' || thresholds === null) {
       throw new TypeError('thresholds must be an object');
     }
@@ -64,7 +64,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   normalize(sensoryInputs) {
-    this.validateInputs(sensoryInputs);
+    this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return []; // handle empty array case
     const min = Math.min(...sensoryInputs);
     const max = Math.max(...sensoryInputs);
@@ -77,21 +77,21 @@ export class Perception {
    * @param {Array<number>} sensoryInputs - The sensory inputs to validate.
    * @throws {TypeError} - If the input is invalid.
    */
-  validateInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(input => typeof input === 'number')) {
+  checkInputs(sensoryInputs) {
+    if (!Array.isArray(sensoryInputs) || sensoryInputs.some(input => typeof input !== 'number')) {
       throw new TypeError('sensoryInputs must be an array of numbers');
     }
   }
-
+  
   /**
-   * Validate thresholds.
+   * Validate thresholds object.
    * @param {Object} thresholds - The thresholds to validate.
    * @throws {TypeError} - If the thresholds are invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
+        throw new TypeError(`Threshold for ${key} must be a number`);
       }
     }
   }
