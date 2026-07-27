@@ -66,10 +66,10 @@ export class Perception {
   }
 
   /**
-   * Advanced filter sensory inputs based on multiple predicates.
+   * Advanced filter for sensory inputs matching multiple predicates.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Array<function>} predicates - Array of functions to test each element.
-   * @returns {Array<number>} - Filtered sensory inputs that match all predicates.
+   * @returns {Array<number>} - Filtered sensory inputs matching all predicates.
    * @throws {TypeError} - If the input is invalid.
    */
   advancedFilter(sensoryInputs, predicates) {
@@ -77,6 +77,6 @@ export class Perception {
     if (!Array.isArray(predicates) || !predicates.every(fn => typeof fn === 'function')) {
       throw new TypeError('Predicates must be an array of functions.');
     }
-    return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
+    return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(predicate => predicate(input))) : [];
   }
 }
