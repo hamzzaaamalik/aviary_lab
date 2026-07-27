@@ -74,9 +74,12 @@ export class Perception {
    */
   advancedFilter(sensoryInputs, predicates) {
     this.validateInputs(sensoryInputs);
-    if (!Array.isArray(predicates) || !predicates.every(fn => typeof fn === 'function')) {
-      throw new TypeError('Predicates must be an array of functions.');
+    if (!Array.isArray(predicates) || predicates.length === 0) {
+      throw new TypeError('Predicates must be a non-empty array of functions.');
     }
-    return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(predicate => predicate(input))) : [];
+    if (!predicates.every(fn => typeof fn === 'function')) {
+      throw new TypeError('All items in predicates must be functions.');
+    }
+    return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
   }
 }
