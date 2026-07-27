@@ -5,78 +5,77 @@
  */
 export class Perception {
   /**
-   * Validate sensory input array.
-   * @param {Array<number>} inputs - The sensory input values.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  validateInputs(inputs) {
-    if (!Array.isArray(inputs) || !inputs.every(Number.isFinite)) {
-      throw new TypeError('Inputs must be an array of finite numbers.');
-    }
-  }
-
-  /**
-   * Validate thresholds for classification.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @throws {TypeError} - If any threshold is invalid.
-   */
-  validateThresholds(categories) {
-    if (typeof categories !== 'object' || categories === null) {
-      throw new TypeError('Categories must be a non-null object.');
-    }
-    if (Object.keys(categories).length === 0) {
-      throw new TypeError('Categories cannot be an empty object.');
-    }
-    for (const [key, threshold] of Object.entries(categories)) {
-      if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-        throw new TypeError(`Threshold for category '${key}' must be a finite number.`);
-      }
-    }
-  }
-
-  /**
-   * Detect noise in sensory inputs based on a threshold.
+   * Detect sensory inputs above a certain threshold.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {number} threshold - The minimum value to consider as noise.
-   * @returns {Array<number>} - Detected noise inputs.
+   * @param {number} threshold - The threshold to detect inputs.
+   * @returns {Array<number>} - Array of detected inputs.
    * @throws {TypeError} - If the input is invalid.
    */
   detect(sensoryInputs, threshold) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return [];
-    if (typeof threshold !== 'number' || !Number.isFinite(threshold)) {
-      throw new TypeError('Threshold must be a finite number.');
+    if (typeof threshold !== 'number') {
+      throw new TypeError('threshold must be a number');
     }
-    return sensoryInputs.filter(input => input >= threshold);
+    return sensoryInputs.filter(input => input > threshold);
   }
 
   /**
    * Filter sensory inputs based on a predicate function.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {function} predicate - Function to test each element.
-   * @returns {Array<number>} - Filtered sensory inputs.
-   * @throws {TypeError} - If the input is invalid.
+   * @param {function} predicate - A function that takes an input and returns a boolean.
+   * @returns {Array<number>} - Array of filtered inputs.
+   * @throws {TypeError} - If the input or predicate is invalid.
    */
   filter(sensoryInputs, predicate) {
     this.validateInputs(sensoryInputs);
     if (typeof predicate !== 'function') {
-      throw new TypeError('Predicate must be a function.');
+      throw new TypeError('predicate must be a function');
     }
-    return sensoryInputs.length > 0 ? sensoryInputs.filter(predicate) : [];
+    return sensoryInputs.filter(predicate);
   }
 
   /**
-   * Advanced filter sensory inputs based on multiple predicates.
+   * Classify sensory inputs based on given thresholds.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Array<function>} predicates - Array of functions to test each element.
-   * @returns {Array<number>} - Filtered sensory inputs that match all predicates.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * @returns {Object} - Categorized inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  advancedFilter(sensoryInputs, predicates) {
+  classify(sensoryInputs, thresholds) {
     this.validateInputs(sensoryInputs);
-    if (!Array.isArray(predicates) || predicates.length === 0 || !predicates.every(fn => typeof fn === 'function')) {
-      throw new TypeError('Predicates must be a non-empty array of functions.');
+    this.validateThresholds(thresholds);
+
+    const categorized = {};
+    for (const category in thresholds) {
+      categorized[category] = sensoryInputs.filter(input => input >= thresholds[category]);
     }
-    return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(predicate => predicate(input))) : [];
+    return categorized;
+  }
+
+  /**
+   * Validate sensory input values.
+   * @param {Array<number>} sensoryInputs - The sensory inputs to validate.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  validateInputs(sensoryInputs) {
+    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(input => typeof input === 'number')) {
+      throw new TypeError('sensoryInputs must be an array of numbers');
+    }
+  }
+
+  /**
+   * Validate thresholds.
+   * @param {Object} thresholds - The thresholds to validate.
+   * @throws {TypeError} - If the thresholds are invalid.
+   */
+  validateThresholds(thresholds) {
+    if (typeof thresholds !== 'object' || thresholds === null) {
+      throw new TypeError('thresholds must be an object');
+    }
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number') {
+        throw new TypeError(`threshold for ${key} must be a number`);
+      }
+    }
   }
 }

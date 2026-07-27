@@ -4,22 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests...
-
-// New tests for advancedFilter
-
-test('advancedFilter filters based on multiple predicates', () => {
-  const inputs = [1, 2, 3, 4, 5, 6];
-  const predicates = [x => x > 2, x => x % 2 === 0];
-  const result = perception.advancedFilter(inputs, predicates);
-  assert.deepEqual(result, [4, 6]);
+test('detect filters inputs above threshold', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const result = perception.detect(inputs, 3);
+  assert.deepEqual(result, [4, 5]);
 });
 
-
-test('advancedFilter throws TypeError for invalid predicates', () => {
-  const inputs = [1, 2, 3];
-  assert.throws(() => perception.advancedFilter(inputs, 'not an array'), TypeError);
-  assert.throws(() => perception.advancedFilter(inputs, [x => x > 1, 'not a function']), TypeError);
-  assert.throws(() => perception.advancedFilter(inputs, []), TypeError);
+test('detect throws for invalid threshold', () => {
+  assert.throws(() => perception.detect([1, 2, 3], 'not-a-number'), TypeError);
 });
 
+test('filter applies predicate correctly', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const result = perception.filter(inputs, x => x % 2 === 0);
+  assert.deepEqual(result, [2, 4]);
+});
+
+test('filter throws for invalid predicate', () => {
+  assert.throws(() => perception.filter([1, 2, 3], 'not-a-function'), TypeError);
+});
+
+test('classify works as expected', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+});
