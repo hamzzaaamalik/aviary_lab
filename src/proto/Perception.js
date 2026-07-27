@@ -73,8 +73,10 @@ export class Perception {
       throw new TypeError('thresholds must be an object');
     }
     for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
+      if (thresholds.hasOwnProperty(key)) {
+        if (typeof thresholds[key] !== 'number') {
+          throw new TypeError(`threshold for ${key} must be a number`);
+        }
       }
     }
   }
