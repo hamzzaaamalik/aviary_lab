@@ -77,6 +77,24 @@ export class Perception {
     if (!Array.isArray(predicates) || predicates.length === 0 || !predicates.every(fn => typeof fn === 'function')) {
       throw new TypeError('Predicates must be a non-empty array of functions.');
     }
-    return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(predicate => predicate(input))) : [];
+    return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
+  }
+
+  /**
+   * Advanced filtering example predicate: even numbers.
+   * @param {number} num - Number to check.
+   * @returns {boolean} - True if even, false otherwise.
+   */
+  isEven(num) {
+    return num % 2 === 0;
+  }
+
+  /**
+   * Advanced filtering example predicate: above a certain threshold.
+   * @param {number} threshold - The threshold value.
+   * @returns {function} - Predicate function for filtering.
+   */
+  aboveThreshold(threshold) {
+    return (num) => num > threshold;
   }
 }
