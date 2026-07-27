@@ -78,25 +78,21 @@ export class Perception {
   }
 
   /**
-   * Check the validity of sensory inputs.
-   * @param {Array<number>} inputs - The inputs to validate.
-   * @throws {TypeError} - If any input is invalid.
+   * Check if inputs are valid.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @throws {TypeError} - If the input is invalid.
    */
-  checkInputs(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('inputs must be an array');
-    }
-    for (const input of inputs) {
-      if (typeof input !== 'number' || isNaN(input) || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
+  checkInputs(sensoryInputs) {
+    if (!Array.isArray(sensoryInputs) ||
+        sensoryInputs.some(input => typeof input !== 'number')) {
+      throw new TypeError('sensoryInputs must be an array of numbers');
     }
   }
 
   /**
-   * Validate the thresholds object.
-   * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If any threshold is invalid.
+   * Validate thresholds for classification.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * @throws {TypeError} - If the input is invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
@@ -105,6 +101,5 @@ export class Perception {
       }
     }
   }
-}
-
+} 
 
