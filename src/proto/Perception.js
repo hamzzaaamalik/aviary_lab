@@ -79,21 +79,4 @@ export class Perception {
     }
     return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
   }
-
-  /**
-   * Classify sensory inputs based on defined categories and thresholds.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Classification results.
-   * @throws {TypeError} - If input or categories are invalid.
-   */
-  classify(sensoryInputs, categories) {
-    this.validateInputs(sensoryInputs);
-    this.validateThresholds(categories);
-    const results = {};
-    for (const [category, threshold] of Object.entries(categories)) {
-      results[category] = sensoryInputs.filter(input => input >= threshold);
-    }
-    return results;
-  }
 }
