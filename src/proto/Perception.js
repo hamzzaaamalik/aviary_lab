@@ -35,6 +35,20 @@ export class Perception {
   }
 
   /**
+   * Normalize sensory inputs to a range of 0 to 1.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @returns {Array<number>} - Normalized sensory inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  normalize(sensoryInputs) {
+    this.validateInputs(sensoryInputs);
+    const min = Math.min(...sensoryInputs);
+    const max = Math.max(...sensoryInputs);
+    if (min === max) return sensoryInputs.map(() => 0); // Handle constant array
+    return sensoryInputs.map(input => (input - min) / (max - min));
+  }
+
+  /**
    * Detect noise in sensory inputs based on a threshold.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {number} threshold - The minimum value to consider as noise.
@@ -77,10 +91,10 @@ export class Perception {
     if (sensoryInputs.length === 0) throw new TypeError('Sensory inputs cannot be empty.');
     this.validateThresholds(categories);
 
-    const classified = Object.keys(categories).reduce((acc, key) => {
-      acc[key] = sensoryInputs.filter(input => input >= categories[key]);
-      return acc;
-    }, {});
+    const classified = {};
+    for (const [key, threshold] of Object.entries(categories)) {
+      classified[key] = sensoryInputs.filter(input => input >= threshold);
+    }
     return classified;
   }
 }
