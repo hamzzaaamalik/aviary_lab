@@ -53,20 +53,49 @@ export class Perception {
   }
 
   /**
+   * Handle multi-dimensional sensory inputs.
+   * @param {Array<Array<number>>} sensoryInputs - Array of multi-dimensional sensory input values.
+   * @param {number} threshold - The threshold to detect inputs.
+   * @returns {Array<Array<number>>} - Array of detected multi-dimensional inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  detectMultiDimensional(sensoryInputs, threshold) {
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
+    }
+    if (sensoryInputs.length === 0) {
+      return [];
+    }
+    if (typeof threshold !== 'number') {
+      throw new TypeError('threshold must be a number');
+    }
+    return sensoryInputs.filter(arr =>
+      Array.isArray(arr) &&
+      arr.length > 0 &&
+      arr.every(input => typeof input === 'number' && input > threshold)
+    );
+  }
+
+  /**
    * Validate sensory input values.
    * @param {Array<number>} sensoryInputs - The sensory inputs to validate.
    * @throws {TypeError} - If the input is invalid.
    */
   validateInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(input => typeof input === 'number')) {
-      throw new TypeError('sensoryInputs must be an array of numbers');
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
+    }
+    for (const input of sensoryInputs) {
+      if (typeof input !== 'number') {
+        throw new TypeError('each sensory input must be a number');
+      }
     }
   }
 
   /**
-   * Validate thresholds.
+   * Validate thresholds for classification.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * @throws {TypeError} - If the input is invalid.
    */
   validateThresholds(thresholds) {
     if (typeof thresholds !== 'object' || thresholds === null) {
@@ -74,7 +103,7 @@ export class Perception {
     }
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
+        throw new TypeError('each threshold must be a number');
       }
     }
   }
