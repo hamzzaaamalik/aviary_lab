@@ -16,7 +16,8 @@ export class Perception {
     if (typeof threshold !== 'number') {
       throw new TypeError('threshold must be a number');
     }
-    return sensoryInputs.filter(input => input > threshold);
+    const detected = sensoryInputs.filter(input => input > threshold);
+    return detected; // return empty array if nothing detected
   }
 
   /**
@@ -31,7 +32,8 @@ export class Perception {
     if (typeof predicate !== 'function') {
       throw new TypeError('predicate must be a function');
     }
-    return sensoryInputs.filter(predicate);
+    const filtered = sensoryInputs.filter(predicate);
+    return filtered; // return empty array if nothing matches
   }
 
   /**
