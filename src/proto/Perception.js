@@ -45,6 +45,7 @@ export class Perception {
    */
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) return {}; // handle empty inputs
     if (typeof thresholds !== 'object' || thresholds === null) {
       throw new TypeError('thresholds must be an object');
     }
@@ -60,6 +61,19 @@ export class Perception {
       });
     }
     return categorized;
+  }
+
+  /**
+   * Validate the thresholds object.
+   * @param {Object} thresholds - The thresholds object to validate.
+   * @throws {TypeError} - If the thresholds are invalid.
+   */
+  validateThresholds(thresholds) {
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number') {
+        throw new TypeError(`threshold for ${key} must be a number`);
+      }
+    }
   }
 
   /**
@@ -82,31 +96,14 @@ export class Perception {
     });
   }
 
-  /**
-   * Check if inputs are valid.
-   * @param {Array<number>} inputs - Array of inputs to check.
-   * @throws {TypeError} - If the input is invalid.
-   */
+  // Private input validation method
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    inputs.forEach(input => {
+    for (const input of inputs) {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
-      }
-    });
-  }
-
-  /**
-   * Validate threshold values.
-   * @param {Object} thresholds - Thresholds to validate.
-   * @throws {TypeError} - If any threshold is invalid.
-   */
-  validateThresholds(thresholds) {
-    for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number') {
-        throw new TypeError('all thresholds must be numbers');
       }
     }
   }
