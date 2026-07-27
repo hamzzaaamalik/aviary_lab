@@ -30,3 +30,32 @@ test('classify works as expected', () => {
   const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
+
+// Edge case tests
+
+// Test for empty array
+test('detect handles empty array', () => {
+  const result = perception.detect([], 0);
+  assert.deepEqual(result, []);
+});
+
+test('filter handles empty array', () => {
+  const result = perception.filter([], x => x > 0);
+  assert.deepEqual(result, []);
+});
+
+test('classify handles empty array', () => {
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify([], thresholds);
+  assert.deepEqual(result, { low: [], high: [] });
+});
+
+// Test for invalid inputs
+
+test('detect throws for invalid sensory inputs', () => {
+  assert.throws(() => perception.detect('not-an-array', 1), TypeError);
+});
+
+test('classify throws for invalid thresholds', () => {
+  assert.throws(() => perception.classify([1, 2], 'not-an-object'), TypeError);
+});
