@@ -45,6 +45,7 @@ export class Perception {
    */
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) return {}; // handle empty inputs
     if (typeof thresholds !== 'object' || thresholds === null) {
       throw new TypeError('thresholds must be an object');
     }
@@ -63,6 +64,19 @@ export class Perception {
   }
 
   /**
+   * Validate the thresholds object.
+   * @param {Object} thresholds - The thresholds object to validate.
+   * @throws {TypeError} - If the thresholds are invalid.
+   */
+  validateThresholds(thresholds) {
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number') {
+        throw new TypeError(`threshold for ${key} must be a number`);
+      }
+    }
+  }
+
+  /**
    * Normalize sensory inputs to a range between 0 and 1.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @returns {Array<number>} - Array of normalized inputs.
@@ -75,29 +89,21 @@ export class Perception {
     const max = Math.max(...sensoryInputs);
     if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
     return sensoryInputs.map(input => {
-      if (typeof input !== 'number' || isNaN(input) || !isFinite(input)) {
+      if (typeof input !== 'number' || isNaN(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
       return (input - min) / (max - min);
     });
   }
 
-  // Additional methods for input validation
+  // Private input validation method
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
-      throw new TypeError('sensoryInputs must be an array');
+      throw new TypeError('inputs must be an array');
     }
     for (const input of inputs) {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
-      }
-    }
-  }
-
-  validateThresholds(thresholds) {
-    for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
       }
     }
   }
