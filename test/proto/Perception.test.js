@@ -4,29 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('normalize scales inputs to range 0-1', () => {
-  const inputs = [10, 20, 30];
+test('normalize correctly scales inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
   const normalized = perception.normalize(inputs);
-  assert.deepEqual(normalized, [0, 0.5, 1]);
+  assert.deepEqual(normalized, [0, 0.25, 0.5, 0.75, 1]);
 });
 
-test('normalize returns array of zeros for identical values', () => {
-  const inputs = [5, 5, 5];
+test('normalize handles empty input', () => {
+  const normalized = perception.normalize([]);
+  assert.deepEqual(normalized, []);
+});
+
+test('normalize handles identical values', () => {
+  const inputs = [2, 2, 2];
   const normalized = perception.normalize(inputs);
   assert.deepEqual(normalized, [0, 0, 0]);
 });
 
-test('normalize returns empty array for empty input', () => {
-  const inputs = [];
-  const normalized = perception.normalize(inputs);
-  assert.deepEqual(normalized, []);
+test('normalize throws on invalid input', () => {
+  assert.throws(() => perception.normalize([1, 'a']), TypeError);
+  assert.throws(() => perception.normalize([null]), TypeError);
+  assert.throws(() => perception.normalize([Infinity]), TypeError);
 });
-
-test('normalize throws TypeError on invalid input', () => {
-  assert.throws(() => perception.normalize([1, 2, '3']), TypeError);
-  assert.throws(() => perception.normalize([1, 2, NaN]), TypeError);
-  assert.throws(() => perception.normalize([1, 2, undefined]), TypeError);
-  assert.throws(() => perception.normalize([1, 2, null]), TypeError);
-});
-
-// Existing tests for detect and filter methods
