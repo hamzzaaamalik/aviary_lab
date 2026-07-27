@@ -79,4 +79,5 @@ export class Perception {
     }
     return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(predicate => predicate(input))) : [];
   }
-}
+} 
+
