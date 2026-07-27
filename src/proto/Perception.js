@@ -64,6 +64,20 @@ export class Perception {
   }
 
   /**
+   * Normalize sensory inputs to a range between 0 and 1.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @returns {Array<number>} - Array of normalized inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  normalize(sensoryInputs) {
+    this.checkInputs(sensoryInputs);
+    const min = Math.min(...sensoryInputs);
+    const max = Math.max(...sensoryInputs);
+    if (min === max) return sensoryInputs.map(() => 0); // handle edge case where all values are the same
+    return sensoryInputs.map(input => (input - min) / (max - min));
+  }
+
+  /**
    * Validate the thresholds object.
    * @param {Object} thresholds - The thresholds object to validate.
    * @throws {TypeError} - If the thresholds are invalid.
@@ -77,34 +91,13 @@ export class Perception {
   }
 
   /**
-   * Normalize sensory inputs to a range between 0 and 1.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @returns {Array<number>} - Array of normalized inputs.
-   * @throws {TypeError} - If the input is invalid.
+   * Check if inputs are valid arrays of numbers.
+   * @param {Array<number>} inputs - Array of inputs to validate.
+   * @throws {TypeError} - If inputs are invalid.
    */
-  normalize(sensoryInputs) {
-    this.checkInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return []; // handle empty array case
-    const min = Math.min(...sensoryInputs);
-    const max = Math.max(...sensoryInputs);
-    if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
-    return sensoryInputs.map(input => {
-      if (typeof input !== 'number' || isNaN(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
-      return (input - min) / (max - min);
-    });
-  }
-
-  // Private input validation method
   checkInputs(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('inputs must be an array');
-    }
-    for (const input of inputs) {
-      if (typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
+    if (!Array.isArray(inputs) || !inputs.every(input => typeof input === 'number')) {
+      throw new TypeError('inputs must be an array of numbers');
     }
   }
 }
