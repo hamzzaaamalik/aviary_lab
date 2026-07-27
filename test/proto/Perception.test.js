@@ -4,10 +4,7 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Existing tests
-// ... existing tests ...
-
-test('advancedFilter filters inputs based on multiple predicates', () => {
+test('advancedFilter returns inputs matching all predicates', () => {
   const inputs = [1, 2, 3, 4, 5];
   const predicates = [
     (x) => x > 1,
@@ -17,13 +14,26 @@ test('advancedFilter filters inputs based on multiple predicates', () => {
   assert.deepEqual(result, [2, 3, 4]);
 });
 
-test('advancedFilter throws TypeError for invalid predicates', () => {
+test('advancedFilter returns empty array when no inputs match', () => {
   const inputs = [1, 2, 3];
-  assert.throws(() => perception.advancedFilter(inputs, 'not an array'), TypeError);
-  assert.throws(() => perception.advancedFilter(inputs, [() => {}, 'not a function']), TypeError);
+  const predicates = [
+    (x) => x > 3,
+  ];
+  const result = perception.advancedFilter(inputs, predicates);
+  assert.deepEqual(result, []);
 });
 
-test('advancedFilter works with an empty input array', () => {
-  const result = perception.advancedFilter([], [(x) => x > 1]);
+test('advancedFilter throws TypeError for invalid predicates', () => {
+  const inputs = [1, 2, 3];
+  assert.throws(() => perception.advancedFilter(inputs, 'not-an-array'), TypeError);
+  assert.throws(() => perception.advancedFilter(inputs, [null]), TypeError);
+});
+
+test('advancedFilter handles empty input array', () => {
+  const inputs = [];
+  const predicates = [
+    (x) => x > 1,
+  ];
+  const result = perception.advancedFilter(inputs, predicates);
   assert.deepEqual(result, []);
 });
