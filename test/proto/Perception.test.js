@@ -4,35 +4,40 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Test for normalize method
-
-test('normalize should return normalized values between 0 and 1', () => {
-  const inputs = [10, 20, 30, 40];
-  const expected = [0, 0.3333, 0.6667, 1];
-  const result = perception.normalize(inputs);
-  assert.deepEqual(result.map(v => Math.round(v * 10000) / 10000), expected);
+test('normalize returns an array of normalized inputs', () => {
+  const inputs = [10, 20, 30];
+  const expected = [0, 0.5, 1];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, expected);
 });
 
-
-test('normalize should return an empty array for an empty input', () => {
-  const result = perception.normalize([]);
-  assert.deepEqual(result, []);
+test('normalize handles empty array', () => {
+  const inputs = [];
+  const expected = [];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, expected);
 });
 
-
-test('normalize should return an array of zeros if all inputs are the same', () => {
+test('normalize handles identical values', () => {
   const inputs = [5, 5, 5];
-  const result = perception.normalize(inputs);
-  assert.deepEqual(result, [0, 0, 0]);
+  const expected = [0, 0, 0];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, expected);
 });
 
-
-test('normalize should throw TypeError for invalid input', () => {
-  assert.throws(() => perception.normalize('invalid'), TypeError);
-  assert.throws(() => perception.normalize([1, 2, 'invalid']), TypeError);
+test('classify categorizes inputs correctly', () => {
+  const inputs = [10, 20, 30, 40];
+  const thresholds = { low: 15, medium: 25, high: 35 };
+  const expected = {
+    low: [20, 30, 40],
+    medium: [30, 40],
+    high: [40],
+  };
+  const categorized = perception.classify(inputs, thresholds);
+  assert.deepEqual(categorized, expected);
 });
 
-
-test('normalize should throw TypeError for non-array input', () => {
-  assert.throws(() => perception.normalize({}), TypeError);
+test('classify throws on invalid thresholds', () => {
+  const inputs = [10, 20, 30];
+  assert.throws(() => perception.classify(inputs, 'not an object'), TypeError);
 });

@@ -14,7 +14,7 @@ export class Perception {
   detect(sensoryInputs, threshold) {
     this.validateInputs(sensoryInputs);
     if (typeof threshold !== 'number') {
-      throw new TypeError('threshold must be a number');
+      throw new TypeError('threshold must be of type number');
     }
     const detected = sensoryInputs.filter(input => input > threshold);
     return detected; // return empty array if nothing detected
@@ -81,9 +81,9 @@ export class Perception {
   }
 
   /**
-   * Validate thresholds.
+   * Validate thresholds object.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * @throws {TypeError} - If the input is invalid.
    */
   validateThresholds(thresholds) {
     if (typeof thresholds !== 'object' || thresholds === null) {
