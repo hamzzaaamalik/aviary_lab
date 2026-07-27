@@ -70,7 +70,9 @@ export class Perception {
     const max = Math.max(...sensoryInputs);
     if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
     return sensoryInputs.map(input => {
-      if (typeof input !== 'number') throw new TypeError('all inputs must be numbers');
+      if (typeof input !== 'number' || isNaN(input) || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
+      }
       return (input - min) / (max - min);
     });
   }
@@ -84,22 +86,22 @@ export class Perception {
     if (!Array.isArray(sensoryInputs)) {
       throw new TypeError('sensoryInputs must be an array');
     }
-    for (const input of sensoryInputs) {
+    sensoryInputs.forEach(input => {
       if (typeof input !== 'number') {
         throw new TypeError('all inputs must be numbers');
       }
-    }
+    });
   }
 
   /**
    * Validate thresholds object.
-   * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * @throws {TypeError} - If thresholds are invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
+        throw new TypeError('threshold values must be numbers');
       }
     }
   }
