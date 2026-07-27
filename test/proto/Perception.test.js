@@ -2,31 +2,29 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
-const perception = new Perception();
-
-test('classify groups inputs by thresholds', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+test('normalize correctly scales inputs to range [0, 1]', () => {
+  const perception = new Perception();
+  const inputs = [0, 50, 100];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, [0, 0.5, 1]);
 });
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'invalid'), TypeError);
-  assert.throws(() => perception.classify([1, 2, 3], { low: 'invalid' }), TypeError);
-  assert.throws(() => perception.classify([1, 2, 3], null), TypeError);
+test('normalize handles empty array', () => {
+  const perception = new Perception();
+  const normalized = perception.normalize([]);
+  assert.deepEqual(normalized, []);
 });
 
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify('not an array', { low: 0 }), TypeError);
-  assert.throws(() => perception.classify([1, 2, NaN], { low: 0 }), TypeError);
-  assert.throws(() => perception.classify([1, 2, Infinity], { low: 0 }), TypeError);
+test('normalize handles identical inputs', () => {
+  const perception = new Perception();
+  const inputs = [42, 42, 42];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, [0, 0, 0]);
 });
 
-test('classify handles empty inputs', () => {
-  const inputs = [];
-  const thresholds = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [], high: [] });
+test('normalize throws TypeError for invalid inputs', () => {
+  const perception = new Perception();
+  assert.throws(() => perception.normalize([1, 'invalid', 3]), TypeError);
+  assert.throws(() => perception.normalize([1, Infinity, 3]), TypeError);
 });
 
