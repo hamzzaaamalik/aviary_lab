@@ -53,6 +53,23 @@ export class Perception {
   }
 
   /**
+   * Handle multi-dimensional sensory inputs.
+   * @param {Array<Array<number>>} sensoryInputs - Array of multi-dimensional sensory input values.
+   * @param {number} threshold - The threshold to detect inputs.
+   * @returns {Array<Array<number>>} - Array of detected multi-dimensional inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  detectMultiDimensional(sensoryInputs, threshold) {
+    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(arr => Array.isArray(arr) && arr.every(input => typeof input === 'number'))) {
+      throw new TypeError('sensoryInputs must be an array of arrays of numbers');
+    }
+    if (typeof threshold !== 'number') {
+      throw new TypeError('threshold must be a number');
+    }
+    return sensoryInputs.filter(arr => arr.some(input => input > threshold));
+  }
+
+  /**
    * Validate sensory input values.
    * @param {Array<number>} sensoryInputs - The sensory inputs to validate.
    * @throws {TypeError} - If the input is invalid.
