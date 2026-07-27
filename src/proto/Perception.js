@@ -77,10 +77,10 @@ export class Perception {
     if (sensoryInputs.length === 0) throw new TypeError('Sensory inputs cannot be empty.');
     this.validateThresholds(categories);
 
-    const classified = Object.keys(categories).reduce((acc, key) => {
-      acc[key] = sensoryInputs.filter(input => input >= categories[key]);
-      return acc;
-    }, {});
+    const classified = {};
+    for (const [category, threshold] of Object.entries(categories)) {
+      classified[category] = this.detect(sensoryInputs, threshold);
+    }
     return classified;
   }
 }
