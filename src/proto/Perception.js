@@ -77,23 +77,8 @@ export class Perception {
     this.validateThresholds(categories);
     const results = {};
     for (const [category, threshold] of Object.entries(categories)) {
-      results[category] = this.detect(sensoryInputs, threshold);
+      results[category] = sensoryInputs.filter(input => input >= threshold);
     }
     return results;
-  }
-
-  /**
-   * Advanced filter sensory inputs based on multiple predicates.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Array<function>} predicates - Array of functions to test each element.
-   * @returns {Array<number>} - Filtered sensory inputs that match all predicates.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  advancedFilter(sensoryInputs, predicates) {
-    this.validateInputs(sensoryInputs);
-    if (!Array.isArray(predicates) || !predicates.every(fn => typeof fn === 'function')) {
-      throw new TypeError('Predicates must be an array of functions.');
-    }
-    return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
   }
 }
