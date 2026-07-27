@@ -64,19 +64,6 @@ export class Perception {
   }
 
   /**
-   * Validate the thresholds object.
-   * @param {Object} thresholds - The thresholds object to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
-   */
-  validateThresholds(thresholds) {
-    for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
-      }
-    }
-  }
-
-  /**
    * Normalize sensory inputs to a range between 0 and 1.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @returns {Array<number>} - Array of normalized inputs.
@@ -84,19 +71,17 @@ export class Perception {
    */
   normalize(sensoryInputs) {
     this.checkInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return []; // handle empty array case
     const min = Math.min(...sensoryInputs);
     const max = Math.max(...sensoryInputs);
-    if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
-    return sensoryInputs.map(input => {
-      if (typeof input !== 'number' || isNaN(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
-      return (input - min) / (max - min);
-    });
+    if (min === max) return sensoryInputs.map(() => 0); // handle edge case where all values are the same
+    return sensoryInputs.map(input => (input - min) / (max - min));
   }
 
-  // Private input validation method
+  /**
+   * Check if inputs are valid arrays of numbers.
+   * @param {Array} inputs - The inputs to check.
+   * @throws {TypeError} - If inputs are invalid.
+   */
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
@@ -104,6 +89,19 @@ export class Perception {
     for (const input of inputs) {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
+      }
+    }
+  }
+
+  /**
+   * Validate thresholds to ensure they are finite numbers.
+   * @param {Object} thresholds - The thresholds to validate.
+   * @throws {TypeError} - If thresholds are invalid.
+   */
+  validateThresholds(thresholds) {
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
+        throw new TypeError(`threshold for ${key} must be a finite number`);
       }
     }
   }
