@@ -53,6 +53,24 @@ export class Perception {
   }
 
   /**
+   * Categorize sensory inputs based on a range of thresholds.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} ranges - Key-value pairs of category names and range arrays.
+   * @returns {Object} - Categorized inputs based on ranges.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  categorize(sensoryInputs, ranges) {
+    this.validateInputs(sensoryInputs);
+    this.validateRanges(ranges);
+
+    const categorized = {};
+    for (const category in ranges) {
+      categorized[category] = sensoryInputs.filter(input => input >= ranges[category][0] && input <= ranges[category][1]);
+    }
+    return categorized;
+  }
+
+  /**
    * Validate sensory input values.
    * @param {Array<number>} sensoryInputs - The sensory inputs to validate.
    * @throws {TypeError} - If the input is invalid.
@@ -75,6 +93,23 @@ export class Perception {
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
         throw new TypeError(`threshold for ${key} must be a number`);
+      }
+    }
+  }
+
+  /**
+   * Validate ranges.
+   * @param {Object} ranges - The ranges to validate.
+   * @throws {TypeError} - If the ranges are invalid.
+   */
+  validateRanges(ranges) {
+    if (typeof ranges !== 'object' || ranges === null) {
+      throw new TypeError('ranges must be an object');
+    }
+    for (const key in ranges) {
+      if (!Array.isArray(ranges[key]) || ranges[key].length !== 2 ||
+          typeof ranges[key][0] !== 'number' || typeof ranges[key][1] !== 'number') {
+        throw new TypeError(`range for ${key} must be an array of two numbers`);
       }
     }
   }
