@@ -10,8 +10,11 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   validateInputs(inputs) {
-    if (!Array.isArray(inputs) || !inputs.every(Number.isFinite)) {
+    if (!Array.isArray(inputs)) {
       throw new TypeError('Inputs must be an array of finite numbers.');
+    }
+    if (!inputs.every(Number.isFinite)) {
+      throw new TypeError('All inputs must be finite numbers.');
     }
   }
 
@@ -78,14 +81,9 @@ export class Perception {
     this.validateThresholds(categories);
 
     const classified = {};
-    for (const input of sensoryInputs) {
-      for (const [category, threshold] of Object.entries(categories)) {
-        if (input >= threshold) {
-          if (!classified[category]) classified[category] = [];
-          classified[category].push(input);
-        }
-      }
+    for (const [key, threshold] of Object.entries(categories)) {
+      classified[key] = sensoryInputs.filter(input => input >= threshold);
     }
     return classified;
   }
-} 
+}
