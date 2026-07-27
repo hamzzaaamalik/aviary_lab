@@ -78,12 +78,12 @@ export class Perception {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
-      return (input - min) / (max - min);
+      return (input - min) / (max - min); // normalize to [0, 1]
     });
   }
 
   /**
-   * Check if sensory inputs are valid.
+   * Check the validity of sensory inputs.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @throws {TypeError} - If the input is invalid.
    */
@@ -100,13 +100,13 @@ export class Perception {
 
   /**
    * Validate thresholds for classification.
-   * @param {Object} thresholds - Key-value pairs of thresholds.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
    * @throws {TypeError} - If thresholds are invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
+        throw new TypeError('all thresholds must be numbers');
       }
     }
   }
