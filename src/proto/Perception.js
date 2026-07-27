@@ -78,9 +78,14 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   validateInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(input => typeof input === 'number')) {
-      throw new TypeError('sensoryInputs must be an array of numbers');
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
     }
+    sensoryInputs.forEach(input => {
+      if (typeof input !== 'number') {
+        throw new TypeError('all elements in sensoryInputs must be numbers');
+      }
+    });
   }
 
   /**
