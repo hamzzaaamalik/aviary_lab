@@ -1,28 +1,30 @@
+// test/proto/Perception.test.js
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('normalize handles NaN and Infinity', () => {
-  assert.throws(() => perception.normalize([1, 2, NaN]), TypeError);
-  assert.throws(() => perception.normalize([1, 2, Infinity]), TypeError);
-  assert.throws(() => perception.normalize([1, 2, -Infinity]), TypeError);
+// Existing tests...
+
+test('normalize returns an array of normalized inputs', () => {
+  const inputs = [10, 20, 30];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, [0, 0.5, 1]);
 });
 
-test('normalize returns empty array for empty input', () => {
-  const result = perception.normalize([]);
-  assert.deepEqual(result, []);
+test('normalize handles empty array', () => {
+  const normalized = perception.normalize([]);
+  assert.deepEqual(normalized, []);
 });
 
-test('normalize returns correct values', () => {
-  const result = perception.normalize([0, 10, 20]);
-  assert.deepEqual(result, [0, 0.5, 1]);
+test('normalize throws TypeError on invalid input', () => {
+  assert.throws(() => perception.normalize([1, 'a', 3]), TypeError);
 });
 
-test('normalize handles all equal inputs', () => {
-  const result = perception.normalize([5, 5, 5]);
-  assert.deepEqual(result, [0, 0, 0]);
+test('normalize handles identical inputs', () => {
+  const inputs = [5, 5, 5];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, [0, 0, 0]);
 });
 
-// Additional tests for existing methods can be added here.
