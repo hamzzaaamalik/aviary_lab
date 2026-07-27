@@ -81,9 +81,9 @@ export class Perception {
   }
 
   /**
-   * Validate thresholds object.
+   * Validate thresholds for classification.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If the thresholds are invalid.
    */
   validateThresholds(thresholds) {
     if (typeof thresholds !== 'object' || thresholds === null) {
@@ -91,7 +91,7 @@ export class Perception {
     }
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
-        throw new TypeError('each threshold must be a number');
+        throw new TypeError(`threshold for ${key} must be a number`);
       }
     }
   }
