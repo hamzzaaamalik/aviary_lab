@@ -65,11 +65,13 @@ export class Perception {
    */
   normalize(sensoryInputs) {
     this.checkInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return []; // handle empty array case
-    const min = Math.min(...sensoryInputs);
-    const max = Math.max(...sensoryInputs);
-    if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
-    return sensoryInputs.map(input => (input - min) / (max - min));
+    // Handle NaN and non-numeric values
+    const validInputs = sensoryInputs.filter(input => typeof input === 'number' && !isNaN(input));
+    if (validInputs.length === 0) return []; // handle empty array case
+    const min = Math.min(...validInputs);
+    const max = Math.max(...validInputs);
+    if (min === max) return new Array(validInputs.length).fill(0); // avoid division by zero
+    return validInputs.map(input => (input - min) / (max - min));
   }
 
   /**
@@ -78,13 +80,18 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   checkInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(num => typeof num === 'number')) {
-      throw new TypeError('sensoryInputs must be an array of numbers');
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
     }
+    sensoryInputs.forEach(input => {
+      if (typeof input !== 'number') {
+        throw new TypeError('all elements of sensoryInputs must be numbers');
+      }
+    });
   }
 
   /**
-   * Validate thresholds for classification.
+   * Validate thresholds.
    * @param {Object} thresholds - The thresholds to validate.
    * @throws {TypeError} - If the thresholds are invalid.
    */
