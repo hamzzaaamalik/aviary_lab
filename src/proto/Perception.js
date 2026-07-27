@@ -86,7 +86,7 @@ export class Perception {
   /**
    * Validate threshold values.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
@@ -95,4 +95,4 @@ export class Perception {
       }
     }
   }
-}
+} 
