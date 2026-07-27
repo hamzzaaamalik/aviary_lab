@@ -78,26 +78,31 @@ export class Perception {
   }
 
   /**
-   * Validate the thresholds object.
-   * @param {Object} thresholds - The thresholds object to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * Check if inputs are valid arrays of numbers.
+   * @param {Array} inputs - The inputs to check.
+   * @throws {TypeError} - If inputs are invalid.
    */
-  validateThresholds(thresholds) {
-    for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
+  checkInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
+    for (const input of inputs) {
+      if (typeof input !== 'number' || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
       }
     }
   }
 
   /**
-   * Check if inputs are valid arrays of numbers.
-   * @param {Array<number>} inputs - Array of inputs to validate.
-   * @throws {TypeError} - If inputs are invalid.
+   * Validate thresholds to ensure they are finite numbers.
+   * @param {Object} thresholds - The thresholds to validate.
+   * @throws {TypeError} - If thresholds are invalid.
    */
-  checkInputs(inputs) {
-    if (!Array.isArray(inputs) || !inputs.every(input => typeof input === 'number')) {
-      throw new TypeError('inputs must be an array of numbers');
+  validateThresholds(thresholds) {
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
+        throw new TypeError(`threshold for ${key} must be a finite number`);
+      }
     }
   }
 }
