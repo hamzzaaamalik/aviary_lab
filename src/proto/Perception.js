@@ -77,23 +77,6 @@ export class Perception {
     if (!Array.isArray(predicates) || !predicates.every(fn => typeof fn === 'function')) {
       throw new TypeError('Predicates must be an array of functions.');
     }
-    return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
-  }
-
-  /**
-   * Classify sensory inputs based on provided thresholds.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Categorized inputs.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  classify(sensoryInputs, categories) {
-    this.validateInputs(sensoryInputs);
-    this.validateThresholds(categories);
-    const categorized = {};
-    for (const category in categories) {
-      categorized[category] = sensoryInputs.filter(input => input >= categories[category]);
-    }
-    return categorized;
+    return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(pred => pred(input))) : [];
   }
 }
