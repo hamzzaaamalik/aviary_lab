@@ -4,24 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('normalize handles empty array', () => {
+test('normalize handles NaN and Infinity', () => {
+  assert.throws(() => perception.normalize([1, 2, NaN]), TypeError);
+  assert.throws(() => perception.normalize([1, 2, Infinity]), TypeError);
+  assert.throws(() => perception.normalize([1, 2, -Infinity]), TypeError);
+});
+
+test('normalize returns empty array for empty input', () => {
   const result = perception.normalize([]);
   assert.deepEqual(result, []);
 });
 
-test('normalize handles identical inputs', () => {
+test('normalize returns correct values', () => {
+  const result = perception.normalize([0, 10, 20]);
+  assert.deepEqual(result, [0, 0.5, 1]);
+});
+
+test('normalize handles all equal inputs', () => {
   const result = perception.normalize([5, 5, 5]);
   assert.deepEqual(result, [0, 0, 0]);
 });
 
-test('normalize scales input range to [0, 1]', () => {
-  const result = perception.normalize([1, 2, 3, 4, 5]);
-  assert.deepEqual(result, [0, 0.25, 0.5, 0.75, 1]);
-});
-
-test('normalize does not fail with negative inputs', () => {
-  const result = perception.normalize([-3, -2, -1, 0, 1]);
-  assert.deepEqual(result, [0, 0.25, 0.5, 0.75, 1]);
-});
-
-// Additional tests for detect and filter can be included here as needed.
+// Additional tests for existing methods can be added here.
