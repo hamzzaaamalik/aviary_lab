@@ -45,6 +45,9 @@ export class Perception {
    */
   classify(sensoryInputs, thresholds) {
     this.validateInputs(sensoryInputs);
+    if (typeof thresholds !== 'object' || thresholds === null) {
+      throw new TypeError('thresholds must be an object');
+    }
     this.validateThresholds(thresholds);
 
     const categorized = {};
@@ -81,14 +84,11 @@ export class Perception {
   }
 
   /**
-   * Validate thresholds object.
+   * Validate threshold values.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If the thresholds are invalid.
    */
   validateThresholds(thresholds) {
-    if (typeof thresholds !== 'object' || thresholds === null) {
-      throw new TypeError('thresholds must be an object');
-    }
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
         throw new TypeError(`threshold for ${key} must be a number`);
