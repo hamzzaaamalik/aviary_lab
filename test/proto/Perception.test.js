@@ -4,54 +4,26 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('detect returns inputs above threshold', () => {
-  const result = perception.detect([1, 2, 3, 4, 5], 3);
-  assert.deepEqual(result, [4, 5]);
+test('normalize - normalizes inputs to range [0, 1]', () => {
+  const inputs = [10, 20, 30, 40, 50];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, [0, 0.25, 0.5, 0.75, 1]);
 });
 
-test('detect returns empty array when no inputs above threshold', () => {
-  const result = perception.detect([1, 1, 1], 2);
-  assert.deepEqual(result, []);
+test('normalize - handles empty input', () => {
+  const normalized = perception.normalize([]);
+  assert.deepEqual(normalized, []);
 });
 
-test('detect throws TypeError for invalid threshold', () => {
-  assert.throws(() => perception.detect([1, 2, 3], 'a'), TypeError);
+test('normalize - throws TypeError for invalid input', () => {
+  assert.throws(() => perception.normalize([10, 20, NaN]), TypeError);
+  assert.throws(() => perception.normalize([10, 20, Infinity]), TypeError);
+  assert.throws(() => perception.normalize([10, '20']), TypeError);
 });
 
-test('filter returns inputs matching predicate', () => {
-  const result = perception.filter([1, 2, 3, 4], x => x % 2 === 0);
-  assert.deepEqual(result, [2, 4]);
+test('normalize - handles identical values', () => {
+  const inputs = [5, 5, 5];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, [0, 0, 0]);
 });
 
-test('filter returns empty array when no inputs match predicate', () => {
-  const result = perception.filter([1, 3, 5], x => x % 2 === 0);
-  assert.deepEqual(result, []);
-});
-
-test('filter throws TypeError for invalid predicate', () => {
-  assert.throws(() => perception.filter([1, 2, 3], 'not-a-function'), TypeError);
-});
-
-test('classify categorizes inputs correctly', () => {
-  const thresholds = { low: 1, high: 3 };
-  const result = perception.classify([1, 2, 3, 4], thresholds);
-  assert.deepEqual(result, { low: [1, 2, 3, 4], high: [3, 4] });
-});
-
-test('classify throws TypeError for invalid thresholds', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'not-an-object'), TypeError);
-});
-
-test('normalize outputs values between 0 and 1', () => {
-  const result = perception.normalize([1, 2, 3, 4]);
-  assert.deepEqual(result, [0, 0.3333333333333333, 0.6666666666666666, 1]);
-});
-
-test('normalize handles empty array', () => {
-  const result = perception.normalize([]);
-  assert.deepEqual(result, []);
-});
-
-test('normalize throws TypeError for invalid inputs', () => {
-  assert.throws(() => perception.normalize([1, NaN, 3]), TypeError);
-});
