@@ -75,25 +75,29 @@ export class Perception {
     const max = Math.max(...sensoryInputs);
     if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
     return sensoryInputs.map(input => {
-      if (typeof input !== 'number' || isNaN(input) || !isFinite(input)) {
+      if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
       return (input - min) / (max - min);
     });
   }
 
-  // Additional methods for input validation
+  /**
+   * Check if all inputs are valid numbers.
+   * @param {Array<number>} inputs
+   * @throws {TypeError} - If any input is invalid.
+   */
   checkInputs(inputs) {
-    if (!Array.isArray(inputs)) {
-      throw new TypeError('sensoryInputs must be an array');
-    }
-    for (const input of inputs) {
-      if (typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
+    if (!Array.isArray(inputs) || inputs.some(input => typeof input !== 'number' || !isFinite(input))) {
+      throw new TypeError('inputs must be an array of finite numbers');
     }
   }
 
+  /**
+   * Validate thresholds object.
+   * @param {Object} thresholds
+   * @throws {TypeError} - If any threshold is invalid.
+   */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
