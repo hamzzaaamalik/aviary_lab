@@ -4,19 +4,21 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('advancedFilter filters inputs based on multiple predicates', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const predicates = [
-    (x) => x > 1,
-    (x) => x < 5
-  ];
-  const filtered = perception.advancedFilter(inputs, predicates);
-  assert.deepEqual(filtered, [2, 3, 4]);
+// Existing tests...
+
+// New tests for advancedFilter
+
+test('advancedFilter filters based on multiple predicates', () => {
+  const inputs = [1, 2, 3, 4, 5, 6];
+  const predicates = [x => x > 2, x => x % 2 === 0];
+  const result = perception.advancedFilter(inputs, predicates);
+  assert.deepEqual(result, [4, 6]);
 });
 
-test('advancedFilter throws on invalid predicates', () => {
-  assert.throws(() => perception.advancedFilter([1, 2, 3], 'not a function'), TypeError);
-  assert.throws(() => perception.advancedFilter([1, 2, 3], [() => {}, 'not a function']), TypeError);
+
+test('advancedFilter throws TypeError for invalid predicates', () => {
+  const inputs = [1, 2, 3];
+  assert.throws(() => perception.advancedFilter(inputs, 'not an array'), TypeError);
+  assert.throws(() => perception.advancedFilter(inputs, [x => x > 1, 'not a function']), TypeError);
 });
 
-// Add tests for detect and filter methods as necessary.
