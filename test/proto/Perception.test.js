@@ -4,21 +4,26 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify returns classified sensory inputs', () => {
+test('classify correctly categorizes inputs', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, high: 4 };
+  const categories = { low: 2, high: 4 };  
   const result = perception.classify(inputs, categories);
   assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
-test('classify throws TypeError for empty inputs', () => {
+test('classify throws on empty inputs', () => {
   const categories = { low: 2, high: 4 };
   assert.throws(() => perception.classify([], categories), TypeError);
 });
 
-test('classify throws TypeError for invalid categories', () => {
+test('classify throws on invalid categories', () => {
   const inputs = [1, 2, 3];
   assert.throws(() => perception.classify(inputs, null), TypeError);
   assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
+test('classify throws on non-finite thresholds', () => {
+  const inputs = [1, 2, 3];
+  const categories = { low: NaN, high: 4 };
+  assert.throws(() => perception.classify(inputs, categories), TypeError);
+});
