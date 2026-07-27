@@ -82,7 +82,7 @@ export class Perception {
 
   /**
    * Validate thresholds object.
-   * @param {Object} thresholds - The thresholds object to validate.
+   * @param {Object} thresholds - The thresholds to validate.
    * @throws {TypeError} - If the input is invalid.
    */
   validateThresholds(thresholds) {
