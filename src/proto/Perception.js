@@ -61,6 +61,18 @@ export class Perception {
     if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(input => typeof input === 'number')) {
       throw new TypeError('sensoryInputs must be an array of numbers');
     }
+    sensoryInputs.forEach(input => this.validateInputRange(input));
+  }
+
+  /**
+   * Validate individual sensory input value range.
+   * @param {number} input - The sensory input to validate.
+   * @throws {RangeError} - If the input is out of the acceptable range.
+   */
+  validateInputRange(input) {
+    if (input < 0 || input > 100) { // Example range check
+      throw new RangeError('sensory input must be between 0 and 100');
+    }
   }
 
   /**
