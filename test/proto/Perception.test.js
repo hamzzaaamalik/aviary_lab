@@ -20,5 +20,6 @@ test('advancedFilter throws TypeError for invalid predicates', () => {
   const inputs = [1, 2, 3];
   assert.throws(() => perception.advancedFilter(inputs, 'not an array'), TypeError);
   assert.throws(() => perception.advancedFilter(inputs, [x => x > 1, 'not a function']), TypeError);
+  assert.throws(() => perception.advancedFilter(inputs, []), TypeError);
 });
 
