@@ -77,6 +77,6 @@ export class Perception {
     if (!Array.isArray(predicates) || !predicates.every(fn => typeof fn === 'function')) {
       throw new TypeError('Predicates must be an array of functions.');
     }
-    return sensoryInputs.length > 0 ? sensoryInputs.filter(input => predicates.every(predicate => predicate(input))) : [];
+    return sensoryInputs.filter(input => predicates.every(predicate => predicate(input)));
   }
-} 
+}
