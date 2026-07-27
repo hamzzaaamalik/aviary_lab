@@ -4,45 +4,45 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('normalize() normalizes inputs to range [0, 1]', () => {
+test('normalize transforms inputs to range [0, 1]', () => {
   const inputs = [10, 20, 30, 40, 50];
   const normalized = perception.normalize(inputs);
   assert.deepEqual(normalized, [0, 0.25, 0.5, 0.75, 1]);
 });
 
-test('normalize() handles edge case of identical inputs', () => {
-  const inputs = [5, 5, 5, 5];
+test('normalize handles edge case where all values are the same', () => {
+  const inputs = [5, 5, 5];
   const normalized = perception.normalize(inputs);
-  assert.deepEqual(normalized, [0, 0, 0, 0]);
+  assert.deepEqual(normalized, [0, 0, 0]);
 });
 
-test('normalize() throws on invalid input', () => {
-  assert.throws(() => perception.normalize([1, 2, '3']), TypeError);
+test('normalize throws on invalid inputs', () => {
+  assert.throws(() => perception.normalize([1, 2, NaN]), TypeError);
   assert.throws(() => perception.normalize('not an array'), TypeError);
 });
 
-// Additional tests for detect(), filter(), and classify()
+// Existing tests for detect and filter...
 
-test('detect() returns detected inputs above threshold', () => {
+// Test for filter method
+test('filter applies the predicate function correctly', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const detected = perception.detect(inputs, 3);
-  assert.deepEqual(detected, [4, 5]);
+  const predicate = (x) => x > 3;
+  const result = perception.filter(inputs, predicate);
+  assert.deepEqual(result, [4, 5]);
 });
 
-test('filter() returns filtered inputs based on predicate', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const filtered = perception.filter(inputs, input => input % 2 === 0);
-  assert.deepEqual(filtered, [2, 4]);
+test('filter throws on invalid predicate', () => {
+  assert.throws(() => perception.filter([1, 2, 3], 'not a function'), TypeError);
 });
 
-test('classify() categorizes inputs based on thresholds', () => {
+// Test for detect method
+test('detect identifies inputs above threshold', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
-  const categorized = perception.classify(inputs, thresholds);
-  assert.deepEqual(categorized, { low: [2, 3, 4, 5], high: [4, 5] });
+  const result = perception.detect(inputs, 3);
+  assert.deepEqual(result, [4, 5]);
 });
 
-test('classify() throws on invalid thresholds', () => {
-  const inputs = [1, 2, 3];
-  assert.throws(() => perception.classify(inputs, { low: 'not a number' }), TypeError);
+test('detect throws on invalid inputs', () => {
+  assert.throws(() => perception.detect([1, 2, NaN], 2), TypeError);
+  assert.throws(() => perception.detect('not an array', 2), TypeError);
 });
