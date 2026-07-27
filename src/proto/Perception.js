@@ -37,6 +37,20 @@ export class Perception {
   }
 
   /**
+   * Normalize sensory inputs to a range between 0 and 1.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @returns {Array<number>} - Array of normalized inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  normalize(sensoryInputs) {
+    this.validateInputs(sensoryInputs);
+    const min = Math.min(...sensoryInputs);
+    const max = Math.max(...sensoryInputs);
+    if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
+    return sensoryInputs.map(input => (input - min) / (max - min));
+  }
+
+  /**
    * Classify sensory inputs based on given thresholds.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} thresholds - Key-value pairs of category names and thresholds.
