@@ -14,9 +14,19 @@ test('classify groups inputs by thresholds', () => {
 test('classify throws on invalid thresholds', () => {
   assert.throws(() => perception.classify([1, 2, 3], 'invalid'), TypeError);
   assert.throws(() => perception.classify([1, 2, 3], { low: 'invalid' }), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], null), TypeError);
 });
 
 test('classify throws on invalid inputs', () => {
   assert.throws(() => perception.classify('not an array', { low: 0 }), TypeError);
   assert.throws(() => perception.classify([1, 2, NaN], { low: 0 }), TypeError);
+  assert.throws(() => perception.classify([1, 2, Infinity], { low: 0 }), TypeError);
 });
+
+test('classify handles empty inputs', () => {
+  const inputs = [];
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [], high: [] });
+});
+

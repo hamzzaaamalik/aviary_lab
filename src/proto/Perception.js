@@ -52,7 +52,12 @@ export class Perception {
 
     const categorized = {};
     for (const category in thresholds) {
-      categorized[category] = sensoryInputs.filter(input => input >= thresholds[category]);
+      categorized[category] = sensoryInputs.filter(input => {
+        if (typeof input !== 'number' || !isFinite(input)) {
+          throw new TypeError('all inputs must be finite numbers');
+        }
+        return input >= thresholds[category];
+      });
     }
     return categorized;
   }
@@ -77,10 +82,15 @@ export class Perception {
     });
   }
 
-  checkInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) ||
-        sensoryInputs.some(input => typeof input !== 'number' || isNaN(input) || !isFinite(input))) {
-      throw new TypeError('sensoryInputs must be an array of finite numbers');
+  // Additional methods for input validation
+  checkInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('sensoryInputs must be an array');
+    }
+    for (const input of inputs) {
+      if (typeof input !== 'number' || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
+      }
     }
   }
 
