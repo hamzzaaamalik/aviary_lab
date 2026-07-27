@@ -37,6 +37,27 @@ export class Perception {
   }
 
   /**
+   * Classify sensory inputs based on given thresholds.
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * @returns {Object} - Categorized inputs.
+   * @throws {TypeError} - If the input is invalid.
+   */
+  classify(sensoryInputs, thresholds) {
+    this.validateInputs(sensoryInputs);
+    if (typeof thresholds !== 'object' || thresholds === null) {
+      throw new TypeError('thresholds must be an object');
+    }
+    this.validateThresholds(thresholds);
+
+    const categorized = {};
+    for (const category in thresholds) {
+      categorized[category] = sensoryInputs.filter(input => input >= thresholds[category]);
+    }
+    return categorized;
+  }
+
+  /**
    * Normalize sensory inputs to a range between 0 and 1.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @returns {Array<number>} - Array of normalized inputs.
@@ -52,24 +73,6 @@ export class Perception {
   }
 
   /**
-   * Classify sensory inputs based on given thresholds.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Categorized inputs.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  classify(sensoryInputs, thresholds) {
-    this.validateInputs(sensoryInputs);
-    this.validateThresholds(thresholds);
-
-    const categorized = {};
-    for (const category in thresholds) {
-      categorized[category] = sensoryInputs.filter(input => input >= thresholds[category]);
-    }
-    return categorized;
-  }
-
-  /**
    * Validate sensory input values.
    * @param {Array<number>} sensoryInputs - The sensory inputs to validate.
    * @throws {TypeError} - If the input is invalid.
@@ -81,14 +84,11 @@ export class Perception {
   }
 
   /**
-   * Validate thresholds.
+   * Validate threshold values.
    * @param {Object} thresholds - The thresholds to validate.
    * @throws {TypeError} - If the thresholds are invalid.
    */
   validateThresholds(thresholds) {
-    if (typeof thresholds !== 'object' || thresholds === null) {
-      throw new TypeError('thresholds must be an object');
-    }
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
         throw new TypeError(`threshold for ${key} must be a number`);
