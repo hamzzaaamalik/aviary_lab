@@ -60,13 +60,20 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   detectMultiDimensional(sensoryInputs, threshold) {
-    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(arr => Array.isArray(arr) && arr.every(input => typeof input === 'number'))) {
-      throw new TypeError('sensoryInputs must be an array of arrays of numbers');
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
+    }
+    if (sensoryInputs.length === 0) {
+      return [];
     }
     if (typeof threshold !== 'number') {
       throw new TypeError('threshold must be a number');
     }
-    return sensoryInputs.filter(arr => arr.some(input => input > threshold));
+    return sensoryInputs.filter(arr =>
+      Array.isArray(arr) &&
+      arr.length > 0 &&
+      arr.every(input => typeof input === 'number' && input > threshold)
+    );
   }
 
   /**
@@ -81,9 +88,9 @@ export class Perception {
   }
 
   /**
-   * Validate thresholds.
+   * Validate thresholds for classification.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * @throws {TypeError} - If thresholds are invalid.
    */
   validateThresholds(thresholds) {
     if (typeof thresholds !== 'object' || thresholds === null) {
