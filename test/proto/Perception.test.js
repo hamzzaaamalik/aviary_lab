@@ -16,10 +16,17 @@ test('normalize returns array of zeros for identical values', () => {
   assert.deepEqual(normalized, [0, 0, 0]);
 });
 
+test('normalize returns empty array for empty input', () => {
+  const inputs = [];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, []);
+});
+
 test('normalize throws TypeError on invalid input', () => {
   assert.throws(() => perception.normalize([1, 2, '3']), TypeError);
   assert.throws(() => perception.normalize([1, 2, NaN]), TypeError);
+  assert.throws(() => perception.normalize([1, 2, undefined]), TypeError);
+  assert.throws(() => perception.normalize([1, 2, null]), TypeError);
 });
 
 // Existing tests for detect and filter methods
-
