@@ -69,13 +69,13 @@ export class Perception {
     const min = Math.min(...sensoryInputs);
     const max = Math.max(...sensoryInputs);
     if (min === max) return new Array(sensoryInputs.length).fill(0); // avoid division by zero
-    return sensoryInputs.map(input => (input - min) / (max - min));
+    return sensoryInputs.map(input => (input - min) / (max - min)); // normalize
   }
 
   /**
    * Validate sensory input values.
    * @param {Array<number>} sensoryInputs - The sensory inputs to validate.
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If any input is invalid.
    */
   validateInputs(sensoryInputs) {
     if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(input => typeof input === 'number')) {
@@ -84,14 +84,14 @@ export class Perception {
   }
 
   /**
-   * Validate threshold values.
+   * Validate thresholds for classification.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * @throws {TypeError} - If thresholds are invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number') {
-        throw new TypeError(`threshold for ${key} must be a number`);
+        throw new TypeError(`threshold ${key} must be a number`);
       }
     }
   }
