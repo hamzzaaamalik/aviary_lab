@@ -78,24 +78,32 @@ export class Perception {
     return sensoryInputs.map(input => (input - min) / (max - min));
   }
 
-  // Additional methods: checkInputs, validateThresholds...
-  
-  checkInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs)) {
-      throw new TypeError('sensoryInputs must be an array');
+  /**
+   * Validate sensory inputs.
+   * @param {Array} inputs
+   * @throws {TypeError} - If any input is invalid.
+   */
+  checkInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
     }
-    sensoryInputs.forEach(input => {
+    inputs.forEach(input => {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
     });
   }
 
+  /**
+   * Validate thresholds for classification.
+   * @param {Object} thresholds
+   * @throws {TypeError} - If any threshold is invalid.
+   */
   validateThresholds(thresholds) {
-    Object.keys(thresholds).forEach(category => {
-      if (typeof thresholds[category] !== 'number') {
-        throw new TypeError(`threshold for ${category} must be a number`);
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number') {
+        throw new TypeError(`threshold for ${key} must be a number`);
       }
-    });
+    }
   }
 }
