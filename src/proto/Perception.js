@@ -78,7 +78,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   validateInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs) || sensoryInputs.some(input => typeof input !== 'number')) {
+    if (!Array.isArray(sensoryInputs) || !sensoryInputs.every(input => typeof input === 'number')) {
       throw new TypeError('sensoryInputs must be an array of numbers');
     }
   }
@@ -86,7 +86,7 @@ export class Perception {
   /**
    * Validate threshold values.
    * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If the thresholds are invalid.
+   * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
@@ -95,4 +95,4 @@ export class Perception {
       }
     }
   }
-}
+} 
