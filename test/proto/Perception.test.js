@@ -4,21 +4,21 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify returns classified sensory inputs', () => {
+// Existing tests ...
+
+test('refine returns inputs that meet the criteria', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const categories = { low: 2, high: 4 };
-  const result = perception.classify(inputs, categories);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+  const result = perception.refine(inputs, (n) => n > 2);
+  assert.deepEqual(result, [3, 4, 5]);
 });
 
-test('classify throws TypeError for empty inputs', () => {
-  const categories = { low: 2, high: 4 };
-  assert.throws(() => perception.classify([], categories), TypeError);
+test('refine throws TypeError for invalid inputs', () => {
+  assert.throws(() => perception.refine([], 'not a function'), TypeError);
+  assert.throws(() => perception.refine([1, 2, 3], null), TypeError);
 });
 
-test('classify throws TypeError for invalid categories', () => {
+test('refine returns empty array for no matching criteria', () => {
   const inputs = [1, 2, 3];
-  assert.throws(() => perception.classify(inputs, null), TypeError);
-  assert.throws(() => perception.classify(inputs, {}), TypeError);
+  const result = perception.refine(inputs, (n) => n > 5);
+  assert.deepEqual(result, []);
 });
-

@@ -66,21 +66,17 @@ export class Perception {
   }
 
   /**
-   * Classify sensory inputs based on predefined categories.
+   * Refine sensory inputs based on a callback function.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} categories - Key-value pairs of category names and thresholds.
-   * @returns {Object} - Classified sensory inputs.
+   * @param {function} callback - Function called for each input, returning true to include.
+   * @returns {Array<number>} - Refined sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  classify(sensoryInputs, categories) {
+  refine(sensoryInputs, callback) {
     this.validateInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) throw new TypeError('Sensory inputs cannot be empty.');
-    this.validateThresholds(categories);
-
-    const classified = Object.keys(categories).reduce((acc, key) => {
-      acc[key] = sensoryInputs.filter(input => input >= categories[key]);
-      return acc;
-    }, {});
-    return classified;
+    if (typeof callback !== 'function') {
+      throw new TypeError('Callback must be a function.');
+    }
+    return sensoryInputs.length > 0 ? sensoryInputs.filter(callback) : [];
   }
 }
