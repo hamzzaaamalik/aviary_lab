@@ -4,15 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify handles empty inputs gracefully', () => {
-  const result = perception.classify([], { high: 10, low: 5 });
-  assert.deepEqual(result, { high: [], low: [] });
+test('normalize returns empty array for empty input', () => {
+  const result = perception.normalize([]);
+  assert.deepEqual(result, []);
 });
 
-test('classify throws on non-object thresholds', () => {
-  assert.throws(() => perception.classify([1, 2, 3], null), TypeError);
-  assert.throws(() => perception.classify([1, 2, 3], 123), TypeError);
+test('normalize handles single value input', () => {
+  const result = perception.normalize([42]);
+  assert.deepEqual(result, [0]);
 });
 
-// existing tests for other methods...
+test('normalize scales multiple inputs correctly', () => {
+  const result = perception.normalize([10, 20, 30]);
+  assert.deepEqual(result, [0, 0.5, 1]);
+});
+
+test('normalize handles identical inputs', () => {
+  const result = perception.normalize([5, 5, 5]);
+  assert.deepEqual(result, [0, 0, 0]);
+});
+
+// Existing tests for detect and filter methods...
 
