@@ -4,35 +4,28 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-// Test for normalize method
-
-test('normalize should return normalized values between 0 and 1', () => {
-  const inputs = [10, 20, 30, 40];
-  const expected = [0, 0.3333, 0.6667, 1];
-  const result = perception.normalize(inputs);
-  assert.deepEqual(result.map(v => Math.round(v * 10000) / 10000), expected);
+test('normalize returns an array of normalized inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const normalized = perception.normalize(inputs);
+  assert.deepEqual(normalized, [0, 0.25, 0.5, 0.75, 1]);
 });
 
-
-test('normalize should return an empty array for an empty input', () => {
+test('normalize handles empty array', () => {
   const result = perception.normalize([]);
   assert.deepEqual(result, []);
 });
 
-
-test('normalize should return an array of zeros if all inputs are the same', () => {
-  const inputs = [5, 5, 5];
-  const result = perception.normalize(inputs);
-  assert.deepEqual(result, [0, 0, 0]);
+test('normalize handles single value array', () => {
+  const result = perception.normalize([4]);
+  assert.deepEqual(result, [0]); // single value should normalize to 0
 });
 
-
-test('normalize should throw TypeError for invalid input', () => {
-  assert.throws(() => perception.normalize('invalid'), TypeError);
-  assert.throws(() => perception.normalize([1, 2, 'invalid']), TypeError);
+test('normalize handles identical values', () => {
+  const result = perception.normalize([2, 2, 2]);
+  assert.deepEqual(result, [0, 0, 0]); // identical values should normalize to 0
 });
 
-
-test('normalize should throw TypeError for non-array input', () => {
-  assert.throws(() => perception.normalize({}), TypeError);
+test('normalize throws on invalid input', () => {
+  assert.throws(() => perception.normalize([1, 'two', 3]), TypeError);
+  assert.throws(() => perception.normalize(null), TypeError);
 });
