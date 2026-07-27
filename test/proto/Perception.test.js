@@ -4,19 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('advancedFilter filters inputs based on multiple predicates', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const predicates = [
-    (x) => x > 1,
-    (x) => x < 5
-  ];
-  const filtered = perception.advancedFilter(inputs, predicates);
-  assert.deepEqual(filtered, [2, 3, 4]);
+test('classify categorizes inputs based on thresholds', () => {
+  const sensoryInputs = [10, 20, 30, 40, 50];
+  const categories = {
+    low: 15,
+    medium: 25,
+    high: 35
+  };
+  const result = perception.classify(sensoryInputs, categories);
+  assert.deepEqual(result, {
+    low: [20, 30, 40, 50],
+    medium: [30, 40, 50],
+    high: [40, 50]
+  });
 });
 
-test('advancedFilter throws on invalid predicates', () => {
-  assert.throws(() => perception.advancedFilter([1, 2, 3], 'not a function'), TypeError);
-  assert.throws(() => perception.advancedFilter([1, 2, 3], [() => {}, 'not a function']), TypeError);
+test('classify throws on invalid input', () => {
+  const categories = { low: 15 };
+  assert.throws(() => perception.classify('not an array', categories), TypeError);
+  assert.throws(() => perception.classify([], 'not an object'), TypeError);
+  assert.throws(() => perception.classify([], { low: 'not a number' }), TypeError);
 });
 
-// Add tests for detect and filter methods as necessary.
+test('classify throws on empty categories', () => {
+  const sensoryInputs = [10, 20];
+  assert.throws(() => perception.classify(sensoryInputs, {}), TypeError);
+});
