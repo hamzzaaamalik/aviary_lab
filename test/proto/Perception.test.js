@@ -57,3 +57,4 @@ test('checkInputs throws TypeError for invalid inputs', () => {
 test('validateThresholds throws TypeError for invalid thresholds', () => {
   assert.throws(() => perception.validateThresholds({ valid: 1, invalid: 'string' }), TypeError);
 });
+
