@@ -23,3 +23,26 @@ test('normalize throws on invalid inputs', () => {
 
 // Existing tests for detect and filter...
 
+// Test for filter method
+test('filter applies the predicate function correctly', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const predicate = (x) => x > 3;
+  const result = perception.filter(inputs, predicate);
+  assert.deepEqual(result, [4, 5]);
+});
+
+test('filter throws on invalid predicate', () => {
+  assert.throws(() => perception.filter([1, 2, 3], 'not a function'), TypeError);
+});
+
+// Test for detect method
+test('detect identifies inputs above threshold', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const result = perception.detect(inputs, 3);
+  assert.deepEqual(result, [4, 5]);
+});
+
+test('detect throws on invalid inputs', () => {
+  assert.throws(() => perception.detect([1, 2, NaN], 2), TypeError);
+  assert.throws(() => perception.detect('not an array', 2), TypeError);
+});
