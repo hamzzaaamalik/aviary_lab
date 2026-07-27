@@ -74,6 +74,7 @@ export class Perception {
    */
   advancedFilter(sensoryInputs, predicates) {
     this.validateInputs(sensoryInputs);
+    if (sensoryInputs.length === 0) return [];
     if (!Array.isArray(predicates) || !predicates.every(fn => typeof fn === 'function')) {
       throw new TypeError('Predicates must be an array of functions.');
     }
