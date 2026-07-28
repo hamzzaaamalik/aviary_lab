@@ -86,7 +86,6 @@ export class Perception {
   /**
    * Check if sensory inputs are valid.
    * @param {Array<number>} inputs 
-   * @throws {TypeError} - If inputs are invalid.
    */
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
@@ -98,4 +97,4 @@ export class Perception {
       }
     });
   }
-}
+}  
