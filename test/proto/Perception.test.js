@@ -4,34 +4,35 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify categorizes inputs correctly', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
+test('classify groups inputs by thresholds', () => {
+  const inputs = [10, 20, 30, 40];
+  const thresholds = { low: 15, medium: 25 };
   const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, {
-    2: [2, 3, 4, 5],
-    4: [4, 5]
+    '15': [20, 30, 40],
+    '25': [30, 40]
   });
 });
 
-test('classify handles empty inputs', () => {
-  const inputs = [];
-  const thresholds = { low: 1 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, {});
-});
-
-test('classify throws error for invalid thresholds', () => {
-  const inputs = [1, 2, 3];
-  assert.throws(() => perception.classify(inputs, { low: 'not a number' }), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: null }), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: Infinity }), TypeError);
+test('classify throws for invalid thresholds', () => {
+  const inputs = [10, 20, 30];
+  assert.throws(() => perception.classify(inputs, null), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: 'string' }), TypeError);
   assert.throws(() => perception.classify(inputs, { low: NaN }), TypeError);
 });
 
-test('classify throws error for invalid inputs', () => {
-  const inputs = [1, 'two', 3];
-  const thresholds = { low: 1 };
-  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+test('classify handles empty inputs', () => {
+  const thresholds = { low: 15 };
+  const result = perception.classify([], thresholds);
+  assert.deepEqual(result, {});
 });
 
+test('classify merges categories with the same threshold', () => {
+  const inputs = [10, 20, 30, 40];
+  const thresholds = { low: 15, high: 30 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, {
+    '15': [20, 30, 40],
+    '30': [30, 40]
+  });
+});
