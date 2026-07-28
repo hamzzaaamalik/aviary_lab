@@ -33,3 +33,17 @@ test('classify throws on non-finite inputs', () => {
   assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
 
+test('detect handles edge cases', () => {
+  const inputs = [5, 10, 15, 20];
+  const threshold = 15;
+  const expected = [20];
+  const result = perception.detect(inputs, threshold);
+  assert.deepEqual(result, expected);
+});
+
+test('filter returns an empty array when no inputs match', () => {
+  const inputs = [1, 2, 3];
+  const predicate = (x) => x > 5;
+  const result = perception.filter(inputs, predicate);
+  assert.deepEqual(result, []);
+});
