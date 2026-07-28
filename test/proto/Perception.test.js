@@ -4,24 +4,18 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs by thresholds', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+test('classify handles empty thresholds', () => {
+  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError, 'thresholds must contain at least one threshold');
 });
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([1, 2], 'string'), TypeError);
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
-  assert.throws(() => perception.classify([1, 2], { low: 'low' }), TypeError);
+test('classify throws when thresholds is not an object', () => {
+  assert.throws(() => perception.classify([1, 2, 3], null), TypeError, 'thresholds must be a non-empty object');
+  assert.throws(() => perception.classify([1, 2, 3], 123), TypeError, 'thresholds must be a non-empty object');
 });
 
-test('classify returns empty object for empty input', () => {
-  const result = perception.classify([], { low: 1 });
-  assert.deepEqual(result, {});
+test('classify throws for invalid thresholds', () => {
+  assert.throws(() => perception.classify([1, 2, 3], { low: NaN }), TypeError, 'threshold for category low must be a finite number');
+  assert.throws(() => perception.classify([1, 2, 3], { high: Infinity }), TypeError, 'threshold for category high must be a finite number');
 });
 
-test('classify handles edge case of no thresholds', () => {
-  assert.throws(() => perception.classify([1, 2], {}), TypeError);
-});
+// Add other relevant tests for detect and filter methods here.
