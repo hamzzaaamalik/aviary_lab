@@ -28,10 +28,19 @@ test('detect filters out null and undefined', () => {
   assert.deepEqual(detected, [1, 2, 3, 4]); // NaN should be filtered out
 });
 
+test('detect returns empty array for empty input', () => {
+  const detected = perception.detect([]);
+  assert.deepEqual(detected, []); // should return empty array
+});
+
+test('detect throws on invalid input types', () => {
+  assert.throws(() => perception.detect('not-an-array'), TypeError);
+  assert.throws(() => perception.detect([1, 2, 'not-a-number']), TypeError);
+});
+
 test('filter applies predicate function', () => {
   const inputs = [1, 2, 3, 4];
   const predicate = x => x > 2;
   const filtered = perception.filter(inputs, predicate);
   assert.deepEqual(filtered, [3, 4]);
 });
-

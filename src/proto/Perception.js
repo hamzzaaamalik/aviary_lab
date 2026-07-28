@@ -85,17 +85,16 @@ export class Perception {
   }
 
   /**
-   * Check if sensory inputs are valid.
-   * @param {Array<number>} inputs 
+   * Check if inputs are valid arrays and contain only numbers.
+   * @param {Array} inputs - The inputs to check.
+   * @throws {TypeError} - If inputs are not an array or contain invalid types.
    */
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    for (const input of inputs) {
-      if (typeof input !== 'number' && input !== null && input !== undefined) {
-        throw new TypeError('all inputs must be numbers, null, or undefined');
-      }
+    if (!inputs.every(input => typeof input === 'number' || input === null || input === undefined)) {
+      throw new TypeError('all inputs must be numbers, null, or undefined');
     }
   }
 }
