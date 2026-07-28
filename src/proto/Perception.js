@@ -8,6 +8,7 @@ export class Perception {
    * Detect sensory inputs based on specific criteria.
    * @param {Array<number>} inputs - Array of sensory input values.
    * @returns {Array<number>} - Detected inputs.
+   * @throws {TypeError} - If inputs are invalid.
    */
   detect(inputs) {
     this.checkInputs(inputs);
@@ -19,6 +20,7 @@ export class Perception {
    * @param {Array<number>} inputs - Array of sensory input values.
    * @param {Function} predicate - Function to test each input.
    * @returns {Array<number>} - Filtered inputs.
+   * @throws {TypeError} - If inputs are invalid or predicate is not a function.
    */
   filter(inputs, predicate) {
     this.checkInputs(inputs);
