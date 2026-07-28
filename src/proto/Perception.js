@@ -11,7 +11,8 @@ export class Perception {
    */
   detect(inputs) {
     this.checkInputs(inputs);
-    return inputs.filter(input => input !== null && input !== undefined);
+    // Added check for finite numbers to ensure no NaN values are included
+    return inputs.filter(input => input !== null && input !== undefined && typeof input === 'number' && isFinite(input));
   }
 
   /**
@@ -84,17 +85,16 @@ export class Perception {
   }
 
   /**
-   * Check if sensory inputs are valid.
-   * @param {Array<number>} inputs 
+   * Check if inputs are valid arrays and contain only numbers.
+   * @param {Array} inputs - The inputs to check.
+   * @throws {TypeError} - If inputs are not an array or contain invalid types.
    */
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    inputs.forEach(input => {
-      if (typeof input !== 'number') {
-        throw new TypeError('all inputs must be numbers');
-      }
-    });
+    if (!inputs.every(input => typeof input === 'number' || input === null || input === undefined)) {
+      throw new TypeError('all inputs must be numbers, null, or undefined');
+    }
   }
 }
