@@ -46,8 +46,8 @@ export class Perception {
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return {}; // handle empty inputs
-    if (typeof thresholds !== 'object' || thresholds === null) {
-      throw new TypeError('thresholds must be an object');
+    if (typeof thresholds !== 'object' || thresholds === null || Object.keys(thresholds).length === 0) {
+      throw new TypeError('thresholds must be a non-empty object');
     }
     this.validateThresholds(thresholds);
 
@@ -79,24 +79,29 @@ export class Perception {
 
   /**
    * Check if inputs are valid numbers and throw TypeError if not.
-   * @param {Array<number>} inputs
+   * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @throws {TypeError} - If any input is invalid.
    */
-  checkInputs(inputs) {
-    if (!Array.isArray(inputs) || inputs.some(input => typeof input !== 'number' || !isFinite(input))) {
-      throw new TypeError('inputs must be an array of finite numbers');
+  checkInputs(sensoryInputs) {
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
     }
+    sensoryInputs.forEach(input => {
+      if (typeof input !== 'number' || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
+      }
+    });
   }
 
   /**
-   * Validate threshold values.
-   * @param {Object} thresholds
+   * Validate thresholds and throw TypeError if invalid.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
    * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(thresholds) {
-    for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
-        throw new TypeError(`threshold for category ${key} must be a finite number`);
+    for (const category in thresholds) {
+      if (typeof thresholds[category] !== 'number' || !isFinite(thresholds[category])) {
+        throw new TypeError(`threshold for category ${category} must be a finite number`);
       }
     }
   }
