@@ -14,6 +14,9 @@ test('classify categorizes inputs based on thresholds', () => {
 test('classify throws on invalid thresholds', () => {
   assert.throws(() => perception.classify([1, 2, 3], 'not an object'), TypeError);
   assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], { low: NaN }), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], { low: Infinity }), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], { }), TypeError);
 });
 
 test('classify returns empty object for no inputs', () => {
@@ -21,4 +24,10 @@ test('classify returns empty object for no inputs', () => {
   assert.deepEqual(result, {});
 });
 
-// Add additional tests to validate thresholds and input checks.
+// Additional tests for invalid inputs
+test('classify throws on invalid input types', () => {
+  assert.throws(() => perception.classify('not an array', { low: 1 }), TypeError);
+  assert.throws(() => perception.classify([1, 2, null], { low: 1 }), TypeError);
+  assert.throws(() => perception.classify([1, 2, undefined], { low: 1 }), TypeError);
+  assert.throws(() => perception.classify([1, 2, 'string'], { low: 1 }), TypeError);
+});
