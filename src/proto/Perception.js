@@ -38,21 +38,33 @@ export class Perception {
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return {};
+    this.validateThresholds(thresholds);
+    const categorized = {};
+    for (const category in thresholds) {
+      const threshold = thresholds[category];
+      categorized[category] = sensoryInputs.filter(input => typeof input === 'number' && isFinite(input) && input >= threshold);
+    }
+    return categorized;
+  }
+
+  /**
+   * Validate thresholds object.
+   * @param {Object} thresholds - The thresholds to validate.
+   * @throws {TypeError} - If thresholds are invalid.
+   */
+  validateThresholds(thresholds) {
     if (typeof thresholds !== 'object' || thresholds === null) {
       throw new TypeError('thresholds must be a non-empty object');
     }
     if (Object.keys(thresholds).length === 0) {
       throw new TypeError('thresholds must contain at least one threshold');
     }
-    const categorized = {};
     for (const category in thresholds) {
       const threshold = thresholds[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`threshold for category ${category} must be a finite number`);
       }
-      categorized[category] = sensoryInputs.filter(input => typeof input === 'number' && isFinite(input) && input >= threshold);
     }
-    return categorized;
   }
 
   /**

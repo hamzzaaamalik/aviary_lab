@@ -30,3 +30,7 @@ test('classify throws TypeError for empty thresholds', () => {
   assert.throws(() => perception.classify([1, 2], {}), TypeError);
 });
 
+test('classify throws TypeError for missing thresholds', () => {
+  assert.throws(() => perception.classify([1, 2], { low: 1, high: null }), TypeError);
+});
+
