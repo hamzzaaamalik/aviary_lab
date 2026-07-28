@@ -11,7 +11,6 @@ export class Perception {
    */
   detect(inputs) {
     this.checkInputs(inputs);
-    // Added check for finite numbers to ensure no NaN values are included
     return inputs.filter(input => input !== null && input !== undefined && typeof input === 'number' && isFinite(input));
   }
 
@@ -38,63 +37,34 @@ export class Perception {
    */
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return {}; // handle empty inputs
+    if (sensoryInputs.length === 0) return {};
     if (typeof thresholds !== 'object' || thresholds === null || Object.keys(thresholds).length === 0) {
       throw new TypeError('thresholds must be a non-empty object');
     }
-    this.validateThresholds(thresholds);
-
     const categorized = {};
     for (const category in thresholds) {
       const threshold = thresholds[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`threshold for category ${category} must be a finite number`);
       }
-      categorized[category] = sensoryInputs.filter(input => {
-        if (typeof input !== 'number' || !isFinite(input)) {
-          throw new TypeError('all inputs must be finite numbers');
-        }
-        return input >= threshold;
-      });
+      categorized[category] = sensoryInputs.filter(input => input >= threshold);
     }
-
-    // Merge categories with the same threshold
-    const merged = {};
-    for (const category in categorized) {
-      const threshold = thresholds[category];
-      if (!merged[threshold]) {
-        merged[threshold] = [];
-      }
-      merged[threshold] = merged[threshold].concat(categorized[category]);
-    }
-
-    return merged;
+    return categorized;
   }
 
   /**
-   * Validate thresholds to ensure they are numeric and finite.
-   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
-   * @throws {TypeError} - If any threshold is invalid.
-   */
-  validateThresholds(thresholds) {
-    for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
-        throw new TypeError(`threshold for category ${key} must be a finite number`);
-      }
-    }
-  }
-
-  /**
-   * Check if inputs are valid arrays and contain only numbers.
-   * @param {Array} inputs - The inputs to check.
-   * @throws {TypeError} - If inputs are not an array or contain invalid types.
+   * Check if inputs are valid.
+   * @param {Array} inputs - Array of inputs to check.
+   * @throws {TypeError} - If any input is invalid.
    */
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    if (!inputs.every(input => typeof input === 'number' || input === null || input === undefined)) {
-      throw new TypeError('all inputs must be numbers, null, or undefined');
-    }
+    inputs.forEach(input => {
+      if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
+      }
+    });
   }
 }
