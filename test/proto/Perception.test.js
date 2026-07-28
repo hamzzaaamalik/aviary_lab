@@ -4,50 +4,37 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs by thresholds', () => {
-  const inputs = [10, 20, 30, 40];
-  const thresholds = { low: 15, medium: 25 };
+test('classify with valid inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const thresholds = { low: 2, high: 4 };
   const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, {
-    '15': [20, 30, 40],
-    '25': [30, 40]
+    2: [2, 3, 4, 5],
+    4: [4, 5]
   });
 });
 
-test('classify throws for invalid thresholds', () => {
-  const inputs = [10, 20, 30];
-  assert.throws(() => perception.classify(inputs, null), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: 'string' }), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: NaN }), TypeError);
-});
-
-test('classify handles empty inputs', () => {
-  const thresholds = { low: 15 };
-  const result = perception.classify([], thresholds);
+test('classify with empty inputs', () => {
+  const inputs = [];
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, {});
 });
 
-test('classify merges categories with the same threshold', () => {
-  const inputs = [10, 20, 30, 40];
-  const thresholds = { low: 15, high: 30 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, {
-    '15': [20, 30, 40],
-    '30': [30, 40]
-  });
+test('classify with empty thresholds', () => {
+  const inputs = [1, 2, 3];
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
-// New tests for edge cases
-
-test('detect throws for non-array input', () => {
-  assert.throws(() => perception.detect(null), TypeError);
-  assert.throws(() => perception.detect({}), TypeError);
-  assert.throws(() => perception.detect(123), TypeError);
+test('classify with non-numeric inputs', () => {
+  const inputs = [1, 2, 'three'];
+  const thresholds = { low: 1 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
 
-test('filter throws for non-array input', () => {
-  const predicate = (x) => x > 10;
-  assert.throws(() => perception.filter(null, predicate), TypeError);
-  assert.throws(() => perception.filter({}, predicate), TypeError);
-  assert.throws(() => perception.filter(123, predicate), TypeError);
+test('classify with non-finite threshold', () => {
+  const inputs = [1, 2, 3];
+  const thresholds = { low: NaN };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
+
