@@ -44,6 +44,9 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   classify(sensoryInputs, thresholds) {
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
+    }
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return {}; // handle empty inputs
     if (typeof thresholds !== 'object' || thresholds === null || Object.keys(thresholds).length === 0) {
@@ -73,35 +76,34 @@ export class Perception {
       }
       merged[threshold] = merged[threshold].concat(categorized[category]);
     }
-
     return merged;
   }
 
   /**
-   * Check if inputs are valid numbers and throw TypeError if not.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * Validate that all inputs are finite numbers.
+   * @param {Array<number>} inputs - Array of sensory input values.
    * @throws {TypeError} - If any input is invalid.
    */
-  checkInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs)) {
+  checkInputs(inputs) {
+    if (!Array.isArray(inputs)) {
       throw new TypeError('sensoryInputs must be an array');
     }
-    sensoryInputs.forEach(input => {
+    for (const input of inputs) {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
-    });
+    }
   }
 
   /**
-   * Validate thresholds and throw TypeError if invalid.
+   * Validate thresholds to ensure they are finite numbers.
    * @param {Object} thresholds - Key-value pairs of category names and thresholds.
    * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(thresholds) {
-    for (const category in thresholds) {
-      if (typeof thresholds[category] !== 'number' || !isFinite(thresholds[category])) {
-        throw new TypeError(`threshold for category ${category} must be a finite number`);
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
+        throw new TypeError(`threshold for ${key} must be a finite number`);
       }
     }
   }
