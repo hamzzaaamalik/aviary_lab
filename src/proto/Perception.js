@@ -10,7 +10,7 @@ export class Perception {
    * @returns {Array<number>} - Detected inputs.
    */
   detect(inputs) {
-    this.checkInputs(inputs);
+    this.validateInputs(inputs);
     return inputs.filter(input => input !== null && input !== undefined && typeof input === 'number' && isFinite(input));
   }
 
@@ -21,7 +21,7 @@ export class Perception {
    * @returns {Array<number>} - Filtered inputs.
    */
   filter(inputs, predicate) {
-    this.checkInputs(inputs);
+    this.validateInputs(inputs);
     if (typeof predicate !== 'function') {
       throw new TypeError('predicate must be a function');
     }
@@ -36,7 +36,7 @@ export class Perception {
    * @throws {TypeError} - If the input is invalid.
    */
   classify(sensoryInputs, thresholds) {
-    this.checkInputs(sensoryInputs);
+    this.validateInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return {};
     this.validateThresholds(thresholds);
     const categorized = {};
@@ -72,7 +72,7 @@ export class Perception {
    * @param {Array} inputs - Array of inputs to check.
    * @throws {TypeError} - If any input is invalid.
    */
-  checkInputs(inputs) {
+  validateInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
