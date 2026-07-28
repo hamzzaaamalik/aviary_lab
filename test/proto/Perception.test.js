@@ -25,6 +25,8 @@ test('classify throws error for invalid thresholds', () => {
   const inputs = [1, 2, 3];
   assert.throws(() => perception.classify(inputs, { low: 'not a number' }), TypeError);
   assert.throws(() => perception.classify(inputs, { low: null }), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: Infinity }), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: NaN }), TypeError);
 });
 
 test('classify throws error for invalid inputs', () => {
