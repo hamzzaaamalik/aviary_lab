@@ -47,7 +47,7 @@ export class Perception {
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`threshold for category ${category} must be a finite number`);
       }
-      categorized[category] = sensoryInputs.filter(input => input >= threshold);
+      categorized[category] = sensoryInputs.filter(input => typeof input === 'number' && isFinite(input) && input >= threshold);
     }
     return categorized;
   }
