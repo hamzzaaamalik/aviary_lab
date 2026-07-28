@@ -79,9 +79,22 @@ export class Perception {
   }
 
   /**
-   * Check if inputs are valid numbers.
-   * @param {Array} inputs - The inputs to check.
-   * @throws {TypeError} - If inputs are invalid.
+   * Validate thresholds to ensure they are finite numbers.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * @throws {TypeError} - If any threshold is invalid.
+   */
+  validateThresholds(thresholds) {
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
+        throw new TypeError(`threshold for category ${key} must be a finite number`);
+      }
+    }
+  }
+
+  /**
+   * Check if inputs are valid.
+   * @param {Array<any>} inputs - The inputs to check.
+   * @throws {TypeError} - If any input is invalid.
    */
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
@@ -90,19 +103,6 @@ export class Perception {
     for (const input of inputs) {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
-      }
-    }
-  }
-
-  /**
-   * Validate thresholds to ensure they are finite numbers.
-   * @param {Object} thresholds - The thresholds to validate.
-   * @throws {TypeError} - If any threshold is invalid.
-   */
-  validateThresholds(thresholds) {
-    for (const key in thresholds) {
-      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
-        throw new TypeError(`threshold for category ${key} must be a finite number`);
       }
     }
   }
