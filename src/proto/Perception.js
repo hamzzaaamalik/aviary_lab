@@ -78,30 +78,30 @@ export class Perception {
   }
 
   /**
-   * Check if inputs are valid numbers and throw TypeError if not.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * Check if inputs are valid numbers
+   * @param {Array<number>} inputs - Array of inputs to check.
    * @throws {TypeError} - If any input is invalid.
    */
-  checkInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs)) {
-      throw new TypeError('sensoryInputs must be an array');
+  checkInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
     }
-    sensoryInputs.forEach(input => {
+    for (const input of inputs) {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
-    });
+    }
   }
 
   /**
-   * Validate thresholds and throw TypeError if invalid.
-   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * Validate thresholds for classification.
+   * @param {Object} thresholds - The thresholds to validate.
    * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(thresholds) {
-    for (const category in thresholds) {
-      if (typeof thresholds[category] !== 'number' || !isFinite(thresholds[category])) {
-        throw new TypeError(`threshold for category ${category} must be a finite number`);
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
+        throw new TypeError(`threshold for ${key} must be a finite number`);
       }
     }
   }
