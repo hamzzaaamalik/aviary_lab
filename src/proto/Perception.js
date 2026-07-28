@@ -64,6 +64,7 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
+    if (inputs.length === 0) return; // allow empty arrays
     inputs.forEach(input => {
       if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
