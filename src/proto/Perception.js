@@ -38,7 +38,7 @@ export class Perception {
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return {};
-    this.validateThresholds(thresholds);
+    this.checkThresholds(thresholds);
     const categorized = {};
     for (const category in thresholds) {
       const threshold = thresholds[category];
@@ -48,19 +48,15 @@ export class Perception {
   }
 
   /**
-   * Validate thresholds object.
-   * @param {Object} thresholds - The thresholds to validate.
+   * Check if thresholds are valid.
+   * @param {Object} thresholds - The thresholds to check.
    * @throws {TypeError} - If thresholds are invalid.
    */
-  validateThresholds(thresholds) {
-    if (typeof thresholds !== 'object' || thresholds === null) {
+  checkThresholds(thresholds) {
+    if (typeof thresholds !== 'object' || thresholds === null || Object.keys(thresholds).length === 0) {
       throw new TypeError('thresholds must be a non-empty object');
     }
-    const keys = Object.keys(thresholds);
-    if (keys.length === 0) {
-      throw new TypeError('thresholds must contain at least one threshold');
-    }
-    for (const category of keys) {
+    for (const category in thresholds) {
       const threshold = thresholds[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`threshold for category ${category} must be a finite number`);
