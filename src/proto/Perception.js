@@ -53,14 +53,15 @@ export class Perception {
 
     const categorized = {};
     for (const category in thresholds) {
-      if (typeof thresholds[category] !== 'number' || !isFinite(thresholds[category])) {
+      const threshold = thresholds[category];
+      if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`threshold for category ${category} must be a finite number`);
       }
       categorized[category] = sensoryInputs.filter(input => {
         if (typeof input !== 'number' || !isFinite(input)) {
           throw new TypeError('all inputs must be finite numbers');
         }
-        return input >= thresholds[category];
+        return input >= threshold;
       });
     }
 
@@ -78,30 +79,30 @@ export class Perception {
   }
 
   /**
-   * Check if inputs are valid numbers and throw TypeError if not.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @throws {TypeError} - If any input is invalid.
+   * Check if inputs are valid numbers.
+   * @param {Array} inputs - The inputs to check.
+   * @throws {TypeError} - If inputs are invalid.
    */
-  checkInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs)) {
-      throw new TypeError('sensoryInputs must be an array');
+  checkInputs(inputs) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
     }
-    sensoryInputs.forEach(input => {
+    for (const input of inputs) {
       if (typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
-    });
+    }
   }
 
   /**
-   * Validate thresholds and throw TypeError if invalid.
-   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * Validate thresholds to ensure they are finite numbers.
+   * @param {Object} thresholds - The thresholds to validate.
    * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(thresholds) {
-    for (const category in thresholds) {
-      if (typeof thresholds[category] !== 'number' || !isFinite(thresholds[category])) {
-        throw new TypeError(`threshold for category ${category} must be a finite number`);
+    for (const key in thresholds) {
+      if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
+        throw new TypeError(`threshold for category ${key} must be a finite number`);
       }
     }
   }
