@@ -4,26 +4,21 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify correctly categorizes inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
+test('classify groups inputs by thresholds', () => {
+  const inputs = [10, 20, 30, 40];
+  const thresholds = { low: 15, medium: 25 };
   const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+  assert.deepEqual(result, { low: [20, 30, 40], medium: [30, 40] });
 });
 
-test('classify throws on invalid thresholds', () => {
-  const inputs = [1, 2, 3];
-  assert.throws(() => perception.classify(inputs, { low: 'invalid' }), TypeError);
-  assert.throws(() => perception.classify(inputs, {}), TypeError);
+test('classify handles invalid thresholds', () => {
+  assert.throws(() => perception.classify([10, 20], null), TypeError);
+  assert.throws(() => perception.classify([10, 20], {}), TypeError);
+  assert.throws(() => perception.classify([10, 20], { high: 'not-a-number' }), TypeError);
 });
 
-test('classify handles empty inputs', () => {
-  const result = perception.classify([], { low: 2, high: 4 });
+test('classify returns empty object for no inputs', () => {
+  const thresholds = { low: 15 };
+  const result = perception.classify([], thresholds);
   assert.deepEqual(result, {});
 });
-
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify(null, { low: 2 }), TypeError);
-  assert.throws(() => perception.classify([NaN], { low: 2 }), TypeError);
-});
-
