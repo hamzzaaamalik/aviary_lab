@@ -38,8 +38,11 @@ export class Perception {
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return {};
-    if (typeof thresholds !== 'object' || thresholds === null || Object.keys(thresholds).length === 0) {
+    if (typeof thresholds !== 'object' || thresholds === null) {
       throw new TypeError('thresholds must be a non-empty object');
+    }
+    if (Object.keys(thresholds).length === 0) {
+      throw new TypeError('thresholds must contain at least one threshold');
     }
     const categorized = {};
     for (const category in thresholds) {
