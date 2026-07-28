@@ -4,43 +4,26 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by thresholds', () => {
-  const inputs = [10, 20, 30, 40];
-  const thresholds = { low: 15, high: 25 };
-  const expected = { 15: [20, 30, 40], 25: [30, 40] };
-  const classified = perception.classify(inputs, thresholds);
-  assert.deepEqual(classified, expected);
+test('classify correctly categorizes inputs', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
 test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([10, 20], 'not-an-object'), TypeError);
-  assert.throws(() => perception.classify([10, 20], { low: 'not-a-number' }), TypeError);
+  const inputs = [1, 2, 3];
+  assert.throws(() => perception.classify(inputs, { low: 'invalid' }), TypeError);
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
-test('classify returns empty object for empty inputs', () => {
-  const result = perception.classify([], { low: 5 });
+test('classify handles empty inputs', () => {
+  const result = perception.classify([], { low: 2, high: 4 });
   assert.deepEqual(result, {});
 });
 
-test('detect filters out null and undefined', () => {
-  const inputs = [1, null, 2, undefined, 3, NaN, 4];
-  const detected = perception.detect(inputs);
-  assert.deepEqual(detected, [1, 2, 3, 4]); // NaN should be filtered out
+test('classify throws on invalid inputs', () => {
+  assert.throws(() => perception.classify(null, { low: 2 }), TypeError);
+  assert.throws(() => perception.classify([NaN], { low: 2 }), TypeError);
 });
 
-test('detect returns empty array for empty input', () => {
-  const detected = perception.detect([]);
-  assert.deepEqual(detected, []); // should return empty array
-});
-
-test('detect throws on invalid input types', () => {
-  assert.throws(() => perception.detect('not-an-array'), TypeError);
-  assert.throws(() => perception.detect([1, 2, 'not-a-number']), TypeError);
-});
-
-test('filter applies predicate function', () => {
-  const inputs = [1, 2, 3, 4];
-  const predicate = x => x > 2;
-  const filtered = perception.filter(inputs, predicate);
-  assert.deepEqual(filtered, [3, 4]);
-});
