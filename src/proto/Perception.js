@@ -78,45 +78,25 @@ export class Perception {
   }
 
   /**
-   * Normalize sensory inputs to a range between 0 and 1.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @returns {Array<number>} - Array of normalized inputs.
+   * Check if inputs are valid numbers and throw TypeError if not.
+   * @param {Array<number>} inputs - Array of sensory inputs.
    * @throws {TypeError} - If the input is invalid.
    */
-  normalize(sensoryInputs) {
-    this.checkInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return []; // handle empty input
-    const min = Math.min(...sensoryInputs);
-    const max = Math.max(...sensoryInputs);
-    if (min === max) return sensoryInputs.map(() => 0); // handle edge case where all values are the same
-    return sensoryInputs.map(input => (input - min) / (max - min));
-  }
-
-  /**
-   * Helper method to check if inputs are valid.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @throws {TypeError} - If the input is invalid.
-   */
-  checkInputs(sensoryInputs) {
-    if (!Array.isArray(sensoryInputs)) {
-      throw new TypeError('sensoryInputs must be an array');
+  checkInputs(inputs) {
+    if (!Array.isArray(inputs) || inputs.some(input => typeof input !== 'number' || !isFinite(input))) {
+      throw new TypeError('inputs must be an array of finite numbers');
     }
-    sensoryInputs.forEach(input => {
-      if (typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
-    });
   }
 
   /**
-   * Validate threshold values.
+   * Validate thresholds for classification.
    * @param {Object} thresholds - Key-value pairs of category names and thresholds.
    * @throws {TypeError} - If any threshold is invalid.
    */
   validateThresholds(thresholds) {
     for (const key in thresholds) {
       if (typeof thresholds[key] !== 'number' || !isFinite(thresholds[key])) {
-        throw new TypeError(`threshold for category ${key} must be a finite number`);
+        throw new TypeError(`threshold for ${key} must be a finite number`);
       }
     }
   }
