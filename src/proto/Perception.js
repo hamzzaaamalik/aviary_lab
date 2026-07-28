@@ -37,7 +37,9 @@ export class Perception {
    */
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) return {};
+    if (sensoryInputs.length === 0) {
+      throw new TypeError('sensoryInputs must not be empty');
+    }
     if (typeof thresholds !== 'object' || thresholds === null) {
       throw new TypeError('thresholds must be a non-empty object');
     }
