@@ -56,10 +56,11 @@ export class Perception {
     if (typeof thresholds !== 'object' || thresholds === null) {
       throw new TypeError('thresholds must be a non-empty object');
     }
-    if (Object.keys(thresholds).length === 0) {
+    const keys = Object.keys(thresholds);
+    if (keys.length === 0) {
       throw new TypeError('thresholds must contain at least one threshold');
     }
-    for (const category in thresholds) {
+    for (const category of keys) {
       const threshold = thresholds[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`threshold for category ${category} must be a finite number`);
