@@ -85,12 +85,17 @@ export class Perception {
 
   /**
    * Check if sensory inputs are valid.
-   * @param {Array<number>} inputs - The inputs to check.
+   * @param {Array<number>} inputs 
    * @throws {TypeError} - If inputs are invalid.
    */
   checkInputs(inputs) {
-    if (!Array.isArray(inputs) || inputs.some(input => typeof input !== 'number' || !isFinite(input))) {
-      throw new TypeError('sensoryInputs must be an array of finite numbers');
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
     }
+    inputs.forEach(input => {
+      if (typeof input !== 'number' || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
+      }
+    });
   }
 }

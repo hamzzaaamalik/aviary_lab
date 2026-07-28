@@ -36,3 +36,18 @@ test('classify merges categories with the same threshold', () => {
     '30': [30, 40]
   });
 });
+
+// New tests for edge cases
+
+test('detect throws for non-array input', () => {
+  assert.throws(() => perception.detect(null), TypeError);
+  assert.throws(() => perception.detect({}), TypeError);
+  assert.throws(() => perception.detect(123), TypeError);
+});
+
+test('filter throws for non-array input', () => {
+  const predicate = (x) => x > 10;
+  assert.throws(() => perception.filter(null, predicate), TypeError);
+  assert.throws(() => perception.filter({}, predicate), TypeError);
+  assert.throws(() => perception.filter(123, predicate), TypeError);
+});
