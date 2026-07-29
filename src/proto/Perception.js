@@ -33,7 +33,7 @@ export class Perception {
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} thresholds - Key-value pairs of category names and thresholds.
    * @returns {Object} - Categorized inputs.
-   * @throws {TypeError} - If the input is invalid.
+   * @throws {TypeError} - If inputs or thresholds are invalid.
    */
   classify(sensoryInputs, thresholds) {
     this.checkInputs(sensoryInputs);
