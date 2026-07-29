@@ -4,40 +4,24 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify with valid inputs', () => {
+test('classify correctly categorizes inputs', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const thresholdsMap = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholdsMap);
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
-test('classify with empty input', () => {
-  const inputs = [];
-  const thresholdsMap = { low: 2 };
-  const result = perception.classify(inputs, thresholdsMap);
+test('classify throws on invalid thresholds', () => {
+  assert.throws(() => perception.classify([1, 2, 3], 'not-an-object'), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], { low: 'not-a-number' }), TypeError);
+});
+
+test('classify returns empty object for empty input', () => {
+  const result = perception.classify([], { low: 1 });
   assert.deepEqual(result, {});
 });
 
-test('classify throws on invalid thresholds', () => {
-  const inputs = [1, 2, 3];
-  const thresholdsMap = { low: 'not-a-number' };
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
-});
-
 test('classify throws on invalid inputs', () => {
-  const inputs = [1, 2, null];
-  const thresholdsMap = { low: 1 };
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
-});
-
-test('classify throws on non-array inputs', () => {
-  const inputs = 'not-an-array';
-  const thresholdsMap = { low: 1 };
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
-});
-
-test('classify throws on invalid thresholdsMap', () => {
-  const inputs = [1, 2, 3];
-  const thresholdsMap = null;
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
+  assert.throws(() => perception.classify(null, { low: 1 }), TypeError);
+  assert.throws(() => perception.classify([1, null], { low: 1 }), TypeError);
 });
