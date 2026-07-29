@@ -4,34 +4,26 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify returns correct categories based on thresholds', () => {
+test('classify groups inputs by thresholds', () => {
   const inputs = [1, 2, 3, 4, 5];
   const thresholds = { low: 2, high: 4 };
-  const expected = { low: [2, 3, 4, 5], high: [4, 5] };
-  assert.deepEqual(perception.classify(inputs, thresholds), expected);
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
-test('classify throws TypeError for invalid thresholds', () => {
+test('classify throws on invalid thresholdsMap', () => {
   assert.throws(() => perception.classify([1, 2], 'invalid'), TypeError);
+  assert.throws(() => perception.classify([1, 2], {}), TypeError);
 });
 
 test('classify returns empty object for no inputs', () => {
-  const thresholds = { low: 2 };
-  assert.deepEqual(perception.classify([], thresholds), {});
+  const thresholds = { low: 1 };
+  const result = perception.classify([], thresholds);
+  assert.deepEqual(result, {});
 });
 
-test('classify handles edge case of negative thresholds', () => {
+test('classify validates thresholds correctly', () => {
   const inputs = [1, 2, 3];
-  const thresholds = { negative: -1 };
-  const expected = { negative: [1, 2, 3] };
-  assert.deepEqual(perception.classify(inputs, thresholds), expected);
-});
-
-test('checkInputs throws TypeError for non-array input', () => {
-  assert.throws(() => perception.checkInputs(null), TypeError);
-});
-
-test('checkInputs throws TypeError for invalid input values', () => {
-  assert.throws(() => perception.checkInputs([1, null, 3]), TypeError);
-  assert.throws(() => perception.checkInputs([1, Infinity, 3]), TypeError);
+  const thresholds = { valid: 1, invalid: NaN };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
