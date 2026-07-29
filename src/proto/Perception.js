@@ -31,17 +31,17 @@ export class Perception {
   /**
    * Classify sensory inputs based on given thresholds.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
+   * @param {Object} thresholdsMap - Key-value pairs of category names and thresholds.
    * @returns {Object} - Categorized inputs.
    * @throws {TypeError} - If inputs or thresholds are invalid.
    */
-  classify(sensoryInputs, thresholds) {
+  classify(sensoryInputs, thresholdsMap) {
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) return {};
-    this.validateThresholds(thresholds);
+    this.validateThresholds(thresholdsMap);
     const categorized = {};
-    for (const category in thresholds) {
-      const threshold = thresholds[category];
+    for (const category in thresholdsMap) {
+      const threshold = thresholdsMap[category];
       categorized[category] = sensoryInputs.filter(input => typeof input === 'number' && isFinite(input) && input >= threshold);
     }
     return categorized;
@@ -49,19 +49,19 @@ export class Perception {
 
   /**
    * Validate thresholds object.
-   * @param {Object} thresholds - The thresholds to validate.
+   * @param {Object} thresholdsMap - The thresholds to validate.
    * @throws {TypeError} - If thresholds are invalid.
    */
-  validateThresholds(thresholds) {
-    if (typeof thresholds !== 'object' || thresholds === null) {
-      throw new TypeError('thresholds must be a non-empty object');
+  validateThresholds(thresholdsMap) {
+    if (typeof thresholdsMap !== 'object' || thresholdsMap === null) {
+      throw new TypeError('thresholdsMap must be a non-empty object');
     }
-    const keys = Object.keys(thresholds);
+    const keys = Object.keys(thresholdsMap);
     if (keys.length === 0) {
-      throw new TypeError('thresholds must contain at least one threshold');
+      throw new TypeError('thresholdsMap must contain at least one threshold');
     }
     for (const category of keys) {
-      const threshold = thresholds[category];
+      const threshold = thresholdsMap[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`threshold for category ${category} must be a finite number`);
       }
