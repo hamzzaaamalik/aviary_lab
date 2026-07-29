@@ -41,7 +41,7 @@ export class Perception {
       throw new TypeError('sensoryInputs must be an array');
     }
     if (sensoryInputs.length === 0) return {};
-    this.validateThresholds(thresholdsMap);
+    this.validateThresholdsMap(thresholdsMap);
     const categorized = {};
     for (const category in thresholdsMap) {
       const threshold = thresholdsMap[category];
@@ -57,7 +57,7 @@ export class Perception {
    * @param {Object} thresholdsMap - The thresholds to validate.
    * @throws {TypeError} - If thresholds are invalid.
    */
-  validateThresholds(thresholdsMap) {
+  validateThresholdsMap(thresholdsMap) {
     if (typeof thresholdsMap !== 'object' || thresholdsMap === null) {
       throw new TypeError('thresholdsMap must be an object');
     }
