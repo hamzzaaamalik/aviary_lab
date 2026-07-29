@@ -42,6 +42,7 @@ export class Perception {
     }
     if (sensoryInputs.length === 0) return {};
     this.validateThresholds(thresholdsMap);
+
     const categorized = {};
     for (const category in thresholdsMap) {
       const threshold = thresholdsMap[category];
@@ -84,8 +85,8 @@ export class Perception {
     }
     inputs.forEach((input) => {
       if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
+        throw new TypeError('all inputs must be valid finite numbers');
       }
     });
   }
-}  
+}
