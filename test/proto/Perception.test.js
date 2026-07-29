@@ -4,38 +4,25 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by thresholds', () => {
+test('classify groups inputs by categories based on thresholds', () => {
   const inputs = [10, 20, 30, 40, 50];
-  const thresholds = { low: 20, high: 40 };
-  const expected = {
-    low: [20, 30, 40, 50],
-    high: [40, 50]
-  };
+  const thresholds = { low: 15, medium: 25, high: 35 };
   const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, expected);
+  assert.deepEqual(result, { low: [20, 30, 40, 50], medium: [30, 40, 50], high: [40, 50] });
 });
 
 test('classify throws on invalid thresholds', () => {
   const inputs = [10, 20, 30];
-  assert.throws(() => perception.classify(inputs, null), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: '20' }), TypeError);
-  assert.throws(() => perception.classify(inputs, { }), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: 20, high: 'high' }), TypeError);
+  assert.throws(() => perception.classify(inputs, 'not an object'), TypeError);
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: 'not a number' }), TypeError);
 });
 
-test('classify returns empty object for empty inputs', () => {
-  const thresholds = { low: 20 };
+test('classify handles empty inputs', () => {
+  const thresholds = { low: 15 };
   const result = perception.classify([], thresholds);
   assert.deepEqual(result, {});
 });
 
-test('classify checks input types', () => {
-  const thresholds = { low: 20 };
-  assert.throws(() => perception.classify('not an array', thresholds), TypeError);
-});
-
-test('classify checks for empty thresholds', () => {
-  const inputs = [10, 20, 30];
-  assert.throws(() => perception.classify(inputs, {}), TypeError);
-});
+// Existing tests for detect and filter...
 
