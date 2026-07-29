@@ -4,22 +4,40 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify throws on empty thresholds', () => {
-  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
+// Existing tests for detect and filter...
+
+test('classify categorizes inputs correctly', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
 });
 
-test('classify throws on non-finite thresholds', () => {
-  assert.throws(() => perception.classify([1, 2, 3], { category: NaN }), TypeError);
+// Additional tests for classify method
+
+test('classify throws on invalid sensoryInputs', () => {
+  const thresholds = { low: 1 };
+  assert.throws(() => perception.classify(null, thresholds), TypeError);
+  assert.throws(() => perception.classify({}, thresholds), TypeError);
 });
 
-test('classify returns empty object for empty sensory inputs', () => {
-  const result = perception.classify([], { category: 1 });
+
+test('classify throws on invalid thresholdsMap', () => {
+  const inputs = [1, 2, 3];
+  assert.throws(() => perception.classify(inputs, null), TypeError);
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
+});
+
+
+test('classify returns empty object for empty inputs', () => {
+  const thresholds = { low: 1 };
+  const result = perception.classify([], thresholds);
   assert.deepEqual(result, {});
 });
 
-test('classify returns correctly categorized inputs', () => {
-  const thresholds = { low: 1, high: 2 };
-  const inputs = [0, 1, 2, 3];
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [1, 2, 3], high: [2, 3] });
+
+test('classify throws on invalid threshold values', () => {
+  const inputs = [1, 2, 3];
+  const thresholds = { low: 'invalid' };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
