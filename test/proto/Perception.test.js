@@ -20,6 +20,7 @@ test('classify throws on invalid thresholds', () => {
   assert.throws(() => perception.classify(inputs, null), TypeError);
   assert.throws(() => perception.classify(inputs, { low: '20' }), TypeError);
   assert.throws(() => perception.classify(inputs, { }), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: 20, high: 'high' }), TypeError);
 });
 
 test('classify returns empty object for empty inputs', () => {
@@ -32,3 +33,9 @@ test('classify checks input types', () => {
   const thresholds = { low: 20 };
   assert.throws(() => perception.classify('not an array', thresholds), TypeError);
 });
+
+test('classify checks for empty thresholds', () => {
+  const inputs = [10, 20, 30];
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
+});
+
