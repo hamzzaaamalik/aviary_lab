@@ -54,7 +54,7 @@ export class Perception {
    */
   validateThresholds(thresholdsMap) {
     if (typeof thresholdsMap !== 'object' || thresholdsMap === null) {
-      throw new TypeError('thresholdsMap must be a non-empty object');
+      throw new TypeError('thresholdsMap must be an object');
     }
     const keys = Object.keys(thresholdsMap);
     if (keys.length === 0) {
