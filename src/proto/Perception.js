@@ -37,6 +37,9 @@ export class Perception {
    */
   classify(sensoryInputs, thresholdsMap) {
     this.checkInputs(sensoryInputs);
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
+    }
     if (sensoryInputs.length === 0) return {};
     this.validateThresholds(thresholdsMap);
     const categorized = {};
