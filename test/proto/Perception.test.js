@@ -28,3 +28,9 @@ test('classify handles no matching categories', () => {
   const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, { high: [] });
 });
+
+test('classify throws on non-finite inputs', () => {
+  const inputs = [10, NaN, 20];
+  const thresholds = { low: 15 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+});
