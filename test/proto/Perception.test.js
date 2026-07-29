@@ -28,3 +28,14 @@ test('classify throws TypeError for empty sensoryInputs', () => {
   assert.throws(() => perception.classify([], { low: 1 }), TypeError);
 });
 
+test('classify throws TypeError for non-finite thresholds', () => {
+  assert.throws(() => perception.classify([1, 2, 3], { low: NaN }), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], { high: Infinity }), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], { medium: 'not-a-number' }), TypeError);
+  assert.throws(() => perception.classify([1, 2, 3], { empty: null }), TypeError);
+});
+
+test('classify throws TypeError for empty thresholds', () => {
+  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
+});
+
