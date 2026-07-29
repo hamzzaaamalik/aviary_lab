@@ -31,3 +31,15 @@ test('classify throws on invalid inputs', () => {
   const thresholds = { low: 15 };
   assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
+
+test('classify throws on invalid sensory inputs type', () => {
+  const inputs = 'not an array';
+  const thresholds = { low: 15 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+});
+
+test('classify throws on invalid threshold type', () => {
+  const inputs = [10, 20, 30];
+  const invalidThresholds = { low: NaN };
+  assert.throws(() => perception.classify(inputs, invalidThresholds), TypeError);
+});
