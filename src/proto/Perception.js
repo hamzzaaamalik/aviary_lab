@@ -58,12 +58,12 @@ export class Perception {
     }
     const keys = Object.keys(thresholdsMap);
     if (keys.length === 0) {
-      throw new TypeError('thresholdsMap must contain at least one threshold');
+      throw new TypeError('thresholdsMap cannot be empty');
     }
     for (const category of keys) {
       const threshold = thresholdsMap[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
-        throw new TypeError(`threshold for category '${category}' must be a finite number`);
+        throw new TypeError(`threshold for category '${category}' must be a finite number, received: ${threshold}`);
       }
     }
   }
@@ -79,7 +79,7 @@ export class Perception {
     }
     inputs.forEach((input, index) => {
       if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError(`all inputs must be finite numbers; invalid input at index ${index}`);
+        throw new TypeError(`all inputs must be finite numbers; invalid input at index ${index}: received ${input}`);
       }
     });
   }
