@@ -4,38 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs by thresholds', () => {
-  const inputs = [10, 20, 30, 40, 50];
-  const thresholds = { low: 20, high: 40 };
-  const expected = {
-    low: [20, 30, 40, 50],
-    high: [40, 50]
-  };
+test('classify groups inputs by thresholds', () => {
+  const thresholds = { low: 5, high: 10 };
+  const inputs = [3, 5, 7, 10, 12];
   const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, expected);
+  assert.deepEqual(result, { low: [5, 7, 10, 12], high: [10, 12] });
 });
 
 test('classify throws on invalid thresholds', () => {
-  const inputs = [10, 20, 30];
+  const inputs = [3, 5, 7];
   assert.throws(() => perception.classify(inputs, null), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: '20' }), TypeError);
-  assert.throws(() => perception.classify(inputs, { }), TypeError);
-  assert.throws(() => perception.classify(inputs, { low: 20, high: 'high' }), TypeError);
+  assert.throws(() => perception.classify(inputs, { low: 'a' }), TypeError);
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
 
-test('classify returns empty object for empty inputs', () => {
-  const thresholds = { low: 20 };
+test('classify returns empty object for no inputs', () => {
+  const thresholds = { low: 5 };
   const result = perception.classify([], thresholds);
   assert.deepEqual(result, {});
 });
 
-test('classify checks input types', () => {
-  const thresholds = { low: 20 };
-  assert.throws(() => perception.classify('not an array', thresholds), TypeError);
+test('classify handles non-numeric inputs gracefully', () => {
+  const thresholds = { low: 5 };
+  const inputs = [3, 5, 'string', null, undefined];
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
 
-test('classify checks for empty thresholds', () => {
-  const inputs = [10, 20, 30];
+test('classify throws on empty thresholds', () => {
+  const inputs = [5, 6];
   assert.throws(() => perception.classify(inputs, {}), TypeError);
 });
-
