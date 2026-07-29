@@ -23,3 +23,13 @@ test('classify returns empty object for no inputs', () => {
   const result = perception.classify([], thresholds);
   assert.deepEqual(result, {});
 });
+
+test('classify throws on empty thresholds', () => {
+  const inputs = [1, 2, 3];
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
+});
+
+test('checkInputs throws on invalid input array', () => {
+  assert.throws(() => perception.detect('not an array'), TypeError);
+  assert.throws(() => perception.detect([1, null, 3]), TypeError);
+});
