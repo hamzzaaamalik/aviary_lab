@@ -24,3 +24,13 @@ test('classify returns empty object for no inputs', () => {
   assert.deepEqual(result, {});
 });
 
+test('classify handles non-numeric inputs gracefully', () => {
+  const thresholds = { low: 5 };
+  const inputs = [3, 5, 'string', null, undefined];
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+});
+
+test('classify throws on empty thresholds', () => {
+  const inputs = [5, 6];
+  assert.throws(() => perception.classify(inputs, {}), TypeError);
+});
