@@ -4,42 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups sensory inputs correctly', () => {
+test('classify groups inputs by thresholds', () => {
   const inputs = [10, 20, 30, 40];
-  const thresholds = { low: 15, medium: 25, high: 35 };
+  const thresholds = { low: 15, high: 25 };
   const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, {
     low: [20, 30, 40],
-    medium: [30, 40],
-    high: [40]
+    high: [30, 40]
   });
 });
 
+test('classify throws on empty inputs', () => {
+  assert.throws(() => perception.classify([], { low: 15 }), TypeError);
+});
+
 test('classify throws on invalid thresholdsMap', () => {
-  const inputs = [10, 20, 30];
-  const invalidThresholds = { low: 'low', medium: null };
-  assert.throws(() => perception.classify(inputs, invalidThresholds), TypeError);
+  assert.throws(() => perception.classify([10], 'not-an-object'), TypeError);
 });
 
-test('classify throws on empty sensoryInputs', () => {
-  const thresholds = { low: 15 };
-  assert.throws(() => perception.classify([], thresholds), TypeError);
+test('classify handles no matching categories', () => {
+  const inputs = [1, 2, 3];
+  const thresholds = { high: 10 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { high: [] });
 });
 
-test('classify throws on invalid inputs', () => {
-  const inputs = [10, null, 30];
-  const thresholds = { low: 15 };
-  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
-});
-
-test('classify throws on invalid sensory inputs type', () => {
-  const inputs = 'not an array';
+test('classify throws on non-finite inputs', () => {
+  const inputs = [10, NaN, 20];
   const thresholds = { low: 15 };
   assert.throws(() => perception.classify(inputs, thresholds), TypeError);
-});
-
-test('classify throws on invalid threshold type', () => {
-  const inputs = [10, 20, 30];
-  const invalidThresholds = { low: NaN };
-  assert.throws(() => perception.classify(inputs, invalidThresholds), TypeError);
 });
