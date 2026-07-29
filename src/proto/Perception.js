@@ -83,8 +83,8 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     inputs.forEach((input) => {
-      if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('each input must be a finite number');
+      if (input === null || input === undefined || typeof input !== 'number') {
+        throw new TypeError('all inputs must be finite numbers');
       }
     });
   }
