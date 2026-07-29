@@ -63,7 +63,7 @@ export class Perception {
     for (const category of keys) {
       const threshold = thresholdsMap[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
-        throw new TypeError(`threshold for category ${category} must be a finite number`);
+        throw new TypeError(`threshold for category '${category}' must be a finite number`);
       }
     }
   }
