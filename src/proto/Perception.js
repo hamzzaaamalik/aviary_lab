@@ -37,6 +37,9 @@ export class Perception {
    */
   classify(sensoryInputs, thresholdsMap) {
     this.checkInputs(sensoryInputs);
+    if (!Array.isArray(sensoryInputs)) {
+      throw new TypeError('sensoryInputs must be an array');
+    }
     if (sensoryInputs.length === 0) return {};
     this.validateThresholds(thresholdsMap);
     const categorized = {};
@@ -54,7 +57,7 @@ export class Perception {
    */
   validateThresholds(thresholdsMap) {
     if (typeof thresholdsMap !== 'object' || thresholdsMap === null) {
-      throw new TypeError('thresholdsMap must be a non-empty object');
+      throw new TypeError('thresholdsMap must be an object');
     }
     const keys = Object.keys(thresholdsMap);
     if (keys.length === 0) {
