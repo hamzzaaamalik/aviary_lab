@@ -4,29 +4,33 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify categorizes inputs based on thresholds', () => {
-  const inputs = [10, 20, 30, 40, 50];
-  const thresholds = { low: 15, medium: 25, high: 35 };
-  const expected = {
+test('classify returns categorized inputs', () => {
+  const sensoryInputs = [10, 20, 30, 40, 50];
+  const thresholdsMap = { low: 15, medium: 25, high: 35 };
+  const result = perception.classify(sensoryInputs, thresholdsMap);
+  assert.deepEqual(result, {
     low: [20, 30, 40, 50],
     medium: [30, 40, 50],
     high: [40, 50]
-  };
-  assert.deepEqual(perception.classify(inputs, thresholds), expected);
+  });
 });
 
-test('classify throws on invalid thresholds map', () => {
-  assert.throws(() => perception.classify([1, 2, 3], 'not an object'), TypeError);
-  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
+test('classify throws for invalid sensoryInputs', () => {
+  const thresholdsMap = { low: 15 };
+  assert.throws(() => perception.classify(null, thresholdsMap), TypeError);
+  assert.throws(() => perception.classify({}, thresholdsMap), TypeError);
 });
 
-test('classify throws on invalid inputs', () => {
-  const thresholds = { low: 15 };
-  assert.throws(() => perception.classify('not an array', thresholds), TypeError);
-  assert.throws(() => perception.classify([1, 2, 3, null], thresholds), TypeError);
+test('classify throws for invalid thresholdsMap', () => {
+  const sensoryInputs = [10, 20];
+  assert.throws(() => perception.classify(sensoryInputs, null), TypeError);
+  assert.throws(() => perception.classify(sensoryInputs, {}), TypeError);
+  assert.throws(() => perception.classify(sensoryInputs, { low: NaN }), TypeError);
 });
 
-test('classify returns empty object on empty input array', () => {
-  const thresholds = { low: 15 };
-  assert.deepEqual(perception.classify([], thresholds), {});
+test('classify handles empty sensoryInputs', () => {
+  const thresholdsMap = { low: 15 };
+  const result = perception.classify([], thresholdsMap);
+  assert.deepEqual(result, {});
 });
+
