@@ -4,40 +4,34 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify with valid inputs', () => {
+test('classify returns correct categories based on thresholds', () => {
   const inputs = [1, 2, 3, 4, 5];
-  const thresholdsMap = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholdsMap);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+  const thresholds = { low: 2, high: 4 };
+  const expected = { low: [2, 3, 4, 5], high: [4, 5] };
+  assert.deepEqual(perception.classify(inputs, thresholds), expected);
 });
 
-test('classify with empty input', () => {
-  const inputs = [];
-  const thresholdsMap = { low: 2 };
-  const result = perception.classify(inputs, thresholdsMap);
-  assert.deepEqual(result, {});
+test('classify throws TypeError for invalid thresholds', () => {
+  assert.throws(() => perception.classify([1, 2], 'invalid'), TypeError);
 });
 
-test('classify throws on invalid thresholds', () => {
+test('classify returns empty object for no inputs', () => {
+  const thresholds = { low: 2 };
+  assert.deepEqual(perception.classify([], thresholds), {});
+});
+
+test('classify handles edge case of negative thresholds', () => {
   const inputs = [1, 2, 3];
-  const thresholdsMap = { low: 'not-a-number' };
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
+  const thresholds = { negative: -1 };
+  const expected = { negative: [1, 2, 3] };
+  assert.deepEqual(perception.classify(inputs, thresholds), expected);
 });
 
-test('classify throws on invalid inputs', () => {
-  const inputs = [1, 2, null];
-  const thresholdsMap = { low: 1 };
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
+test('checkInputs throws TypeError for non-array input', () => {
+  assert.throws(() => perception.checkInputs(null), TypeError);
 });
 
-test('classify throws on non-array inputs', () => {
-  const inputs = 'not-an-array';
-  const thresholdsMap = { low: 1 };
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
-});
-
-test('classify throws on invalid thresholdsMap', () => {
-  const inputs = [1, 2, 3];
-  const thresholdsMap = null;
-  assert.throws(() => perception.classify(inputs, thresholdsMap), TypeError);
+test('checkInputs throws TypeError for invalid input values', () => {
+  assert.throws(() => perception.checkInputs([1, null, 3]), TypeError);
+  assert.throws(() => perception.checkInputs([1, Infinity, 3]), TypeError);
 });
