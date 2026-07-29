@@ -37,10 +37,12 @@ export class Perception {
    */
   classify(sensoryInputs, thresholdsMap) {
     this.checkInputs(sensoryInputs);
-    if (!Array.isArray(sensoryInputs) || sensoryInputs.length === 0) {
-      throw new TypeError('sensoryInputs must be a non-empty array');
+    if (sensoryInputs.length === 0) {
+      throw new TypeError('sensoryInputs must not be an empty array');
     }
-    this.validateThresholdsMap(thresholdsMap);
+    if (!this.isValidThresholdsMap(thresholdsMap)) {
+      throw new TypeError('thresholdsMap must be a valid object with finite number thresholds');
+    }
     const categorized = {};
     for (const category in thresholdsMap) {
       const threshold = thresholdsMap[category];
@@ -54,22 +56,17 @@ export class Perception {
   /**
    * Validate thresholds object.
    * @param {Object} thresholdsMap - The thresholds to validate.
-   * @throws {TypeError} - If thresholds are invalid.
+   * @returns {boolean} - True if valid, false otherwise.
    */
-  validateThresholdsMap(thresholdsMap) {
-    if (typeof thresholdsMap !== 'object' || thresholdsMap === null) {
-      throw new TypeError('thresholdsMap must be an object');
-    }
+  isValidThresholdsMap(thresholdsMap) {
+    if (typeof thresholdsMap !== 'object' || thresholdsMap === null) return false;
     const keys = Object.keys(thresholdsMap);
-    if (keys.length === 0) {
-      throw new TypeError('thresholdsMap must contain at least one threshold');
-    }
+    if (keys.length === 0) return false;
     for (const category of keys) {
       const threshold = thresholdsMap[category];
-      if (typeof threshold !== 'number' || !isFinite(threshold)) {
-        throw new TypeError(`threshold for category '${category}' must be a finite number`);
-      }
+      if (typeof threshold !== 'number' || !isFinite(threshold)) return false;
     }
+    return true;
   }
 
   /**
@@ -83,7 +80,7 @@ export class Perception {
     }
     inputs.forEach((input) => {
       if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
+        throw new TypeError('each input must be a finite number');
       }
     });
   }
