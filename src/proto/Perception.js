@@ -82,7 +82,7 @@ export class Perception {
     }
     inputs.forEach((input, index) => {
       if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError(`all inputs must be finite numbers; invalid input at index ${index}`);
+        throw new TypeError(`input at index ${index} is invalid`);
       }
     });
   }
