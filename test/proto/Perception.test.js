@@ -34,3 +34,18 @@ test('classify handles empty sensoryInputs', () => {
   assert.deepEqual(result, {});
 });
 
+test('classify throws for negative thresholds', () => {
+  const sensoryInputs = [10, 20];
+  const thresholdsMap = { low: -5 };
+  const result = perception.classify(sensoryInputs, thresholdsMap);
+  assert.deepEqual(result, {
+    low: [10, 20]
+  });
+});
+
+test('classify throws for non-finite thresholds', () => {
+  const sensoryInputs = [10, 20];
+  assert.throws(() => perception.classify(sensoryInputs, { low: Infinity }), TypeError);
+  assert.throws(() => perception.classify(sensoryInputs, { low: -Infinity }), TypeError);
+  assert.throws(() => perception.classify(sensoryInputs, { low: NaN }), TypeError);
+});
