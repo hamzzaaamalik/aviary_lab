@@ -64,12 +64,9 @@ export class Perception {
   isValidThresholdsMap(thresholdsMap) {
     if (typeof thresholdsMap !== 'object' || thresholdsMap === null) return false;
     const keys = Object.keys(thresholdsMap);
-    if (keys.length === 0) return false;
-    for (const category of keys) {
-      const threshold = thresholdsMap[category];
-      if (typeof threshold !== 'number' || !isFinite(threshold)) return false;
-    }
-    return true;
+    return keys.length > 0 && keys.every(category =>
+      typeof thresholdsMap[category] === 'number' && isFinite(thresholdsMap[category])
+    );
   }
 
   /**
@@ -82,7 +79,7 @@ export class Perception {
       throw new TypeError('inputs must be an array');
     }
     if (inputs.length === 0) {
-      throw new TypeError('inputs must not be an empty array');
+      throw new TypeError('inputs must not be empty');
     }
   }
 }
