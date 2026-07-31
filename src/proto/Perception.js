@@ -84,8 +84,10 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    if (inputs.length === 0) {
-      throw new TypeError('inputs must not be an empty array');
+    for (const input of inputs) {
+      if (input === null || input === undefined) {
+        throw new TypeError('inputs must not contain null or undefined values');
+      }
     }
   }
 }
