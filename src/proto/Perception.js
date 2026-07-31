@@ -33,13 +33,13 @@ export class Perception {
    * @param {Array<number>} inputs - Array of sensory input values.
    * @param {Object} thresholdsMap - Key-value pairs of category names and thresholds.
    * @returns {Object} - Categorized inputs.
-   * @throws {TypeError} - If inputs or thresholds are invalid.
+   * @throws {TypeError} - If thresholds are invalid.
    */
   classify(inputs, thresholdsMap) {
-    this.checkInputs(inputs);
     if (!this.isValidThresholdsMap(thresholdsMap)) {
       throw new TypeError('thresholdsMap must be a valid object with finite number thresholds');
     }
+    this.checkInputs(inputs); // input checks only once
     const categorized = {};
     for (const category in thresholdsMap) {
       const threshold = thresholdsMap[category];
