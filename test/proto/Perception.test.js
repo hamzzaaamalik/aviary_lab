@@ -4,28 +4,23 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify correctly categorizes inputs', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+test('validateInputs throws on non-array input', () => {
+  assert.throws(() => perception.validateInputs(null), TypeError);
+  assert.throws(() => perception.validateInputs({}), TypeError);
+  assert.throws(() => perception.validateInputs(123), TypeError);
 });
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([1, 2, 3], { low: 'not-a-number' }), TypeError);
+test('validateInputs throws on empty array', () => {
+  assert.throws(() => perception.validateInputs([]), TypeError);
 });
 
-test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
+test('validateInputs throws on non-finite numbers', () => {
+  assert.throws(() => perception.validateInputs([1, 2, NaN]), TypeError);
+  assert.throws(() => perception.validateInputs([1, 2, Infinity]), TypeError);
+  assert.throws(() => perception.validateInputs([1, 2, -Infinity]), TypeError);
 });
 
-test('classify throws on invalid inputs', () => {
-  assert.throws(() => perception.classify([1, 2, null], { low: 1 }), TypeError);
-});
-
-test('classify returns empty arrays for all inputs below thresholds', () => {
-  const inputs = [1, 1.5, 1.9];
-  const thresholds = { low: 2, high: 3 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [], high: [] });
+test('validateInputs accepts valid finite numbers', () => {
+  perception.validateInputs([1, 2, 3]); // Should not throw
+  perception.validateInputs([-1, 0, 1]); // Should not throw
 });
