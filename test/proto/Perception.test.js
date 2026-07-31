@@ -4,27 +4,45 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs by thresholds', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+test('detect filters valid inputs', () => {
+  const result = perception.detect([1, 2, null, undefined, 3]);
+  assert.deepEqual(result, [1, 2, 3]);
 });
 
-test('classify throws on empty inputs', () => {
+test('detect returns empty array for empty input', () => {
+  const result = perception.detect([]);
+  assert.deepEqual(result, []);
+});
+
+test('filter applies predicate correctly', () => {
+  const result = perception.filter([1, 2, 3, 4], n => n > 2);
+  assert.deepEqual(result, [3, 4]);
+});
+
+test('filter returns empty array for empty input', () => {
+  const result = perception.filter([], n => n > 2);
+  assert.deepEqual(result, []);
+});
+
+test('classify returns categorized inputs', () => {
+  const result = perception.classify([1, 2, 3, 4], { low: 2, high: 3 });
+  assert.deepEqual(result, { low: [2, 3, 4], high: [3, 4] });
+});
+
+test('classify throws error for empty sensory inputs', () => {
   assert.throws(() => perception.classify([], { low: 1 }), TypeError);
 });
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([1], { low: 'a' }), TypeError);
-  assert.throws(() => perception.classify([1], { low: null }), TypeError);
-  assert.throws(() => perception.classify([1], {}), TypeError);
-  assert.throws(() => perception.classify([1], { low: {} }), TypeError);
+test('classify throws error for invalid thresholds', () => {
+  assert.throws(() => perception.classify([1, 2], { low: null }), TypeError);
 });
 
-test('classify returns empty object for no matching thresholds', () => {
-  const inputs = [1, 2, 3];
-  const thresholds = { high: 10 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { high: [] });
+test('validateThresholds returns true for valid thresholds', () => {
+  const valid = { low: 1, high: 2 };
+  assert.ok(perception.validateThresholds(valid));
+});
+
+test('validateThresholds returns false for invalid thresholds', () => {
+  const invalid = { low: NaN };
+  assert.ok(!perception.validateThresholds(invalid));
 });

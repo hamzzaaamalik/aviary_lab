@@ -11,6 +11,7 @@ export class Perception {
    */
   detect(inputs) {
     this.checkInputs(inputs);
+    if (inputs.length === 0) return [];
     return inputs.filter(input => input !== null && input !== undefined && typeof input === 'number' && isFinite(input));
   }
 
@@ -22,6 +23,7 @@ export class Perception {
    */
   filter(inputs, predicate) {
     this.checkInputs(inputs);
+    if (inputs.length === 0) return [];
     if (typeof predicate !== 'function') {
       throw new TypeError('predicate must be a function');
     }
@@ -69,11 +71,10 @@ export class Perception {
     if (typeof thresholds !== 'object' || thresholds === null) return false;
     const keys = Object.keys(thresholds);
     if (keys.length === 0) return false;
-    for (const category of keys) {
+    return keys.every(category => {
       const threshold = thresholds[category];
-      if (typeof threshold !== 'number' || !isFinite(threshold)) return false;
-    }
-    return true;
+      return typeof threshold === 'number' && isFinite(threshold);
+    });
   }
 
   /**
@@ -84,11 +85,6 @@ export class Perception {
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
-    }
-    for (const input of inputs) {
-      if (typeof input !== 'number' && input !== null && input !== undefined) {
-        throw new TypeError('every input must be a number, null, or undefined');
-      }
     }
   }
 }
