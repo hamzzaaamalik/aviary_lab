@@ -31,18 +31,18 @@ export class Perception {
   /**
    * Classify sensory inputs based on given thresholds.
    * @param {Array<number>} inputs - Array of sensory input values.
-   * @param {Object} thresholdsMap - Key-value pairs of category names and thresholds.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
    * @returns {Object} - Categorized inputs.
    * @throws {TypeError} - If inputs or thresholds are invalid.
    */
-  classify(inputs, thresholdsMap) {
+  classify(inputs, thresholds) {
     this.validateInputs(inputs);
-    if (!this.isValidThresholdsMap(thresholdsMap)) {
-      throw new TypeError('thresholdsMap must be a valid object with finite number thresholds');
+    if (!this.isValidThresholds(thresholds)) {
+      throw new TypeError('thresholds must be a valid object with finite number thresholds');
     }
     const categorized = {};
-    for (const category in thresholdsMap) {
-      const threshold = thresholdsMap[category];
+    for (const category in thresholds) {
+      const threshold = thresholds[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`Threshold for category ${category} must be a finite number`);
       }
@@ -55,14 +55,14 @@ export class Perception {
 
   /**
    * Validate thresholds object.
-   * @param {Object} thresholdsMap - The thresholds to validate.
+   * @param {Object} thresholds - The thresholds to validate.
    * @returns {boolean} - True if valid, false otherwise.
    */
-  isValidThresholdsMap(thresholdsMap) {
-    if (typeof thresholdsMap !== 'object' || thresholdsMap === null) return false;
-    const keys = Object.keys(thresholdsMap);
+  isValidThresholds(thresholds) {
+    if (typeof thresholds !== 'object' || thresholds === null) return false;
+    const keys = Object.keys(thresholds);
     return keys.length > 0 && keys.every(category =>
-      typeof thresholdsMap[category] === 'number' && isFinite(thresholdsMap[category])
+      typeof thresholds[category] === 'number' && isFinite(thresholds[category])
     );
   }
 
