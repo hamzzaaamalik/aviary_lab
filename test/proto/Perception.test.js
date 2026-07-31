@@ -33,3 +33,21 @@ test('classify throws TypeError for invalid input types', () => {
   assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
 
+// New tests for checking invalid input types
+test('classify throws TypeError for null input', () => {
+  const inputs = [5, null];
+  const thresholds = { low: 0 };
+  assert.doesNotThrow(() => perception.classify(inputs, thresholds));
+});
+
+test('classify throws TypeError for undefined input', () => {
+  const inputs = [5, undefined];
+  const thresholds = { low: 0 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+});
+
+test('classify throws TypeError for boolean input', () => {
+  const inputs = [5, true];
+  const thresholds = { low: 0 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+});
