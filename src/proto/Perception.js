@@ -36,6 +36,9 @@ export class Perception {
    * @throws {TypeError} - If inputs or thresholds are invalid.
    */
   classify(inputs, thresholdsMap) {
+    if (!Array.isArray(inputs)) {
+      throw new TypeError('inputs must be an array');
+    }
     this.checkInputs(inputs);
     if (inputs.length === 0) {
       throw new TypeError('inputs must not be an empty array');
@@ -82,7 +85,7 @@ export class Perception {
       throw new TypeError('inputs must not be empty');
     }
     inputs.forEach(input => {
-      if (typeof input !== 'number' || !isFinite(input)) {
+      if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
         throw new TypeError('all inputs must be finite numbers');
       }
     });
