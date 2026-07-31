@@ -32,10 +32,11 @@ export class Perception {
    * Classify sensory inputs based on given thresholds.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
    * @param {Object} thresholdsMap - Key-value pairs of category names and thresholds.
+   * @param {boolean} sort - Whether to sort categorized inputs.
    * @returns {Object} - Categorized inputs.
    * @throws {TypeError} - If inputs or thresholds are invalid.
    */
-  classify(sensoryInputs, thresholdsMap) {
+  classify(sensoryInputs, thresholdsMap, sort = false) {
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) {
       throw new TypeError('sensoryInputs must not be an empty array');
@@ -52,6 +53,9 @@ export class Perception {
       categorized[category] = sensoryInputs.filter(input =>
         typeof input === 'number' && isFinite(input) && input >= threshold
       );
+      if (sort) {
+        categorized[category].sort((a, b) => a - b);
+      }
     }
     return categorized;
   }
