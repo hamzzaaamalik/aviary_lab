@@ -19,6 +19,7 @@ test('classify throws on invalid thresholds', () => {
   assert.throws(() => perception.classify([1], { low: 'a' }), TypeError);
   assert.throws(() => perception.classify([1], { low: null }), TypeError);
   assert.throws(() => perception.classify([1], {}), TypeError);
+  assert.throws(() => perception.classify([1], { low: {} }), TypeError);
 });
 
 test('classify returns empty object for no matching thresholds', () => {
