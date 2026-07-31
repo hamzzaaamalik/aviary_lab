@@ -85,8 +85,8 @@ export class Perception {
       throw new TypeError('inputs must not be empty');
     }
     inputs.forEach(input => {
-      if (typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('each input must be a finite number');
+      if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
       }
     });
   }
