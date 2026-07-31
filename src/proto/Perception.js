@@ -37,9 +37,6 @@ export class Perception {
    */
   classify(inputs, thresholdsMap) {
     this.checkInputs(inputs);
-    if (inputs.length === 0) {
-      throw new TypeError('inputs must not be an empty array');
-    }
     if (!this.isValidThresholdsMap(thresholdsMap)) {
       throw new TypeError('thresholdsMap must be a valid object with finite number thresholds');
     }
