@@ -31,22 +31,22 @@ export class Perception {
   /**
    * Classify sensory inputs based on given thresholds.
    * @param {Array<number>} sensoryInputs - Array of sensory input values.
-   * @param {Object} thresholdsMap - Key-value pairs of category names and thresholds.
+   * @param {Object} thresholds - Key-value pairs of category names and thresholds.
    * @param {boolean} sort - Whether to sort categorized inputs.
    * @returns {Object} - Categorized inputs.
    * @throws {TypeError} - If inputs or thresholds are invalid.
    */
-  classify(sensoryInputs, thresholdsMap, sort = false) {
+  classify(sensoryInputs, thresholds, sort = false) {
     this.checkInputs(sensoryInputs);
     if (sensoryInputs.length === 0) {
       throw new TypeError('sensoryInputs must not be an empty array');
     }
-    if (!this.isValidThresholdsMap(thresholdsMap)) {
-      throw new TypeError('thresholdsMap must be a valid object with finite number thresholds');
+    if (!this.validateThresholds(thresholds)) {
+      throw new TypeError('thresholds must be a valid object with finite number thresholds');
     }
     const categorized = {};
-    for (const category in thresholdsMap) {
-      const threshold = thresholdsMap[category];
+    for (const category in thresholds) {
+      const threshold = thresholds[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`Threshold for category ${category} must be a finite number`);
       }
@@ -62,15 +62,15 @@ export class Perception {
 
   /**
    * Validate thresholds object.
-   * @param {Object} thresholdsMap - The thresholds to validate.
+   * @param {Object} thresholds - The thresholds to validate.
    * @returns {boolean} - True if valid, false otherwise.
    */
-  isValidThresholdsMap(thresholdsMap) {
-    if (typeof thresholdsMap !== 'object' || thresholdsMap === null) return false;
-    const keys = Object.keys(thresholdsMap);
+  validateThresholds(thresholds) {
+    if (typeof thresholds !== 'object' || thresholds === null) return false;
+    const keys = Object.keys(thresholds);
     if (keys.length === 0) return false;
     for (const category of keys) {
-      const threshold = thresholdsMap[category];
+      const threshold = thresholds[category];
       if (typeof threshold !== 'number' || !isFinite(threshold)) return false;
     }
     return true;
@@ -85,8 +85,10 @@ export class Perception {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
     }
-    if (inputs.length === 0) {
-      throw new TypeError('inputs must not be an empty array');
+    for (const input of inputs) {
+      if (typeof input !== 'number' && input !== null && input !== undefined) {
+        throw new TypeError('every input must be a number, null, or undefined');
+      }
     }
   }
 }
