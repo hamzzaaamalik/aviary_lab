@@ -30,15 +30,15 @@ export class Perception {
 
   /**
    * Classify sensory inputs based on given thresholds.
-   * @param {Array<number>} sensoryInputs - Array of sensory input values.
+   * @param {Array<number>} inputs - Array of sensory input values.
    * @param {Object} thresholdsMap - Key-value pairs of category names and thresholds.
    * @returns {Object} - Categorized inputs.
    * @throws {TypeError} - If inputs or thresholds are invalid.
    */
-  classify(sensoryInputs, thresholdsMap) {
-    this.checkInputs(sensoryInputs);
-    if (sensoryInputs.length === 0) {
-      throw new TypeError('sensoryInputs must not be an empty array');
+  classify(inputs, thresholdsMap) {
+    this.checkInputs(inputs);
+    if (inputs.length === 0) {
+      throw new TypeError('inputs must not be an empty array');
     }
     if (!this.isValidThresholdsMap(thresholdsMap)) {
       throw new TypeError('thresholdsMap must be a valid object with finite number thresholds');
@@ -49,7 +49,7 @@ export class Perception {
       if (typeof threshold !== 'number' || !isFinite(threshold)) {
         throw new TypeError(`Threshold for category ${category} must be a finite number`);
       }
-      categorized[category] = sensoryInputs.filter(input =>
+      categorized[category] = inputs.filter(input =>
         typeof input === 'number' && isFinite(input) && input >= threshold
       );
     }
@@ -82,8 +82,8 @@ export class Perception {
       throw new TypeError('inputs must not be empty');
     }
     inputs.forEach(input => {
-      if (typeof input !== 'number') {
-        throw new TypeError('all inputs must be numbers');
+      if (typeof input !== 'number' || !isFinite(input)) {
+        throw new TypeError('all inputs must be finite numbers');
       }
     });
   }
