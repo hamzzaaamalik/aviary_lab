@@ -37,6 +37,9 @@ export class Perception {
    */
   classify(inputs, thresholds) {
     this.validateInputs(inputs);
+    if (inputs.length === 0) {
+      return {}; // Return empty object for empty inputs
+    }
     if (!this.isValidThresholds(thresholds)) {
       throw new TypeError('thresholds must be a valid object with finite number thresholds');
     }
