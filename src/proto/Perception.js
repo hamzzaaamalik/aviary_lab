@@ -46,6 +46,9 @@ export class Perception {
     const categorized = {};
     for (const category in thresholdsMap) {
       const threshold = thresholdsMap[category];
+      if (typeof threshold !== 'number' || !isFinite(threshold)) {
+        throw new TypeError(`Threshold for category ${category} must be a finite number`);
+      }
       categorized[category] = sensoryInputs.filter(input =>
         typeof input === 'number' && isFinite(input) && input >= threshold
       );
@@ -77,6 +80,9 @@ export class Perception {
   checkInputs(inputs) {
     if (!Array.isArray(inputs)) {
       throw new TypeError('inputs must be an array');
+    }
+    if (inputs.length === 0) {
+      throw new TypeError('inputs must not be an empty array');
     }
     inputs.forEach((input) => {
       if (input === null || input === undefined || typeof input !== 'number' || !isFinite(input)) {
