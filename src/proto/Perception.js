@@ -81,5 +81,10 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs must not be empty');
     }
+    inputs.forEach(input => {
+      if (typeof input !== 'number') {
+        throw new TypeError('all inputs must be numbers');
+      }
+    });
   }
 }
