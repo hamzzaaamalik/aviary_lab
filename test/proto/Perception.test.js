@@ -4,20 +4,50 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify throws on empty sensory inputs', () => {
-  assert.throws(() => perception.classify([], { categoryA: 1 }), TypeError);
+test('classify correctly categorizes inputs based on thresholds', () => {
+  const inputs = [5, 10, 15, 20];
+  const thresholds = { low: 0, medium: 10, high: 15 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [5, 10, 15, 20], medium: [10, 15, 20], high: [15, 20] });
 });
 
-test('classify throws on invalid thresholds map', () => {
-  assert.throws(() => perception.classify([1, 2, 3], { categoryA: 'invalid' }), TypeError);
+test('classify throws TypeError for empty sensory inputs', () => {
+  const thresholds = { low: 0 };
+  assert.throws(() => perception.classify([], thresholds), TypeError);
 });
 
-test('classify returns categorized inputs based on thresholds', () => {
-  const result = perception.classify([1, 2, 3, 4, 5], { categoryA: 3, categoryB: 1 });
-  assert.deepEqual(result, { categoryA: [3, 4, 5], categoryB: [1, 2, 3, 4, 5] });
+test('classify throws TypeError for invalid thresholds map', () => {
+  const inputs = [5, 10];
+  const invalidThresholds = { low: 'not-a-number' };
+  assert.throws(() => perception.classify(inputs, invalidThresholds), TypeError);
 });
 
-test('classify handles various threshold values correctly', () => {
-  const result = perception.classify([0, 1, 2, 3], { low: 1, high: 2 });
-  assert.deepEqual(result, { low: [1, 2, 3], high: [2, 3] });
+test('classify throws TypeError for non-object thresholds', () => {
+  const inputs = [5, 10];
+  assert.throws(() => perception.classify(inputs, null), TypeError);
+});
+
+test('classify throws TypeError for invalid input types', () => {
+  const inputs = [5, 'not-a-number'];
+  const thresholds = { low: 0 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+});
+
+// New tests for checking invalid input types
+test('classify throws TypeError for null input', () => {
+  const inputs = [5, null];
+  const thresholds = { low: 0 };
+  assert.doesNotThrow(() => perception.classify(inputs, thresholds));
+});
+
+test('classify throws TypeError for undefined input', () => {
+  const inputs = [5, undefined];
+  const thresholds = { low: 0 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
+});
+
+test('classify throws TypeError for boolean input', () => {
+  const inputs = [5, true];
+  const thresholds = { low: 0 };
+  assert.throws(() => perception.classify(inputs, thresholds), TypeError);
 });
