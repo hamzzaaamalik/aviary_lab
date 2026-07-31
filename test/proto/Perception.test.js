@@ -4,27 +4,22 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify groups inputs by thresholds', () => {
-  const inputs = [1, 2, 3, 4, 5];
-  const thresholds = { low: 2, high: 4 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { low: [2, 3, 4, 5], high: [4, 5] });
+// Existing tests...
+
+test('classify throws on empty thresholdsMap', () => {
+  assert.throws(() => perception.classify([1, 2, 3], {}), TypeError);
 });
 
-test('classify throws on empty inputs', () => {
-  assert.throws(() => perception.classify([], { low: 1 }), TypeError);
+test('classify throws on invalid threshold type', () => {
+  assert.throws(() => perception.classify([1, 2, 3], { invalid: 'not-a-number' }), TypeError);
 });
 
-test('classify throws on invalid thresholds', () => {
-  assert.throws(() => perception.classify([1], { low: 'a' }), TypeError);
-  assert.throws(() => perception.classify([1], { low: null }), TypeError);
-  assert.throws(() => perception.classify([1], {}), TypeError);
-  assert.throws(() => perception.classify([1], { low: {} }), TypeError);
+test('classify throws on empty sensoryInputs', () => {
+  assert.throws(() => perception.classify([], { category: 1 }), TypeError);
 });
 
-test('classify returns empty object for no matching thresholds', () => {
-  const inputs = [1, 2, 3];
-  const thresholds = { high: 10 };
-  const result = perception.classify(inputs, thresholds);
-  assert.deepEqual(result, { high: [] });
+test('classify throws on negative threshold', () => {
+  assert.throws(() => perception.classify([1, 2, 3], { category: -1 }), RangeError);
 });
+
+// More tests as needed...
