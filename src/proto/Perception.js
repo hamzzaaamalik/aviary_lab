@@ -84,10 +84,5 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs must not be an empty array');
     }
-    for (const input of inputs) {
-      if (typeof input !== 'number' && input !== null && input !== undefined) {
-        throw new TypeError('each input must be a number, null, or undefined');
-      }
-    }
   }
 }
