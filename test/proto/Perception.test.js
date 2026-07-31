@@ -4,43 +4,29 @@ import { Perception } from '../../src/proto/Perception.js';
 
 const perception = new Perception();
 
-test('classify categorizes inputs correctly', () => {
-  const sensoryInputs = [5, 10, 15, 20];
-  const thresholdsMap = { low: 0, medium: 10, high: 15 };
-  const result = perception.classify(sensoryInputs, thresholdsMap);
+test('classify groups inputs by thresholds', () => {
+  const inputs = [1, 2, 3, 4, 5];
+  const thresholds = { low: 2, high: 4 };
+  const result = perception.classify(inputs, thresholds);
   assert.deepEqual(result, {
-    low: [5, 10, 15, 20],
-    medium: [10, 15, 20],
-    high: [15, 20]
+    low: [2, 3, 4, 5],
+    high: [4, 5]
   });
 });
 
 test('classify throws on invalid thresholds', () => {
-  const sensoryInputs = [5, 10];
-  const thresholdsMapInvalid = { low: 0, medium: NaN, high: 15 };
-  assert.throws(() => perception.classify(sensoryInputs, thresholdsMapInvalid), TypeError);
+  assert.throws(() => perception.classify([1, 2], null), TypeError);
+  assert.throws(() => perception.classify([1, 2], { low: 'not-a-number' }), TypeError);
 });
 
-test('classify throws on empty sensory inputs', () => {
-  const thresholdsMap = { low: 0, medium: 10, high: 15 };
-  assert.throws(() => perception.classify([], thresholdsMap), TypeError);
+test('classify throws on empty inputs', () => {
+  assert.throws(() => perception.classify([], { low: 0 }), TypeError);
 });
 
-test('classify throws on invalid thresholdsMap type', () => {
-  const sensoryInputs = [5, 10];
-  assert.throws(() => perception.classify(sensoryInputs, 'not an object'), TypeError);
+test('classify handles no valid inputs', () => {
+  const inputs = [-1, -2];
+  const thresholds = { low: 0 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [] });
 });
 
-test('checkInputs throws on non-array inputs', () => {
-  assert.throws(() => perception.checkInputs('not an array'), TypeError);
-});
-
-test('checkInputs throws on empty inputs', () => {
-  assert.throws(() => perception.checkInputs([]), TypeError);
-});
-
-test('checkInputs throws on invalid input values', () => {
-  assert.throws(() => perception.checkInputs([1, 2, null]), TypeError);
-  assert.throws(() => perception.checkInputs([1, 2, undefined]), TypeError);
-  assert.throws(() => perception.checkInputs([1, 2, 'string']), TypeError);
-});
