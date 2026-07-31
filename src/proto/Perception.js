@@ -85,4 +85,4 @@ export class Perception {
       throw new TypeError('inputs must not be an empty array');
     }
   }
-}
+} 
