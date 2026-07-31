@@ -22,3 +22,10 @@ test('classify throws on empty inputs', () => {
 test('classify throws on invalid inputs', () => {
   assert.throws(() => perception.classify([1, 2, null], { low: 1 }), TypeError);
 });
+
+test('classify returns empty arrays for all inputs below thresholds', () => {
+  const inputs = [1, 1.5, 1.9];
+  const thresholds = { low: 2, high: 3 };
+  const result = perception.classify(inputs, thresholds);
+  assert.deepEqual(result, { low: [], high: [] });
+});
