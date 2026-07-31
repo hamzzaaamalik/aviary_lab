@@ -1,7 +1,7 @@
-// src/kernel/index.js
 import { EventBus } from './EventBus.js';
 import { ModuleRegistry } from './ModuleRegistry.js';
-import { Perception } from '../proto/Perception.js';  // wire the new Perception module
+
+const VERSION = '0.1.0';  // define version as a constant
 
 /**
  * Construct the runtime context shared by every module.
@@ -9,8 +9,14 @@ import { Perception } from '../proto/Perception.js';  // wire the new Perception
  */
 export function createKernel() {
   const bus = new EventBus();
-  const context = { bus, startedAt: Date.now(), version: '0.1.0' };
-  context.registry = new ModuleRegistry(context);
+  let context;
+  try {
+    context = { bus, startedAt: Date.now(), version: VERSION };
+    context.registry = new ModuleRegistry(context);
+  } catch (err) {
+    console.error(`[kernel] failed to initialize ModuleRegistry: ${err.message}`);
+    throw new Error('Kernel initialization failed.');
+  }
   bus.onError((err, type) => console.error(`[kernel] event error: ${err.message}`));
   return context;
 }
