@@ -12,7 +12,7 @@ export class Perception {
    */
   detect(inputs) {
     this.checkInputs(inputs);
-    return inputs.filter(input => input !== null && input !== undefined && typeof input === 'number' && isFinite(input));
+    return inputs.filter(input => typeof input === 'number' && isFinite(input));
   }
 
   /**
@@ -83,10 +83,5 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs must not be empty');
     }
-    inputs.forEach(input => {
-      if (typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
-    });
   }
 }
