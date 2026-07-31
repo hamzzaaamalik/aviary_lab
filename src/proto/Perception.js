@@ -8,10 +8,11 @@ export class Perception {
    * Detect sensory inputs based on specific criteria.
    * @param {Array<number>} inputs - Array of sensory input values.
    * @returns {Array<number>} - Detected inputs.
+   * @throws {TypeError} - If inputs are invalid.
    */
   detect(inputs) {
     this.checkInputs(inputs);
-    return inputs.filter(input => input !== null && input !== undefined && typeof input === 'number' && isFinite(input));
+    return inputs.filter(input => typeof input === 'number' && isFinite(input));
   }
 
   /**
@@ -19,6 +20,7 @@ export class Perception {
    * @param {Array<number>} inputs - Array of sensory input values.
    * @param {Function} predicate - Function to test each input.
    * @returns {Array<number>} - Filtered inputs.
+   * @throws {TypeError} - If predicate is not a function.
    */
   filter(inputs, predicate) {
     this.checkInputs(inputs);
@@ -81,10 +83,5 @@ export class Perception {
     if (inputs.length === 0) {
       throw new TypeError('inputs must not be empty');
     }
-    inputs.forEach(input => {
-      if (typeof input !== 'number' || !isFinite(input)) {
-        throw new TypeError('all inputs must be finite numbers');
-      }
-    });
   }
 }
